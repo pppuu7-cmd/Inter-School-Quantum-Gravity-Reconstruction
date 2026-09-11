@@ -6,7 +6,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/isqgr-eprl-partial-slice-closure.yml'
-      - 'experiments/eprl_partial_slice_closure.jl'
+      - 'experiments/eprl_partial_slice_closure_native.py'
 
 permissions:
   contents: read
@@ -14,25 +14,22 @@ permissions:
 jobs:
   benchmark:
     runs-on: ubuntu-22.04
-    timeout-minutes: 60
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
-      - name: Install native dependencies
+      - name: Install native and Python dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential gcc-12 g++-12 m4 lzip wget ca-certificates libgmp-dev libmpfr-dev libmpc-dev libgsl-dev libopenblas-dev libblas-dev libomp-dev
-      - uses: julia-actions/setup-julia@v2
-        with:
-          version: '1.11'
-      - name: Install Julia dependencies
-        run: julia -e 'using Pkg; Pkg.add("HalfIntegers"); Pkg.precompile()'
+          sudo apt-get install -y build-essential gcc-12 g++-12 m4 lzip wget ca-certificates libgmp-dev libmpfr-dev libmpc-dev libgsl-dev libopenblas-dev libblas-dev libomp-dev python3-numpy
       - name: Checkout pinned sl2cfoam-next
         run: |
           git clone https://github.com/qg-cpt-marseille/sl2cfoam-next.git external/sl2cfoam-next
           git -C external/sl2cfoam-next checkout 052e4346028870bd76f69a3034e6cae8defb8f7f
+          test "$(git -C external/sl2cfoam-next rev-parse HEAD)" = "052e4346028870bd76f69a3034e6cae8defb8f7f"
       - name: Build Wigner dependencies
         working-directory: external/sl2cfoam-next
         run: |
+          set -euo pipefail
           mkdir -p ext
           cd ext
           wget -q https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -O wigxjpf.tar.gz
@@ -41,26 +38,51 @@ jobs:
           wget -q https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz -O fastwigxj.tar.gz
           tar -xzf fastwigxj.tar.gz && mv fastwigxj-1.4.1 fastwigxj
           make -C fastwigxj CC=gcc-12 CXX=g++-12 -j2
-      - name: Precompute Wigner tables and build library
+      - name: Precompute Wigner tables and build native library/tools
         working-directory: external/sl2cfoam-next
         run: |
+          set -euo pipefail
           mkdir -p data_sl2cfoam
           ./ext/fastwigxj/bin/hash_js --max-E-3j=20 /dev/null ./data_sl2cfoam/table_20.3j
           ./ext/fastwigxj/bin/hash_js --max-E-6j=20 /dev/null ./data_sl2cfoam/table_20.6j
           make CC=gcc-12 BLAS=system OMP=0 lib -j2
-      - name: Run partial-slice closure benchmark
+          test -f lib/libsl2cfoam.so
+          make CC=gcc-12 BLAS=system OMP=0 tools -j2
+          test -x bin/vertex-fulltensor
+      - name: Compute and store pinned Lorentzian EPRL tensors
+        working-directory: external/sl2cfoam-next
         env:
-          SL2CFOAM_ROOT: ${{ github.workspace }}/external/sl2cfoam-next
           LD_LIBRARY_PATH: ${{ github.workspace }}/external/sl2cfoam-next/lib
         run: |
           set -euo pipefail
+          ./bin/vertex-fulltensor data_sl2cfoam 1.2 1,1,1,1,1,1,1,1,1,1 0
+          ./bin/vertex-fulltensor data_sl2cfoam 1.2 1,1,1,1,1,1,1,1,1,1 1
+          P0='data_sl2cfoam/vertex/immirzi_1.200/amplitudes/vertex__1-1-1-1-1-1-1-1-1-1__fullrange__imm-1.200__dl-0.sl2t'
+          P1='data_sl2cfoam/vertex/immirzi_1.200/amplitudes/vertex__1-1-1-1-1-1-1-1-1-1__fullrange__imm-1.200__dl-1.sl2t'
+          test -s "$P0"
+          test -s "$P1"
+          stat -c '%n %s bytes' "$P0" "$P1"
+      - name: Run native partial-slice closure analysis
+        run: |
+          set -euo pipefail
           mkdir -p compute_out
-          julia experiments/eprl_partial_slice_closure.jl | tee compute_out/eprl_partial_slice_closure.txt
-          grep -q '^EPRL_PARTIAL_SLICE_CLOSURE=PASS$' compute_out/eprl_partial_slice_closure.txt
-          test -s compute_out/eprl_partial_slice_closure.txt
+          P0='external/sl2cfoam-next/data_sl2cfoam/vertex/immirzi_1.200/amplitudes/vertex__1-1-1-1-1-1-1-1-1-1__fullrange__imm-1.200__dl-0.sl2t'
+          P1='external/sl2cfoam-next/data_sl2cfoam/vertex/immirzi_1.200/amplitudes/vertex__1-1-1-1-1-1-1-1-1-1__fullrange__imm-1.200__dl-1.sl2t'
+          python3 experiments/eprl_partial_slice_closure_native.py \
+            --dl0 "$P0" --dl1 "$P1" --n-random 4096 --seed 20260912 \
+            --output compute_out/eprl_partial_slice_closure_native.json \
+            | tee compute_out/eprl_partial_slice_closure_native.log
+          python3 - <<'PY'
+          import json
+          d=json.load(open('compute_out/eprl_partial_slice_closure_native.json'))
+          assert d['status']=='PASS_EXECUTION'
+          assert len(d['cases'])==5
+          assert all(x['return_improvement']>0 for x in d['cases'])
+          print('EPRL_NATIVE_CLOSURE_EXECUTION=PASS')
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: isqgr-eprl-partial-slice-closure
+          name: isqgr-eprl-partial-slice-closure-native
           path: compute_out/
-          if-no-files-found: warn
+          if-no-files-found: error
