@@ -1,0 +1,108 @@
+name: ISQGR BH003 Geometry Holdout
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh003-geometry-holdout.yml'
+      - 'experiments/causal_set_ssee_shape_holdout.py'
+      - 'experiments/causal_set_ssee_2d_reproduction.py'
+
+permissions:
+  contents: read
+
+jobs:
+  geometry-holdout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        shape: [central_square, central_boosted, offset_square, offset_boosted]
+        n: [384, 768, 1152]
+        seed: [41, 42, 43]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Run frozen-rule geometry holdout
+        run: >-
+          python experiments/causal_set_ssee_shape_holdout.py
+          --shape ${{ matrix.shape }}
+          --n ${{ matrix.n }}
+          --seed ${{ matrix.seed }}
+          --output compute_out/${{ matrix.shape }}_n${{ matrix.n }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geom-${{ matrix.shape }}-n${{ matrix.n }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [geometry-holdout]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate shape-transfer statistics
+        run: |
+          python - <<'PY'
+          import json,pathlib,statistics
+          import numpy as np
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          def fit(xs,ys):
+              x=np.asarray(xs,float); y=np.asarray(ys,float)
+              A=np.column_stack([x,np.ones_like(x)])
+              b,a=np.linalg.lstsq(A,y,rcond=None)[0]
+              yp=b*x+a; sse=float(np.sum((y-yp)**2)); sst=float(np.sum((y-y.mean())**2))
+              return {'slope':float(b),'intercept':float(a),'r2':float(1-sse/sst) if sst>0 else 1.0}
+          shapes={}
+          for shape in sorted({r['shape'] for r in rows}):
+              g=[r for r in rows if r['shape']==shape]
+              means=[]
+              for n in sorted({r['n_parent'] for r in g}):
+                  h=[r for r in g if r['n_parent']==n]
+                  means.append({
+                      'n_parent':n,
+                      'count':len(h),
+                      'mean_n_sub':statistics.fmean(r['n_sub'] for r in h),
+                      'mean_raw_entropy':statistics.fmean(r['raw_entropy'] for r in h),
+                      'mean_truncated_entropy':statistics.fmean(r['truncated_entropy'] for r in h),
+                      'std_truncated_entropy':statistics.pstdev(r['truncated_entropy'] for r in h),
+                      'mean_log_size_proxy':statistics.fmean(r['log_size_proxy'] for r in h),
+                  })
+              shapes[shape]={
+                  'group_means':means,
+                  'raw_volume_fit':fit([m['mean_n_sub'] for m in means],[m['mean_raw_entropy'] for m in means]),
+                  'truncated_log_fit':fit([m['mean_log_size_proxy'] for m in means],[m['mean_truncated_entropy'] for m in means]),
+              }
+          slopes=[v['truncated_log_fit']['slope'] for v in shapes.values()]
+          out={
+              'test':'BH003_SSEE_GEOMETRY_HOLDOUT_SUMMARY',
+              'n_jobs':len(rows),
+              'shapes':shapes,
+              'transfer_summary':{
+                  'mean_truncated_log_slope':statistics.fmean(slopes),
+                  'std_truncated_log_slope_across_shapes':statistics.pstdev(slopes),
+                  'max_minus_min_slope':max(slopes)-min(slopes),
+              },
+              'claim_lock':'Frozen sqrt(N)/(4*pi) rule across boosted and offset nested causal intervals.'
+          }
+          pathlib.Path('geometry_holdout_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-geometry-holdout-summary
+          path: geometry_holdout_summary.json
+          if-no-files-found: error
