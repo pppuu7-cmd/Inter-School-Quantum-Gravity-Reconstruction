@@ -1,71 +1,125 @@
 # ISQGR Current Research Front
 
 Updated: 2026-09-12  
-Active iteration: `ITERATION_002`  
+Active iteration: `ITERATION_002` (**70%**)  
 Project phase: `PHASE_0 / INTERFACE_ATLAS_BOOTSTRAP`
 
 ## Canonical status
 
-- Overall scientific programme readiness: **8%**
-- Iteration 001: **100% complete**
+- Overall scientific programme readiness: **12%**
+- Source-grounded interface atlas: **20%**
+- Bridge-principle validation: **12%**
+- Executable cross-school obstructions: **15%**
+- Candidate-theory construction: **0%**
 - Candidate theory: `UNFORMED`
 - Accepted recurrent motifs: **0**
-- Active bridge hypothesis: `BH-001 Scale-Compatible Physical Composition (SCPC)`
+- Active hypotheses:
+  - `BH-001 Scale-Compatible Physical Composition (SCPC)`;
+  - `BH-002 Causal–Entanglement Metric Reconstruction (CEMR)` — current lead.
 - New physics: **NOT ESTABLISHED**
 - RQIR/KMQGB promotion: **NOT AUTHORIZED**
 
-Readiness is an internal roadmap metric, not probability of correctness.
+Readiness values are roadmap-completion metrics, not probabilities of physical correctness.
 
-## First cross-school result
+## Result 1 — universal microscopic discreteness rejected as a synthesis prior
 
-The initial comparison of:
+Cross-audit of:
 
 - RC-001 Lorentzian EPRL,
 - RC-002 4D CDT transfer matrix,
 - RC-003 asymptotic-safety EAA/FRG,
 
-rules out one overly restrictive synthesis assumption:
+shows that an inter-school parent principle intended to cover these realizations cannot assume microscopic discreteness as a universal primitive.
 
-> A common parent principle cannot require microscopic discreteness as a universal primitive if it is intended to include both discrete and continuum quantum-gravity realizations.
+The surviving BH-001 layer is representation-independent compatibility between physical composition and scale/refinement evolution.
 
-The surviving common candidate structure is representation-independent compatibility between physical composition and scale/refinement evolution.
+## Result 2 — composition must be multi-typed
 
-## BH-001
+RC-004 causal sets and RC-005 HaPPY/QEC show that a single undifferentiated composition `star` is too coarse.
 
-At each resolution `lambda`, define a physical operational structure `A_lambda`, a composition law `star_lambda`, and a scale/refinement map `R_{lambda->lambda'}`.
+At minimum distinguish:
 
-The bridge requires, on a controlled domain,
+- sequential/causal composition `circ`;
+- parallel/subsystem composition `otimes`.
 
-`R(x star y) = R(x) star' R(y) + E_R(x,y)`,
+Future BH-001 work must search for a compatibility/interchange law between these operations instead of identifying them.
 
-where the defect `E_R` is derived and controlled rather than fitted after the fact.
+## Result 3 — BH-002 Causal–Entanglement Metric Reconstruction
 
-The scale map must also preserve or derive:
+In a controlled semiclassical overlap domain, causal information may determine a Lorentzian conformal class
 
-- physical-state normalization/positivity;
-- gauge/constraint quotient;
-- operational causal consistency;
-- parameter identity toward the low-energy regime.
+`g = Omega^2 g_bar`,
 
-Geometry may then be tested as a stable/fixed representation of this structure rather than inserted as a target.
+while independent entanglement-derived area/metric information may constrain the missing scale `Omega`.
 
-## Why this is not yet a model
+The leading RT-type inverse problem is schematically
 
-Composition and RG/coarse-graining structures are already widespread in physics. BH-001 becomes physically interesting only if cross-school compatibility imposes a nontrivial constraint that is not generic and that forces/forbids a gravitational structure or observable consequence.
+`Area_{Omega^2 g_bar}(gamma_A[Omega]) = 4 G_N S(A)`.
 
-## Active Iteration 002 targets
+BH-002 is a bridge hypothesis, not a model of quantum gravity.
 
-1. Build a concrete causal-set dynamics card.
-2. Build a concrete holographic/quantum-information geometry card.
-3. Test whether causal order and entanglement connectivity can both fit BH-001 without ad hoc branch rules.
-4. Strengthen the EPRL refinement/coarse-graining source chain.
-5. Accept `RM-001` only if the same interface motif appears in at least two independent, source-grounded realizations and is more than an `OPEN_BLOCKED` absence.
+## First executable ISQGR obstruction
 
-## Primary kill test
+For sufficiently local codimension-2 patches in `D` dimensions,
 
-BH-001 should be rejected or weakened if its only common content is the tautology that different theories have composition and scale dependence.
+`A_i[g] ~= Omega^(D-2) A_i[g_bar]`.
 
-The next iteration must therefore extract a **non-generic commutativity/positivity/causality constraint** or report that the bridge has not gained physical content.
+Define
+
+`r_i = log(A_i^obs/A_i[g_bar])`.
+
+One local conformal factor requires all `r_i` to agree. The residual
+
+`delta_i = r_i - mean(r)`
+
+is invariant under changing the arbitrary conformal representative
+
+`g_bar -> exp(2 chi) g_bar`
+
+within the local-patch approximation.
+
+This yields the first executable cross-school obstruction in:
+
+- `results/ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY.md`;
+- `code/cemr_local_consistency.py`;
+- `code/test_cemr_local_consistency.py`.
+
+A failure rejects only the supplied CEMR mapping/domain, never an entire school.
+
+## Why RM-001 is still locked
+
+There is a promising cross-school bridge, but the recurrent-motif threshold requires more than a missing object or a toy-model analogy. No recurrent motif is accepted until independent source-grounded realization chains establish the same nontrivial interface structure.
+
+## Active blockers
+
+1. `DOMAIN_OVERLAP` — causal-order and entanglement reconstruction must apply to the same physical regime.
+2. `REGION_CIRCULARITY` — region/surface labels must not already encode the scale being reconstructed.
+3. `QES_CORRECTIONS` — generalized entropy can contaminate a pure area inversion.
+4. `GLOBAL_INVERSION` — local constant-`Omega` patches must be upgraded to finite-surface inversion.
+5. `DYNAMICS` — metric reconstruction remains kinematic until gravitational dynamics are derived.
+6. `EPRL_REFINEMENT` — strengthen the source-defined refinement/coarse-graining chain.
+
+## Next decisive computation
+
+Construct a synthetic finite-surface CEMR inverse problem in a known conformally related Lorentzian geometry.
+
+Required outputs:
+
+1. identifiability of `Omega(x)` from redundant area data;
+2. conditioning/stability under controlled nuisance terms;
+3. an obstruction that distinguishes a wrong conformal class from an allowed conformal rescaling;
+4. explicit failure when the input area data are anisotropically incompatible with any scalar conformal field.
+
+In parallel, reformulate BH-001 using `circ` and `otimes` and test whether a nontrivial interchange/coherence law survives across causal-set, tensor-network, CDT/spinfoam and continuum-RG realizations.
+
+## Candidate unlock condition
+
+No ISQGR action, microscopic ontology or field equation is authorized yet.
+
+Unlock candidate construction only after either:
+
+- one source-grounded recurrent motif survives a falsification audit; or
+- one mathematically nontrivial bridge theorem survives a cross-realization test and constrains gravitational structure beyond generic composition/RG language.
 
 ## Recovery order
 
@@ -74,8 +128,10 @@ The next iteration must therefore extract a **non-generic commutativity/positivi
 3. `docs/CONSTITUTION.md`
 4. `protocol/INTERFACE_FAILURE_TAXONOMY.md`
 5. `docs/INTERFACE_ATLAS_V0_1.md`
-6. `hypotheses/BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION.md`
-7. `realizations/RC-001_EPRL_LORENTZIAN_VERTEX.md`
-8. `realizations/RC-002_4D_CDT_TRANSFER_MATRIX.md`
-9. `realizations/RC-003_ASYMPTOTIC_SAFETY_EAA_EH_TRUNCATION.md`
-10. `research_log/ITERATION_001.md`
+6. `hypotheses/BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION.md`
+7. `results/ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY.md`
+8. `hypotheses/BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION.md`
+9. `realizations/RC-004_CAUSAL_SET_BDG_ACTION.md`
+10. `realizations/RC-005_HAPPY_HOLOGRAPHIC_QEC.md`
+11. `research_log/ITERATION_002.md`
+12. `research_log/ITERATION_001.md`
