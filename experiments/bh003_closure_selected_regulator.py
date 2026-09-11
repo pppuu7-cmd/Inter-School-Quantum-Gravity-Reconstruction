@@ -38,7 +38,8 @@ def _curvature(p0: np.ndarray, p1: np.ndarray, p2: np.ndarray) -> float:
     a=float(np.linalg.norm(p1-p0)); b=float(np.linalg.norm(p2-p1)); c=float(np.linalg.norm(p2-p0))
     if min(a,b,c) <= 1e-14:
         return 0.0
-    cross=abs(float(np.cross(p1-p0,p2-p0)))
+    v1=p1-p0; v2=p2-p0
+    cross=abs(float(v1[0]*v2[1]-v1[1]*v2[0]))
     return 2.0*cross/(a*b*c)
 
 
