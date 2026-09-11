@@ -1,0 +1,21 @@
+{
+  "source_workflow_run": 34653258086,
+  "source_artifact_id": 10284272728,
+  "workflow_conclusion": "success",
+  "test": "CEMR_THREE_CHANNEL_RESCUE_CAMPAIGN",
+  "groups": {
+    "alignment=0.0|sigma_causal=0.02": {"n":4,"condition_improvement":0.6655518394648866,"joint_condition":299.00000000000944,"phi_rmse_improvement":0.9944083523289817,"phi_variance_reduction":1.001675041876044,"smallest_singular_value_gain":1.0000000000000053},
+    "alignment=0.0|sigma_causal=0.05": {"n":4,"condition_improvement":0.9255813953488475,"joint_condition":215.00000000000546,"phi_rmse_improvement":0.9987576154027602,"phi_variance_reduction":1.0003722315280137,"smallest_singular_value_gain":1.000000000000011},
+    "alignment=0.0|sigma_causal=0.2": {"n":4,"condition_improvement":0.9950000000000044,"joint_condition":200.00000000000642,"phi_rmse_improvement":0.9999187462302479,"phi_variance_reduction":1.0000250006250146,"smallest_singular_value_gain":1.0000000000000044},
+    "alignment=0.5|sigma_causal=0.02": {"n":4,"condition_improvement":13.196453410058947,"joint_condition":15.079809234829746,"phi_rmse_improvement":5.853409981627641,"phi_variance_reduction":24.72089824207653,"smallest_singular_value_gain":18.656937754596903},
+    "alignment=0.5|sigma_causal=0.05": {"n":4,"condition_improvement":4.491175790087753,"joint_condition":44.30910952967142,"phi_rmse_improvement":2.3558869024540723,"phi_variance_reduction":5.00664049642528,"smallest_singular_value_gain":4.767253257505672},
+    "alignment=0.5|sigma_causal=0.2": {"n":4,"condition_improvement":1.2443597156702453,"joint_condition":159.92160264752758,"phi_rmse_improvement":1.1045502855134348,"phi_variance_reduction":1.2529295405746823,"smallest_singular_value_gain":1.2490554201120219},
+    "alignment=0.9|sigma_causal=0.02": {"n":4,"condition_improvement":62.263684739809605,"joint_condition":3.196084536782513,"phi_rmse_improvement":9.003056646959049,"phi_variance_reduction":74.11351851010247,"smallest_singular_value_gain":71.49522307528274},
+    "alignment=0.9|sigma_causal=0.05": {"n":4,"condition_improvement":13.529842602920015,"joint_condition":14.70822727509477,"phi_rmse_improvement":3.8988438386538498,"phi_variance_reduction":13.738535920095682,"smallest_singular_value_gain":13.750755971202025},
+    "alignment=0.9|sigma_causal=0.2": {"n":4,"condition_improvement":1.8074874650217003,"joint_condition":110.09758233516568,"phi_rmse_improvement":1.316663510290146,"phi_variance_reduction":1.809006490249395,"smallest_singular_value_gain":1.80922028882337},
+    "alignment=1.0|sigma_causal=0.02": {"n":4,"condition_improvement":101.00000000000342,"joint_condition":1.970297029702972,"phi_rmse_improvement":8.31813434694561,"phi_variance_reduction":67.3333333333336,"smallest_singular_value_gain":101.00000000000342},
+    "alignment=1.0|sigma_causal=0.05": {"n":4,"condition_improvement":17.000000000000604,"joint_condition":11.705882352941199,"phi_rmse_improvement":4.103317198590059,"phi_variance_reduction":15.740740740740804,"smallest_singular_value_gain":17.000000000000604},
+    "alignment=1.0|sigma_causal=0.2": {"n":4,"condition_improvement":2.0000000000000293,"joint_condition":99.50000000000196,"phi_rmse_improvement":1.3788325251108424,"phi_variance_reduction":1.990049751243776,"smallest_singular_value_gain":2.0000000000000293}
+  },
+  "claim_lock": "Synthetic causal channel only; physical rescue requires a source-defined causal observable in the same regime."
+}
