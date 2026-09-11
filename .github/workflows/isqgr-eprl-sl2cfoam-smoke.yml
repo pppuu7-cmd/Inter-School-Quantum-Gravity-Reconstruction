@@ -1,0 +1,119 @@
+name: ISQGR Lorentzian EPRL Source-Native Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-eprl-sl2cfoam-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  eprl-smoke:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential m4 lzip wget ca-certificates \
+            libgmp-dev libmpfr-dev libmpc-dev libgsl-dev \
+            libopenblas-dev libblas-dev libomp-dev
+
+      - name: Checkout pinned sl2cfoam-next
+        run: |
+          git clone https://github.com/qg-cpt-marseille/sl2cfoam-next.git external/sl2cfoam-next
+          git -C external/sl2cfoam-next checkout 052e4346028870bd76f69a3034e6cae8defb8f7f
+          git -C external/sl2cfoam-next rev-parse HEAD
+
+      - name: Build wigxjpf 1.13
+        working-directory: external/sl2cfoam-next
+        run: |
+          mkdir -p ext
+          cd ext
+          wget -q https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -O wigxjpf.tar.gz
+          tar -xzf wigxjpf.tar.gz
+          mv wigxjpf-1.13 wigxjpf
+          make -C wigxjpf -j2
+
+      - name: Build fastwigxj 1.4.1
+        working-directory: external/sl2cfoam-next
+        run: |
+          cd ext
+          wget -q https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz -O fastwigxj.tar.gz
+          tar -xzf fastwigxj.tar.gz
+          mv fastwigxj-1.4.1 fastwigxj
+          set +e
+          make -C fastwigxj -j2 2>&1 | tee fastwigxj-build.log
+          rc=${PIPESTATUS[0]}
+          set -e
+          if [ "$rc" -ne 0 ]; then
+            echo "FASTWIGXJ_BUILD_BLOCKER=1"
+            echo "The upstream quickstart documents a recent-GCC 9j compilation issue."
+            tail -n 120 fastwigxj-build.log
+            exit "$rc"
+          fi
+
+      - name: Precompute minimal Wigner tables
+        working-directory: external/sl2cfoam-next
+        run: |
+          mkdir -p data_sl2cfoam
+          ./ext/fastwigxj/bin/hash_js --max-E-3j=20 /dev/null ./data_sl2cfoam/table_20.3j
+          ./ext/fastwigxj/bin/hash_js --max-E-6j=20 /dev/null ./data_sl2cfoam/table_20.6j
+          ls -lh data_sl2cfoam
+
+      - name: Build pinned sl2cfoam-next with system BLAS
+        working-directory: external/sl2cfoam-next
+        run: |
+          make BLAS=system OMP=0 -j2
+          test -x bin/vertex-amplitude
+          test -x bin/vertex-fulltensor
+
+      - name: Execute Lorentzian EPRL amplitudes
+        working-directory: external/sl2cfoam-next
+        run: |
+          mkdir -p ../../compute_out
+          {
+            echo "source_repository=qg-cpt-marseille/sl2cfoam-next"
+            echo "source_commit=$(git rev-parse HEAD)"
+            echo "gamma=1.2"
+            echo "spins_two_j=1,1,1,1,1,1,1,1,1,1"
+            echo "case_i0_dl0=$(./bin/vertex-amplitude data_sl2cfoam 1.2 1,1,1,1,1,1,1,1,1,1 0,0,0,0,0 0 | tail -n 1)"
+            echo "case_i2_dl0=$(./bin/vertex-amplitude data_sl2cfoam 1.2 1,1,1,1,1,1,1,1,1,1 2,2,2,2,2 0 | tail -n 1)"
+            echo "case_i0_dl1=$(./bin/vertex-amplitude data_sl2cfoam 1.2 1,1,1,1,1,1,1,1,1,1 0,0,0,0,0 1 | tail -n 1)"
+            echo "case_i2_dl1=$(./bin/vertex-amplitude data_sl2cfoam 1.2 1,1,1,1,1,1,1,1,1,1 2,2,2,2,2 1 | tail -n 1)"
+          } | tee ../../compute_out/eprl_source_native_smoke.txt
+
+          python - <<'PY'
+          from pathlib import Path
+          import math, re
+          p=Path('../../compute_out/eprl_source_native_smoke.txt')
+          text=p.read_text()
+          vals=[]
+          for line in text.splitlines():
+              if line.startswith('case_'):
+                  try: vals.append(float(line.split('=',1)[1]))
+                  except ValueError: pass
+          if len(vals) != 4:
+              raise SystemExit(f'expected 4 parsed EPRL amplitudes, got {len(vals)}')
+          if not all(math.isfinite(v) for v in vals):
+              raise SystemExit(f'non-finite EPRL amplitudes: {vals}')
+          Path('../../compute_out/eprl_source_native_smoke_status.txt').write_text(
+              'SOURCE_NATIVE_EPRL_EXECUTION=PASS\n' +
+              'finite_amplitudes=' + repr(vals) + '\n' +
+              'nonzero_count=' + str(sum(v != 0.0 for v in vals)) + '\n'
+          )
+          print(vals)
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: isqgr-eprl-source-native-smoke
+          path: compute_out/
+          if-no-files-found: warn
