@@ -7,9 +7,10 @@ For one sprinkled causal set:
 1. diagonalize iDelta and define several nested UV spectral sectors by fixed
    retained fractions (these are probes, not a fitted physical cutoff);
 2. Bernoulli-thin the causal set and form the induced causal matrix exactly;
-3. restrict each full-set spectral projector to the retained elements;
+3. restrict each full-set spectral subspace to the retained elements and
+   orthonormalize that restricted span by QR;
 4. among nested spectral projectors of the thinned iDelta, find the projector
-   that best approximates that restricted operator in Frobenius norm;
+   that best approximates the restricted-span projector in Frobenius norm;
 5. infer the scale-flow exponent alpha from
       lambda_thin / lambda_full = (N_thin / N_full)^alpha.
 
@@ -47,22 +48,32 @@ def midpoint_cutoff(abs_evals: np.ndarray, r: int) -> float:
 
 
 def best_thinned_projector(a: np.ndarray, v: np.ndarray) -> dict:
-    """Approximate R=A A^* by nested thinned spectral projectors V_k V_k^*."""
+    """Match the projector onto span(A) to nested thinned spectral projectors."""
     m = v.shape[0]
-    gram = a.conj().T @ a
-    r_norm2 = float(np.sum(np.abs(gram) ** 2))
-    r_norm = math.sqrt(max(r_norm2, 1e-300))
+    # Restriction destroys orthonormality.  Compare subspaces, not the raw
+    # restricted Gram operator: QR gives the orthonormal basis of the same span.
+    qa, rmat = np.linalg.qr(a, mode="reduced")
+    diag = np.abs(np.diag(rmat))
+    if len(diag) == 0:
+        raise RuntimeError("empty restricted span")
+    tol = max(a.shape) * np.finfo(float).eps * max(float(diag.max()), 1.0)
+    rank = int(np.sum(diag > tol))
+    if rank < 2:
+        raise RuntimeError("restricted spectral span lost rank under thinning")
+    qa = qa[:, :rank]
 
-    b = v.conj().T @ a
+    # Tr(P_k P_A) = ||V_k^* Q_A||_F^2.
+    b = v.conj().T @ qa
     row_energy = np.sum(np.abs(b) ** 2, axis=1)
     cum_overlap = np.cumsum(row_energy)
+    pa_norm2 = float(rank)  # Frobenius norm squared of an orthoprojector.
+    pa_norm = math.sqrt(pa_norm2)
 
     best = None
     kmax = max(4, min(m - 2, int(math.floor(0.70 * m))))
     for k in range(2, kmax + 1, 2):
-        # ||R-P_k||_F^2 = ||R||_F^2 + ||P_k||_F^2 - 2 Tr(P_k R)
-        err2 = max(0.0, r_norm2 + k - 2.0 * float(cum_overlap[k - 1]))
-        err = math.sqrt(err2) / r_norm
+        err2 = max(0.0, pa_norm2 + k - 2.0 * float(cum_overlap[k - 1]))
+        err = math.sqrt(err2) / pa_norm
         if best is None or err < best[0]:
             best = (err, k, float(cum_overlap[k - 1]))
     if best is None:
@@ -71,7 +82,8 @@ def best_thinned_projector(a: np.ndarray, v: np.ndarray) -> dict:
         "normalized_transfer_error": best[0],
         "thinned_rank": best[1],
         "projector_overlap_trace": best[2],
-        "restricted_projector_frobenius": r_norm,
+        "restricted_span_rank": rank,
+        "restricted_projector_frobenius": pa_norm,
     }
 
 
@@ -100,7 +112,7 @@ def run(n: int, thinning: float, seed: int) -> dict:
             r += 1
         r = min(n - 4, r)
 
-        # Restricted full-set retained subspace A.  We never use entropy here.
+        # Restricted full-set retained subspace.  Entropy is never used here.
         a = u[idx, :r]
         match = best_thinned_projector(a, v)
         k = int(match["thinned_rank"])
@@ -126,7 +138,7 @@ def run(n: int, thinning: float, seed: int) -> dict:
     betas = np.array([x["beta_rank_flow"] for x in rows], dtype=float)
     errors = np.array([x["normalized_transfer_error"] for x in rows], dtype=float)
     return {
-        "test": "BH003_THINNING_PROJECTOR_TRANSFER",
+        "test": "BH003_THINNING_PROJECTOR_TRANSFER_ORTHONORMAL_SPAN",
         "n_full": n,
         "n_thinned": m,
         "realized_density_ratio": density_ratio,
@@ -146,7 +158,7 @@ def run(n: int, thinning: float, seed: int) -> dict:
             "absolute_median_alpha_minus_half": float(abs(np.median(alphas) - 0.5)),
         },
         "claim_lock": (
-            "Scale flow inferred only from restricted-projector transfer under causal-set thinning. "
+            "Scale flow inferred only from orthoprojector transfer of the restricted spectral span under causal-set thinning. "
             "The 1/2 source exponent is post-hoc and does not enter rank matching or cutoff inference."
         ),
     }
