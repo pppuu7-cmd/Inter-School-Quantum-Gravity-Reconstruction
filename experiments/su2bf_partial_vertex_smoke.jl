@@ -1,7 +1,7 @@
 using LinearAlgebra
 using JSON3
 
-root = get(ENV, "SU2BF_ROOT", "external/su2bf-TNAlgo")
+root = abspath(get(ENV, "SU2BF_ROOT", "external/su2bf-TNAlgo"))
 include(joinpath(root, "src", "partial_coherent_vertex.jl"))
 using .partial_coherent_vertex
 
