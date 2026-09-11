@@ -25,7 +25,7 @@ end
 root=ENV["SL2CFOAM_ROOT"]
 data=joinpath(root,"data_sl2cfoam")
 # all ten face spins j=1/2; each four-valent intertwiner leg has dimension two
-js=fill(HalfInteger(1,2),10)
+js=fill(half(1),10)
 conf=SL2Cfoam.Config(SL2Cfoam.VerbosityOff, SL2Cfoam.NormalAccuracy, 5, 0)
 SL2Cfoam.cinit(data,1.2,conf)
 try
