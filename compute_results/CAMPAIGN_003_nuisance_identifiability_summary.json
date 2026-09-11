@@ -1,0 +1,69 @@
+{
+  "source_workflow_run": 34652964675,
+  "source_artifact_id": 10285120480,
+  "workflow_conclusion": "success",
+  "test": "CEMR_NUISANCE_IDENTIFIABILITY_CAMPAIGN",
+  "groups": {
+    "overlap=0.2|snr=0.5": {
+      "n": 4,
+      "mean_geometry_only_chi2": 1.027923976740631,
+      "mean_geometry_only_phi_rmse": 0.022145879432657178,
+      "mean_joint_chi2": 0.7219129365312995,
+      "mean_joint_phi_rmse": 0.01910455134410725,
+      "mean_bias_reduction_factor": 1.3051998031060494,
+      "mean_joint_condition_number": 1.5000000000000009,
+      "mean_geometry_variance_inflation": 1.0416666666666667
+    },
+    "overlap=0.2|snr=2.0": {
+      "n": 4,
+      "mean_geometry_only_chi2": 5.203875936539915,
+      "mean_geometry_only_phi_rmse": 0.030271958859492677,
+      "mean_joint_chi2": 0.7219129365312995,
+      "mean_joint_phi_rmse": 0.019104551344107237,
+      "mean_bias_reduction_factor": 1.9561185956494203,
+      "mean_joint_condition_number": 1.5000000000000009,
+      "mean_geometry_variance_inflation": 1.0416666666666667
+    },
+    "overlap=0.8|snr=0.5": {
+      "n": 4,
+      "mean_geometry_only_chi2": 0.8665363070625635,
+      "mean_geometry_only_phi_rmse": 0.030271958859492687,
+      "mean_joint_chi2": 0.7219129365312996,
+      "mean_joint_phi_rmse": 0.02831504320496367,
+      "mean_bias_reduction_factor": 1.1370009417556628,
+      "mean_joint_condition_number": 9.000000000000018,
+      "mean_geometry_variance_inflation": 2.777777777777779
+    },
+    "overlap=0.8|snr=2.0": {
+      "n": 4,
+      "mean_geometry_only_chi2": 2.3983252578276453,
+      "mean_geometry_only_phi_rmse": 0.08269051832869416,
+      "mean_joint_chi2": 0.7219129365312994,
+      "mean_joint_phi_rmse": 0.02831504320496368,
+      "mean_bias_reduction_factor": 3.1288718757772003,
+      "mean_joint_condition_number": 9.000000000000016,
+      "mean_geometry_variance_inflation": 2.7777777777777786
+    },
+    "overlap=0.99|snr=0.5": {
+      "n": 4,
+      "mean_geometry_only_chi2": 0.7869968235739457,
+      "mean_geometry_only_phi_rmse": 0.03361475940285799,
+      "mean_joint_chi2": 0.7219129365312995,
+      "mean_joint_phi_rmse": 0.13463989633714693,
+      "mean_bias_reduction_factor": 0.26263321778542326,
+      "mean_joint_condition_number": 199.00000000000523,
+      "mean_geometry_variance_inflation": 50.25125628140684
+    },
+    "overlap=0.99|snr=2.0": {
+      "n": 4,
+      "mean_geometry_only_chi2": 0.855807323873174,
+      "mean_geometry_only_phi_rmse": 0.10085138496824059,
+      "mean_joint_chi2": 0.7219129365312993,
+      "mean_joint_phi_rmse": 0.13463989633714685,
+      "mean_bias_reduction_factor": 0.796786750046756,
+      "mean_joint_condition_number": 199.00000000000554,
+      "mean_geometry_variance_inflation": 50.251256281406995
+    }
+  },
+  "claim_lock": "Synthetic nuisance basis only; no physical QES identification is implied."
+}
