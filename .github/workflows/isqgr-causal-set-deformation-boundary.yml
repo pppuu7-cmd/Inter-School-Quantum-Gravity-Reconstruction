@@ -1,0 +1,99 @@
+name: ISQGR Causal-Set Deformation Boundary
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-causal-set-deformation-boundary.yml'
+      - 'experiments/causal_set_heterogeneous_mass_composition.py'
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        n: [384, 512, 768]
+        seed: [93, 94]
+        pair:
+          - '0.0,0.01'
+          - '0.01,0.0'
+          - '0.0,0.03'
+          - '0.03,0.0'
+          - '0.0,0.06'
+          - '0.06,0.0'
+          - '0.0,0.10'
+          - '0.10,0.0'
+          - '0.0,0.15'
+          - '0.15,0.0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Run deformation-boundary case
+        run: |
+          set -euo pipefail
+          MU1="${{ matrix.pair }}"; MU1="${MU1%%,*}"
+          MU2="${{ matrix.pair }}"; MU2="${MU2##*,}"
+          python experiments/causal_set_heterogeneous_mass_composition.py \
+            --n ${{ matrix.n }} --seed ${{ matrix.seed }} --mu1 "$MU1" --mu2 "$MU2" --n-random 48 \
+            --output "compute_out/n${{ matrix.n }}_s${{ matrix.seed }}_${MU1}_${MU2}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: causal-boundary-${{ matrix.n }}-${{ matrix.seed }}-${{ strategy.job-index }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [sweep]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate deformation boundary
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,statistics
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          if not rows: raise SystemExit('no case artifacts')
+          by_pair={}
+          for pair in sorted({(r['mu1'],r['mu2']) for r in rows}):
+              g=[r for r in rows if (r['mu1'],r['mu2'])==pair]
+              rets=[x['improvement']['random_mean_over_source_return'] for x in g]
+              leaks=[x['improvement']['random_mean_over_source_leakage'] for x in g]
+              fr=[x['random_controls']['fraction_random_worse_return'] for x in g]
+              fl=[x['random_controls']['fraction_random_worse_leakage'] for x in g]
+              by_pair[f'{pair[0]}->{pair[1]}']={
+                'n':len(g),
+                'median_return_improvement':statistics.median(rets),
+                'mean_return_improvement':statistics.fmean(rets),
+                'median_leakage_improvement':statistics.median(leaks),
+                'mean_fraction_random_worse_return':statistics.fmean(fr),
+                'mean_fraction_random_worse_leakage':statistics.fmean(fl),
+                'fraction_cases_return_improvement_gt_1':sum(v>1 for v in rets)/len(rets),
+                'fraction_cases_random_worse_return_gt_half':sum(v>0.5 for v in fr)/len(fr)}
+          out={'test':'CAUSAL_SET_DEFORMATION_BOUNDARY','n_jobs':len(rows),'by_pair':by_pair,
+               'claim_lock':'Stress map of the frozen source SSEE sector under increasing dimensionless mass deformation; intended to locate breakdown, not to assume universality.'}
+          pathlib.Path('causal_set_deformation_boundary_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-causal-set-deformation-boundary-summary
+          path: causal_set_deformation_boundary_summary.json
+          if-no-files-found: error
