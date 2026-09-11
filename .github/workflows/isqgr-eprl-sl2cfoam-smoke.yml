@@ -21,9 +21,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            build-essential m4 lzip wget ca-certificates \
+            build-essential gcc-12 g++-12 m4 lzip wget ca-certificates \
             libgmp-dev libmpfr-dev libmpc-dev libgsl-dev \
             libopenblas-dev libblas-dev libomp-dev
+          gcc-12 --version
+          g++-12 --version
 
       - name: Checkout pinned sl2cfoam-next
         run: |
@@ -39,9 +41,9 @@ jobs:
           wget -q https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -O wigxjpf.tar.gz
           tar -xzf wigxjpf.tar.gz
           mv wigxjpf-1.13 wigxjpf
-          make -C wigxjpf -j2
+          make -C wigxjpf CC=gcc-12 -j2
 
-      - name: Build fastwigxj 1.4.1
+      - name: Build fastwigxj 1.4.1 with GCC 12
         working-directory: external/sl2cfoam-next
         run: |
           cd ext
@@ -49,13 +51,13 @@ jobs:
           tar -xzf fastwigxj.tar.gz
           mv fastwigxj-1.4.1 fastwigxj
           set +e
-          make -C fastwigxj -j2 2>&1 | tee fastwigxj-build.log
+          make -C fastwigxj CC=gcc-12 CXX=g++-12 -j2 2>&1 | tee fastwigxj-build.log
           rc=${PIPESTATUS[0]}
           set -e
           if [ "$rc" -ne 0 ]; then
             echo "FASTWIGXJ_BUILD_BLOCKER=1"
-            echo "The upstream quickstart documents a recent-GCC 9j compilation issue."
-            tail -n 120 fastwigxj-build.log
+            echo "GCC 12 was selected specifically to avoid the upstream GCC 10/11 AVX2 9j miscompile guard."
+            tail -n 160 fastwigxj-build.log
             exit "$rc"
           fi
 
@@ -70,7 +72,7 @@ jobs:
       - name: Build pinned sl2cfoam-next with system BLAS
         working-directory: external/sl2cfoam-next
         run: |
-          make BLAS=system OMP=0 -j2
+          make CC=gcc-12 CXX=g++-12 BLAS=system OMP=0 -j2
           test -x bin/vertex-amplitude
           test -x bin/vertex-fulltensor
 
@@ -81,6 +83,7 @@ jobs:
           {
             echo "source_repository=qg-cpt-marseille/sl2cfoam-next"
             echo "source_commit=$(git rev-parse HEAD)"
+            echo "compiler=$(gcc-12 -dumpfullversion)"
             echo "gamma=1.2"
             echo "spins_two_j=1,1,1,1,1,1,1,1,1,1"
             echo "case_i0_dl0=$(./bin/vertex-amplitude data_sl2cfoam 1.2 1,1,1,1,1,1,1,1,1,1 0,0,0,0,0 0 | tail -n 1)"
@@ -91,7 +94,7 @@ jobs:
 
           python - <<'PY'
           from pathlib import Path
-          import math, re
+          import math
           p=Path('../../compute_out/eprl_source_native_smoke.txt')
           text=p.read_text()
           vals=[]
