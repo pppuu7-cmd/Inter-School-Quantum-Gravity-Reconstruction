@@ -1,0 +1,98 @@
+name: ISQGR SU2BF Ultra-High-Spin Rank Robustness
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-su2bf-ultrahighspin-rank-robustness.yml'
+      - 'experiments/su2bf_rank_robustness_sweep.jl'
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        spin: ['4.5','5.0','6.0']
+        pair:
+          - 'swap_one,cycle_two'
+          - 'cycle_two,swap_one'
+          - 'swap_one,mixed_three'
+          - 'mixed_three,swap_one'
+          - 'cycle_two,mixed_three'
+          - 'mixed_three,cycle_two'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11'
+      - name: Install Julia dependencies
+        run: julia -e 'using Pkg; Pkg.add(["HalfIntegers","WignerSymbols","Memoize","Combinatorics","JSON3"]); Pkg.precompile()'
+      - name: Checkout pinned source realization
+        run: |
+          git clone https://github.com/sethkasante/su2bf-TNAlgo.git external/su2bf-TNAlgo
+          git -C external/su2bf-TNAlgo checkout 2460cda77b8fe27a4106e98bf39a94fa9059bc92
+      - name: Run ultra-high-spin all-rank heterogeneous sweep
+        env:
+          SU2BF_ROOT: external/su2bf-TNAlgo
+        run: |
+          set -euo pipefail
+          FIRST="${{ matrix.pair }}"; FIRST="${FIRST%%,*}"
+          SECOND="${{ matrix.pair }}"; SECOND="${SECOND##*,}"
+          julia experiments/su2bf_rank_robustness_sweep.jl ${{ matrix.spin }} "$FIRST" "$SECOND" 20260916 128 \
+            "compute_out/j${{ matrix.spin }}_${FIRST}_${SECOND}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: su2bf-ultrahigh-${{ matrix.spin }}-${{ strategy.job-index }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [sweep]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate ultra-high-spin robustness
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,statistics
+          cases=[json.loads(p.read_text())['result'] for p in pathlib.Path('campaign').glob('*.json')]
+          if not cases: raise SystemExit('no case artifacts')
+          ranks=[(c,r) for c in cases for r in c['ranks']]
+          out={'test':'SU2BF_ULTRAHIGHSPIN_HETEROGENEOUS_RANK_ROBUSTNESS','n_cases':len(cases),'n_rank_tests':len(ranks),'by_spin':{},
+               'overall':{
+                 'median_return_improvement':statistics.median(r['return_improvement'] for c,r in ranks),
+                 'mean_return_improvement':statistics.fmean(r['return_improvement'] for c,r in ranks),
+                 'min_return_improvement':min(r['return_improvement'] for c,r in ranks),
+                 'fraction_rank_tests_return_improvement_gt_1':sum(r['return_improvement']>1 for c,r in ranks)/len(ranks),
+                 'fraction_rank_tests_both':sum(r['return_improvement']>1 and r['fraction_random_worse_return']>0.5 for c,r in ranks)/len(ranks)},
+               'claim_lock':'Ultra-high-spin stress test of the frozen train-sector motif; every nontrivial retained rank is evaluated, with no holdout-driven rank selection.'}
+          for j in sorted({c['spin'] for c in cases}):
+              rs=[r for c,r in ranks if c['spin']==j]
+              out['by_spin'][str(j)]={'n_rank_tests':len(rs),
+                'median_return_improvement':statistics.median(r['return_improvement'] for r in rs),
+                'mean_return_improvement':statistics.fmean(r['return_improvement'] for r in rs),
+                'min_return_improvement':min(r['return_improvement'] for r in rs),
+                'fraction_both':sum(r['return_improvement']>1 and r['fraction_random_worse_return']>0.5 for r in rs)/len(rs)}
+          pathlib.Path('su2bf_ultrahighspin_rank_robustness_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-su2bf-ultrahighspin-rank-robustness-summary
+          path: su2bf_ultrahighspin_rank_robustness_summary.json
+          if-no-files-found: error
