@@ -1,0 +1,82 @@
+name: ISQGR CEMR Nuisance Identifiability
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-nuisance-identifiability.yml'
+      - 'experiments/cemr_nuisance_identifiability.py'
+
+permissions:
+  contents: read
+
+jobs:
+  nuisance-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        overlap: [0.2, 0.8, 0.99]
+        nuisance_snr: [0.5, 2.0]
+        seed: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy
+      - name: Run nuisance identifiability audit
+        run: >-
+          python experiments/cemr_nuisance_identifiability.py
+          --seed ${{ matrix.seed }}
+          --overlap ${{ matrix.overlap }}
+          --nuisance-snr ${{ matrix.nuisance_snr }}
+          --sigma 0.02
+          --output compute_out/nuis_o${{ matrix.overlap }}_snr${{ matrix.nuisance_snr }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuisance-o${{ matrix.overlap }}-snr${{ matrix.nuisance_snr }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [nuisance-matrix]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - name: Aggregate nuisance matrix
+        run: |
+          python - <<'PY'
+          import json, pathlib, statistics
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          summary={}
+          for o in sorted({r['overlap'] for r in rows}):
+              for snr in sorted({r['nuisance_snr'] for r in rows}):
+                  g=[r for r in rows if r['overlap']==o and r['nuisance_snr']==snr]
+                  if not g: continue
+                  summary[f'overlap={o}|snr={snr}']={
+                      'n':len(g),
+                      'mean_geometry_only_chi2':statistics.fmean(r['geometry_only']['reduced_chi2'] for r in g),
+                      'mean_geometry_only_phi_rmse':statistics.fmean(r['geometry_only']['phi_rmse'] for r in g),
+                      'mean_joint_chi2':statistics.fmean(r['joint_geometry_nuisance']['reduced_chi2'] for r in g),
+                      'mean_joint_phi_rmse':statistics.fmean(r['joint_geometry_nuisance']['phi_rmse'] for r in g),
+                      'mean_bias_reduction_factor':statistics.fmean(r['bias_reduction_factor'] for r in g),
+                      'mean_joint_condition_number':statistics.fmean(r['joint_geometry_nuisance']['condition_number'] for r in g),
+                      'mean_geometry_variance_inflation':statistics.fmean(r['joint_geometry_nuisance']['geometry_variance_inflation_factor'] for r in g),
+                      'identifiability_warnings':sum(1 for r in g if r['identifiability_warning']),
+                  }
+          out={'test':'CEMR_NUISANCE_IDENTIFIABILITY_CAMPAIGN','groups':summary,'claim_lock':'Synthetic nuisance basis only.'}
+          pathlib.Path('nuisance_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-nuisance-summary
+          path: nuisance_summary.json
+          if-no-files-found: error
