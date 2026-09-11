@@ -6,10 +6,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/isqgr-parallel-compute.yml'
-      - 'code/cemr_finite_surface.py'
-      - 'code/scale_composition_coherence.py'
-      - 'code/cemr_local_consistency.py'
-      - 'code/test_cemr_local_consistency.py'
+      - 'code/*.py'
 
 permissions:
   contents: read
