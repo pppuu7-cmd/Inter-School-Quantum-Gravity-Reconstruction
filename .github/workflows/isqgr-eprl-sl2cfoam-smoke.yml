@@ -69,17 +69,24 @@ jobs:
           ./ext/fastwigxj/bin/hash_js --max-E-6j=20 /dev/null ./data_sl2cfoam/table_20.6j
           ls -lh data_sl2cfoam
 
-      - name: Build pinned sl2cfoam-next with system BLAS
+      - name: Build pinned sl2cfoam-next library then tools
         working-directory: external/sl2cfoam-next
         run: |
-          make CC=gcc-12 CXX=g++-12 BLAS=system OMP=0 -j2
+          # Upstream targets `tests: lib $(TESTS)` / `tools: lib $(TOOLS)` allow
+          # consumers to link in parallel with libsl2cfoam.so under -j. Build the
+          # library first, then tools, and skip unrelated test binaries.
+          make CC=gcc-12 BLAS=system OMP=0 lib -j2
+          test -f lib/libsl2cfoam.so
+          make CC=gcc-12 BLAS=system OMP=0 tools -j2
           test -x bin/vertex-amplitude
           test -x bin/vertex-fulltensor
+          ldd bin/vertex-amplitude || true
 
       - name: Execute Lorentzian EPRL amplitudes
         working-directory: external/sl2cfoam-next
         run: |
           mkdir -p ../../compute_out
+          export LD_LIBRARY_PATH="$PWD/lib:${LD_LIBRARY_PATH:-}"
           {
             echo "source_repository=qg-cpt-marseille/sl2cfoam-next"
             echo "source_commit=$(git rev-parse HEAD)"
