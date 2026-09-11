@@ -1,137 +1,167 @@
 # ISQGR Current Research Front
 
 Updated: 2026-09-12  
-Active iteration: `ITERATION_002` (**70%**)  
-Project phase: `PHASE_0 / INTERFACE_ATLAS_BOOTSTRAP`
+Active iteration: `ITERATION_004` (**20%**)  
+Last completed iteration: `ITERATION_003` (**100%**)  
+Project phase: `PHASE_1 / BRIDGE_FALSIFICATION_ACTIVE`
 
 ## Canonical status
 
-- Overall scientific programme readiness: **12%**
-- Source-grounded interface atlas: **20%**
-- Bridge-principle validation: **12%**
-- Executable cross-school obstructions: **15%**
+- Overall ISQGR scientific programme readiness: **21%**
+- Repository/recovery bootstrap: **90%**
+- Source-grounded interface atlas: **35%**
+- Recurrent-motif search: **15%**, accepted motifs: **0**
+- Bridge-principle validation: **30%**
+- Executable obstruction/identifiability programme: **45%**
 - Candidate-theory construction: **0%**
 - Candidate theory: `UNFORMED`
-- Accepted recurrent motifs: **0**
-- Active hypotheses:
-  - `BH-001 Scale-Compatible Physical Composition (SCPC)`;
-  - `BH-002 Causal–Entanglement Metric Reconstruction (CEMR)` — current lead.
 - New physics: **NOT ESTABLISHED**
 - RQIR/KMQGB promotion: **NOT AUTHORIZED**
 
-Readiness values are roadmap-completion metrics, not probabilities of physical correctness.
+Readiness numbers are roadmap-completion metrics, not probabilities of correctness.
 
-## Result 1 — universal microscopic discreteness rejected as a synthesis prior
+## Active bridge hierarchy
 
-Cross-audit of:
+### BH-001 — Scale-Compatible Physical Composition
 
-- RC-001 Lorentzian EPRL,
-- RC-002 4D CDT transfer matrix,
-- RC-003 asymptotic-safety EAA/FRG,
+The generic statement has been sharpened by the exact sequential coherence defect
 
-shows that an inter-school parent principle intended to cover these realizations cannot assume microscopic discreteness as a universal primitive.
+`Delta_seq = D o Phi2 o (I-E o D) o Phi1 o E`.
 
-The surviving BH-001 layer is representation-independent compatibility between physical composition and scale/refinement evolution.
+Scale/composition coherence is therefore not automatic under coarse graining. It requires closure of the retained physical sector, irreversible loss of discarded information, or explicit memory/boundary variables carrying the defect.
 
-## Result 2 — composition must be multi-typed
+### BH-001B — Boundary-aware compositional coherence
 
-RC-004 causal sets and RC-005 HaPPY/QEC show that a single undifferentiated composition `star` is too coarse.
+Parallel/subsystem composition cannot be assumed to factorize naively in gauge/gravity systems. Interface/edge data may be required for physical gluing and scale transport.
 
-At minimum distinguish:
+### BH-002 — Causal–Entanglement Metric Reconstruction
 
-- sequential/causal composition `circ`;
-- parallel/subsystem composition `otimes`.
+BH-002 is retained only in an identifiability-conditioned form. Entanglement-only reconstruction already has nontrivial internal consistency in controlled holographic settings, so causal input must demonstrate independent information gain, scale completion or a genuinely joint obstruction.
 
-Future BH-001 work must search for a compatibility/interchange law between these operations instead of identifying them.
+Established gate:
 
-## Result 3 — BH-002 Causal–Entanglement Metric Reconstruction
+`CEMR-I1 — IDENTIFIABILITY_GATE`.
 
-In a controlled semiclassical overlap domain, causal information may determine a Lorentzian conformal class
+A good chi-square is insufficient if geometry and generalized-entropy nuisance share a near-null response direction.
 
-`g = Omega^2 g_bar`,
+### BH-003 — Causal–Spectral Entanglement Closure
 
-while independent entanglement-derived area/metric information may constrain the missing scale `Omega`.
+Current lead hypothesis.
 
-The leading RT-type inverse problem is schematically
+Causal-set spacetime entanglement supplies a same-realization laboratory containing causal order/discreteness and a covariant entanglement observable. The central question is whether the additional spectral scale required for continuum-like entanglement behavior can be derived from native causal/dynamical data rather than selected to reproduce a target area law.
 
-`Area_{Omega^2 g_bar}(gamma_A[Omega]) = 4 G_N S(A)`.
+## Campaign 001 — finite-surface CEMR + composition coherence
 
-BH-002 is a bridge hypothesis, not a model of quantum gravity.
+Status: `REPRODUCED_EXECUTABLE`.
 
-## First executable ISQGR obstruction
+Finite-surface CEMR:
 
-For sufficiently local codimension-2 patches in `D` dimensions,
+- clean: mean reduced chi2 about `1.244`, phi RMSE `0.00384`;
+- noise: mean reduced chi2 about `1.244`, phi RMSE `0.00765`;
+- QES-like nuisance: mean reduced chi2 about `1.117`, phi RMSE `0.01239`, all fits apparently compatible;
+- anisotropic contamination: mean reduced chi2 about `361.16`, 4/4 incompatible;
+- wrong conformal class: mean reduced chi2 about `22.09`, 4/4 incompatible.
 
-`A_i[g] ~= Omega^(D-2) A_i[g_bar]`.
+Key lesson: structured quantum-information nuisance can bias geometry without spoiling apparent fit quality.
 
-Define
+Composition Monte Carlo:
 
-`r_i = log(A_i^obs/A_i[g_bar])`.
+- generic mixing mean coherence defect about `0.59737`;
+- retained-subspace-preserving dynamics mean defect about `1.7e-16`;
+- leakage/defect correlation about `0.473`.
 
-One local conformal factor requires all `r_i` to agree. The residual
+## Campaign 002 — independent causal information gain
 
-`delta_i = r_i - mean(r)`
+Workflow run `34652677145`: **SUCCESS**.
 
-is invariant under changing the arbitrary conformal representative
+No synthetic rank gain was observed because area-only systems were already full rank. Strong conditioning gain appears only when the area inverse problem is nearly degenerate and the causal channel is sufficiently precise.
 
-`g_bar -> exp(2 chi) g_bar`
+At degeneracy `0.999`, sigma_causal `0.02`:
 
-within the local-patch approximation.
+- condition number: about `1999 -> 6.84`;
+- conformal variance reduction: about `250.6x`;
+- conformal RMSE improvement: about `13.9x`.
 
-This yields the first executable cross-school obstruction in:
+At degeneracy `0.9`, sigma_causal `0.10`, RMSE improvement is about `0.95x`, i.e. slightly worse in the finite-seed average.
 
-- `results/ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY.md`;
-- `code/cemr_local_consistency.py`;
-- `code/test_cemr_local_consistency.py`.
+Therefore a second channel is not automatically useful; independence and precision are quantitative gates.
 
-A failure rejects only the supplied CEMR mapping/domain, never an entire school.
+## Campaign 003 — geometry/nuisance identifiability
 
-## Why RM-001 is still locked
+Workflow run `34652964675`: **SUCCESS**.
 
-There is a promising cross-school bridge, but the recurrent-motif threshold requires more than a missing object or a toy-model analogy. No recurrent motif is accepted until independent source-grounded realization chains establish the same nontrivial interface structure.
+At response-space overlap `0.2`, nuisance can be separated with geometry variance inflation only about `1.04x`.
 
-## Active blockers
+At overlap `0.8`, joint fitting can strongly reduce bias but costs about `2.78x` geometry variance.
 
-1. `DOMAIN_OVERLAP` — causal-order and entanglement reconstruction must apply to the same physical regime.
-2. `REGION_CIRCULARITY` — region/surface labels must not already encode the scale being reconstructed.
-3. `QES_CORRECTIONS` — generalized entropy can contaminate a pure area inversion.
-4. `GLOBAL_INVERSION` — local constant-`Omega` patches must be upgraded to finite-surface inversion.
-5. `DYNAMICS` — metric reconstruction remains kinematic until gravitational dynamics are derived.
-6. `EPRL_REFINEMENT` — strengthen the source-defined refinement/coarse-graining chain.
+At overlap `0.99`:
 
-## Next decisive computation
+- joint condition number about `199`;
+- geometry variance inflation about `50.25x`;
+- joint reduced chi2 still about `0.72`;
+- joint geometry RMSE about `0.1346` and can be worse than the naive geometry-only fit.
 
-Construct a synthetic finite-surface CEMR inverse problem in a known conformally related Lorentzian geometry.
+Thus explicit nuisance modelling can itself create a practically non-identifiable geometry when response directions are nearly collinear.
 
-Required outputs:
+## Source-grounded motif search
 
-1. identifiability of `Omega(x)` from redundant area data;
-2. conditioning/stability under controlled nuisance terms;
-3. an obstruction that distinguishes a wrong conformal class from an allowed conformal rescaling;
-4. explicit failure when the input area data are anisotropically incompatible with any scalar conformal field.
+### MC-001
 
-In parallel, reformulate BH-001 using `circ` and `otimes` and test whether a nontrivial interchange/coherence law survives across causal-set, tensor-network, CDT/spinfoam and continuum-RG realizations.
+`PHYSICAL/CONSTRAINT SECTOR NOT AUTOMATICALLY CLOSED UNDER SCALE FLOW`.
 
-## Candidate unlock condition
+RC-006 reduced EPRL/FK-type tensor coarse graining supports this as a scoped source-defined tension. FRG truncation closure is structurally related but not yet the same semantic object, so promotion to `RM-001` remains forbidden.
 
-No ISQGR action, microscopic ontology or field equation is authorized yet.
+### MC-002
 
-Unlock candidate construction only after either:
+`SCALE EVOLUTION REQUIRES CLOSURE DATA BEYOND A CHOSEN REDUCED DESCRIPTION`.
 
-- one source-grounded recurrent motif survives a falsification audit; or
-- one mathematically nontrivial bridge theorem survives a cross-realization test and constrains gravitational structure beyond generic composition/RG language.
+This is broader but currently too generic to count as new quantum-gravity structure.
+
+## Same-realization Corridor B upgrade
+
+RC-007 causal-set spacetime entanglement replaces part of the difficult causal-set ↔ holography splice with a same-realization laboratory.
+
+The strong next question is not whether an area law can be recovered by tuning a spectral threshold, but whether a **frozen spectral rule** can be derived independently from causal density/dynamics and transferred to unseen regions/backgrounds without retuning.
+
+## Active Campaign 004
+
+Workflow run `34653258086` launched.
+
+Three-channel synthetic system:
+
+`area/entanglement + quantum-information nuisance + causal observable`.
+
+Matrix:
+
+- geometry/nuisance overlap fixed at `0.99`;
+- causal alignment with the dangerous near-null direction: `0.0, 0.5, 0.9, 1.0`;
+- causal uncertainty: `0.02, 0.05, 0.20`;
+- four seeds;
+- `48` jobs plus aggregate.
+
+Target: quantify the minimum independent causal precision/alignment required to restore stable geometric inference.
+
+## Iteration 004 decisive fronts
+
+1. Complete Campaign 004 and derive a quantitative `CAUSAL_RESCUE_GATE`.
+2. Turn BH-003 into an executable non-circular spectral holdout protocol.
+3. Build a realization-native retained/discarded-sector map for RC-006 if the source objects permit it.
+4. Find a genuinely independent second closure obstruction before any recurrent-motif promotion.
+5. Keep action/field-equation construction locked until a bridge theorem or recurrent motif survives the constitution threshold.
 
 ## Recovery order
 
 1. `recovery/state.json`
 2. `recovery/CURRENT_FRONT.md`
-3. `docs/CONSTITUTION.md`
-4. `protocol/INTERFACE_FAILURE_TAXONOMY.md`
-5. `docs/INTERFACE_ATLAS_V0_1.md`
-6. `hypotheses/BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION.md`
-7. `results/ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY.md`
-8. `hypotheses/BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION.md`
-9. `realizations/RC-004_CAUSAL_SET_BDG_ACTION.md`
-10. `realizations/RC-005_HAPPY_HOLOGRAPHIC_QEC.md`
-11. `research_log/ITERATION_002.md`
-12. `research_log/ITERATION_001.md`
+3. `research_log/ITERATION_003.md`
+4. `results/ITER003_PARALLEL_CAMPAIGN_003_NUISANCE_IDENTIFIABILITY.md`
+5. `results/ITER003_PARALLEL_CAMPAIGN_002_INFORMATION_GAIN.md`
+6. `results/ITER003_PARALLEL_CAMPAIGN_001.md`
+7. `hypotheses/BH-003_CAUSAL_SPECTRAL_ENTANGLEMENT_CLOSURE.md`
+8. `realizations/RC-007_CAUSAL_SET_SPACETIME_ENTANGLEMENT.md`
+9. `results/ITER003_BH001_SCALE_COMPOSITION_LEAKAGE_IDENTITY.md`
+10. `realizations/RC-006_EPRL_FK_TENSOR_COARSE_GRAINING.md`
+11. `hypotheses/BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION.md`
+12. `hypotheses/BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION.md`
+13. `docs/CONSTITUTION.md`
+14. `protocol/INTERFACE_FAILURE_TAXONOMY.md`
