@@ -1,0 +1,107 @@
+name: ISQGR BH003 Closure-Selected Regulator
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh003-closure-selected-regulator.yml'
+      - 'experiments/bh003_closure_selected_regulator.py'
+      - 'experiments/causal_set_ssee_2d_reproduction.py'
+
+permissions:
+  contents: read
+
+jobs:
+  closure-selected:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        n: [512, 768, 1024, 1280]
+        seed: [61, 62, 63, 64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Select regulator from closure L-curve and evaluate SSEE
+        run: >-
+          python experiments/bh003_closure_selected_regulator.py
+          --n ${{ matrix.n }}
+          --seed ${{ matrix.seed }}
+          --side-ratio 0.5
+          --output compute_out/closure_selected_n${{ matrix.n }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: closure-selected-n${{ matrix.n }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [closure-selected]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy
+      - name: Aggregate closure-selected regulator statistics
+        run: |
+          python - <<'PY'
+          import json,pathlib,statistics
+          import numpy as np
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          def fit(xs,ys):
+              x=np.asarray(xs,float); y=np.asarray(ys,float)
+              A=np.column_stack([x,np.ones_like(x)])
+              b,a=np.linalg.lstsq(A,y,rcond=None)[0]
+              yp=b*x+a; sse=float(np.sum((y-yp)**2)); sst=float(np.sum((y-y.mean())**2))
+              return {'slope':float(b),'intercept':float(a),'r2':float(1-sse/sst) if sst>0 else 1.0}
+          groups=[]
+          for n in sorted({r['n_parent'] for r in rows}):
+              g=[r for r in rows if r['n_parent']==n]
+              groups.append({
+                  'n_parent':n,
+                  'count':len(g),
+                  'mean_n_sub':statistics.fmean(r['n_sub'] for r in g),
+                  'mean_raw_entropy':statistics.fmean(r['raw_entropy'] for r in g),
+                  'mean_selected_entropy':statistics.fmean(r['closure_selected_entropy'] for r in g),
+                  'std_selected_entropy':statistics.pstdev(r['closure_selected_entropy'] for r in g),
+                  'mean_log_size_proxy':statistics.fmean(r['log_size_proxy'] for r in g),
+                  'mean_parent_cutoff_over_source':statistics.fmean(r['parent_cutoff_over_source'] for r in g),
+                  'mean_sub_cutoff_over_source':statistics.fmean(r['sub_cutoff_over_source'] for r in g),
+                  'mean_parent_retained_fraction':statistics.fmean(r['parent_selection']['retained_fraction'] for r in g),
+                  'mean_sub_retained_fraction':statistics.fmean(r['sub_selection']['retained_fraction'] for r in g),
+                  'mean_parent_leakage':statistics.fmean(r['parent_selection']['leakage'] for r in g),
+                  'mean_parent_seq_defect':statistics.fmean(r['parent_selection']['sequential_return_defect'] for r in g),
+                  'mean_parent_corner_curvature':statistics.fmean(r['parent_selection']['curvature'] for r in g),
+              })
+          out={
+              'test':'BH003_CLOSURE_SELECTED_REGULATOR_SUMMARY',
+              'n_jobs':len(rows),
+              'groups':groups,
+              'raw_volume_fit':fit([g['mean_n_sub'] for g in groups],[g['mean_raw_entropy'] for g in groups]),
+              'selected_log_fit':fit([g['mean_log_size_proxy'] for g in groups],[g['mean_selected_entropy'] for g in groups]),
+              'overall_parent_cutoff_over_source_mean':statistics.fmean(r['parent_cutoff_over_source'] for r in rows),
+              'overall_parent_cutoff_over_source_std':statistics.pstdev(r['parent_cutoff_over_source'] for r in rows),
+              'overall_sub_cutoff_over_source_mean':statistics.fmean(r['sub_cutoff_over_source'] for r in rows),
+              'overall_sub_cutoff_over_source_std':statistics.pstdev(r['sub_cutoff_over_source'] for r in rows),
+              'claim_lock':'Entropy-blind closure/compression L-curve selection; entropy/source cutoff used only after freeze.'
+          }
+          pathlib.Path('closure_selected_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-closure-selected-regulator-summary
+          path: closure_selected_summary.json
+          if-no-files-found: error
