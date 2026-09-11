@@ -1,0 +1,109 @@
+name: ISQGR SU2BF Closed-Shape Measure Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-su2bf-closedshape-measure.yml'
+      - 'experiments/su2bf_measure_closedshape_benchmark.jl'
+
+permissions:
+  contents: read
+
+jobs:
+  closed-shape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        spin: ['1.0','1.5','2.0','2.5']
+        pair:
+          - 'shape_a,shape_b'
+          - 'shape_a,shape_c'
+          - 'shape_a,shape_d'
+          - 'shape_b,shape_a'
+          - 'shape_b,shape_c'
+          - 'shape_b,shape_d'
+          - 'shape_c,shape_a'
+          - 'shape_c,shape_b'
+          - 'shape_c,shape_d'
+          - 'shape_d,shape_a'
+          - 'shape_d,shape_b'
+          - 'shape_d,shape_c'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11'
+      - name: Install Julia dependencies
+        run: >-
+          julia -e 'using Pkg; Pkg.add(["HalfIntegers","WignerSymbols","Memoize","Combinatorics","JSON3"]); Pkg.precompile()'
+      - name: Checkout pinned source realization
+        run: |
+          git clone https://github.com/sethkasante/su2bf-TNAlgo.git external/su2bf-TNAlgo
+          git -C external/su2bf-TNAlgo checkout 2460cda77b8fe27a4106e98bf39a94fa9059bc92
+      - name: Run closure-preserving shape benchmark
+        env:
+          SU2BF_ROOT: external/su2bf-TNAlgo
+        run: |
+          FIRST="${{ matrix.pair }}"; FIRST="${FIRST%%,*}"
+          SECOND="${{ matrix.pair }}"; SECOND="${SECOND##*,}"
+          julia experiments/su2bf_measure_closedshape_benchmark.jl \
+            ${{ matrix.spin }} "$FIRST" "$SECOND" 20260915 96 \
+            "compute_out/closedshape_j${{ matrix.spin }}_${FIRST}_${SECOND}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: closedshape-j${{ matrix.spin }}-${{ strategy.job-index }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [closed-shape]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate robust percentiles
+        run: |
+          python - <<'PY'
+          import json,pathlib,statistics
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          if not rows: raise SystemExit('no results')
+          def summarize(g):
+              return {
+                  'n':len(g),
+                  'mean_fraction_random_worse_return':statistics.fmean(r['random_controls']['fraction_random_worse_return'] for r in g),
+                  'median_fraction_random_worse_return':statistics.median(r['random_controls']['fraction_random_worse_return'] for r in g),
+                  'mean_fraction_random_worse_leakage':statistics.fmean(r['random_controls']['fraction_random_worse_leakage'] for r in g),
+                  'median_fraction_random_worse_leakage':statistics.median(r['random_controls']['fraction_random_worse_leakage'] for r in g),
+                  'mean_a1_a2_relative_difference':statistics.fmean(r['a1_a2_relative_difference'] for r in g),
+              }
+          by_spin={str(s):summarize([r for r in rows if r['spin']==s]) for s in sorted({r['spin'] for r in rows})}
+          by_first={x:summarize([r for r in rows if r['first']==x]) for x in sorted({r['first'] for r in rows})}
+          by_pair={f'{a}->{b}':summarize([r for r in rows if r['first']==a and r['second']==b]) for a,b in sorted({(r['first'],r['second']) for r in rows})}
+          out={
+              'test':'SU2BF_MEASURE_CORRECTED_CLOSED_SHAPE_SUMMARY',
+              'n_jobs':len(rows),
+              'overall':summarize(rows),
+              'by_spin':by_spin,
+              'by_first':by_first,
+              'by_pair':by_pair,
+              'claim_lock':'Source-native SU(2) BF with edge measure and closure-preserving coherent-shape deformations; not EPRL and not a full Regge-family proof.'
+          }
+          pathlib.Path('su2bf_closedshape_measure_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-su2bf-closedshape-measure-summary
+          path: su2bf_closedshape_measure_summary.json
+          if-no-files-found: error
