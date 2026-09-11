@@ -1,0 +1,43 @@
+{
+  "source_workflow_run": 34652279466,
+  "source_artifact_id": 10283774657,
+  "cemr": {
+    "anisotropic": {
+      "n": 4,
+      "mean_reduced_chi2": 361.1639531358234,
+      "mean_phi_rmse": 0.002806480533210437,
+      "compatibility_verdicts": ["FIT_INCOMPATIBLE", "FIT_INCOMPATIBLE", "FIT_INCOMPATIBLE", "FIT_INCOMPATIBLE"]
+    },
+    "clean": {
+      "n": 4,
+      "mean_reduced_chi2": 1.2440482198816891,
+      "mean_phi_rmse": 0.0038431025030828186,
+      "compatibility_verdicts": ["FIT_COMPATIBLE", "FIT_TENSION", "FIT_COMPATIBLE", "FIT_COMPATIBLE"]
+    },
+    "noise": {
+      "n": 4,
+      "mean_reduced_chi2": 1.244159995107003,
+      "mean_phi_rmse": 0.0076523388544145025,
+      "compatibility_verdicts": ["FIT_COMPATIBLE", "FIT_COMPATIBLE", "FIT_COMPATIBLE", "FIT_TENSION"]
+    },
+    "qes": {
+      "n": 4,
+      "mean_reduced_chi2": 1.1171838773939946,
+      "mean_phi_rmse": 0.012388640295017333,
+      "compatibility_verdicts": ["FIT_COMPATIBLE", "FIT_COMPATIBLE", "FIT_COMPATIBLE", "FIT_COMPATIBLE"]
+    },
+    "wrong_class": {
+      "n": 4,
+      "mean_reduced_chi2": 22.092059226577643,
+      "mean_phi_rmse": 0.004264766624953144,
+      "compatibility_verdicts": ["FIT_INCOMPATIBLE", "FIT_INCOMPATIBLE", "FIT_INCOMPATIBLE", "FIT_INCOMPATIBLE"]
+    }
+  },
+  "coherence": {
+    "n": 6,
+    "mean_random_defect": 0.597365154386256,
+    "mean_preserving_defect": 1.7322204827571536e-16,
+    "mean_defect_leakage_correlation": 0.4731249781201378
+  },
+  "claim_lock": "Synthetic and generic coherence calculations only; no QG candidate promotion."
+}
