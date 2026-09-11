@@ -1,0 +1,109 @@
+name: ISQGR Causal-Set Sector Stability Closure Joint
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-causal-set-sector-stability-closure-joint.yml'
+      - 'experiments/causal_set_sector_stability_closure_joint.py'
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        n: [384, 512, 768]
+        seed: [93, 94, 101, 102]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Run joint sector-stability closure test
+        run: |
+          set -euo pipefail
+          python experiments/causal_set_sector_stability_closure_joint.py \
+            --n ${{ matrix.n }} --seed ${{ matrix.seed }} \
+            --mus '0.01,0.03,0.06,0.10,0.15' --n-random 32 \
+            --output "compute_out/n${{ matrix.n }}_s${{ matrix.seed }}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: joint-${{ matrix.n }}-${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [sweep]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Aggregate stability-closure association
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, math
+          import numpy as np
+          from scipy import stats
+          files=list(pathlib.Path('campaign').glob('*.json'))
+          if len(files) != 12: raise SystemExit(f'expected 12 realization files, got {len(files)}')
+          pts=[]
+          for p in files:
+              d=json.loads(p.read_text())
+              for r in d['rows']:
+                  pts.append({'n':d['n'],'seed':d['seed'],'mu':r['mu'],
+                    'cosine':r['stability']['mean_principal_cosine'],
+                    'min_cosine':r['stability']['min_principal_cosine'],
+                    'distance':r['stability']['normalized_projector_distance'],
+                    'rank_delta':r['stability']['rank_delta'],
+                    'return_improvement':r['mean_return_improvement_both_orders'],
+                    'frac_random_worse_return':r['mean_fraction_random_worse_return_both_orders']})
+          def corr(x,y):
+              x=np.asarray(x,float); y=np.asarray(y,float)
+              sp=stats.spearmanr(x,y)
+              pe=stats.pearsonr(x,y)
+              return {'spearman_rho':float(sp.statistic),'pearson_r':float(pe.statistic)}
+          logimp=np.log(np.maximum([x['return_improvement'] for x in pts],1e-15))
+          cosine=np.asarray([x['cosine'] for x in pts])
+          distance=np.asarray([x['distance'] for x in pts])
+          # descriptive partial association after removing linear effects of mu and log(N)
+          X=np.column_stack([np.ones(len(pts)),[x['mu'] for x in pts],np.log([x['n'] for x in pts])])
+          def residual(y):
+              y=np.asarray(y,float); b=np.linalg.lstsq(X,y,rcond=None)[0]; return y-X@b
+          out={
+            'test':'CAUSAL_SET_SECTOR_STABILITY_CLOSURE_JOINT_AGGREGATE',
+            'n_points':len(pts),
+            'cosine_vs_log_return_improvement':corr(cosine,logimp),
+            'distance_vs_log_return_improvement':corr(distance,logimp),
+            'partial_cosine_vs_log_return_improvement_controlling_mu_logN':corr(residual(cosine),residual(logimp)),
+            'partial_distance_vs_log_return_improvement_controlling_mu_logN':corr(residual(distance),residual(logimp)),
+            'mean_cosine':float(np.mean(cosine)),
+            'min_cosine':float(np.min(cosine)),
+            'mean_return_improvement':float(np.mean(np.exp(logimp))),
+            'fraction_points_return_improvement_gt_1':float(np.mean(np.exp(logimp)>1)),
+            'points':pts,
+            'claim_lock':'Descriptive association between independently diagnosed deformed-sector identity and closure of the frozen massless source sector. No p-value is used for promotion because repeated mu values share sprinklings.'
+          }
+          pathlib.Path('causal_set_sector_stability_closure_joint_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({k:v for k,v in out.items() if k!='points'},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-causal-set-sector-stability-closure-joint-summary
+          path: causal_set_sector_stability_closure_joint_summary.json
+          if-no-files-found: error
