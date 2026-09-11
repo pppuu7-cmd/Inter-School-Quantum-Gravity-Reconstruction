@@ -1,0 +1,25 @@
+{
+  "source_workflow_run": 34653695608,
+  "source_artifact_id": 10285400930,
+  "workflow_conclusion": "success",
+  "test": "CAUSAL_SET_SSEE_2D_REPRODUCTION_CAMPAIGN",
+  "n_jobs": 24,
+  "group_mean_fits": {
+    "raw_vs_mean_n_sub": {"intercept":-1.9604680198239908,"r2":0.9983602814834844,"slope":0.30571558484741473},
+    "truncated_vs_log_mean_cutoff": {"intercept":1.8645934763416296,"r2":0.9839064142302674,"slope":0.4018799246835399}
+  },
+  "individual_fits": {
+    "raw_vs_n_sub": {"intercept":-1.7531133496360156,"r2":0.9875168026302052,"slope":0.3036810337090206},
+    "raw_vs_log_cutoff": {"intercept":45.75678549200698,"r2":0.9057781879858441,"slope":50.16635404908294},
+    "truncated_vs_n_sub": {"intercept":1.5279811102218772,"r2":0.4961205477836531,"slope":0.0020141399426818088},
+    "truncated_vs_log_cutoff": {"intercept":1.85287815670658,"r2":0.5398090956862696,"slope":0.36238675948372673}
+  },
+  "group_means": [
+    {"n_parent":128,"count":6,"mean_n_sub":30.666666666666668,"mean_raw_entropy":7.819998239860346,"std_raw_entropy":0.8552475553210823,"mean_truncated_entropy":1.5276237593938993,"std_truncated_entropy":0.06069649845026575,"mean_retained_parent_modes":41.0,"mean_retained_sub_modes":13.666666666666666},
+    {"n_parent":256,"count":6,"mean_n_sub":62.5,"mean_raw_entropy":17.256554764412385,"std_raw_entropy":2.1487189011725776,"mean_truncated_entropy":1.6811579779518986,"std_truncated_entropy":0.1402239638003874,"mean_retained_parent_modes":60.0,"mean_retained_sub_modes":21.0},
+    {"n_parent":512,"count":6,"mean_n_sub":126.0,"mean_raw_entropy":35.31510584691096,"std_raw_entropy":2.944584982016009,"mean_truncated_entropy":1.8460295621702925,"std_truncated_entropy":0.13049841630424863,"mean_retained_parent_modes":88.33333333333333,"mean_retained_sub_modes":33.0},
+    {"n_parent":768,"count":6,"mean_n_sub":188.5,"mean_raw_entropy":56.39652249231633,"std_raw_entropy":2.1811955811776986,"mean_truncated_entropy":1.8782108580047037,"std_truncated_entropy":0.10702448193245673,"mean_retained_parent_modes":108.0,"mean_retained_sub_modes":42.666666666666664}
+  ],
+  "source_target_note": "Source 1+1D nested-diamond result: raw SSEE volume scaling; double spectral truncation lambda_min~sqrt(N)/(4pi) restores logarithmic scaling with coefficient near 1/3 in the studied regime.",
+  "claim_lock": "Finite-size source-inspired reproduction only; no claim about fundamental entropy law."
+}
