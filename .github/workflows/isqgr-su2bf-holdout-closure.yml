@@ -1,0 +1,97 @@
+name: ISQGR SU2BF Holdout Closure
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-su2bf-holdout-closure.yml'
+      - 'experiments/su2bf_holdout_closure_benchmark.jl'
+
+permissions:
+  contents: read
+
+jobs:
+  holdout-closure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        spin: ['1.0', '1.5', '2.0', '2.5']
+        holdout: [swap_one, cycle_two, mixed_three]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11'
+      - name: Install Julia dependencies
+        run: >-
+          julia -e 'using Pkg; Pkg.add(["HalfIntegers","WignerSymbols","Memoize","Combinatorics","JSON3"]); Pkg.precompile()'
+      - name: Checkout pinned source realization
+        run: |
+          git clone https://github.com/sethkasante/su2bf-TNAlgo.git external/su2bf-TNAlgo
+          git -C external/su2bf-TNAlgo checkout 2460cda77b8fe27a4106e98bf39a94fa9059bc92
+      - name: Run held-out boundary closure benchmark
+        env:
+          SU2BF_ROOT: external/su2bf-TNAlgo
+        run: >-
+          julia experiments/su2bf_holdout_closure_benchmark.jl
+          ${{ matrix.spin }} ${{ matrix.holdout }} 20260912 64
+          compute_out/su2bf_j${{ matrix.spin }}_${{ matrix.holdout }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: su2bf-j${{ matrix.spin }}-${{ matrix.holdout }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [holdout-closure]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate SU2BF holdout closure
+        run: |
+          python - <<'PY'
+          import json,pathlib,statistics
+          rows=[json.loads(p.read_text())['result'] for p in pathlib.Path('campaign').glob('*.json')]
+          by_holdout={}
+          for h in sorted({r['holdout'] for r in rows}):
+              g=[r for r in rows if r['holdout']==h]
+              by_holdout[h]={
+                  'n':len(g),
+                  'mean_relative_train_test_difference':statistics.fmean(r['train_to_test_relative_difference'] for r in g),
+                  'mean_leakage_improvement':statistics.fmean(r['improvement']['random_mean_over_train_sector_leakage'] for r in g),
+                  'mean_seq_improvement':statistics.fmean(r['improvement']['random_mean_over_train_sector_seq'] for r in g),
+                  'mean_fraction_random_worse_leakage':statistics.fmean(r['random_controls']['fraction_random_worse_leakage'] for r in g),
+                  'mean_fraction_random_worse_seq':statistics.fmean(r['random_controls']['fraction_random_worse_seq'] for r in g),
+              }
+          out={
+              'test':'SU2BF_SOURCE_NATIVE_HOLDOUT_CLOSURE_SUMMARY',
+              'n_jobs':len(rows),
+              'by_holdout':by_holdout,
+              'overall':{
+                  'mean_relative_train_test_difference':statistics.fmean(r['train_to_test_relative_difference'] for r in rows),
+                  'mean_leakage_improvement':statistics.fmean(r['improvement']['random_mean_over_train_sector_leakage'] for r in rows),
+                  'mean_seq_improvement':statistics.fmean(r['improvement']['random_mean_over_train_sector_seq'] for r in rows),
+                  'mean_fraction_random_worse_leakage':statistics.fmean(r['random_controls']['fraction_random_worse_leakage'] for r in rows),
+                  'mean_fraction_random_worse_seq':statistics.fmean(r['random_controls']['fraction_random_worse_seq'] for r in rows),
+              },
+              'claim_lock':'Independent SU(2) BF spin-foam holdout closure test; not EPRL gravity and not RM promotion by itself.'
+          }
+          pathlib.Path('su2bf_holdout_closure_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-su2bf-holdout-closure-summary
+          path: su2bf_holdout_closure_summary.json
+          if-no-files-found: error
