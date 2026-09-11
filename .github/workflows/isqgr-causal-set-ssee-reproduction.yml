@@ -1,0 +1,120 @@
+name: ISQGR Causal-Set SSEE Reproduction
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-causal-set-ssee-reproduction.yml'
+      - 'experiments/causal_set_ssee_2d_reproduction.py'
+
+permissions:
+  contents: read
+
+jobs:
+  ssee-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        n: [128, 256, 512, 768]
+        seed: [1, 2, 3, 4, 5, 6]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Run 2D causal-set SSEE reproduction
+        run: >-
+          python experiments/causal_set_ssee_2d_reproduction.py
+          --n ${{ matrix.n }}
+          --seed ${{ matrix.seed }}
+          --side-ratio 0.5
+          --output compute_out/ssee_n${{ matrix.n }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ssee-n${{ matrix.n }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [ssee-matrix]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy
+      - name: Aggregate scaling fits
+        run: |
+          python - <<'PY'
+          import json, pathlib, numpy as np
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          if not rows:
+              raise SystemExit('no SSEE artifacts')
+
+          def fit(x,y):
+              x=np.asarray(x,float); y=np.asarray(y,float)
+              a,b=np.polyfit(x,y,1)
+              pred=a*x+b
+              den=np.sum((y-y.mean())**2)
+              r2=1.0-np.sum((y-pred)**2)/den if den>0 else float('nan')
+              return {'slope':float(a),'intercept':float(b),'r2':float(r2)}
+
+          raw_volume=fit([r['n_sub'] for r in rows],[r['raw_entropy'] for r in rows])
+          raw_log=fit([r['log_cutoff_proxy'] for r in rows],[r['raw_entropy'] for r in rows])
+          trunc_volume=fit([r['n_sub'] for r in rows],[r['truncated_entropy'] for r in rows])
+          trunc_log=fit([r['log_cutoff_proxy'] for r in rows],[r['truncated_entropy'] for r in rows])
+
+          by_n=[]
+          for n in sorted({r['n_parent'] for r in rows}):
+              g=[r for r in rows if r['n_parent']==n]
+              by_n.append({
+                  'n_parent':n,
+                  'count':len(g),
+                  'mean_n_sub':float(np.mean([r['n_sub'] for r in g])),
+                  'mean_raw_entropy':float(np.mean([r['raw_entropy'] for r in g])),
+                  'std_raw_entropy':float(np.std([r['raw_entropy'] for r in g],ddof=1)),
+                  'mean_truncated_entropy':float(np.mean([r['truncated_entropy'] for r in g])),
+                  'std_truncated_entropy':float(np.std([r['truncated_entropy'] for r in g],ddof=1)),
+                  'mean_retained_parent_modes':float(np.mean([r['retained_parent_modes_both_signs'] for r in g])),
+                  'mean_retained_sub_modes':float(np.mean([r['retained_sub_modes_both_signs'] for r in g])),
+              })
+
+          group_raw_volume=fit([g['mean_n_sub'] for g in by_n],[g['mean_raw_entropy'] for g in by_n])
+          group_trunc_log=fit([
+              float(np.log(np.sqrt(g['mean_n_sub'])/(4*np.pi))) for g in by_n
+          ],[g['mean_truncated_entropy'] for g in by_n])
+
+          out={
+              'test':'CAUSAL_SET_SSEE_2D_REPRODUCTION_CAMPAIGN',
+              'n_jobs':len(rows),
+              'individual_fits':{
+                  'raw_vs_n_sub':raw_volume,
+                  'raw_vs_log_cutoff':raw_log,
+                  'truncated_vs_n_sub':trunc_volume,
+                  'truncated_vs_log_cutoff':trunc_log,
+              },
+              'group_means':by_n,
+              'group_mean_fits':{
+                  'raw_vs_mean_n_sub':group_raw_volume,
+                  'truncated_vs_log_mean_cutoff':group_trunc_log,
+              },
+              'source_target_note':'In the source 1+1D nested-diamond study, raw SSEE exhibits spacetime-volume scaling; double spectral truncation with lambda_min~sqrt(N)/(4pi) restores logarithmic scaling with coefficient near 1/3 in its studied regime.',
+              'claim_lock':'Finite-size source-inspired reproduction only; no claim about fundamental entropy law.'
+          }
+          pathlib.Path('ssee_reproduction_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-causal-set-ssee-summary
+          path: ssee_reproduction_summary.json
+          if-no-files-found: error
