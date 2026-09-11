@@ -1,0 +1,56 @@
+{
+  "source_workflow_run": 34652677145,
+  "source_artifact_id": 10283984976,
+  "workflow_conclusion": "success",
+  "information_gain": {
+    "d=0.999|sigma_causal=0.02": {
+      "n": 4,
+      "mean_rank_gain": 0.0,
+      "mean_phi_variance_reduction_factor": 250.62506253126983,
+      "mean_phi_rmse_improvement_factor": 13.924169895106372,
+      "mean_area_condition_number": 1999.0000000005848,
+      "mean_joint_condition_number": 6.835755278418114
+    },
+    "d=0.999|sigma_causal=0.1": {
+      "n": 4,
+      "mean_rank_gain": 0.0,
+      "mean_phi_variance_reduction_factor": 20.2019278870207,
+      "mean_phi_rmse_improvement_factor": 4.156508313121314,
+      "mean_area_condition_number": 1999.0000000005848,
+      "mean_joint_condition_number": 97.07777250634587
+    },
+    "d=0.99|sigma_causal=0.02": {
+      "n": 4,
+      "mean_rank_gain": 0.0,
+      "mean_phi_variance_reduction_factor": 25.625628140703537,
+      "mean_phi_rmse_improvement_factor": 4.360352525200399,
+      "mean_area_condition_number": 199.00000000000682,
+      "mean_joint_condition_number": 6.674572212588634
+    },
+    "d=0.99|sigma_causal=0.1": {
+      "n": 4,
+      "mean_rank_gain": 0.0,
+      "mean_phi_variance_reduction_factor": 2.894279087746421,
+      "mean_phi_rmse_improvement_factor": 1.5585556849115794,
+      "mean_area_condition_number": 199.0000000000058,
+      "mean_joint_condition_number": 67.4609696022008
+    },
+    "d=0.9|sigma_causal=0.02": {
+      "n": 4,
+      "mean_rank_gain": 0.0,
+      "mean_phi_variance_reduction_factor": 3.13157894736842,
+      "mean_phi_rmse_improvement_factor": 1.422380384379696,
+      "mean_area_condition_number": 19.00000000000004,
+      "mean_joint_condition_number": 5.377049615374879
+    },
+    "d=0.9|sigma_causal=0.1": {
+      "n": 4,
+      "mean_rank_gain": 0.0,
+      "mean_phi_variance_reduction_factor": 1.1639676113360324,
+      "mean_phi_rmse_improvement_factor": 0.9506794156561817,
+      "mean_area_condition_number": 19.000000000000057,
+      "mean_joint_condition_number": 16.031535988609036
+    }
+  },
+  "claim_lock": "Synthetic linear inverse-problem benchmark only; causal observables are abstract proxy constraints, not physical causal-set measurements."
+}
