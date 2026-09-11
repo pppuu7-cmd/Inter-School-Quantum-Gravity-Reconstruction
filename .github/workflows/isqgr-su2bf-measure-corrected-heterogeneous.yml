@@ -1,0 +1,118 @@
+name: ISQGR SU2BF Measure-Corrected Heterogeneous
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-su2bf-measure-corrected-heterogeneous.yml'
+      - 'experiments/su2bf_measure_corrected_heterogeneous_benchmark.jl'
+
+permissions:
+  contents: read
+
+jobs:
+  measure-corrected:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        spin: ['1.0', '1.5', '2.0', '2.5']
+        pair:
+          - 'swap_one,cycle_two'
+          - 'cycle_two,swap_one'
+          - 'swap_one,mixed_three'
+          - 'mixed_three,swap_one'
+          - 'cycle_two,mixed_three'
+          - 'mixed_three,cycle_two'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11'
+      - name: Install Julia dependencies
+        run: >-
+          julia -e 'using Pkg; Pkg.add(["HalfIntegers","WignerSymbols","Memoize","Combinatorics","JSON3"]); Pkg.precompile()'
+      - name: Checkout pinned source realization
+        run: |
+          git clone https://github.com/sethkasante/su2bf-TNAlgo.git external/su2bf-TNAlgo
+          git -C external/su2bf-TNAlgo checkout 2460cda77b8fe27a4106e98bf39a94fa9059bc92
+      - name: Run measure-corrected heterogeneous benchmark
+        env:
+          SU2BF_ROOT: external/su2bf-TNAlgo
+        run: |
+          FIRST="${{ matrix.pair }}"; FIRST="${FIRST%%,*}"
+          SECOND="${{ matrix.pair }}"; SECOND="${SECOND##*,}"
+          julia experiments/su2bf_measure_corrected_heterogeneous_benchmark.jl \
+            ${{ matrix.spin }} "$FIRST" "$SECOND" 20260914 96 \
+            "compute_out/su2bf_measure_j${{ matrix.spin }}_${FIRST}_${SECOND}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: su2bf-measure-j${{ matrix.spin }}-${{ strategy.job-index }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [measure-corrected]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate measure-corrected composition
+        run: |
+          python - <<'PY'
+          import json,pathlib,statistics
+          rows=[json.loads(p.read_text())['result'] for p in pathlib.Path('campaign').glob('*.json')]
+          if not rows:
+              raise SystemExit('no result artifacts found')
+          by_pair={}
+          by_spin={}
+          for pair in sorted({(r['first'],r['second']) for r in rows}):
+              g=[r for r in rows if (r['first'],r['second'])==pair]
+              key=f'{pair[0]}->{pair[1]}'
+              by_pair[key]={
+                  'n':len(g),
+                  'mean_weighted_return_improvement':statistics.fmean(r['improvement']['random_mean_over_weighted_train_return'] for r in g),
+                  'mean_weighted_leakage_improvement':statistics.fmean(r['improvement']['random_mean_over_weighted_train_leakage'] for r in g),
+                  'mean_fraction_random_worse_return':statistics.fmean(r['random_controls']['fraction_random_worse_return'] for r in g),
+                  'mean_fraction_random_worse_leakage':statistics.fmean(r['random_controls']['fraction_random_worse_leakage'] for r in g),
+                  'mean_weighted_unweighted_sector_overlap':statistics.fmean(r['weighted_vs_unweighted_train_sector_overlap'] for r in g),
+              }
+          for spin in sorted({r['spin'] for r in rows}):
+              g=[r for r in rows if r['spin']==spin]
+              by_spin[str(spin)]={
+                  'n':len(g),
+                  'mean_weighted_return_improvement':statistics.fmean(r['improvement']['random_mean_over_weighted_train_return'] for r in g),
+                  'mean_fraction_random_worse_return':statistics.fmean(r['random_controls']['fraction_random_worse_return'] for r in g),
+                  'mean_weighted_unweighted_sector_overlap':statistics.fmean(r['weighted_vs_unweighted_train_sector_overlap'] for r in g),
+              }
+          out={
+              'test':'SU2BF_MEASURE_CORRECTED_HETEROGENEOUS_BH001_COMPOSITION_SUMMARY',
+              'n_jobs':len(rows),
+              'by_pair':by_pair,
+              'by_spin':by_spin,
+              'overall':{
+                  'mean_weighted_return_improvement':statistics.fmean(r['improvement']['random_mean_over_weighted_train_return'] for r in rows),
+                  'mean_weighted_leakage_improvement':statistics.fmean(r['improvement']['random_mean_over_weighted_train_leakage'] for r in rows),
+                  'mean_fraction_random_worse_return':statistics.fmean(r['random_controls']['fraction_random_worse_return'] for r in rows),
+                  'mean_fraction_random_worse_leakage':statistics.fmean(r['random_controls']['fraction_random_worse_leakage'] for r in rows),
+                  'mean_weighted_unweighted_sector_overlap':statistics.fmean(r['weighted_vs_unweighted_train_sector_overlap'] for r in rows),
+              },
+              'claim_lock':'SU(2) BF source-native edge-measure-corrected heterogeneous benchmark; not EPRL gravity.'
+          }
+          pathlib.Path('su2bf_measure_corrected_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-su2bf-measure-corrected-heterogeneous-summary
+          path: su2bf_measure_corrected_summary.json
+          if-no-files-found: error
