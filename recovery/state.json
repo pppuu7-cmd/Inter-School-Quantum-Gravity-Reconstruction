@@ -2,17 +2,23 @@
   "project": "Inter-School Quantum Gravity Reconstruction",
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-12",
-  "phase": "PHASE_0_INTERFACE_ATLAS_BOOTSTRAP",
-  "active_iteration": "ITERATION_002",
-  "iteration_completion_percent": 70,
-  "last_completed_iteration": "ITERATION_001",
+  "phase": "PHASE_1_BRIDGE_FALSIFICATION_ACTIVE",
+  "active_iteration": "ITERATION_004",
+  "iteration_completion_percent": 20,
+  "last_completed_iteration": "ITERATION_003",
   "constitution": "docs/CONSTITUTION.md",
   "active_bridge_hypotheses": [
     "BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION",
-    "BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION"
+    "BH-001B_BOUNDARY_AWARE_COMPOSITIONAL_COHERENCE",
+    "BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION",
+    "BH-003_CAUSAL_SPECTRAL_ENTANGLEMENT_CLOSURE"
   ],
-  "lead_bridge_hypothesis": "BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION",
+  "lead_bridge_hypothesis": "BH-003_CAUSAL_SPECTRAL_ENTANGLEMENT_CLOSURE",
   "accepted_recurrent_motifs": [],
+  "motif_candidates": [
+    "MC-001_PHYSICAL_CONSTRAINT_SECTOR_NOT_AUTOMATICALLY_CLOSED_UNDER_SCALE_FLOW",
+    "MC-002_SCALE_EVOLUTION_REQUIRES_CLOSURE_DATA_BEYOND_REDUCED_DESCRIPTION"
+  ],
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -22,47 +28,76 @@
     "kmqgb_promotion_authorized": false
   },
   "readiness_percent": {
-    "repository_recovery_bootstrap": 75,
-    "source_grounded_interface_atlas": 20,
-    "recurrent_motif_discovery": 0,
-    "bridge_principle_validation": 12,
-    "executable_cross_school_obstructions": 15,
+    "repository_recovery_bootstrap": 90,
+    "source_grounded_interface_atlas": 35,
+    "recurrent_motif_search": 15,
+    "accepted_recurrent_motifs": 0,
+    "bridge_principle_validation": 30,
+    "executable_cross_school_obstructions": 45,
     "candidate_theory_construction": 0,
-    "overall_scientific_programme": 12
+    "overall_scientific_programme": 21
   },
   "realization_cards": [
     "RC-001_EPRL_LORENTZIAN_VERTEX",
     "RC-002_4D_CDT_TRANSFER_MATRIX",
     "RC-003_ASYMPTOTIC_SAFETY_EAA_EH_TRUNCATION",
     "RC-004_CAUSAL_SET_BDG_ACTION",
-    "RC-005_HAPPY_HOLOGRAPHIC_QEC"
+    "RC-005_HAPPY_HOLOGRAPHIC_QEC",
+    "RC-006_EPRL_FK_TENSOR_COARSE_GRAINING",
+    "RC-007_CAUSAL_SET_SPACETIME_ENTANGLEMENT"
   ],
   "derived_results": [
-    "ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY"
+    "ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY",
+    "ITER003_BH001_SCALE_COMPOSITION_LEAKAGE_IDENTITY",
+    "ITER003_PARALLEL_CAMPAIGN_001",
+    "ITER003_CAMPAIGN001_REPRODUCIBILITY_AUDIT",
+    "ITER003_PARALLEL_CAMPAIGN_002_INFORMATION_GAIN",
+    "ITER003_PARALLEL_CAMPAIGN_003_NUISANCE_IDENTIFIABILITY",
+    "ITER003_CEMR_NOVELTY_DOMAIN_AUDIT",
+    "ITER003_MC001_INDEPENDENCE_AUDIT",
+    "ITER003_PARALLEL_COMPOSITION_EDGE_MODE_OBSTRUCTION"
   ],
-  "executables": [
-    "code/cemr_local_consistency.py",
-    "code/test_cemr_local_consistency.py"
-  ],
-  "iteration_002_open_targets": [
-    "finite_surface_CEMR_inverse_problem",
-    "domain_overlap_and_region_circularity_audit",
-    "QES_nuisance_and_stability_audit",
-    "split_BH001_sequential_and_parallel_composition",
-    "strengthen_EPRL_refinement_coarse_graining_source_chain"
+  "compute_campaigns": {
+    "campaign_001": {
+      "workflow_run": 34652279466,
+      "reproduction_run": 34652499160,
+      "status": "REPRODUCED_EXECUTABLE"
+    },
+    "campaign_002": {
+      "workflow_run": 34652677145,
+      "status": "SUCCESS"
+    },
+    "campaign_003": {
+      "workflow_run": 34652964675,
+      "status": "SUCCESS"
+    },
+    "campaign_004": {
+      "workflow_run": 34653258086,
+      "status": "LAUNCHED",
+      "target": "THREE_CHANNEL_CAUSAL_RESCUE"
+    }
+  },
+  "iteration_004_targets": [
+    "complete_three_channel_causal_rescue_threshold",
+    "build_BH003_spectral_holdout_protocol",
+    "derive_native_EPRL_FK_leakage_map",
+    "find_second_independent_closure_obstruction",
+    "keep_candidate_equations_locked_until_bridge_threshold"
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
-    "docs/CONSTITUTION.md",
-    "protocol/INTERFACE_FAILURE_TAXONOMY.md",
-    "docs/INTERFACE_ATLAS_V0_1.md",
+    "research_log/ITERATION_003.md",
+    "results/ITER003_PARALLEL_CAMPAIGN_003_NUISANCE_IDENTIFIABILITY.md",
+    "results/ITER003_PARALLEL_CAMPAIGN_002_INFORMATION_GAIN.md",
+    "results/ITER003_PARALLEL_CAMPAIGN_001.md",
+    "hypotheses/BH-003_CAUSAL_SPECTRAL_ENTANGLEMENT_CLOSURE.md",
+    "realizations/RC-007_CAUSAL_SET_SPACETIME_ENTANGLEMENT.md",
+    "results/ITER003_BH001_SCALE_COMPOSITION_LEAKAGE_IDENTITY.md",
+    "realizations/RC-006_EPRL_FK_TENSOR_COARSE_GRAINING.md",
     "hypotheses/BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION.md",
-    "results/ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY.md",
     "hypotheses/BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION.md",
-    "realizations/RC-004_CAUSAL_SET_BDG_ACTION.md",
-    "realizations/RC-005_HAPPY_HOLOGRAPHIC_QEC.md",
-    "research_log/ITERATION_002.md",
-    "research_log/ITERATION_001.md"
+    "docs/CONSTITUTION.md",
+    "protocol/INTERFACE_FAILURE_TAXONOMY.md"
   ]
 }
