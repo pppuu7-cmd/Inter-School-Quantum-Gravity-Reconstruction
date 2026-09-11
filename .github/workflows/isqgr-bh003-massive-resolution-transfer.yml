@@ -1,0 +1,97 @@
+name: ISQGR BH003 Massive Resolution Transfer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh003-massive-resolution-transfer.yml'
+      - 'experiments/bh003_massive_resolution_transfer.py'
+
+permissions:
+  contents: read
+
+jobs:
+  massive-transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        n: [384, 512, 768, 1024]
+        mass: ['0.0','3.0','6.0']
+        seed: [101, 102]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical dependencies
+        run: python -m pip install --upgrade pip numpy scipy
+      - name: Run frozen-cutoff massive holdout
+        run: |
+          python experiments/bh003_massive_resolution_transfer.py \
+            --n ${{ matrix.n }} --mass ${{ matrix.mass }} --seed ${{ matrix.seed }} \
+            --side-ratio 0.5 \
+            --output "compute_out/mass_N${{ matrix.n }}_m${{ matrix.mass }}_s${{ matrix.seed }}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bh003-mass-N${{ matrix.n }}-m${{ matrix.mass }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [massive-transfer]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fit frozen-cutoff entropy scaling
+        run: |
+          python -m pip install numpy
+          python - <<'PY'
+          import json,pathlib,statistics
+          import numpy as np
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          if len(rows)<12: raise SystemExit(f'insufficient results: {len(rows)}')
+          def fit(g):
+              x=np.array([r['log_cutoff_proxy'] for r in g],float)
+              y=np.array([r['truncated_entropy'] for r in g],float)
+              X=np.column_stack([np.ones_like(x),x])
+              c=np.linalg.lstsq(X,y,rcond=None)[0]
+              pred=X@c; sse=float(((y-pred)@(y-pred))); sst=float(((y-y.mean())@(y-y.mean())))
+              r2=1-sse/sst if sst>0 else 1.0
+              return {'n':len(g),'intercept':float(c[0]),'slope':float(c[1]),'r2':r2,
+                      'mean_entropy':float(y.mean()),
+                      'mean_parent_retained':statistics.fmean(r['retained_parent_modes_both_signs'] for r in g),
+                      'max_m2_over_rho':max(r['m2_over_rho'] for r in g)}
+          masses=sorted({r['mass'] for r in rows})
+          by_mass={str(m):fit([r for r in rows if r['mass']==m]) for m in masses}
+          base=by_mass.get('0.0') or by_mass.get('0')
+          for m,v in by_mass.items():
+              if base:
+                  v['slope_delta_from_massless']=v['slope']-base['slope']
+                  v['slope_ratio_to_massless']=v['slope']/base['slope'] if base['slope'] else None
+          out={
+            'test':'BH003_MASSIVE_RESOLUTION_TRANSFER_SUMMARY',
+            'n_jobs':len(rows),'by_mass':by_mass,
+            'claim_lock':(
+              'The massless source cutoff is frozen for all masses. Passing demonstrates transfer under a known free-field '
+              'dynamical deformation for m^2/rho << 1; it does not derive the cutoff or constitute QG dynamics.'
+            )
+          }
+          pathlib.Path('bh003_massive_resolution_transfer_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-massive-resolution-transfer-summary
+          path: bh003_massive_resolution_transfer_summary.json
+          if-no-files-found: error
