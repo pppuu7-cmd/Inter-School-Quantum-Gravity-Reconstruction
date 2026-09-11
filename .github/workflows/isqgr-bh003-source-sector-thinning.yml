@@ -1,0 +1,95 @@
+name: ISQGR BH003 Source-Sector Thinning Diagnostic
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh003-source-sector-thinning.yml'
+      - 'experiments/bh003_source_sector_thinning_diagnostic.py'
+      - 'experiments/causal_set_ssee_2d_reproduction.py'
+
+permissions:
+  contents: read
+
+jobs:
+  source-sector-thinning:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        n: [384, 512, 768, 1024]
+        thinning: [0.5, 0.7]
+        seed: [81, 82, 83]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Diagnose source spectral sector under thinning
+        run: >-
+          python experiments/bh003_source_sector_thinning_diagnostic.py
+          --n ${{ matrix.n }}
+          --thinning ${{ matrix.thinning }}
+          --seed ${{ matrix.seed }}
+          --output compute_out/source_sector_n${{ matrix.n }}_p${{ matrix.thinning }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-sector-n${{ matrix.n }}-p${{ matrix.thinning }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [source-sector-thinning]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate source-sector transfer
+        run: |
+          python - <<'PY'
+          import json,pathlib,statistics
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          by_thinning={}
+          for p in sorted({r['requested_thinning'] for r in rows}):
+              g=[r for r in rows if r['requested_thinning']==p]
+              by_thinning[str(p)]={
+                  'n_jobs':len(g),
+                  'mean_source_projector_distance':statistics.fmean(r['source_sector']['normalized_projector_distance'] for r in g),
+                  'mean_source_overlap_fraction':statistics.fmean(r['source_sector']['overlap_fraction_min_rank'] for r in g),
+                  'mean_source_principal_cosine':statistics.fmean(r['source_sector']['mean_principal_cosine'] for r in g),
+                  'mean_rank_ratio':statistics.fmean(r['source_sector']['rank_ratio_thinned_over_restricted'] for r in g),
+                  'mean_best_projector_distance':statistics.fmean(r['best_spectral_rank_control']['best_normalized_projector_distance'] for r in g),
+                  'mean_source_over_best_distance':statistics.fmean(r['source_distance_over_best_distance'] for r in g),
+              }
+          out={
+              'test':'BH003_SOURCE_SECTOR_THINNING_DIAGNOSTIC_SUMMARY',
+              'n_jobs':len(rows),
+              'overall':{
+                  'mean_source_projector_distance':statistics.fmean(r['source_sector']['normalized_projector_distance'] for r in rows),
+                  'mean_source_overlap_fraction':statistics.fmean(r['source_sector']['overlap_fraction_min_rank'] for r in rows),
+                  'mean_source_principal_cosine':statistics.fmean(r['source_sector']['mean_principal_cosine'] for r in rows),
+                  'mean_rank_ratio':statistics.fmean(r['source_sector']['rank_ratio_thinned_over_restricted'] for r in rows),
+                  'mean_best_projector_distance':statistics.fmean(r['best_spectral_rank_control']['best_normalized_projector_distance'] for r in rows),
+                  'mean_source_over_best_distance':statistics.fmean(r['source_distance_over_best_distance'] for r in rows),
+              },
+              'by_thinning':by_thinning,
+              'claim_lock':'Semantic diagnostic of source-defined spectral sector under thinning; no entropy and no regulator inference.'
+          }
+          pathlib.Path('source_sector_thinning_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-source-sector-thinning-summary
+          path: source_sector_thinning_summary.json
+          if-no-files-found: error
