@@ -1,0 +1,104 @@
+name: ISQGR BH003 Entropy-Blind Spectral Break
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh003-entropy-blind-break.yml'
+      - 'experiments/causal_set_ssee_spectral_break_blind.py'
+      - 'experiments/causal_set_ssee_2d_reproduction.py'
+
+permissions:
+  contents: read
+
+jobs:
+  blind-break:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        n: [512, 768, 1024, 1280]
+        seed: [21, 22, 23, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Run entropy-blind spectral-break test
+        run: >-
+          python experiments/causal_set_ssee_spectral_break_blind.py
+          --n ${{ matrix.n }}
+          --seed ${{ matrix.seed }}
+          --side-ratio 0.5
+          --output compute_out/blind_n${{ matrix.n }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blind-n${{ matrix.n }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [blind-break]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate blind-break transfer statistics
+        run: |
+          python - <<'PY'
+          import json, pathlib, statistics, math
+          import numpy as np
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          def fit(xs, ys):
+              x=np.asarray(xs,float); y=np.asarray(ys,float)
+              A=np.column_stack([x,np.ones_like(x)])
+              b,a=np.linalg.lstsq(A,y,rcond=None)[0]
+              yp=b*x+a
+              ssr=float(np.sum((y-yp)**2)); sst=float(np.sum((y-y.mean())**2))
+              return {'slope':float(b),'intercept':float(a),'r2':float(1-ssr/sst) if sst>0 else 1.0}
+          groups=[]
+          for n in sorted({r['n_parent'] for r in rows}):
+              g=[r for r in rows if r['n_parent']==n]
+              groups.append({
+                  'n_parent':n,
+                  'count':len(g),
+                  'mean_n_sub':statistics.fmean(r['n_sub'] for r in g),
+                  'mean_raw_entropy':statistics.fmean(r['raw_entropy'] for r in g),
+                  'mean_blind_entropy':statistics.fmean(r['blind_truncated_entropy'] for r in g),
+                  'std_blind_entropy':statistics.pstdev(r['blind_truncated_entropy'] for r in g),
+                  'mean_parent_cutoff_ratio':statistics.fmean(r['blind_to_source_parent_cutoff_ratio'] for r in g),
+                  'mean_sub_cutoff_ratio':statistics.fmean(r['blind_to_source_sub_cutoff_ratio'] for r in g),
+                  'mean_parent_break_strength':statistics.fmean(r['blind_parent']['piecewise_sse_improvement'] for r in g),
+                  'mean_sub_break_strength':statistics.fmean(r['blind_sub']['piecewise_sse_improvement'] for r in g),
+                  'mean_log_size_proxy':statistics.fmean(r['log_size_proxy'] for r in g),
+              })
+          out={
+              'test':'BH003_ENTROPY_BLIND_SPECTRAL_BREAK_SUMMARY',
+              'n_jobs':len(rows),
+              'groups':groups,
+              'raw_volume_fit':fit([g['mean_n_sub'] for g in groups],[g['mean_raw_entropy'] for g in groups]),
+              'blind_log_fit':fit([g['mean_log_size_proxy'] for g in groups],[g['mean_blind_entropy'] for g in groups]),
+              'all_parent_cutoff_ratio_mean':statistics.fmean(r['blind_to_source_parent_cutoff_ratio'] for r in rows),
+              'all_parent_cutoff_ratio_std':statistics.pstdev(r['blind_to_source_parent_cutoff_ratio'] for r in rows),
+              'all_sub_cutoff_ratio_mean':statistics.fmean(r['blind_to_source_sub_cutoff_ratio'] for r in rows),
+              'all_sub_cutoff_ratio_std':statistics.pstdev(r['blind_to_source_sub_cutoff_ratio'] for r in rows),
+              'claim_lock':'Cutoff inferred from iDelta spectrum only; entropy and source formula are excluded from selection.'
+          }
+          pathlib.Path('blind_break_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-entropy-blind-summary
+          path: blind_break_summary.json
+          if-no-files-found: error
