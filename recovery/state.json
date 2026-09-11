@@ -1,0 +1,47 @@
+{
+  "project": "Inter-School Quantum Gravity Reconstruction",
+  "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
+  "date": "2026-09-12",
+  "phase": "PHASE_0_INTERFACE_ATLAS_BOOTSTRAP",
+  "active_iteration": "ITERATION_002",
+  "last_completed_iteration": "ITERATION_001",
+  "constitution": "docs/CONSTITUTION.md",
+  "active_bridge_hypothesis": "BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION",
+  "accepted_recurrent_motifs": [],
+  "candidate_theory_status": "UNFORMED",
+  "claim_locks": {
+    "known_schools_fail": false,
+    "new_theory_required": false,
+    "new_physics_found": false,
+    "rqir_promotion_authorized": false,
+    "kmqgb_promotion_authorized": false
+  },
+  "readiness_percent": {
+    "repository_recovery_bootstrap": 55,
+    "source_grounded_interface_atlas": 12,
+    "recurrent_motif_discovery": 0,
+    "bridge_principle_validation": 5,
+    "candidate_theory_construction": 0,
+    "overall_scientific_programme": 8
+  },
+  "realization_cards": [
+    "RC-001_EPRL_LORENTZIAN_VERTEX",
+    "RC-002_4D_CDT_TRANSFER_MATRIX",
+    "RC-003_ASYMPTOTIC_SAFETY_EAA_EH_TRUNCATION"
+  ],
+  "iteration_002_targets": [
+    "causal_set_dynamics_realization",
+    "holographic_quantum_information_geometry_realization",
+    "test_BH-001_on_causality_entanglement_interface",
+    "strengthen_EPRL_refinement_coarse_graining_source_chain"
+  ],
+  "authoritative_recovery_order": [
+    "recovery/state.json",
+    "recovery/CURRENT_FRONT.md",
+    "docs/CONSTITUTION.md",
+    "protocol/INTERFACE_FAILURE_TAXONOMY.md",
+    "docs/INTERFACE_ATLAS_V0_1.md",
+    "hypotheses/BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION.md",
+    "research_log/ITERATION_001.md"
+  ]
+}
