@@ -4,9 +4,14 @@
   "date": "2026-09-12",
   "phase": "PHASE_0_INTERFACE_ATLAS_BOOTSTRAP",
   "active_iteration": "ITERATION_002",
+  "iteration_completion_percent": 70,
   "last_completed_iteration": "ITERATION_001",
   "constitution": "docs/CONSTITUTION.md",
-  "active_bridge_hypothesis": "BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION",
+  "active_bridge_hypotheses": [
+    "BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION",
+    "BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION"
+  ],
+  "lead_bridge_hypothesis": "BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION",
   "accepted_recurrent_motifs": [],
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
@@ -17,22 +22,33 @@
     "kmqgb_promotion_authorized": false
   },
   "readiness_percent": {
-    "repository_recovery_bootstrap": 55,
-    "source_grounded_interface_atlas": 12,
+    "repository_recovery_bootstrap": 75,
+    "source_grounded_interface_atlas": 20,
     "recurrent_motif_discovery": 0,
-    "bridge_principle_validation": 5,
+    "bridge_principle_validation": 12,
+    "executable_cross_school_obstructions": 15,
     "candidate_theory_construction": 0,
-    "overall_scientific_programme": 8
+    "overall_scientific_programme": 12
   },
   "realization_cards": [
     "RC-001_EPRL_LORENTZIAN_VERTEX",
     "RC-002_4D_CDT_TRANSFER_MATRIX",
-    "RC-003_ASYMPTOTIC_SAFETY_EAA_EH_TRUNCATION"
+    "RC-003_ASYMPTOTIC_SAFETY_EAA_EH_TRUNCATION",
+    "RC-004_CAUSAL_SET_BDG_ACTION",
+    "RC-005_HAPPY_HOLOGRAPHIC_QEC"
   ],
-  "iteration_002_targets": [
-    "causal_set_dynamics_realization",
-    "holographic_quantum_information_geometry_realization",
-    "test_BH-001_on_causality_entanglement_interface",
+  "derived_results": [
+    "ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY"
+  ],
+  "executables": [
+    "code/cemr_local_consistency.py",
+    "code/test_cemr_local_consistency.py"
+  ],
+  "iteration_002_open_targets": [
+    "finite_surface_CEMR_inverse_problem",
+    "domain_overlap_and_region_circularity_audit",
+    "QES_nuisance_and_stability_audit",
+    "split_BH001_sequential_and_parallel_composition",
     "strengthen_EPRL_refinement_coarse_graining_source_chain"
   ],
   "authoritative_recovery_order": [
@@ -41,7 +57,12 @@
     "docs/CONSTITUTION.md",
     "protocol/INTERFACE_FAILURE_TAXONOMY.md",
     "docs/INTERFACE_ATLAS_V0_1.md",
+    "hypotheses/BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION.md",
+    "results/ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY.md",
     "hypotheses/BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION.md",
+    "realizations/RC-004_CAUSAL_SET_BDG_ACTION.md",
+    "realizations/RC-005_HAPPY_HOLOGRAPHIC_QEC.md",
+    "research_log/ITERATION_002.md",
     "research_log/ITERATION_001.md"
   ]
 }
