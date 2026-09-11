@@ -1,0 +1,126 @@
+name: ISQGR Parallel Compute
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-parallel-compute.yml'
+      - 'code/cemr_finite_surface.py'
+      - 'code/scale_composition_coherence.py'
+      - 'code/cemr_local_consistency.py'
+      - 'code/test_cemr_local_consistency.py'
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Local CEMR regression tests
+        run: PYTHONPATH=code python -m unittest code/test_cemr_local_consistency.py
+
+  cemr-finite-surface:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        scenario: [clean, noise, qes, anisotropic, wrong_class]
+        seed: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Run finite-surface inversion
+        run: >-
+          python code/cemr_finite_surface.py
+          --scenario ${{ matrix.scenario }}
+          --seed ${{ matrix.seed }}
+          --output compute_out/cemr_${{ matrix.scenario }}_seed${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cemr-${{ matrix.scenario }}-seed${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  scale-composition:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [1, 2, 3, 4, 5, 6]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy
+      - name: Run composition-coherence Monte Carlo
+        run: >-
+          python code/scale_composition_coherence.py
+          --seed ${{ matrix.seed }}
+          --trials 1000
+          --output compute_out/coherence_seed${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coherence-seed${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [unit-tests, cemr-finite-surface, scale-composition]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate JSON results
+        run: |
+          python - <<'PY'
+          import json, pathlib, statistics
+          root = pathlib.Path('campaign')
+          rows = [json.loads(p.read_text()) for p in root.glob('*.json')]
+          cemr = [r for r in rows if r.get('test') == 'CEMR_FINITE_SURFACE_SYNTHETIC_INVERSION']
+          coh = [r for r in rows if r.get('test') == 'BH001_SCALE_COMPOSITION_COHERENCE_MONTE_CARLO']
+          by_scenario = {}
+          for scenario in sorted({r['scenario'] for r in cemr}):
+              g = [r for r in cemr if r['scenario'] == scenario]
+              by_scenario[scenario] = {
+                  'n': len(g),
+                  'mean_reduced_chi2': statistics.fmean(r['reduced_chi2'] for r in g),
+                  'mean_phi_rmse': statistics.fmean(r['phi_rmse'] for r in g),
+                  'compatibility_verdicts': [r['compatibility_verdict'] for r in g],
+                  'truth_recovery_verdicts': [r['truth_recovery_verdict'] for r in g],
+              }
+          summary = {
+              'cemr': by_scenario,
+              'coherence': {
+                  'n': len(coh),
+                  'mean_random_defect': statistics.fmean(r['random_mixing']['mean_defect'] for r in coh) if coh else None,
+                  'mean_preserving_defect': statistics.fmean(r['subspace_preserving']['mean_defect'] for r in coh) if coh else None,
+                  'mean_defect_leakage_correlation': statistics.fmean(r['random_mixing']['defect_leakage_correlation'] for r in coh) if coh else None,
+              },
+              'claim_lock': 'Synthetic and generic coherence calculations only; no QG candidate promotion.'
+          }
+          pathlib.Path('campaign_summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n')
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-parallel-campaign-summary
+          path: campaign_summary.json
+          if-no-files-found: error
