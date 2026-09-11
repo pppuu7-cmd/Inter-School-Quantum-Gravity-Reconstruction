@@ -1,0 +1,108 @@
+name: ISQGR BH003 Thinning Projector Transfer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh003-thinning-transfer.yml'
+      - 'experiments/bh003_thinning_projector_transfer.py'
+      - 'experiments/causal_set_ssee_2d_reproduction.py'
+
+permissions:
+  contents: read
+
+jobs:
+  thinning-transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        n: [384, 512, 768, 1024]
+        thinning: [0.5, 0.7]
+        seed: [71, 72, 73]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Infer spectral cutoff flow from projector transfer
+        run: >-
+          python experiments/bh003_thinning_projector_transfer.py
+          --n ${{ matrix.n }}
+          --thinning ${{ matrix.thinning }}
+          --seed ${{ matrix.seed }}
+          --output compute_out/thin_n${{ matrix.n }}_p${{ matrix.thinning }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thin-n${{ matrix.n }}-p${{ matrix.thinning }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [thinning-transfer]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy
+      - name: Aggregate thinning scale-flow statistics
+        run: |
+          python - <<'PY'
+          import json,pathlib,statistics
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          by_thinning={}
+          for p in sorted({r['requested_thinning'] for r in rows}):
+              g=[r for r in rows if r['requested_thinning']==p]
+              by_thinning[str(p)]={
+                  'n_jobs':len(g),
+                  'median_of_job_median_alpha':statistics.median(r['summary']['median_alpha_cutoff_flow'] for r in g),
+                  'mean_of_job_median_alpha':statistics.fmean(r['summary']['median_alpha_cutoff_flow'] for r in g),
+                  'std_of_job_median_alpha':statistics.pstdev(r['summary']['median_alpha_cutoff_flow'] for r in g),
+                  'mean_transfer_error':statistics.fmean(r['summary']['mean_transfer_error'] for r in g),
+                  'mean_probe_alpha_std':statistics.fmean(r['summary']['std_alpha_across_probe_ranks'] for r in g),
+              }
+          probe_fractions=sorted({q['probe_fraction_full'] for r in rows for q in r['probes']})
+          by_probe={}
+          for f in probe_fractions:
+              vals=[q['alpha_cutoff_flow'] for r in rows for q in r['probes'] if q['probe_fraction_full']==f]
+              errs=[q['normalized_transfer_error'] for r in rows for q in r['probes'] if q['probe_fraction_full']==f]
+              by_probe[str(f)]={
+                  'n':len(vals),
+                  'median_alpha':statistics.median(vals),
+                  'mean_alpha':statistics.fmean(vals),
+                  'std_alpha':statistics.pstdev(vals),
+                  'mean_transfer_error':statistics.fmean(errs),
+              }
+          all_job_medians=[r['summary']['median_alpha_cutoff_flow'] for r in rows]
+          out={
+              'test':'BH003_THINNING_PROJECTOR_TRANSFER_SUMMARY',
+              'n_jobs':len(rows),
+              'overall':{
+                  'median_job_alpha':statistics.median(all_job_medians),
+                  'mean_job_alpha':statistics.fmean(all_job_medians),
+                  'std_job_alpha':statistics.pstdev(all_job_medians),
+                  'mean_transfer_error':statistics.fmean(r['summary']['mean_transfer_error'] for r in rows),
+                  'posthoc_abs_median_minus_half':abs(statistics.median(all_job_medians)-0.5),
+              },
+              'by_thinning':by_thinning,
+              'by_probe_fraction':by_probe,
+              'claim_lock':'Entropy-blind scale-flow inference from projector transfer only; 1/2 comparison is post-hoc.'
+          }
+          pathlib.Path('thinning_transfer_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-thinning-transfer-summary
+          path: thinning_transfer_summary.json
+          if-no-files-found: error
