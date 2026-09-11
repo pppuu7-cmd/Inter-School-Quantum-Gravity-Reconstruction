@@ -1,0 +1,152 @@
+name: ISQGR BH003 Retained-Rank Flow Sweep
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh003-rank-flow-sweep.yml'
+      - 'experiments/bh003_source_sector_thinning_diagnostic.py'
+      - 'experiments/causal_set_ssee_2d_reproduction.py'
+
+permissions:
+  contents: read
+
+jobs:
+  rank-flow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        n: [384, 512, 768, 1024]
+        thinning: ['0.35', '0.45', '0.55', '0.65', '0.75', '0.85']
+        seed: [91, 92]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical dependencies
+        run: python -m pip install --upgrade pip numpy scipy
+      - name: Run source-sector transfer diagnostic
+        run: |
+          python experiments/bh003_source_sector_thinning_diagnostic.py \
+            --n ${{ matrix.n }} \
+            --thinning ${{ matrix.thinning }} \
+            --seed ${{ matrix.seed }} \
+            --output "compute_out/rankflow_N${{ matrix.n }}_p${{ matrix.thinning }}_s${{ matrix.seed }}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bh003-rankflow-N${{ matrix.n }}-p${{ matrix.thinning }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [rank-flow]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fit retained-rank flow exponents
+        run: |
+          python -m pip install numpy
+          python - <<'PY'
+          import json, math, pathlib, statistics
+          import numpy as np
+
+          rows=[]
+          for p in pathlib.Path('campaign').glob('*.json'):
+              x=json.loads(p.read_text())
+              s=x['source_sector']
+              parent=int(s['rank_restricted_full'])
+              source=int(s['rank_thinned'])
+              best=int(x['best_spectral_rank_control']['best_rank'])
+              realized=float(x['realized_density_ratio'])
+              rows.append({
+                  'n':int(x['n_full']),
+                  'p_requested':float(x['requested_thinning']),
+                  'p_realized':realized,
+                  'parent_rank':parent,
+                  'source_rank':source,
+                  'best_transfer_rank':best,
+                  'source_ratio':source/parent,
+                  'best_transfer_ratio':best/parent,
+                  'overlap':float(s['overlap_fraction_min_rank']),
+                  'principal_cosine':float(s['mean_principal_cosine']),
+              })
+          if len(rows) < 12:
+              raise SystemExit(f'insufficient completed jobs: {len(rows)}')
+
+          def fit(key, group):
+              xx=np.log(np.array([r['p_realized'] for r in group],float))
+              yy=np.log(np.array([r[key] for r in group],float))
+              X=np.column_stack([np.ones_like(xx),xx])
+              coef=np.linalg.lstsq(X,yy,rcond=None)[0]
+              pred=X@coef
+              resid=yy-pred
+              sse=float(resid@resid)
+              sst=float(((yy-yy.mean())@(yy-yy.mean())))
+              r2=1.0-sse/sst if sst>0 else 1.0
+              dof=max(len(xx)-2,1)
+              sigma2=sse/dof
+              cov=sigma2*np.linalg.inv(X.T@X)
+              se=float(math.sqrt(max(cov[1,1],0.0)))
+              # Also fit exponent with intercept constrained to zero in log space:
+              # ratio(p=1)=1 is then enforced.
+              beta0=float((xx@yy)/(xx@xx))
+              pred0=beta0*xx
+              sse0=float(((yy-pred0)@(yy-pred0)))
+              return {
+                  'n':len(group),
+                  'intercept_log':float(coef[0]),
+                  'beta_free_intercept':float(coef[1]),
+                  'beta_standard_error':se,
+                  'r2':r2,
+                  'beta_unit_intercept':beta0,
+                  'rmse_unit_intercept':math.sqrt(sse0/len(xx)),
+              }
+
+          by_n={}
+          for n in sorted({r['n'] for r in rows}):
+              g=[r for r in rows if r['n']==n]
+              by_n[str(n)]={
+                  'source_rule_rank_flow':fit('source_ratio',g),
+                  'transfer_optimal_rank_flow':fit('best_transfer_ratio',g),
+              }
+
+          out={
+              'test':'BH003_RETAINED_RANK_FLOW_SWEEP',
+              'n_jobs':len(rows),
+              'source_rule_rank_flow':fit('source_ratio',rows),
+              'transfer_optimal_rank_flow':fit('best_transfer_ratio',rows),
+              'by_n':by_n,
+              'diagnostics':{
+                  'mean_source_ratio_over_sqrt_p':statistics.fmean(r['source_ratio']/math.sqrt(r['p_realized']) for r in rows),
+                  'std_source_ratio_over_sqrt_p':statistics.pstdev(r['source_ratio']/math.sqrt(r['p_realized']) for r in rows),
+                  'mean_best_ratio_over_sqrt_p':statistics.fmean(r['best_transfer_ratio']/math.sqrt(r['p_realized']) for r in rows),
+                  'std_best_ratio_over_sqrt_p':statistics.pstdev(r['best_transfer_ratio']/math.sqrt(r['p_realized']) for r in rows),
+                  'mean_overlap':statistics.fmean(r['overlap'] for r in rows),
+                  'mean_principal_cosine':statistics.fmean(r['principal_cosine'] for r in rows),
+              },
+              'rows':rows,
+              'claim_lock':(
+                  'The source-rule rank flow is not an independent derivation because the parent/source cutoff already contains sqrt(N). '
+                  'The transfer-optimal best-rank flow is entropy-blind after the parent source sector is fixed and is the stronger diagnostic.'
+              ),
+          }
+          pathlib.Path('bh003_rank_flow_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({k:v for k,v in out.items() if k!='rows'},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-rank-flow-summary
+          path: bh003_rank_flow_summary.json
+          if-no-files-found: error
