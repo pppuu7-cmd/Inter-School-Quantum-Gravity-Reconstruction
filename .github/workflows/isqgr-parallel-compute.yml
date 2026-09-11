@@ -77,9 +77,38 @@ jobs:
           path: compute_out/*.json
           if-no-files-found: error
 
+  cemr-information-gain:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        degeneracy: [0.9, 0.99, 0.999]
+        sigma_causal: [0.02, 0.10]
+        seed: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy
+      - name: Run causal-channel information-gain benchmark
+        run: >-
+          python code/cemr_information_gain.py
+          --seed ${{ matrix.seed }}
+          --degeneracy ${{ matrix.degeneracy }}
+          --sigma-area 0.02
+          --sigma-causal ${{ matrix.sigma_causal }}
+          --output compute_out/info_d${{ matrix.degeneracy }}_sc${{ matrix.sigma_causal }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: info-d${{ matrix.degeneracy }}-sc${{ matrix.sigma_causal }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
   aggregate:
     if: always()
-    needs: [unit-tests, cemr-finite-surface, scale-composition]
+    needs: [unit-tests, cemr-finite-surface, scale-composition, cemr-information-gain]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -97,6 +126,7 @@ jobs:
           rows = [json.loads(p.read_text()) for p in root.glob('*.json')]
           cemr = [r for r in rows if r.get('test') == 'CEMR_FINITE_SURFACE_SYNTHETIC_INVERSION']
           coh = [r for r in rows if r.get('test') == 'BH001_SCALE_COMPOSITION_COHERENCE_MONTE_CARLO']
+          info = [r for r in rows if r.get('test') == 'CEMR_CAUSAL_CHANNEL_INFORMATION_GAIN']
           by_scenario = {}
           for scenario in sorted({r['scenario'] for r in cemr}):
               g = [r for r in cemr if r['scenario'] == scenario]
@@ -107,6 +137,20 @@ jobs:
                   'compatibility_verdicts': [r['compatibility_verdict'] for r in g],
                   'truth_recovery_verdicts': [r['truth_recovery_verdict'] for r in g],
               }
+          by_info = {}
+          for d in sorted({r['degeneracy'] for r in info}):
+              for sc in sorted({r['sigma_causal'] for r in info}):
+                  g = [r for r in info if r['degeneracy'] == d and r['sigma_causal'] == sc]
+                  if not g:
+                      continue
+                  by_info[f'd={d}|sigma_causal={sc}'] = {
+                      'n': len(g),
+                      'mean_rank_gain': statistics.fmean(r['information_gain']['rank_gain'] for r in g),
+                      'mean_phi_variance_reduction_factor': statistics.fmean(r['information_gain']['phi_variance_reduction_factor'] for r in g),
+                      'mean_phi_rmse_improvement_factor': statistics.fmean(r['information_gain']['phi_rmse_improvement_factor'] for r in g),
+                      'mean_area_condition_number': statistics.fmean(r['area_only']['condition_number'] for r in g),
+                      'mean_joint_condition_number': statistics.fmean(r['joint_area_plus_causal']['condition_number'] for r in g),
+                  }
           summary = {
               'cemr': by_scenario,
               'coherence': {
@@ -115,6 +159,7 @@ jobs:
                   'mean_preserving_defect': statistics.fmean(r['subspace_preserving']['mean_defect'] for r in coh) if coh else None,
                   'mean_defect_leakage_correlation': statistics.fmean(r['random_mixing']['defect_leakage_correlation'] for r in coh) if coh else None,
               },
+              'information_gain': by_info,
               'claim_lock': 'Synthetic and generic coherence calculations only; no QG candidate promotion.'
           }
           pathlib.Path('campaign_summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n')
