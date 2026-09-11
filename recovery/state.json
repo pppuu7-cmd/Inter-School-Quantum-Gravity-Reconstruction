@@ -4,7 +4,7 @@
   "date": "2026-09-12",
   "phase": "PHASE_1_BRIDGE_FALSIFICATION_ACTIVE",
   "active_iteration": "ITERATION_004",
-  "iteration_completion_percent": 20,
+  "iteration_completion_percent": 40,
   "last_completed_iteration": "ITERATION_003",
   "constitution": "docs/CONSTITUTION.md",
   "active_bridge_hypotheses": [
@@ -28,14 +28,14 @@
     "kmqgb_promotion_authorized": false
   },
   "readiness_percent": {
-    "repository_recovery_bootstrap": 90,
-    "source_grounded_interface_atlas": 35,
-    "recurrent_motif_search": 15,
+    "repository_recovery_bootstrap": 92,
+    "source_grounded_interface_atlas": 37,
+    "recurrent_motif_search": 17,
     "accepted_recurrent_motifs": 0,
-    "bridge_principle_validation": 30,
-    "executable_cross_school_obstructions": 45,
+    "bridge_principle_validation": 34,
+    "executable_cross_school_obstructions": 50,
     "candidate_theory_construction": 0,
-    "overall_scientific_programme": 21
+    "overall_scientific_programme": 23
   },
   "realization_cards": [
     "RC-001_EPRL_LORENTZIAN_VERTEX",
@@ -55,38 +55,30 @@
     "ITER003_PARALLEL_CAMPAIGN_003_NUISANCE_IDENTIFIABILITY",
     "ITER003_CEMR_NOVELTY_DOMAIN_AUDIT",
     "ITER003_MC001_INDEPENDENCE_AUDIT",
-    "ITER003_PARALLEL_COMPOSITION_EDGE_MODE_OBSTRUCTION"
+    "ITER003_PARALLEL_COMPOSITION_EDGE_MODE_OBSTRUCTION",
+    "ITER004_CAUSAL_RESCUE_GATE"
   ],
   "compute_campaigns": {
-    "campaign_001": {
-      "workflow_run": 34652279466,
-      "reproduction_run": 34652499160,
-      "status": "REPRODUCED_EXECUTABLE"
-    },
-    "campaign_002": {
-      "workflow_run": 34652677145,
-      "status": "SUCCESS"
-    },
-    "campaign_003": {
-      "workflow_run": 34652964675,
-      "status": "SUCCESS"
-    },
-    "campaign_004": {
-      "workflow_run": 34653258086,
-      "status": "LAUNCHED",
-      "target": "THREE_CHANNEL_CAUSAL_RESCUE"
-    }
+    "campaign_001": {"workflow_run":34652279466,"reproduction_run":34652499160,"status":"REPRODUCED_EXECUTABLE"},
+    "campaign_002": {"workflow_run":34652677145,"status":"SUCCESS"},
+    "campaign_003": {"workflow_run":34652964675,"status":"SUCCESS"},
+    "campaign_004": {"workflow_run":34653258086,"status":"SUCCESS","target":"THREE_CHANNEL_CAUSAL_RESCUE"}
   },
+  "active_gates": [
+    "CEMR-I1_IDENTIFIABILITY_GATE",
+    "CEMR-I2_CAUSAL_RESCUE_GATE"
+  ],
   "iteration_004_targets": [
-    "complete_three_channel_causal_rescue_threshold",
     "build_BH003_spectral_holdout_protocol",
     "derive_native_EPRL_FK_leakage_map",
     "find_second_independent_closure_obstruction",
+    "replace_synthetic_causal_rescue_with_source_defined_observable",
     "keep_candidate_equations_locked_until_bridge_threshold"
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER004_CAUSAL_RESCUE_GATE.md",
     "research_log/ITERATION_003.md",
     "results/ITER003_PARALLEL_CAMPAIGN_003_NUISANCE_IDENTIFIABILITY.md",
     "results/ITER003_PARALLEL_CAMPAIGN_002_INFORMATION_GAIN.md",
@@ -97,7 +89,6 @@
     "realizations/RC-006_EPRL_FK_TENSOR_COARSE_GRAINING.md",
     "hypotheses/BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION.md",
     "hypotheses/BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION.md",
-    "docs/CONSTITUTION.md",
-    "protocol/INTERFACE_FAILURE_TAXONOMY.md"
+    "docs/CONSTITUTION.md"
   ]
 }
