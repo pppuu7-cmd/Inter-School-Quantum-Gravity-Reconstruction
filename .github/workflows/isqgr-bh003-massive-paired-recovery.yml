@@ -1,0 +1,88 @@
+name: ISQGR BH003 Massive Paired Recovery
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh003-massive-paired-recovery.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  paired-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bh003-mass-*
+          path: campaign
+          merge-multiple: true
+          repository: pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction
+          run-id: 34657828119
+          github-token: ${{ github.token }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compute paired mass drifts
+        run: |
+          python - <<'PY'
+          import json, pathlib, statistics, math
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          if len(rows) != 24:
+              raise SystemExit(f'expected 24 source jobs, found {len(rows)}')
+          idx={(int(r['n_parent']),int(r['seed']),float(r['mass'])):r for r in rows}
+          pairs=[]
+          for n in sorted({int(r['n_parent']) for r in rows}):
+            for seed in sorted({int(r['seed']) for r in rows if int(r['n_parent'])==n}):
+              base=idx[(n,seed,0.0)]
+              for mass in (3.0,6.0):
+                r=idx[(n,seed,mass)]
+                pairs.append({
+                  'n':n,'seed':seed,'mass':mass,
+                  'm2_over_rho':float(r['m2_over_rho']),
+                  'entropy_massless':float(base['truncated_entropy']),
+                  'entropy_massive':float(r['truncated_entropy']),
+                  'entropy_delta':float(r['truncated_entropy'])-float(base['truncated_entropy']),
+                  'entropy_relative_delta':(float(r['truncated_entropy'])-float(base['truncated_entropy']))/max(abs(float(base['truncated_entropy'])),1e-15),
+                  'parent_rank_massless':int(base['retained_parent_modes_both_signs']),
+                  'parent_rank_massive':int(r['retained_parent_modes_both_signs']),
+                  'parent_rank_delta':int(r['retained_parent_modes_both_signs'])-int(base['retained_parent_modes_both_signs']),
+                  'sub_rank_massless':int(base['retained_sub_modes_both_signs']),
+                  'sub_rank_massive':int(r['retained_sub_modes_both_signs']),
+                  'sub_rank_delta':int(r['retained_sub_modes_both_signs'])-int(base['retained_sub_modes_both_signs']),
+                })
+          by_mass={}
+          for mass in (3.0,6.0):
+            g=[p for p in pairs if p['mass']==mass]
+            by_mass[str(mass)]={
+              'n_pairs':len(g),
+              'mean_entropy_delta':statistics.fmean(p['entropy_delta'] for p in g),
+              'median_entropy_delta':statistics.median(p['entropy_delta'] for p in g),
+              'mean_abs_entropy_delta':statistics.fmean(abs(p['entropy_delta']) for p in g),
+              'mean_relative_entropy_delta':statistics.fmean(p['entropy_relative_delta'] for p in g),
+              'max_abs_relative_entropy_delta':max(abs(p['entropy_relative_delta']) for p in g),
+              'mean_parent_rank_delta':statistics.fmean(p['parent_rank_delta'] for p in g),
+              'max_abs_parent_rank_delta':max(abs(p['parent_rank_delta']) for p in g),
+              'mean_sub_rank_delta':statistics.fmean(p['sub_rank_delta'] for p in g),
+              'max_abs_sub_rank_delta':max(abs(p['sub_rank_delta']) for p in g),
+              'mean_m2_over_rho':statistics.fmean(p['m2_over_rho'] for p in g),
+              'max_m2_over_rho':max(p['m2_over_rho'] for p in g),
+            }
+          out={
+            'test':'BH003_MASSIVE_RESOLUTION_TRANSFER_PAIRED_RECOVERY',
+            'source_run':34657828119,
+            'by_mass':by_mass,
+            'pairs':pairs,
+            'claim_lock':'Paired comparison at identical N and sprinkling seed. The cutoff remains frozen to the massless source rule; this tests robustness, not derivation.'
+          }
+          pathlib.Path('bh003_massive_paired_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'test':out['test'],'by_mass':by_mass},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-massive-paired-summary
+          path: bh003_massive_paired_summary.json
+          if-no-files-found: error
