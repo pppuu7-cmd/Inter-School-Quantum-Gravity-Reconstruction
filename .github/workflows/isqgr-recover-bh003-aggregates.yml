@@ -1,0 +1,146 @@
+name: ISQGR Recover BH003 Aggregates
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-recover-bh003-aggregates.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  blind-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 34654299290
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy
+      - name: Recover entropy-blind summary
+        run: |
+          python - <<'PY'
+          import json, pathlib, statistics
+          import numpy as np
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          def fit(xs, ys):
+              x=np.asarray(xs,float); y=np.asarray(ys,float)
+              A=np.column_stack([x,np.ones_like(x)])
+              b,a=np.linalg.lstsq(A,y,rcond=None)[0]
+              yp=b*x+a
+              ssr=float(np.sum((y-yp)**2)); sst=float(np.sum((y-y.mean())**2))
+              return {'slope':float(b),'intercept':float(a),'r2':float(1-ssr/sst) if sst>0 else 1.0}
+          groups=[]
+          for n in sorted({r['n_parent'] for r in rows}):
+              g=[r for r in rows if r['n_parent']==n]
+              groups.append({
+                  'n_parent':n,
+                  'count':len(g),
+                  'mean_n_sub':statistics.fmean(r['n_sub'] for r in g),
+                  'mean_raw_entropy':statistics.fmean(r['raw_entropy'] for r in g),
+                  'mean_blind_entropy':statistics.fmean(r['blind_truncated_entropy'] for r in g),
+                  'std_blind_entropy':statistics.pstdev(r['blind_truncated_entropy'] for r in g),
+                  'mean_parent_cutoff_ratio':statistics.fmean(r['blind_to_source_parent_cutoff_ratio'] for r in g),
+                  'mean_sub_cutoff_ratio':statistics.fmean(r['blind_to_source_sub_cutoff_ratio'] for r in g),
+                  'mean_parent_break_strength':statistics.fmean(r['blind_parent']['piecewise_sse_improvement'] for r in g),
+                  'mean_sub_break_strength':statistics.fmean(r['blind_sub']['piecewise_sse_improvement'] for r in g),
+                  'mean_log_size_proxy':statistics.fmean(r['log_size_proxy'] for r in g),
+              })
+          out={
+              'test':'BH003_ENTROPY_BLIND_SPECTRAL_BREAK_SUMMARY',
+              'source_run_id':34654299290,
+              'n_jobs':len(rows),
+              'groups':groups,
+              'raw_volume_fit':fit([g['mean_n_sub'] for g in groups],[g['mean_raw_entropy'] for g in groups]),
+              'blind_log_fit':fit([g['mean_log_size_proxy'] for g in groups],[g['mean_blind_entropy'] for g in groups]),
+              'all_parent_cutoff_ratio_mean':statistics.fmean(r['blind_to_source_parent_cutoff_ratio'] for r in rows),
+              'all_parent_cutoff_ratio_std':statistics.pstdev(r['blind_to_source_parent_cutoff_ratio'] for r in rows),
+              'all_sub_cutoff_ratio_mean':statistics.fmean(r['blind_to_source_sub_cutoff_ratio'] for r in rows),
+              'all_sub_cutoff_ratio_std':statistics.pstdev(r['blind_to_source_sub_cutoff_ratio'] for r in rows),
+              'claim_lock':'Recovered aggregate only; source matrix results unchanged. Cutoff was inferred from iDelta spectrum without entropy.'
+          }
+          pathlib.Path('blind_break_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-entropy-blind-recovered-summary
+          path: blind_break_summary.json
+          if-no-files-found: error
+
+  geometry-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 34654332996
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy
+      - name: Recover geometry holdout summary
+        run: |
+          python - <<'PY'
+          import json,pathlib,statistics
+          import numpy as np
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          def fit(xs,ys):
+              x=np.asarray(xs,float); y=np.asarray(ys,float)
+              A=np.column_stack([x,np.ones_like(x)])
+              b,a=np.linalg.lstsq(A,y,rcond=None)[0]
+              yp=b*x+a; sse=float(np.sum((y-yp)**2)); sst=float(np.sum((y-y.mean())**2))
+              return {'slope':float(b),'intercept':float(a),'r2':float(1-sse/sst) if sst>0 else 1.0}
+          shapes={}
+          for shape in sorted({r['shape'] for r in rows}):
+              g=[r for r in rows if r['shape']==shape]
+              means=[]
+              for n in sorted({r['n_parent'] for r in g}):
+                  h=[r for r in g if r['n_parent']==n]
+                  means.append({
+                      'n_parent':n,
+                      'count':len(h),
+                      'mean_n_sub':statistics.fmean(r['n_sub'] for r in h),
+                      'mean_raw_entropy':statistics.fmean(r['raw_entropy'] for r in h),
+                      'mean_truncated_entropy':statistics.fmean(r['truncated_entropy'] for r in h),
+                      'std_truncated_entropy':statistics.pstdev(r['truncated_entropy'] for r in h),
+                      'mean_log_size_proxy':statistics.fmean(r['log_size_proxy'] for r in h),
+                  })
+              shapes[shape]={
+                  'group_means':means,
+                  'raw_volume_fit':fit([m['mean_n_sub'] for m in means],[m['mean_raw_entropy'] for m in means]),
+                  'truncated_log_fit':fit([m['mean_log_size_proxy'] for m in means],[m['mean_truncated_entropy'] for m in means]),
+              }
+          slopes=[v['truncated_log_fit']['slope'] for v in shapes.values()]
+          out={
+              'test':'BH003_SSEE_GEOMETRY_HOLDOUT_SUMMARY',
+              'source_run_id':34654332996,
+              'n_jobs':len(rows),
+              'shapes':shapes,
+              'transfer_summary':{
+                  'mean_truncated_log_slope':statistics.fmean(slopes),
+                  'std_truncated_log_slope_across_shapes':statistics.pstdev(slopes),
+                  'max_minus_min_slope':max(slopes)-min(slopes),
+              },
+              'claim_lock':'Recovered aggregate only; frozen sqrt(N)/(4*pi) rule unchanged across boosted and offset intervals.'
+          }
+          pathlib.Path('geometry_holdout_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh003-geometry-holdout-recovered-summary
+          path: geometry_holdout_summary.json
+          if-no-files-found: error
