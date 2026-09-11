@@ -1,6 +1,7 @@
 using LinearAlgebra
 using Random
 using Statistics
+using HalfIntegers
 
 include(joinpath(ENV["SL2CFOAM_ROOT"], "julia", "SL2Cfoam.jl"))
 using .SL2Cfoam
