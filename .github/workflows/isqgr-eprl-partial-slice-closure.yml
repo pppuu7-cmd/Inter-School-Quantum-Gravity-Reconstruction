@@ -53,8 +53,11 @@ jobs:
           SL2CFOAM_ROOT: ${{ github.workspace }}/external/sl2cfoam-next
           LD_LIBRARY_PATH: ${{ github.workspace }}/external/sl2cfoam-next/lib
         run: |
+          set -euo pipefail
           mkdir -p compute_out
           julia experiments/eprl_partial_slice_closure.jl | tee compute_out/eprl_partial_slice_closure.txt
+          grep -q '^EPRL_PARTIAL_SLICE_CLOSURE=PASS$' compute_out/eprl_partial_slice_closure.txt
+          test -s compute_out/eprl_partial_slice_closure.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
