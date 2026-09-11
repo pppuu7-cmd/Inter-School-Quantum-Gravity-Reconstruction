@@ -8,6 +8,10 @@ on:
       - '.github/workflows/isqgr-parallel-compute.yml'
       - 'code/*.py'
 
+concurrency:
+  group: isqgr-parallel-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -21,7 +25,7 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install --upgrade pip numpy scipy
       - name: Local CEMR regression tests
-        run: PYTHONPATH=code python -m unittest code/test_cemr_local_consistency.py
+        run: PYTHONPATH=code python code/test_cemr_local_consistency.py
 
   cemr-finite-surface:
     runs-on: ubuntu-latest
