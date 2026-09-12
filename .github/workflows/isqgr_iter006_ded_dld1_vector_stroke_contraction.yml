@@ -1,0 +1,35 @@
+name: ISQGR Iter006 DED DLD1 Vector Stroke Contraction
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'protocol/ITER006_DED_DLD1_VECTOR_STROKE_CONTRACTION_PREREG.json'
+      - 'experiments/ded_dld1_vector_stroke_contraction.py'
+      - '.github/workflows/isqgr_iter006_ded_dld1_vector_stroke_contraction.yml'
+permissions: {contents: read}
+jobs:
+  source-vector-contraction:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned primary source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          test "$(sha256sum source.tar | awk '{print $1}')" = "9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303"
+          tar -xf source.tar -C src
+          test -s src/_images/DEDconplex_plus_vg.eps
+          test -s src/_images/DLDandVertex.eps
+      - name: Execute frozen vector-stroke topology contraction
+        run: |
+          python experiments/ded_dld1_vector_stroke_contraction.py \
+            --ded src/_images/DEDconplex_plus_vg.eps \
+            --dld src/_images/DLDandVertex.eps \
+            --output out/ded_dld1_vector_stroke_contraction.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ded-dld1-vector-stroke-contraction
+          path: out/ded_dld1_vector_stroke_contraction.json
+          if-no-files-found: warn
