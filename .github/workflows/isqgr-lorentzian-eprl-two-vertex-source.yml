@@ -1,0 +1,70 @@
+name: ISQGR Lorentzian EPRL Two Vertex Source Qualification
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/lorentzian_eprl_two_vertex_source_qualification.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-two-vertex-source.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  source_object:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        requirement: [two_vertex, lorentzian_eprl, internal_face, bulk_sum, full_vs_simplified, large_spin_scaling, boundary_correlation, immirzi_dependence]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned two-vertex Lorentzian EPRL source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1801.03771 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1801.03771 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Run frozen source-qualification lane
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_two_vertex_source_qualification.py --source-dir external/two_vertex_src --requirement '${{ matrix.requirement }}' --output 'compute_out/${{ matrix.requirement }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'eprl-two-vertex-${{ matrix.requirement }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: source_object
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'eprl-two-vertex-*'
+          path: all
+          merge-multiple: true
+      - name: Apply frozen source qualification
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          r=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          d={x['requirement']:x['present'] for x in r}
+          valid=len(r)==8 and all(x.get('valid') for x in r)
+          hard=all(d.get(k,False) for k in ['two_vertex','lorentzian_eprl','internal_face','bulk_sum','full_vs_simplified'])
+          diagnostics=all(d.get(k,False) for k in ['large_spin_scaling','boundary_correlation','immirzi_dependence'])
+          gate=bool(valid and hard and diagnostics)
+          o={'test':'LORENTZIAN_EPRL_TWO_VERTEX_SOURCE_QUALIFICATION_AGGREGATE','valid':valid,'presence':d,'hard_multi_vertex_objects':hard,'diagnostic_objects':diagnostics,'qualification_pass':gate,
+             'scientific_classification':'SOURCE_QUALIFIED_GENUINE_TWO_VERTEX_LORENTZIAN_EPRL_PREREQUISITE' if gate else ('SOURCE_QUALIFICATION_BLOCKED' if valid else 'INFRASTRUCTURE_OR_NUMERICAL_INVALID'),
+             'frozen_rule':'Require explicit two-vertex Lorentzian EPRL, an internal face, a bulk sum, full-vs-simplified comparison, large-spin scaling, boundary correlation and Immirzi dependence in the pinned source.',
+             'interpretation_lock':'Source qualification only. PASS authorizes a numerical reproduction design; it is not a refinement map or bridge.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eprl-two-vertex-source-summary
+          path: summary.json
+          if-no-files-found: error
