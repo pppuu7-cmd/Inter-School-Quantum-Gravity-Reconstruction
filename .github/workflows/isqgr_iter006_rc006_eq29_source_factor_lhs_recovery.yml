@@ -1,0 +1,90 @@
+name: ISQGR Iter006 RC006 Eq29 Source Factor LHS Recovery
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_source_factor_lhs_recovery.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download immutable original factor lanes
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 34719930174
+          pattern: eq29-source-factor-*
+          path: frozen
+      - name: Fetch pinned source independently
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+      - name: Recover mathematical LHS only and preserve frozen factor evidence
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib,re,hashlib
+          frozen=[]
+          for p in glob.glob('frozen/**/*.json',recursive=True):
+              try:
+                  d=json.loads(pathlib.Path(p).read_text())
+                  if d.get('lane') in ('TOKEN_FACTOR','GRAPH_LABEL_VERIFY'): frozen.append(d)
+              except: pass
+          by={d['lane']:d for d in frozen}; T=by.get('TOKEN_FACTOR'); G=by.get('GRAPH_LABEL_VERIFY')
+          if not T or not G: raise SystemExit('missing frozen lane artifacts')
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          def strip_comments(s):
+              out=[]
+              for line in s.splitlines(True):
+                  cut=None
+                  for i,c in enumerate(line):
+                      if c!='%': continue
+                      n=0;j=i-1
+                      while j>=0 and line[j]=='\\':n+=1;j-=1
+                      if n%2==0:cut=i;break
+                  out.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+              return ''.join(out)
+          a=strip_comments(raw)
+          def ref_env():
+              m=list(re.finditer(r'\\label\{eq:eprl-3-valent\}',a));
+              if len(m)!=1: raise ValueError('label')
+              pos=m[0].start(); cand=[]
+              for env in ['equation','equation*','align','align*','gather','gather*','multline']:
+                  rx=re.compile(r'\\(begin|end)\{'+re.escape(env)+r'\}'); st=[]
+                  for z in rx.finditer(a):
+                      if z.group(1)=='begin':st.append(z)
+                      elif st:
+                          b=st.pop()
+                          if b.start()<=pos<z.end():cand.append((z.end()-b.start(),a[b.start():z.end()]))
+              cand.sort(key=lambda x:x[0]); return cand[0][1]
+          ref=ref_env()
+          if hashlib.sha256(ref.encode()).hexdigest()!='88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d': raise SystemExit('ref hash')
+          sm=list(re.finditer(r'\\subsection\s*\{EPRL intertwiner model\}',a)); s=sm[0]; nb=re.compile(r'\\(?:subsection|section)\s*\{').search(a,s.end()); sec=a[s.start():(nb.start() if nb else len(a))]
+          an=re.search(r'[^\n]*initial\s+3-valent\s+tensor[^\n]*\\eqref\{eq:eprl-3-valent\}[^\n]*',sec,re.I); bm=re.search(r'\\begin\{align\}',sec[an.end():]); st=an.end()+bm.start(); en=sec.find(r'\end{align}',st)+len(r'\end{align}'); eq=sec[st:en]
+          if hashlib.sha256(eq.encode()).hexdigest()!='4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083': raise SystemExit('eq hash')
+          def math_lhs(block):
+              x=re.sub(r'^\s*\\begin\{(?:equation\*?|align\*?|gather\*?|multline)\}\s*','',block,count=1)
+              x=re.sub(r'^\s*\\label\{[^}]+\}\s*','',x,count=1)
+              p=x.find('=')
+              if p<0: raise ValueError('no equals')
+              return re.sub(r'\s+','',x[:p])
+          rl=math_lhs(ref); el=math_lhs(eq); lhs_match=rl==el
+          frozen_ok=(T.get('valid') is True and G.get('valid') is True and T.get('matching_factor_indices')==[1] and G.get('matching_factor_indices')==[1] and T.get('normalized_prefix_match') is True)
+          ok=bool(lhs_match and frozen_ok)
+          out={'gate':'ITER006_RC006_EQ29_SOURCE_FACTOR_LHS_RECOVERY','valid':True,'reference_math_lhs':rl,'eq29_math_lhs':el,'math_lhs_match':lhs_match,'frozen_token_matching_indices':T.get('matching_factor_indices'),'frozen_graph_matching_indices':G.get('matching_factor_indices'),'frozen_normalized_prefix_match':T.get('normalized_prefix_match'),'classification':'EQ29_UNIQUE_SOURCE_FACTOR_CORRESPONDENCE' if ok else 'EQ29_SOURCE_FACTOR_CORRESPONDENCE_FAIL','recovery_scope':'LHS environment-metadata boundary only; factor hashes, graph labels, q exponent and prefix evidence reused immutable from run 34719930174.','scientific_change':False,'graph_to_qsymbol_reduction_preregistration_authorized':ok,'numerical_eq29_amplitude_authorized':False,'bridge_credit':False}
+          pathlib.Path('out/recovery.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-source-factor-lhs-recovery
+          path: out/recovery.json
+          if-no-files-found: error
