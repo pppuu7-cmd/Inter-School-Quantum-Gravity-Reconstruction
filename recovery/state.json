@@ -21,7 +21,7 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ29_EXACT_SOURCE_BLOCK_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
+      "status": "EQ29_ANCHOR_DISAMBIGUATION_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
       "source_authority": {
         "run": 34712998699,
         "artifact": 10304191011,
@@ -78,12 +78,22 @@
         "run": 34717600962,
         "prereg_commit": "27b9c44e81c9befccebad9448b7da4d5d61f5967",
         "launch_commit": "699bdb138d42990393e01fe0393045e35c8ffb57",
+        "status": "TERMINAL_FAIL_CLOSED_NONPHYSICAL_AMBIGUITY",
+        "literal_anchor_count": 3,
+        "classification": "EQ29_SOURCE_BLOCK_AMBIGUOUS",
+        "independent_classification": "SOURCE_IDENTITY_OR_ANCHOR_FAIL",
+        "eq29_amplitude_authorized": false
+      },
+      "eq29_anchor_disambiguation": {
+        "run": 34717736113,
+        "launch_commit": "10a5bcdde79b3652059c0b7bae40d4a769713d74",
         "status": "QUEUED_OR_RUNNING",
-        "purpose": "HASH_PINNED_EQ29_TEX_TIKZ_SOURCE_BLOCK_EXTRACTION_AND_INDEPENDENT_ANCHOR_VERIFY",
+        "purpose": "PLUS_ZERO_DIAGNOSTIC_OF_LITERAL_VS_ACTIVE_TEX_ANCHORS_USING_PERCENT_COMMENT_SEMANTICS",
+        "scientific_credit": 0,
         "eq29_amplitude_authorized": false
       },
       "eq29_amplitude_authorized": false,
-      "next_gate": "CONSUME_34717600962; IF SOURCE_BLOCK_PASS, PREREGISTER SOURCE_FAITHFUL_LABEL_GEOMETRY_PATH_INCIDENCE_AND_RMATRIX_PLACEMENT_AUDIT"
+      "next_gate": "CONSUME_34717736113; ONLY_IF_ACTIVE_TEX_ANCHOR_IS_UNIQUE, PREREGISTER_A_NEW_COMMENT_AWARE_EXACT_SOURCE_BLOCK_EXTRACTOR; NEVER_MANUALLY_SELECT_ONE_OF_THREE_LITERAL_ANCHORS"
     },
     "RC008": {
       "status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"
@@ -190,14 +200,16 @@
   },
   "active_compute": [
     {
-      "workflow_run": 34717600962,
-      "purpose": "Exact hash-pinned Eq29 TeX/TikZ source block extraction plus independent source-anchor verification",
+      "workflow_run": 34717736113,
+      "purpose": "Eq29 literal-vs-active-TeX anchor disambiguation under source comment semantics",
       "status": "QUEUED_OR_RUNNING",
-      "lane_count": 2
+      "lane_count": 1,
+      "scientific_credit": 0
     }
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
+    "results/ITER006_EQ29_SOURCE_BLOCK_AMBIGUITY_2026-09-12.md",
     "results/ITER006_PARALLEL_PROGRESS_2026-09-12_2037Z.md",
     "recovery/CURRENT_FRONT.md",
     "results/ITER006_DED_COMPONENT_BIRTH_LOCALIZATION_2026-09-12.md",
