@@ -20,8 +20,40 @@ Frozen gamma lanes `0.5,1.2,2.0`: 3/3 PASS. Each lane contained four one-zero-sp
 
 Classification: `B4_ZERO_SPIN_PRIMITIVE_AGGREGATE_PASS`.
 
-Scope lock: this is numerical primitive support only. It does not establish a refined 2-complex, a trivial-extension amplitude identity, cylindrical consistency, continuum convergence, or `BRIDGE_DERIVED`.
+## Held-out asymmetric zero-spin robustness
 
-## Next gate
+Authoritative run: `34712687076`; preregistration commit `354c960a99aa2e5726d39e16108860bfc7f0711e`; launch commit `d11fefbd2826c3a3772da0d4c052298c063e7f18`; aggregate job `103604345234`.
 
-A held-out asymmetric zero-spin primitive gate was preregistered at commit `354c960a99aa2e5726d39e16108860bfc7f0711e` and launched at commit `d11fefbd2826c3a3772da0d4c052298c063e7f18`, run `34712687076`. Frozen gamma values are `0.3,0.8,1.6,2.5,3.0`; the nonzero spins are asymmetric. PASS may only upgrade primitive numerical robustness, not bridge status.
+Frozen held-out gamma values `0.3,0.8,1.6,2.5,3.0`: 5/5 PASS. All frozen asymmetric one-zero-spin B4 configurations passed; worst aggregate relative error was `1.74533e-06`, below the unchanged `1e-5` threshold.
+
+Classification: `B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_AGGREGATE_PASS`.
+
+Scientific interpretation: the pinned Lorentzian B4 kernel has now passed both the original and an independent asymmetric held-out one-zero-spin numerical-validity gate. Further primitive-only zero-spin scans are saturated unless a new failure mode is identified.
+
+Scope lock: numerical primitive support is not a refined 2-complex, a trivial-extension amplitude identity, cylindrical consistency, continuum convergence, or `BRIDGE_DERIVED`.
+
+## DED→DLD source-topology candidate audit
+
+Authoritative run: `34712970339`, launch commit `811a207f4bcd16c5709fc8c3b6b7429a154776b1`, artifact `10304455008`, digest `sha256:d62023021e50213e3424c46a2d4cb2fb75c7138287f21ba51c093486d515c4b6`.
+
+The source audit found DED structural context, DLD structural context, and the independent refinement-definition context. It did **not** find an explicit textual DED↔DLD refinement relation and did not reconstruct an incidence-preserving injective V/E/F map.
+
+Classification: `DED_DLD_STRICT_EXTENSION_CANDIDATE_SOURCE_QUALIFIED` with `strict_incidence_embedding_proven=false`.
+
+This is PARTIAL only. Counts, names, or visual resemblance may not be promoted to a strict refinement relation.
+
+## Lorentzian cylindrical-normalization source mapping
+
+Authoritative run: `34712985651`, launch commit `0f1b5993147498af6a961bde27ba04b0389c1908`, job `103605014961`, artifact `10304340366`, digest `sha256:13349d2538ed2845e64353c8488868f8800832780ec28e7afb169d567ff2d979`.
+
+The preregistered source audit found, in the same primary-source framework, all five required semantic objects: subfoam/refinement, trivial extension, cylindrical consistency, the multiplicity/automorphism factor, and the amplitude relation. The source explicitly distinguishes the raw coloring amplitude from the multiplicity-corrected amplitude and states cylindrical consistency for trivial extensions.
+
+Classification: `LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED`.
+
+Scope lock: source mapping alone is not numerical cylindrical consistency in the DVD realization and gives no bridge credit.
+
+## Active next gates
+
+1. `ISQGR DED DLD Source Figure Incidence Audit` tests whether the pinned vector figures expose enough machine-readable incidence information to reconstruct a strict DED→DLD map without guessing.
+2. RC006 relation-aware serialization retry uses independently validated source-reference relations but preserves the original 10-lane / 100%-agreement gate.
+3. No DED/DLD amplitude identity is allowed before an incidence-preserving strict refinement map is actually established.
