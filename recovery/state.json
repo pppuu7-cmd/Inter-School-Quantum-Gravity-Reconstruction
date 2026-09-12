@@ -4,7 +4,7 @@
   "date": "2026-09-12",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 79,
+  "iteration_completion_percent": 80,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -21,26 +21,17 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ29_SOURCE_BLOCK_AUTHORITY_ESTABLISHED_DEPENDENCY_AUDIT_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
-      "source_authority": {
-        "run": 34712998699,
-        "artifact": 10304191011,
-        "classification": "RC006_FOUR_ANCHOR_EXPLICIT_RELATION_SOURCE_PASS"
-      },
+      "status": "EQ29_DEPENDENCIES_PARTIAL_RPLACEMENT_STRUCTURAL_TOPOLOGY_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
       "relation_aware_retry": {
-        "prereg_commit": "c03b50a33d9937f542668b90751ec295bc235c24",
-        "launch_commit": "7a034f0766277656eb5fc09d3c492299e364281e",
         "run": 34713459961,
         "aggregate_job": 103610235012,
         "artifact": 10303748952,
         "artifact_digest": "sha256:5d55228c00ddf467147e928599ca11405c088fc0793605417e350d12afa46fe5",
-        "lane_count": 10,
-        "valid": true,
+        "classification": "SCIENTIFIC_FAIL_RELATION_AWARE_CONTRACTION_SERIALIZATION_UNSTABLE",
         "full_unique": true,
         "holdout_unique_count": 6,
         "min_pairwise_order_agreement": 0.8698752228163993,
-        "null_ambiguous": true,
-        "classification": "SCIENTIFIC_FAIL_RELATION_AWARE_CONTRACTION_SERIALIZATION_UNSTABLE"
+        "null_ambiguous": true
       },
       "appendix_b13_mapping": {
         "run": 34716905247,
@@ -49,53 +40,32 @@
         "classification": "RC006_B13_SOURCE_MAPPING_PASS",
         "scope": "CONVENTION_SOURCE_FORMULA_ONLY"
       },
-      "eq29_dependency_closure": {
+      "eq29_historical_dependency_closure": {
         "run": 34715908026,
-        "classification": "EQ29_DEPENDENCY_GRAPH_INCOMPLETE",
-        "present_at_run": ["qgroup_recoupling_kernel", "appendix_b13_mapping"],
-        "missing": ["eq29_source_semantics", "eq29_label_geometry", "eq29_rmatrix_factor", "eq29_path_incidence"]
-      },
-      "eq29_primary_source_manual_audit": {
-        "source": "arXiv:1609.02429v2",
-        "section": "VII.B",
-        "equation": 29,
-        "source_semantics_found": true,
-        "machine_graph_incidence_qualified": false,
-        "classification": "NEW_SOURCE_AUTHORITY_SEMANTICS_ONLY"
+        "classification": "EQ29_DEPENDENCY_GRAPH_INCOMPLETE"
       },
       "eq29_primary_source_extraction": {
         "run": 34717474214,
         "source_bundle_sha256": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
         "source_file": "bc-spin-nets.tex",
-        "source_evidence_artifact": 10305950487,
-        "pdf_evidence_artifact": 10305950488,
-        "summary_artifact": 10305496099,
         "classification": "EQ29_PRIMARY_SOURCE_EXTRACTION_READY",
-        "scope": "SOURCE_DISCOVERY_ONLY",
-        "eq29_amplitude_authorized": false
+        "scope": "SOURCE_DISCOVERY_ONLY"
       },
-      "eq29_exact_source_block": {
+      "eq29_exact_source_block_failed_literal": {
         "run": 34717600962,
-        "prereg_commit": "27b9c44e81c9befccebad9448b7da4d5d61f5967",
-        "launch_commit": "699bdb138d42990393e01fe0393045e35c8ffb57",
-        "status": "TERMINAL_FAIL_CLOSED_NONPHYSICAL_AMBIGUITY",
         "literal_anchor_count": 3,
         "classification": "EQ29_SOURCE_BLOCK_AMBIGUOUS",
-        "independent_classification": "SOURCE_IDENTITY_OR_ANCHOR_FAIL",
-        "eq29_amplitude_authorized": false
+        "independent_classification": "SOURCE_IDENTITY_OR_ANCHOR_FAIL"
       },
       "eq29_anchor_disambiguation": {
         "run": 34717736113,
         "job": 103618085662,
         "artifact": 10305896153,
         "artifact_digest": "sha256:812badb44df244a1e55a53fae8d162fe26b237eae60cbb0786d4bd522f72ec16",
-        "launch_commit": "10a5bcdde79b3652059c0b7bae40d4a769713d74",
-        "status": "TERMINAL_DIAGNOSTIC_NEGATIVE",
         "literal_anchor_count": 3,
         "active_tex_anchor_count": 3,
         "classification": "ACTIVE_TEX_ANCHOR_STILL_AMBIGUOUS",
-        "scientific_credit": 0,
-        "eq29_amplitude_authorized": false
+        "scientific_credit": 0
       },
       "eq29_eprl_section_block": {
         "run": 34717945469,
@@ -111,7 +81,6 @@
         "eprl_subsection_sha256": "58690793c1a0f11b169d3dae259b557f23c432c2a6ec86b27f588e5a5aa33dac",
         "align_block_sha256": "4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083",
         "authorization": "RAW_SOURCE_BLOCK_ONLY",
-        "eq29_amplitude_authorized": false,
         "bridge_credit": false
       },
       "eq29_source_dependency_audit": {
@@ -119,14 +88,46 @@
         "implementation_commit": "be3615fb36f4c1863b221b86fcf80d7cf4f11125",
         "trigger_commit": "9729cef2573778a3b48f6b80b42c6d5fd721366b",
         "run": 34718554940,
+        "aggregate_job": 103620177874,
+        "summary_artifact": 10305491683,
+        "summary_digest": "sha256:ca82d129681a540d7b0daa618b43b831957e2001a527e1556ea0852c8387ada8",
+        "classification": "EQ29_SOURCE_DEPENDENCIES_PARTIAL",
+        "geometry": {
+          "job": 103620066552,
+          "artifact": 10306086345,
+          "artifact_digest": "sha256:0bbd669a1f3b137c9f88d374e4ed87ec8d9b969ae676dd92aa5dec5c95d8ed27",
+          "classification": "SOURCE_LABEL_GEOMETRY_QUALIFIED"
+        },
+        "incidence": {
+          "job": 103620066468,
+          "artifact": 10305437790,
+          "artifact_digest": "sha256:b02efc00fa45d8d6ed247f650e71322d89b1fb99efcd88740e09e5db08477af2",
+          "classification": "SOURCE_PATH_INCIDENCE_QUALIFIED"
+        },
+        "rplacement": {
+          "job": 103620066580,
+          "artifact": 10305516543,
+          "artifact_digest": "sha256:2cb8e85f8adc35884bc8186474639b3284eeec39d0791a71e20f25c577eeabb6",
+          "classification": "SOURCE_R_PLACEMENT_NOT_MACHINE_QUALIFIED",
+          "deterministic_eprl_eq29_link": false
+        },
+        "eq29_amplitude_authorized": false,
+        "bridge_credit": false
+      },
+      "eq29_rplacement_reference_topology": {
+        "prereg_commit": "95a176d84353a9bf358035140f4fd7423b45873e",
+        "implementation_commit": "745ecd2f3c999dbf130d4e7ed4520a3f0f28f13a",
+        "trigger_commit": "892c4b55f4099ced2743fbc0d34dc121e09fa070",
+        "run": 34718784867,
         "status": "QUEUED_OR_RUNNING",
-        "lanes": ["geometry", "incidence", "rplacement"],
         "lane_count": 3,
-        "frozen_classifier": ["EQ29_SOURCE_DEPENDENCIES_COMPLETE", "EQ29_SOURCE_DEPENDENCIES_PARTIAL", "EQ29_SOURCE_DEPENDENCIES_BLOCKED", "INVALID_SOURCE_OR_IMPLEMENTATION"],
+        "lanes": ["crossing_geometry", "reference_graph", "appendix_graph_chain"],
+        "prior_partial_verdict_preserved": true,
+        "eq29_amplitude_authorized": false,
         "bridge_credit": false
       },
       "eq29_amplitude_authorized": false,
-      "next_gate": "CONSUME_34718554940; ONLY_IF_EQ29_SOURCE_DEPENDENCIES_COMPLETE_PREREGISTER_LITERAL_EQ29_TENSOR_RECONSTRUCTION; OTHERWISE_PRESERVE_MISSING_DEPENDENCIES_WITHOUT_POSTHOC_FITTING"
+      "next_gate": "CONSUME_34718784867; PRESERVE_PARTIAL_VERDICT; NO_POSTHOC_CROSSING_SELECTOR_OR_LEXICAL_RETUNING"
     },
     "RC008": {
       "status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"
@@ -149,14 +150,7 @@
       },
       "dvd23_synthetic_structural_gate": {
         "run": 34715884817,
-        "workflow_classification": "DVD23_STRUCTURAL_REFINEMENT_MAP_ADMISSIBLE",
         "programme_classification": "SYNTHETIC_STRUCTURAL_SELF_CONSISTENCY_PASS_SOURCE_AUTHORITY_ABSENT",
-        "source_derived": false,
-        "bridge_credit": false
-      },
-      "zero_spin_b4_primitive": {
-        "run": 34711008648,
-        "classification": "B4_ZERO_SPIN_PRIMITIVE_AGGREGATE_PASS",
         "bridge_credit": false
       },
       "zero_spin_asymmetric_heldout": {
@@ -165,76 +159,36 @@
         "artifact": 10303514068,
         "artifact_digest": "sha256:b516d16574ee47e016fc4886cf91368c9081492989fe2da2c0c60fae0725e8c6",
         "classification": "B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_PASS",
-        "lane_count": 5,
-        "worst_relative_error": 1.74533e-6,
-        "threshold": 1e-5,
-        "bridge_credit": false
-      },
-      "ded_dld_topology_candidate": {
-        "run": 34712970339,
-        "classification": "DED_DLD_STRICT_EXTENSION_CANDIDATE_SOURCE_QUALIFIED",
-        "strict_incidence_embedding_proven": false,
-        "bridge_credit": false
-      },
-      "cylindrical_normalization_source_map": {
-        "run": 34712985651,
-        "artifact": 10304340366,
-        "classification": "LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED",
-        "bridge_credit": false
-      },
-      "ded_dld_source_figure_incidence": {
-        "run": 34713333741,
-        "job": 103605960390,
-        "artifact": 10304337517,
-        "artifact_digest": "sha256:314708a3a996bb0497691680fa40e312ce3c88332bd1b1a6f6e519f88e7316e2",
-        "classification": "DED_DLD_FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT",
-        "machine_incidence_ready": false,
         "bridge_credit": false
       },
       "dual_representation_topology": {
-        "prereg_commit": "b2c34a7f5516ee61c77b5447a3b7edff168b5857",
-        "launch_commit": "c82fa1c8e3101fa0a917c1a34e37cf27c36bc558",
         "source_run": 34715789027,
         "recovery_run": 34716846693,
-        "lane_count": 8,
-        "status": "TERMINAL_SCIENTIFIC_DIAGNOSTIC_FAIL",
         "classification": "TOPOLOGY_EXTRACTION_UNSTABLE",
-        "cross_representation_thresholds_pass": true,
-        "dpi_component_count_stable": false,
         "bridge_credit": false
       },
       "topology_instability_localization": {
         "run": 34716979296,
-        "classification": "DPI_COMPONENT_COUNT_INSTABILITY_LOCALIZED",
-        "DED_ORIGINAL_EPS_counts_300_600": [121, 123],
-        "DED_GS_EPS2WRITE_NORMALIZED_counts_300_600": [121, 123],
-        "DLD_ORIGINAL_EPS_counts_300_600": [15, 15],
-        "DLD_GS_EPS2WRITE_NORMALIZED_counts_300_600": [15, 15]
+        "DED_counts_300_600": [121, 123],
+        "DLD_counts_300_600": [15, 15]
       },
       "ded_component_birth_localization": {
         "run": 34717249322,
         "aggregate_job": 103616862737,
         "artifact": 10305175813,
         "artifact_digest": "sha256:ddcdf805d87dbe6ab9a1c61bc5a67d44372b84e1773ad7742b8bab50723da92d",
-        "status": "TERMINAL_SUCCESS_DIAGNOSTIC_ONLY",
         "classification": "DED_EXTRA_600DPI_COMPONENTS_LOCALIZED",
-        "counts_300_600": [121, 123],
-        "extra_components": [
-          {"pixels":44,"area_fraction":1.966336322164543e-5,"centroid_x":0.189866082925573,"centroid_y":0.5180094786729857},
-          {"pixels":39,"area_fraction":1.7428890128276632e-5,"centroid_x":0.7200188857412654,"centroid_y":0.8872037914691943}
-        ],
-        "representation_independent": true,
         "threshold_retuning_authorized": false,
         "bridge_credit": false
       },
       "refinement_map_derived": false,
-      "next_gate": "SOURCE_SEMANTIC_OR_VECTOR_LEVEL_IDENTIFICATION_OF_THE_TWO_DED_FEATURES_ONLY_IF_PROSPECTIVELY_DEFINED; DO_NOT_RETUNE_FROZEN_TOPOLOGY_GATE"
+      "next_gate": "ONLY_PROSPECTIVE_SOURCE_SEMANTIC_OR_VECTOR_LEVEL_IDENTIFICATION; DO_NOT_RETUNE_FAILED_TOPOLOGY_GATE"
     }
   },
   "active_compute": [
     {
-      "workflow_run": 34718554940,
-      "purpose": "Eq29 immutable EPRL-block source dependency qualification: label geometry, source-level incidence, R/inverse-R placement",
+      "workflow_run": 34718784867,
+      "purpose": "Eq29 R-placement structural reference topology and exact straight-crossing applicability diagnostic",
       "status": "QUEUED_OR_RUNNING",
       "lane_count": 3,
       "scientific_credit": 0
@@ -242,13 +196,12 @@
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
-    "results/ITER006_EQ29_EPRL_SOURCE_BLOCK_AND_DEPENDENCY_LAUNCH_2026-09-12.md",
+    "results/ITER006_EQ29_SOURCE_DEPENDENCIES_PARTIAL_2026-09-12.md",
     "recovery/CURRENT_FRONT.md",
-    "results/ITER006_EQ29_SOURCE_BLOCK_AMBIGUITY_2026-09-12.md",
-    "results/ITER006_PARALLEL_PROGRESS_2026-09-12_2037Z.md",
+    "results/ITER006_EQ29_EPRL_SOURCE_BLOCK_AND_DEPENDENCY_LAUNCH_2026-09-12.md",
+    "results/ITER006_RC006_EQ29_SOURCE_RELATION_MIXED_RESULT.md",
     "results/ITER006_DED_COMPONENT_BIRTH_LOCALIZATION_2026-09-12.md",
     "results/ITER006_TERMINAL_TOPOLOGY_B13_EQ29_UPDATE_2026-09-12.md",
-    "results/ITER006_TERMINAL_INCIDENCE_AND_RC006_SERIALIZATION_2026-09-12.md",
     "docs/CONSTITUTION.md"
   ]
 }
