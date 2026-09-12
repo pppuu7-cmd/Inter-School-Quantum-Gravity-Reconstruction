@@ -12,30 +12,31 @@ Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
 ## RC006 — q-deformed EPRL/FK source reconstruction
 
-The ordered-context holdout prerequisite is terminal **SCIENTIFIC PASS**: run `34700277881`, head `219391c897159f4541cb629d553c373981ed8531`, aggregate job `103570712196`, artifact `10300002366`. All eight leave-one-qualified-anchor lanes retained uniqueness and the unordered null restored ambiguity. This was a source-identifiability prerequisite only.
+The ordered-context holdout prerequisite remains terminal **SCIENTIFIC PASS**: run `34700277881`, head `219391c897159f4541cb629d553c373981ed8531`, aggregate job `103570712196`, artifact `10300002366`, with `8/8` leave-one-anchor uniqueness and null ambiguity.
 
-The subsequent stricter contraction-serialization gate is terminal **SCIENTIFIC FAIL**, despite green CI: run `34700639086`, head `8a358e5a710a618a8b92b689ee4470266787ef7b`, aggregate job `103571679523`, summary artifact `10300052796`. The computation was valid; the full-source serialization was unique, but only `6/8` single-anchor holdouts stayed unique, minimum pairwise-order agreement with the full serialization was `0.8698752228163993`, and the unordered null was ambiguous. Frozen gate result: `SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE`.
+The stricter contraction-serialization gate remains terminal **SCIENTIFIC FAIL** despite green CI: run `34700639086`, head `8a358e5a710a618a8b92b689ee4470266787ef7b`, aggregate job `103571679523`, artifact `10300052796`. Full-source serialization was unique, but only `6/8` holdouts stayed unique and minimum pairwise-order agreement fell to `0.8698752228163993`. The minimal `k=12, gamma=1/3` Eq.(29) amplitude therefore remains **BLOCKED**.
 
-Therefore the dependent minimal `k=12, gamma=1/3` Eq.(29) amplitude is **BLOCKED**. The threshold/interpretation rule is not weakened and no favorable anchor subset is selected after the result. Durable note: `results/ITER006_RC006_CONTRACTION_SERIALIZATION_STABILITY_FAIL.md`.
+Failure localization is now also terminal: run `34700891523`, head `8cb26ab0fb631ff36c2d2b52773019e021b4b665`, aggregate job `103572467066`, artifact `10300127995`. Four critical source anchors carry the observed ordering sensitivity: `app:EPRL-diagram`, `app:EPRL-norm`, `app:graph`, and `eq:recoupling-basis`; maximum pairwise flips `73`, minimum agreement `0.8698752228163993`. Classification: `DIAGNOSTIC_SOURCE_AUTHORITY_LOCALIZED`. This does not reverse the failed gate.
 
-### Active RC006 diagnostic
-
-Run `34700891523`, head `8cb26ab0fb631ff36c2d2b52773019e021b4b665`: eight independent single-anchor failure-localization lanes. They quantify pairwise-order flips, ambiguous groups and affected decorated symbols. This is diagnostic/source-authority work only; it cannot reverse the failed gate or authorize Eq.(29).
+Exact next RC006 route: find and prospectively freeze an explicit source relation tying these four critical anchors. Without genuinely new source authority, Eq.(29) remains blocked; no threshold relaxation or favorable-anchor subset is allowed.
 
 ## RC008 — quantum hypercuboid amplitude/refinement
 
-Two prior source-faithful prerequisites remain valid:
+Two earlier prerequisites remain valid: Hessian kernel run `34698968902` / aggregate `103567272522` / artifact `10300145140`, and source-faithful `Eq:4Volume` refinement run `34699223422` / aggregate `103567987044` / artifact `10300335297`. Neither is a full restricted amplitude/refinement reproduction.
 
-- Hessian kernel: run `34698968902`, aggregate `103567272522`, artifact `10300145140`; `PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY`.
-- `Eq:4Volume` refinement: run `34699223422`, aggregate `103567987044`, artifact `10300335297`; `PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY`.
+### Terminal amplitude-level selector negative
 
-Neither is a full restricted EPRL/FK vertex-amplitude reproduction or a refinement bridge.
+Run `34700870181`, head `f93326b4f5f45e36f2f955b367103c9f580caed1`, aggregate job `103572312400`, artifact `10300317494`: all five frozen-alpha computations were valid, but `0/5` passed the preregistered volume-simplicity selector criterion. Classification: `SCIENTIFIC_NEGATIVE_SELECTOR_NOT_SUPPORTED`. At this local source-asymptotic amplitude level, volume simplicity is not dynamically selected by the tested amplitude. This does not close the full RC008 model or replace the required coarse/refined calculation.
 
-### Active RC008 amplitude-level selector diagnostic
+### Terminal source-closure blocker
 
-Run `34700870181`, head `f93326b4f5f45e36f2f955b367103c9f580caed1`: five independent frozen-alpha lanes (`0.45, 0.55, 0.63, 0.67, 0.75`) evaluate the source-asymptotic dressed hypercuboid amplitude under equal-scale departures from exact volume simplicity. No published `alpha_*` is fitted. Each lane retains the preregistered homogeneity/null/statistical criterion; aggregate natural support requires at least `3/5` lanes and strong support at least `4/5`.
+Run `34700993029`, head `63a76cce48f0218b58a2fc6a9edeef7631098e9e`, aggregate job `103572635494`, artifact `10299993291`: valid source audit found all six core amplitude objects and coarse/refinement language but did not locate the preregistered explicit multi-vertex gluing object. Classification: `SOURCE_CLOSURE_BLOCKED_MISSING_EXPLICIT_OBJECT`; `source_closure_pass=false`. This is a source-authority blocker, not a physical model FAIL.
 
-This is a local amplitude-level held-out selector diagnostic only. Even a PASS does not reproduce the full coarse/refined hypercuboid amplitude, establish a refinement map, or derive `BH-004B`.
+### Active independent structural-authority gate
+
+Run `34701056222`, head `3347db298d229014e7c7378c405083d6c529ff1f`: eight exact-TeX lanes test whether the pinned source encodes gluing mathematically via face/edge/vertex products, internal-label sums, shared boundary data, coarse/refined-complex context, and amplitude composition. This gate is independent of the failed wording-based source-closure criterion and cannot retroactively change it.
+
+Only PASS of this new frozen source-structural authority gate can reopen a source-only coarse/refined implementation route. Even then, actual amplitude reproduction and held-out transport remain separate hard gates.
 
 ## Saturated / blocked / open
 
@@ -45,10 +46,8 @@ This is a local amplitude-level held-out selector diagnostic only. Even a PASS d
 - `BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE`: **OPEN**.
 - RC006 Eq.(29) minimal amplitude: **BLOCKED by failed robust serialization gate**.
 
-## Exact next allowed route
-
-RC006: consume/classify run `34700891523`; use it only to identify which exact source relations carry the unstable order. A new source-explicit contraction relation, if found, must be frozen in a new independent authority gate before any Eq.(29) amplitude can be launched. No post-hoc relaxation of the failed `34700639086` criterion is allowed.
-
-RC008: consume/classify run `34700870181`; independently continue toward a restricted hypercuboid vertex-amplitude reproduction from the pinned source equations **without fitting published `alpha_*`**. A selector diagnostic alone cannot close amplitude/refinement bridge status. The decisive route remains at least two coarse/refined boundary calculations, a prospectively frozen transport map, then a held-out boundary state without retuning.
+## Claim locks / exact next route
 
 Candidate theory remains `0% / UNFORMED`. `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate equations and RQIR/KMQGB promotion remain forbidden.
+
+Next allowed gate: consume/classify run `34701056222`. If and only if exact state-sum gluing authority passes, implement the restricted RC008 coarse/refined amplitude without fitting published `alpha_*`, reproduce at least two coarse/refined boundary calculations, freeze the inferred transport map, then apply it to a held-out boundary state without retuning. If structural authority fails, RC008 source-only reconstruction remains blocked pending an additional explicit source/companion reference; do not invent a gluing rule.
