@@ -1,0 +1,162 @@
+name: ISQGR Iter006 RC006 Eq29 Literal Derivation Chain
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_literal_derivation_chain.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [eq29_literal, appendix_f_chain, appendix_b_identities]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+          test -s src/bc-spin-nets.tex
+      - name: Run frozen source-chain audit
+        env:
+          MODE: ${{ matrix.mode }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,pathlib,re
+          mode=os.environ['MODE']
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          active_lines=[]
+          for line in raw.splitlines(True):
+              cut=None
+              for i,ch in enumerate(line):
+                  if ch!='%': continue
+                  bs=0; j=i-1
+                  while j>=0 and line[j]=='\\': bs+=1; j-=1
+                  if bs%2==0: cut=i; break
+              active_lines.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+          active=''.join(active_lines)
+          def norm(s): return re.sub(r'\s+','',s)
+          def refs(s): return re.findall(r'\\(?:eqref|ref)\{([^}]+)\}',s)
+          def labels(s): return re.findall(r'\\label\{([^}]+)\}',s)
+          def save(out):
+              pathlib.Path(f'out/{mode}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+              if not out.get('valid',False): raise SystemExit(2)
+          if mode=='eq29_literal':
+              subm=list(re.finditer(r'\\subsection\s*\{EPRL intertwiner model\}',active))
+              if len(subm)!=1: save({'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'eprl_subsection_count'})
+              s=subm[0]; nb=re.compile(r'\\(?:subsection|section)\s*\{').search(active,s.end()); end=nb.start() if nb else len(active); body=active[s.start():end]
+              targets=list(re.finditer(r'[^\n]*initial\s+3-valent\s+tensor[^\n]*\\eqref\{eq:eprl-3-valent\}[^\n]*',body,re.I))
+              if len(targets)!=1: save({'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'target_count'})
+              t=targets[0]; after=body[t.end():]; bm=re.search(r'\\begin\{(align\*?)\}',after)
+              if not bm: save({'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'no_align'})
+              env=bm.group(1); rb=t.end()+bm.start(); tok='\\end{'+env+'}'; re_=body.find(tok,rb)
+              if re_<0: save({'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'unclosed_align'})
+              re_+=len(tok); block=body[rb:re_]; h=hashlib.sha256(block.encode()).hexdigest(); expected='4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083'
+              if h!=expected: save({'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'block_hash','observed':h})
+              n=norm(block)
+              predicates={
+                'outer_sign':('(-1)^' in n or '(-1){^' in n),
+                'd_l1':('d_{l_1}' in block or 'd_{l_1}' in n or 'd_{l_1}' in n.replace('\\','')),
+                'd_l2':('d_{l_2}' in block or 'd_{l_2}' in n),
+                'd_l':bool(re.search(r'd_\{?l\}?',n)),
+                'sum_j':bool(re.search(r'\\sum_?\{?j\}?',n)),
+                'd_j':bool(re.search(r'd_\{?j\}?',n)),
+                'q_power':('q^' in n),
+                'casimir_jp1':('j^+_1' in n and '(j^+_1+1)' in n),
+                'casimir_jm2':('j^-_2' in n and '(j^-_2+1)' in n),
+                'casimir_j':('j(j+1)' in n),
+                'one_tikz':len(re.findall(r'\\begin\{tikzpicture\}',block))==1
+              }
+              qmatches=re.findall(r'q\s*\^\s*\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}',block,re.S)
+              qraw=qmatches[0] if qmatches else ''
+              ok=all(predicates.values())
+              save({'mode':mode,'valid':True,'classification':'EQ29_LITERAL_FACTOR_QUALIFIED' if ok else 'EQ29_LITERAL_SOURCE_FACTOR_INCOMPLETE','predicates':predicates,'candidate_block_sha256':h,'q_power_sha256':hashlib.sha256(qraw.encode()).hexdigest() if qraw else None,'q_power_excerpt':qraw[:500]})
+          elif mode=='appendix_f_chain':
+              anchors=list(re.finditer(r'Derivation\s+of\s+EPRL\s+amplitude',active,re.I))
+              if len(anchors)!=1: save({'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'appendix_f_anchor_count','count':len(anchors)})
+              st=anchors[0].start(); bib=active.find('\\begin{thebibliography}',st); en=bib if bib>=0 else len(active); seg=active[st:en]
+              phrase=bool(re.search(r'Essentially\s+one\s+applies\s+the\s+identit',seg,re.I))
+              rtext=bool(re.search(r'R\s+matri',seg,re.I))
+              eqrefs=refs(seg); labs=labels(seg)
+              f1_like=(len(re.findall(r'\\begin\{(?:equation|align)',seg))>=1 or len(re.findall(r'\\draw\b',seg))>=1)
+              # Resolve the first reference after the B15 statement to its target label in active source.
+              phm=re.search(r'Essentially\s+one\s+applies\s+the\s+identit',seg,re.I); local_refs=refs(seg[phm.start():phm.start()+800]) if phm else []
+              all_label_pos={m.group(1):m.start() for m in re.finditer(r'\\label\{([^}]+)\}',active)}
+              resolved=[r for r in local_refs if r in all_label_pos]
+              ok=phrase and rtext and f1_like and len(resolved)>=1
+              save({'mode':mode,'valid':True,'classification':'EQ29_APPENDIX_F_CHAIN_QUALIFIED' if ok else 'EQ29_APPENDIX_F_CHAIN_INCOMPLETE','essentially_b15_statement':phrase,'r_matrix_statement':rtext,'display_present':f1_like,'all_refs':eqrefs,'local_identity_refs':local_refs,'resolved_local_refs':resolved,'appendix_f_sha256':hashlib.sha256(seg.encode()).hexdigest(),'excerpt':seg[:1800]})
+          else:
+              # Source-semantic anchors for the B13/B15/B16 chain, without relying on rendered equation numbers.
+              a13=list(re.finditer(r'also\s+defined\s+by\s+a\s+graphical\s+identity',active,re.I))
+              a14=list(re.finditer(r'A\s+diagram\s+worth\s+mentioning\s+is\s+the\s+following',active,re.I))
+              a15=list(re.finditer(r'With\s+the\s+following\s+two\s+identities,\s+it\s+is\s+possible\s+to\s+split\s+this\s+diagram',active,re.I))
+              a16=list(re.finditer(r'Thus\s+we\s+obtain\s+for',active,re.I))
+              unique=(len(a13)==len(a14)==len(a15)==len(a16)==1)
+              if not unique: save({'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'appendix_b_anchor_counts','counts':[len(a13),len(a14),len(a15),len(a16)]})
+              st=a13[0].start(); en=min(len(active),a16[0].start()+5000); seg=active[st:en]
+              b15txt=active[a15[0].start():a16[0].start()]
+              b16txt=active[a16[0].start():en]
+              splitting=bool(re.search(r'splitting\s+necessary\s+for\s+the\s+3-valent\s+algorithm',b15txt,re.I))
+              # Two [6j] factors in B16 are represented source-side by two bracketed six-j graphical/symbol objects; accept only explicit repeated six-j macro/text signatures.
+              sixj_hits=len(re.findall(r'(?:6\s*j|sixj|SixJ|\\left\[)',b16txt,re.I))
+              two6=sixj_hits>=2
+              ok=splitting and two6
+              save({'mode':mode,'valid':True,'classification':'EQ29_APPENDIX_B_IDENTITY_CHAIN_QUALIFIED' if ok else 'EQ29_APPENDIX_B_IDENTITY_CHAIN_INCOMPLETE','b15_three_valent_splitting_statement':splitting,'b16_sixj_signature_hits':sixj_hits,'b16_two_sixj_source_signature':two6,'appendix_b_chain_sha256':hashlib.sha256(seg.encode()).hexdigest(),'b15_excerpt':b15txt[:1500],'b16_excerpt':b16txt[:2500]})
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-literal-chain-${{ matrix.mode }}
+          path: out/${{ matrix.mode }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: eq29-literal-chain-*
+          path: inputs
+          merge-multiple: true
+      - name: Apply frozen classifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json,pathlib
+          names=['eq29_literal','appendix_f_chain','appendix_b_identities']; rows={}
+          for n in names:
+              p=pathlib.Path('inputs')/f'{n}.json'
+              if not p.exists():
+                  out={'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':f'missing_{n}'}; pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out)); raise SystemExit(2)
+              rows[n]=json.loads(p.read_text())
+          if not all(r.get('valid') for r in rows.values()): valid=False; cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          else:
+              valid=True; cs=[rows[n]['classification'] for n in names]
+              if cs[0]!='EQ29_LITERAL_FACTOR_QUALIFIED': cl='EQ29_LITERAL_SOURCE_FACTOR_INCOMPLETE'
+              elif cs[1]!='EQ29_APPENDIX_F_CHAIN_QUALIFIED': cl='EQ29_APPENDIX_F_CHAIN_INCOMPLETE'
+              elif cs[2]!='EQ29_APPENDIX_B_IDENTITY_CHAIN_QUALIFIED': cl='EQ29_APPENDIX_B_IDENTITY_CHAIN_INCOMPLETE'
+              else: cl='EQ29_LITERAL_DERIVATION_CHAIN_SOURCE_QUALIFIED'
+          out={'gate':'ITER006_RC006_EQ29_LITERAL_DERIVATION_CHAIN','valid':valid,'classification':cl,'lane_classifications':{n:rows[n].get('classification') for n in names},'eq29_amplitude_authorized':False,'bridge_credit':False,'relation_aware_serialization_fail_preserved':True}
+          pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-literal-derivation-chain-summary
+          path: out/summary.json
+          if-no-files-found: error
