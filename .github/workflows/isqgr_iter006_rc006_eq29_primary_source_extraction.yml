@@ -1,0 +1,146 @@
+name: ISQGR Iter006 RC006 Eq29 Primary Source Extraction
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_primary_source_extraction.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-bundle:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch version-locked arXiv v2 source bundle
+        run: |
+          set -euo pipefail
+          mkdir -p work/src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o work/source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o work/source.bundle
+          sha256sum work/source.bundle | tee out/source_bundle.sha256
+          tar -tf work/source.bundle > out/source_inventory.txt
+          tar -xf work/source.bundle -C work/src
+      - name: Extract source-authority neighborhoods
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re
+          root=pathlib.Path('work/src')
+          suffixes={'.tex','.sty','.txt','.bib','.tikz','.ltx'}
+          anchors={
+            'eprl': re.compile(r'eprl',re.I),
+            'intertwiner': re.compile(r'intertwiner',re.I),
+            'simplicity': re.compile(r'simplicity\s+constraints?',re.I),
+            'rmatrix_text': re.compile(r'r[ -]?matrix',re.I),
+            'rmatrix_tex': re.compile(r'(?:mathcal|mathbf|mathrm)\s*\{?R\}?|\\mathcal\s*\{R\}',re.I),
+            'eq29_hint': re.compile(r'(?:label|tag)\s*\{[^}]*29[^}]*\}|equation\s*\(?29\)?',re.I)
+          }
+          hits=[]
+          files=[]
+          for p in sorted(root.rglob('*')):
+            if not p.is_file() or p.suffix.lower() not in suffixes: continue
+            try: text=p.read_text(errors='ignore')
+            except Exception: continue
+            files.append({'path':str(p.relative_to(root)),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size})
+            for name,rx in anchors.items():
+              for m in list(rx.finditer(text))[:12]:
+                a=max(0,m.start()-900); b=min(len(text),m.end()+1300)
+                hits.append({'anchor':name,'path':str(p.relative_to(root)),'offset':m.start(),'snippet':text[a:b]})
+          present={k:any(h['anchor']==k for h in hits) for k in anchors}
+          out={'gate':'ITER006_RC006_EQ29_PRIMARY_SOURCE_EXTRACTION','stream':'SOURCE_BUNDLE','file_count':len(files),'files':files,'anchor_present':present,'hit_count':len(hits),'hits':hits,
+               'claim_lock':'Discovery/provenance only; no Eq29 graph/incidence/R-placement PASS and no amplitude authorization.'}
+          pathlib.Path('out/source_evidence.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'file_count':len(files),'hit_count':len(hits),'anchor_present':present},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-primary-source-bundle-evidence
+          path: |
+            out/source_bundle.sha256
+            out/source_inventory.txt
+            out/source_evidence.json
+          if-no-files-found: error
+
+  pdf-text:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install PDF text extractor
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: Fetch version-locked arXiv v2 PDF
+        run: |
+          set -euo pipefail
+          mkdir -p work out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/pdf/1609.02429v2 -o work/paper.pdf || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/pdf/1609.02429v2 -o work/paper.pdf
+          sha256sum work/paper.pdf | tee out/pdf.sha256
+          pdfinfo work/paper.pdf > out/pdfinfo.txt
+          pdftotext -layout work/paper.pdf work/paper.txt
+      - name: Extract bounded PDF-text neighborhoods
+        run: |
+          python - <<'PY'
+          import json,pathlib,re
+          text=pathlib.Path('work/paper.txt').read_text(errors='ignore')
+          anchors={
+            'eprl': re.compile(r'eprl',re.I),
+            'intertwiner': re.compile(r'intertwiner',re.I),
+            'simplicity': re.compile(r'simplicity\s+constraints?',re.I),
+            'rmatrix': re.compile(r'r[ -]?matrix',re.I),
+            'section_vii_b': re.compile(r'(?:VII\.?\s*B|EPRL\s+intertwiner\s+model)',re.I)
+          }
+          hits=[]
+          for name,rx in anchors.items():
+            for m in list(rx.finditer(text))[:16]:
+              a=max(0,m.start()-1100); b=min(len(text),m.end()+1600)
+              hits.append({'anchor':name,'offset':m.start(),'snippet':text[a:b]})
+          present={k:any(h['anchor']==k for h in hits) for k in anchors}
+          out={'gate':'ITER006_RC006_EQ29_PRIMARY_SOURCE_EXTRACTION','stream':'PDF_TEXT','anchor_present':present,'hit_count':len(hits),'hits':hits,
+               'claim_lock':'Text-level primary-source cross-check only; graphical incidence and R-factor placement remain unqualified.'}
+          pathlib.Path('out/pdf_evidence.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'hit_count':len(hits),'anchor_present':present},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-primary-pdf-text-evidence
+          path: |
+            out/pdf.sha256
+            out/pdfinfo.txt
+            out/pdf_evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: [source-bundle, pdf-text]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: eq29-primary-*-evidence
+          path: all
+      - name: Apply frozen discovery classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          sp=glob.glob('all/**/source_evidence.json',recursive=True)
+          pp=glob.glob('all/**/pdf_evidence.json',recursive=True)
+          valid=len(sp)==1 and len(pp)==1
+          if valid:
+            s=json.load(open(sp[0])); p=json.load(open(pp[0]))
+            source_core=bool(s['anchor_present'].get('eprl') and s['anchor_present'].get('intertwiner'))
+            r_source=bool(s['anchor_present'].get('rmatrix_text') or s['anchor_present'].get('rmatrix_tex'))
+            pdf_core=bool(p['anchor_present'].get('eprl') and p['anchor_present'].get('intertwiner') and p['anchor_present'].get('section_vii_b'))
+            r_pdf=bool(p['anchor_present'].get('rmatrix'))
+            ready=source_core and r_source and pdf_core and r_pdf
+            cls='EQ29_PRIMARY_SOURCE_EXTRACTION_READY' if ready else 'EQ29_PRIMARY_SOURCE_EXTRACTION_PARTIAL'
+          else:
+            source_core=r_source=pdf_core=r_pdf=ready=False
+            cls='INVALID_INFRASTRUCTURE'
+          out={'gate':'ITER006_RC006_EQ29_PRIMARY_SOURCE_EXTRACTION','valid':valid,'source_eprl_intertwiner':source_core,'source_rmatrix_anchor':r_source,'pdf_eprl_intertwiner_section':pdf_core,'pdf_rmatrix_anchor':r_pdf,'classification':cls,
+               'authorization':'SOURCE_DISCOVERY_ONLY; later prospectively preregistered source-geometry audit required before any Eq29 dependency PASS.',
+               'eq29_amplitude_authorized':False,'bridge_credit':False}
+          pathlib.Path('eq29_primary_source_extraction_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if cls=='INVALID_INFRASTRUCTURE': raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-primary-source-extraction-summary
+          path: eq29_primary_source_extraction_summary.json
+          if-no-files-found: error
