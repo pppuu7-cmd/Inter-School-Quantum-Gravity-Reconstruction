@@ -1,0 +1,35 @@
+name: ISQGR Lorentzian EPRL DVD Dl0 Symbolic Guard
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/lorentzian_eprl_dvd_dl0_symbolic_guard.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-dvd-dl0-symbolic-guard.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+env:
+  ARXIV_ID: '1801.03771'
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned paper source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Verify frozen source reduction independently
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_dvd_dl0_symbolic_guard.py --source-dir external/two_vertex_src --output compute_out/dvd_dl0_symbolic_guard.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dvd-dl0-symbolic-guard
+          path: compute_out/*.json
+          if-no-files-found: error
