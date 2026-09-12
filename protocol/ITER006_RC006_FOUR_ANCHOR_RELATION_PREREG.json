@@ -1,0 +1,16 @@
+{
+  "gate":"ITER006_RC006_FOUR_ANCHOR_EXPLICIT_RELATION_AUDIT",
+  "date":"2026-09-12",
+  "source":"arXiv:1609.02429",
+  "prerequisite":{"run":34700891523,"classification":"DIAGNOSTIC_SOURCE_AUTHORITY_LOCALIZED"},
+  "anchors":["app:EPRL-diagram","app:EPRL-norm","app:graph","eq:recoupling-basis"],
+  "purpose":"Test whether the four source anchors localized as carrying contraction-order authority are tied together by explicit source references/equations strong enough to supply an additional ordering relation without selecting a favorable subset post hoc.",
+  "frozen_requirements":[
+    "Extract each anchor's exact defining environment and explicit refs/eqrefs/citations to the other three anchors or their immediately named equations.",
+    "Build a directed explicit-reference graph using only source-written references; source proximity and rendered-picture geometry are forbidden.",
+    "PASS requires all four anchors to belong to one explicit-reference connected component and at least three distinct inter-anchor source-reference edges.",
+    "FAIL preserves the existing serialization blocker; no threshold weakening or favorable-anchor deletion is permitted."
+  ],
+  "classification":{"pass":"RC006_FOUR_ANCHOR_EXPLICIT_RELATION_SOURCE_PASS","fail":"RC006_FOUR_ANCHOR_EXPLICIT_RELATION_SOURCE_INSUFFICIENT"},
+  "claim_lock":"Even PASS is only new source authority for a future prospectively frozen serialization retry; it does not itself reverse run 34700639086 or authorize Eq29 amplitude."
+}
