@@ -1,0 +1,101 @@
+name: ISQGR DVD Refinement Map Source Authority Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_DVD_REFINEMENT_MAP_SOURCE_AUTHORITY_PREREG.json'
+      - '.github/workflows/isqgr-dvd-refinement-map-source-authority.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+env:
+  ARXIV_ID: '1801.03771'
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        include:
+          - key: refinement
+            pattern: 'refinement|refine|refined'
+          - key: coarsefine
+            pattern: 'coarse|coarsening|fine|finer'
+          - key: maps
+            pattern: 'cylindrical|embedding|injection|projection'
+          - key: resummation
+            pattern: 'resummation|sum over foams|sum over complexes'
+          - key: dvd
+            pattern: 'DVD2|DVD3|two-vertex|2-vertex'
+          - key: boundary
+            pattern: 'boundary graph|boundary state|transition amplitude'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Audit frozen query class with context
+        env:
+          QUERY_KEY: '${{ matrix.key }}'
+          QUERY_PATTERN: '${{ matrix.pattern }}'
+        run: |
+          python - <<'PY'
+          import os,re,json,pathlib
+          root=pathlib.Path('external/two_vertex_src')
+          key=os.environ['QUERY_KEY']; pat=re.compile(os.environ['QUERY_PATTERN'],re.I)
+          hits=[]
+          for p in sorted(root.rglob('*')):
+            if not p.is_file() or p.suffix.lower() not in {'.tex','.txt','.bib'}: continue
+            try: text=p.read_text(errors='ignore')
+            except Exception: continue
+            lines=text.splitlines()
+            for i,line in enumerate(lines):
+              if pat.search(line):
+                a=max(0,i-3); b=min(len(lines),i+4)
+                ctx='\n'.join(lines[a:b])
+                hits.append({'file':str(p.relative_to(root)),'line':i+1,'context':ctx[:4000]})
+          out={'gate':'ITER006_DVD_REFINEMENT_MAP_SOURCE_AUTHORITY_AUDIT','query_key':key,'pattern':os.environ['QUERY_PATTERN'],'hit_count':len(hits),'hits':hits[:80],'classification':'SOURCE_TEXT_QUERY_COMPLETE','claim_lock':'Text candidates require semantic source classification; no hit is itself a refinement map.'}
+          pathlib.Path('audit.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'query_key':key,'hit_count':len(hits)},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 'dvd-refinement-source-audit-${{ matrix.key }}'
+          path: audit.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'dvd-refinement-source-audit-*'
+          path: all
+      - name: Aggregate audit inventory
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[]
+          for f in glob.glob('all/*/audit.json'):
+            rows.append(json.load(open(f)))
+          rows=sorted(rows,key=lambda x:x['query_key'])
+          complete=len(rows)==6
+          out={'gate':'ITER006_DVD_REFINEMENT_MAP_SOURCE_AUTHORITY_AUDIT','query_class_count':len(rows),'complete':complete,'total_hits':sum(r['hit_count'] for r in rows),'by_query':[{'query_key':r['query_key'],'hit_count':r['hit_count']} for r in rows],'classification':'SOURCE_AUDIT_CONTEXTS_READY_FOR_SEMANTIC_CLASSIFICATION' if complete else 'INFRASTRUCTURE_FAIL_INCOMPLETE_SOURCE_AUDIT','claim_lock':'Aggregate is an inventory only. Terminal source authority requires reading raw contexts against the preregistered explicit-map rule; finite shell cutoff cannot be relabelled as refinement.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not complete: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dvd-refinement-source-audit-summary
+          path: summary.json
+          if-no-files-found: error
