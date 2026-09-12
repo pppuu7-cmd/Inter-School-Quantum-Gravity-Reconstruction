@@ -1,0 +1,202 @@
+name: ISQGR Iter006 RC006 Eq29 Source Factor Correspondence
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_source_factor_correspondence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  token-factor:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+      - name: Frozen lexical factor comparison
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          def strip_comments(s):
+              out=[]
+              for line in s.splitlines(True):
+                  cut=None
+                  for i,c in enumerate(line):
+                      if c!='%': continue
+                      n=0;j=i-1
+                      while j>=0 and line[j]=='\\':n+=1;j-=1
+                      if n%2==0:cut=i;break
+                  out.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+              return ''.join(out)
+          a=strip_comments(raw)
+          def enclosing_label(label):
+              labs=list(re.finditer(r'\\label\{'+re.escape(label)+r'\}',a))
+              if len(labs)!=1: raise ValueError('label count')
+              pos=labs[0].start(); envs=['equation','equation*','align','align*','gather','gather*','multline']; cand=[]
+              for env in envs:
+                  rx=re.compile(r'\\(begin|end)\{'+re.escape(env)+r'\}'); st=[]
+                  for m in rx.finditer(a):
+                      if m.group(1)=='begin':st.append(m)
+                      elif st:
+                          b=st.pop()
+                          if b.start()<=pos<m.end():cand.append((m.end()-b.start(),a[b.start():m.end()]))
+              if not cand: raise ValueError('no env')
+              cand.sort(key=lambda x:x[0]); return cand[0][1]
+          ref=enclosing_label('eq:eprl-3-valent')
+          if hashlib.sha256(ref.encode()).hexdigest()!='88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d': raise SystemExit('reference hash mismatch')
+          sm=list(re.finditer(r'\\subsection\s*\{EPRL intertwiner model\}',a))
+          if len(sm)!=1: raise SystemExit('EPRL subsection')
+          s=sm[0]; nb=re.compile(r'\\(?:subsection|section)\s*\{').search(a,s.end()); body=a[s.start():(nb.start() if nb else len(a))]
+          tm=list(re.finditer(r'[^\n]*initial\s+3-valent\s+tensor[^\n]*\\eqref\{eq:eprl-3-valent\}[^\n]*',body,re.I))
+          if len(tm)!=1: raise SystemExit('Eq29 anchor')
+          bm=re.search(r'\\begin\{(align\*?)\}',body[tm[0].end():]); start=tm[0].end()+bm.start(); env=bm.group(1); tok='\\end{'+env+'}'; e=body.find(tok,start)
+          if e<0: raise SystemExit('Eq29 end')
+          eq=body[start:e+len(tok)]
+          if hashlib.sha256(eq.encode()).hexdigest()!='4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083': raise SystemExit('Eq29 hash mismatch')
+          def canon(x): return re.sub(r'[\s]+','',x)
+          def factors(x):
+              rx=re.compile(r'\\left\[|\\right\]'); depth=0; start=None; out=[]
+              for m in rx.finditer(x):
+                  if m.group(0)==r'\left[':
+                      if depth==0:start=m.start()
+                      depth+=1
+                  else:
+                      depth-=1
+                      if depth<0: raise ValueError('unbalanced')
+                      if depth==0: out.append(x[start:m.end()])
+              if depth!=0: raise ValueError('unbalanced')
+              return out
+          rf=factors(ref); ef=factors(eq)
+          r_hash=[hashlib.sha256(canon(x).encode()).hexdigest() for x in rf]; e_hash=[hashlib.sha256(canon(x).encode()).hexdigest() for x in ef]
+          matches=[i for i,h in enumerate(r_hash) if len(e_hash)==1 and h==e_hash[0]]
+          def lhs(x): return canon(x[:x.find('=')+1]) if '=' in x else None
+          def prefix(x):
+              p=x.find('='); q=x.find(r'\times',p)
+              return canon(x[p+1:q]) if p>=0 and q>=0 else None
+          rp=prefix(ref); ep=prefix(eq); lhs_match=lhs(ref)==lhs(eq)
+          # Exactly one normalization token replacement, and no other algebraic rewrite.
+          rn=len(re.findall(r'(?<![A-Za-z0-9_{}])d_l(?![A-Za-z0-9_{}])',rp or ''))
+          en=(ep or '').count(r'\sqrt{d_l}')
+          rp_norm=re.sub(r'(?<![A-Za-z0-9_{}])d_l(?![A-Za-z0-9_{}])','<DLNORM>',rp or '',count=1)
+          ep_norm=(ep or '').replace(r'\sqrt{d_l}','<DLNORM>',1)
+          pref_match=(rn==1 and en==1 and rp_norm==ep_norm)
+          valid=(len(rf)==2 and len(ef)==1)
+          out={'gate':'ITER006_RC006_EQ29_SOURCE_FACTOR_CORRESPONDENCE','lane':'TOKEN_FACTOR','valid':valid,'reference_factor_count':len(rf),'eq29_factor_count':len(ef),'reference_factor_hashes':r_hash,'eq29_factor_hash':e_hash[0] if len(e_hash)==1 else None,'matching_factor_indices':matches,'lhs_match':lhs_match,'reference_d_l_token_count':rn,'eq29_sqrt_d_l_token_count':en,'normalized_prefix_match':pref_match,'classification':'TOKEN_FACTOR_COMPLETE' if valid else 'INVALID_SOURCE_OR_IMPLEMENTATION'}
+          pathlib.Path('out/token.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-source-factor-token
+          path: out/token.json
+          if-no-files-found: error
+
+  graph-label-verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source independently
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+      - name: Independent ordered-label and q-exponent comparison
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          # Independent comment stripping, then extract fixed hash-qualified environments.
+          ls=[]
+          for line in raw.splitlines(True):
+              cut=None
+              for i,c in enumerate(line):
+                  if c=='%':
+                      bs=0;j=i-1
+                      while j>=0 and line[j]=='\\':bs+=1;j-=1
+                      if bs%2==0:cut=i;break
+              ls.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+          a=''.join(ls)
+          # Reference: unique label line then line-nesting, canonical exact token bounds.
+          li=[i for i,l in enumerate(ls) if '\\label{eq:eprl-3-valent}' in l]
+          if len(li)!=1: raise SystemExit('label')
+          stack=[]; ref=None
+          for i,l in enumerate(ls):
+              for m in re.finditer(r'\\(begin|end)\{(align\*?)\}',l):
+                  if m.group(1)=='begin':stack.append((i,m.start(),m.group(2)))
+                  elif stack:
+                      b=stack.pop()
+                      if b[0]<=li[0]<=i:
+                          ref=ls[b[0]][b[1]:]+''.join(ls[b[0]+1:i])+ls[i][:m.end()]
+          if ref is None or hashlib.sha256(ref.encode()).hexdigest()!='88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d': raise SystemExit('ref hash')
+          sm=re.search(r'\\subsection\s*\{EPRL intertwiner model\}',a); nxt=re.compile(r'\\(?:subsection|section)\s*\{').search(a,sm.end()); sec=a[sm.start():(nxt.start() if nxt else len(a))]
+          an=re.search(r'[^\n]*initial\s+3-valent\s+tensor[^\n]*\\eqref\{eq:eprl-3-valent\}[^\n]*',sec,re.I); bm=re.search(r'\\begin\{align\}',sec[an.end():]); st=an.end()+bm.start(); en=sec.find(r'\end{align}',st)+len(r'\end{align}'); eq=sec[st:en]
+          if hashlib.sha256(eq.encode()).hexdigest()!='4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083': raise SystemExit('eq hash')
+          def factors(x):
+              out=[]; p=0
+              while True:
+                  i=x.find(r'\left[',p)
+                  if i<0:break
+                  depth=1;j=i+len(r'\left[')
+                  while depth:
+                      ni=x.find(r'\left[',j); nj=x.find(r'\right]',j)
+                      if nj<0: raise ValueError('unbalanced')
+                      if ni>=0 and ni<nj: depth+=1;j=ni+len(r'\left[')
+                      else:
+                          depth-=1;j=nj+len(r'\right]')
+                  out.append(x[i:j]);p=j
+              return out
+          def sig(f):
+              labels=re.findall(r'node\s*(?:\[[^\]]*\])?\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}',f,re.S)
+              q=f.find('q^'); t=f.find(r'\begin{tikzpicture}',q)
+              qsub=re.sub(r'\s+','',f[q:t]) if q>=0 and t>=0 else None
+              return {'labels':labels,'q':qsub}
+          rs=[sig(x) for x in factors(ref)]; es=[sig(x) for x in factors(eq)]
+          matches=[i for i,s in enumerate(rs) if len(es)==1 and s==es[0]]
+          out={'gate':'ITER006_RC006_EQ29_SOURCE_FACTOR_CORRESPONDENCE','lane':'GRAPH_LABEL_VERIFY','valid':len(rs)==2 and len(es)==1,'matching_factor_indices':matches,'reference_signatures':rs,'eq29_signature':es[0] if len(es)==1 else None,'classification':'GRAPH_LABEL_VERIFY_COMPLETE' if len(rs)==2 and len(es)==1 else 'INVALID_SOURCE_OR_IMPLEMENTATION'}
+          pathlib.Path('out/graph.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps({'valid':out['valid'],'matching_factor_indices':matches,'classification':out['classification']},indent=2,sort_keys=True))
+          if not out['valid']: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-source-factor-graph
+          path: out/graph.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: [token-factor, graph-label-verify]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: eq29-source-factor-*
+          path: inputs
+      - name: Apply frozen source-factor classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          ds=[json.loads(pathlib.Path(p).read_text()) for p in glob.glob('inputs/**/*.json',recursive=True)]
+          by={d.get('lane'):d for d in ds}; T=by.get('TOKEN_FACTOR'); G=by.get('GRAPH_LABEL_VERIFY'); valid=bool(T and G and T.get('valid') and G.get('valid'))
+          if not valid: cl='INVALID_SOURCE_OR_IMPLEMENTATION'; factor=None
+          else:
+              tm=T.get('matching_factor_indices',[]); gm=G.get('matching_factor_indices',[]); factor=tm[0] if len(tm)==1 else None
+              if len(tm)==1 and len(gm)==1 and tm==gm and T.get('lhs_match') and T.get('normalized_prefix_match'): cl='EQ29_UNIQUE_SOURCE_FACTOR_CORRESPONDENCE'
+              elif len(tm)>1 or len(gm)>1 or (tm and gm and tm!=gm): cl='EQ29_SOURCE_FACTOR_CORRESPONDENCE_AMBIGUOUS'
+              else: cl='EQ29_SOURCE_FACTOR_CORRESPONDENCE_FAIL'
+          out={'gate':'ITER006_RC006_EQ29_SOURCE_FACTOR_CORRESPONDENCE','valid':valid,'token_matching_indices':T.get('matching_factor_indices') if T else None,'graph_matching_indices':G.get('matching_factor_indices') if G else None,'selected_reference_factor_index':factor,'lhs_match':T.get('lhs_match') if T else None,'normalized_prefix_match':T.get('normalized_prefix_match') if T else None,'classification':cl,'graph_to_qsymbol_reduction_preregistration_authorized':cl=='EQ29_UNIQUE_SOURCE_FACTOR_CORRESPONDENCE','numerical_eq29_amplitude_authorized':False,'bridge_credit':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-source-factor-correspondence-summary
+          path: summary.json
+          if-no-files-found: error
