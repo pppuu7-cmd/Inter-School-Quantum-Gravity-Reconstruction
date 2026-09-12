@@ -1,0 +1,66 @@
+name: ISQGR CEMR Finite-Surface Inversion
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'code/cemr_finite_surface_inverse.py'
+      - 'code/test_cemr_finite_surface_inverse.py'
+      - 'results/ITER002_CEMR_FINITE_SURFACE_INVERSION_PROTOCOL.md'
+      - '.github/workflows/isqgr-cemr-finite-surface-inversion.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy pytest
+      - name: Run fail-closed inverse tests
+        working-directory: code
+        run: pytest -q test_cemr_finite_surface_inverse.py
+
+  synthetic-campaign:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - clean_calibrated
+          - global_scale_nuisance
+          - channel_anisotropy
+          - channel_profiled
+        seed: [101, 211, 307]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy
+      - name: Execute registered finite-surface inversion
+        run: |
+          mkdir -p artifacts/cemr
+          python code/cemr_finite_surface_inverse.py \
+            --scenario '${{ matrix.scenario }}' \
+            --seed '${{ matrix.seed }}' \
+            --epsilon 0.05 \
+            --sigma-log-area 0.003 \
+            --output 'artifacts/cemr/${{ matrix.scenario }}_seed${{ matrix.seed }}.json'
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: cemr-${{ matrix.scenario }}-seed${{ matrix.seed }}
+          path: artifacts/cemr/*.json
+          if-no-files-found: error
+          retention-days: 30
