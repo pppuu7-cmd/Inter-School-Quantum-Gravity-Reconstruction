@@ -1,0 +1,39 @@
+{
+  "gate_id": "ITER006_RC006_EQ29_EXACT_SOURCE_BLOCK",
+  "date": "2026-09-12",
+  "status": "PREREGISTERED_BEFORE_IMPLEMENTATION",
+  "prerequisite": {
+    "run": 34717474214,
+    "classification": "EQ29_PRIMARY_SOURCE_EXTRACTION_READY",
+    "source_bundle_sha256": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
+    "primary_source_file": "bc-spin-nets.tex"
+  },
+  "source_identification_rule": "Use the unique source sentence containing 'initial 3-valent tensor' inside the EPRL intertwiner-model section. Extract the immediately following LaTeX align environment, plus the immediately following prose up to the next subsection/section boundary. The PDF-text evidence from run 34717474214 independently maps this sentence and following display to printed Eq. (29).",
+  "extraction_outputs": [
+    "verbatim source-context hash",
+    "verbatim align-block hash",
+    "raw TikZ picture blocks",
+    "ordered raw draw commands",
+    "ordered node labels and coordinates where parseable",
+    "counts of TikZ pictures, draw commands and node-label commands",
+    "bounded following prose containing the source interpretation of J+, J- and l"
+  ],
+  "frozen_classification": {
+    "EQ29_EXACT_SOURCE_BLOCK_EXTRACTED": "the identifying sentence is unique, the next align environment is nonempty, contains at least one tikzpicture and draw command, and the following prose is nonempty",
+    "EQ29_SOURCE_BLOCK_AMBIGUOUS": "the identifying sentence is non-unique or the immediately following display cannot be uniquely bounded",
+    "INVALID_INFRASTRUCTURE": "the version-locked source cannot be acquired or parsed"
+  },
+  "nonpromotion_rule": "A PASS creates source-faithful raw material only. It does not by itself mark label geometry, path incidence or R-matrix placement as qualified; those require a subsequent prospectively frozen parser/audit against the extracted immutable block.",
+  "forbidden": [
+    "hardcode a desired Eq29 graph instead of extracting source TikZ",
+    "infer crossings not represented by source commands",
+    "alter labels or paths to fit an expected contraction",
+    "launch Eq29 amplitude from source-block extraction alone"
+  ],
+  "claim_locks": {
+    "eq29_amplitude_authorized": false,
+    "bridge_derived": false,
+    "new_physics_found": false,
+    "candidate_theory": "UNFORMED"
+  }
+}
