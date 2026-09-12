@@ -1,0 +1,193 @@
+name: ISQGR Iter006 RC006 Eq29 Literal Source Relation
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_literal_source_relation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  environment-extractor:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+      - name: Extract unique referenced source environment
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          def strip_comments(s):
+              out=[]
+              for line in s.splitlines(True):
+                  cut=None
+                  for i,ch in enumerate(line):
+                      if ch!='%': continue
+                      bs=0; j=i-1
+                      while j>=0 and line[j]=='\\': bs+=1; j-=1
+                      if bs%2==0: cut=i; break
+                  out.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+              return ''.join(out)
+          a=strip_comments(raw)
+          labels=list(re.finditer(r'\\label\{eq:eprl-3-valent\}',a))
+          out={'gate':'ITER006_RC006_EQ29_LITERAL_SOURCE_RELATION','lane':'ENVIRONMENT_EXTRACTOR','label_count':len(labels)}
+          allowed=['equation','equation*','align','align*','gather','gather*','multline']
+          if len(labels)!=1:
+              out.update({'valid':True,'classification':'EQ29_LITERAL_SOURCE_RELATION_AMBIGUOUS','reason':'label_count'})
+          else:
+              pos=labels[0].start(); candidates=[]
+              for env in allowed:
+                  tok=re.compile(r'\\(begin|end)\{'+re.escape(env)+r'\}')
+                  stack=[]
+                  for m in tok.finditer(a):
+                      if m.group(1)=='begin': stack.append(m)
+                      elif stack:
+                          b=stack.pop()
+                          if b.start()<=pos<m.end(): candidates.append((m.end()-b.start(),env,b.start(),m.end()))
+              if not candidates:
+                  # Explicitly fail to unsupported rather than guessing a display container.
+                  out.update({'valid':True,'classification':'EQ29_LITERAL_SOURCE_RELATION_UNSUPPORTED','reason':'no_allowed_environment'})
+              else:
+                  candidates.sort(); size,env,b,e=candidates[0]
+                  same=[x for x in candidates if x[0]==size]
+                  if len(same)!=1:
+                      out.update({'valid':True,'classification':'EQ29_LITERAL_SOURCE_RELATION_AMBIGUOUS','reason':'smallest_environment_tie'})
+                  else:
+                      block=a[b:e]; sha=hashlib.sha256(block.encode()).hexdigest()
+                      # Re-extract EPRL subsection and direct reference count independently from environment location.
+                      sm=list(re.finditer(r'\\subsection\s*\{EPRL intertwiner model\}',a))
+                      refs=-1
+                      if len(sm)==1:
+                          s=sm[0]; nb=re.compile(r'\\(?:subsection|section)\s*\{').search(a,s.end()); body=a[s.start():(nb.start() if nb else len(a))]
+                          refs=len(re.findall(r'\\eqref\{eq:eprl-3-valent\}',body))
+                      # Nearest structural header before label.
+                      hs=list(re.finditer(r'\\(section|subsection|subsubsection)\s*\{([^}]*)\}',a[:pos],re.I)); h=hs[-1] if hs else None
+                      inventory={
+                        'labels':re.findall(r'\\label\{([^}]+)\}',block),
+                        'refs':re.findall(r'\\ref\{([^}]+)\}',block),
+                        'eqrefs':re.findall(r'\\eqref\{([^}]+)\}',block),
+                        'sum_count':len(re.findall(r'\\sum\b',block)),
+                        'sqrt_count':len(re.findall(r'\\sqrt\b',block)),
+                        'dimension_tokens':sorted(set(re.findall(r'd_\{?[^\s{}&,\\)]+\}?',block))),
+                        'q_power_count':len(re.findall(r'q\s*\^',block)),
+                        'tikz_draws':re.findall(r'\\draw\b.*?;',block,re.S),
+                        'node_labels':re.findall(r'node\s*(?:\[[^\]]*\])?\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}',block,re.S)
+                      }
+                      pathlib.Path('out/referenced_environment.tex').write_text(block)
+                      out.update({'valid':True,'environment_type':env,'environment_sha256':sha,'environment_chars':len(block),'eq29_direct_eqref_count':refs,'nearest_header':({'kind':h.group(1),'title':h.group(2)} if h else None),'inventory':inventory,
+                                  'classification':'EQ29_LITERAL_SOURCE_RELATION_EXTRACTED' if refs==1 else 'EQ29_LITERAL_SOURCE_RELATION_AMBIGUOUS','reason':None if refs==1 else 'eq29_direct_ref_count'})
+          pathlib.Path('out/environment.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-literal-source-relation-environment
+          path: out/
+          if-no-files-found: error
+
+  line-structural-verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source independently
+        run: |
+          set -euo pipefail
+          mkdir -p src
+          curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+      - name: Linewise nesting verification
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          lines=[]
+          for line in raw.splitlines(True):
+              cut=None
+              for i,c in enumerate(line):
+                  if c!='%': continue
+                  n=0;j=i-1
+                  while j>=0 and line[j]=='\\':n+=1;j-=1
+                  if n%2==0: cut=i;break
+              lines.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+          active=''.join(lines); labs=[i for i,l in enumerate(lines) if '\\label{eq:eprl-3-valent}' in l]
+          allowed={'equation','equation*','align','align*','gather','gather*','multline'}
+          out={'gate':'ITER006_RC006_EQ29_LITERAL_SOURCE_RELATION','lane':'LINE_STRUCTURAL_VERIFY','label_lines':[i+1 for i in labs]}
+          if len(labs)!=1:
+              out.update({'valid':True,'classification':'EQ29_LITERAL_SOURCE_RELATION_AMBIGUOUS','reason':'label_line_count'})
+          else:
+              li=labs[0]; stack=[]; enclosing=[]
+              for i,l in enumerate(lines):
+                  for m in re.finditer(r'\\(begin|end)\{([^}]+)\}',l):
+                      typ,env=m.group(1),m.group(2)
+                      if typ=='begin': stack.append((env,i,m.start()))
+                      else:
+                          # pop matching last occurrence
+                          k=next((k for k in range(len(stack)-1,-1,-1) if stack[k][0]==env),None)
+                          if k is None: continue
+                          b=stack.pop(k)
+                          if b[1]<=li<=i and env in allowed:
+                              block=''.join(lines[b[1]:i+1]); enclosing.append((len(block),env,hashlib.sha256(block.encode()).hexdigest(),b[1]+1,i+1))
+              if not enclosing:
+                  out.update({'valid':True,'classification':'EQ29_LITERAL_SOURCE_RELATION_UNSUPPORTED','reason':'no_allowed_environment'})
+              else:
+                  enclosing.sort(); best=enclosing[0]
+                  # Eq29 EPRL subsection direct ref count linewise.
+                  ss=[i for i,l in enumerate(lines) if re.search(r'\\subsection\s*\{EPRL intertwiner model\}',l)]
+                  refs=-1
+                  if len(ss)==1:
+                      start=ss[0]; stop=len(lines)
+                      for i in range(start+1,len(lines)):
+                          if re.search(r'\\(?:subsection|section)\s*\{',lines[i]): stop=i; break
+                      refs=sum(len(re.findall(r'\\eqref\{eq:eprl-3-valent\}',l)) for l in lines[start:stop])
+                  out.update({'valid':True,'environment_type':best[1],'environment_sha256':best[2],'environment_start_line':best[3],'environment_end_line':best[4],'eq29_direct_eqref_count':refs,
+                              'classification':'EQ29_LITERAL_SOURCE_RELATION_EXTRACTED' if refs==1 else 'EQ29_LITERAL_SOURCE_RELATION_AMBIGUOUS','reason':None if refs==1 else 'eq29_ref_count'})
+          pathlib.Path('verify.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-literal-source-relation-verify
+          path: verify.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: [environment-extractor, line-structural-verify]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: eq29-literal-source-relation-*
+          path: inputs
+      - name: Apply frozen agreement classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          docs=[]
+          for p in glob.glob('inputs/**/*.json',recursive=True):
+              try:
+                  d=json.loads(pathlib.Path(p).read_text())
+                  if d.get('lane') in ('ENVIRONMENT_EXTRACTOR','LINE_STRUCTURAL_VERIFY'): docs.append(d)
+              except: pass
+          by={d['lane']:d for d in docs}; A=by.get('ENVIRONMENT_EXTRACTOR'); B=by.get('LINE_STRUCTURAL_VERIFY')
+          valid=bool(A and B and A.get('valid') is True and B.get('valid') is True)
+          if not valid: cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          elif 'UNSUPPORTED' in (A.get('classification','')+' '+B.get('classification','')): cl='EQ29_LITERAL_SOURCE_RELATION_UNSUPPORTED'
+          elif A.get('classification')!='EQ29_LITERAL_SOURCE_RELATION_EXTRACTED' or B.get('classification')!='EQ29_LITERAL_SOURCE_RELATION_EXTRACTED': cl='EQ29_LITERAL_SOURCE_RELATION_AMBIGUOUS'
+          elif A.get('environment_type')==B.get('environment_type') and A.get('environment_sha256')==B.get('environment_sha256') and A.get('eq29_direct_eqref_count')==1 and B.get('eq29_direct_eqref_count')==1: cl='EQ29_LITERAL_SOURCE_RELATION_EXTRACTED'
+          else: cl='EQ29_LITERAL_SOURCE_RELATION_AMBIGUOUS'
+          out={'gate':'ITER006_RC006_EQ29_LITERAL_SOURCE_RELATION','valid':valid,'environment_type':A.get('environment_type') if A else None,'environment_sha256':A.get('environment_sha256') if A else None,'extractor_classification':A.get('classification') if A else None,'verifier_classification':B.get('classification') if B else None,'eq29_direct_ref_counts':[A.get('eq29_direct_eqref_count') if A else None,B.get('eq29_direct_eqref_count') if B else None],'classification':cl,'source_to_algebra_evaluator_preregistration_authorized':cl=='EQ29_LITERAL_SOURCE_RELATION_EXTRACTED','numerical_eq29_amplitude_authorized':False,'bridge_credit':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-literal-source-relation-summary
+          path: summary.json
+          if-no-files-found: error
