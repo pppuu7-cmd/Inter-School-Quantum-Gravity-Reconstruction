@@ -1,0 +1,83 @@
+name: ISQGR RC006 QGroup Kernel Qualification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_qgroup_kernel_qualification.jl'
+      - '.github/workflows/isqgr-rc006-qgroup-kernel-qualification.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {level: 6, gamma_num: 1, gamma_den: 3}
+          - {level: 10, gamma_num: 3, gamma_den: 5}
+          - {level: 12, gamma_num: 1, gamma_den: 3}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Clone and pin independent q-deformed numerical kernel
+        run: |
+          set -euo pipefail
+          git clone https://github.com/ssteinhaus/Fusion-basis-coarse-graining.git external/Fusion-basis-coarse-graining
+          git -C external/Fusion-basis-coarse-graining checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
+          test "$(git -C external/Fusion-basis-coarse-graining rev-parse HEAD)" = "bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4"
+      - name: Qualify q-number fusion and q6j conventions
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          julia experiments/rc006_qgroup_kernel_qualification.jl \
+            '${{ matrix.level }}' '${{ matrix.gamma_num }}' '${{ matrix.gamma_den }}' \
+            external/Fusion-basis-coarse-graining/half_int/no_torsion/qgroup_def.jl \
+            compute_out/rc006_kernel_k${{ matrix.level }}.toml
+          cat compute_out/rc006_kernel_k${{ matrix.level }}.toml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-qgroup-kernel-k${{ matrix.level }}
+          path: compute_out/*.toml
+          if-no-files-found: error
+
+  aggregate:
+    needs: qualify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-qgroup-kernel-*
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate frozen kernel qualification gate
+        run: |
+          python - <<'PY'
+          import glob,tomllib,json,os
+          rows=[]
+          for p in sorted(glob.glob('campaign/*.toml')):
+              with open(p,'rb') as f: rows.append(tomllib.load(f))
+          ok=len(rows)==3 and all(r['kernel_qualified_for_next_rc006_implementation_step'] for r in rows)
+          out={'test':'RC006_QGROUP_KERNEL_QUALIFICATION_AGGREGATE','lane_count':len(rows),
+               'all_three_source_levels_qualified':ok,'lanes':rows,
+               'next_permission':'If true, numerical SU(2)_k kernel may be reused for source-equation EPRL intertwiner implementation; if false, stop and log convention blocker.',
+               'claim_lock':'Numerical-kernel qualification only; not EPRL amplitude/RG reproduction or new physics.'}
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/rc006_qgroup_kernel_qualification.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-qgroup-kernel-qualification-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
