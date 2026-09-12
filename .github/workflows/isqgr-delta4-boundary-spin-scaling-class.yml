@@ -1,0 +1,112 @@
+name: ISQGR Delta4 Boundary Spin Scaling Class
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_boundary_spin_scaling_class.py'
+      - '.github/workflows/isqgr-delta4-boundary-spin-scaling-class.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scaling-class:
+    strategy:
+      fail-fast: false
+      max-parallel: 24
+      matrix:
+        lane: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clone and pin public Delta4 source data
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Run scaling-class lane
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/delta4_boundary_spin_scaling_class.py \
+            --source-root external/HowToSpinFoamAmplitude \
+            --lane ${{ matrix.lane }} --lanes 24 \
+            --output compute_out/scaling_class_lane_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-boundary-spin-scaling-class-lane-${{ matrix.lane }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: scaling-class
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: delta4-boundary-spin-scaling-class-lane-*
+          path: all_lanes
+          merge-multiple: true
+      - name: Aggregate boundary-spin scaling-class audit
+        run: |
+          python - <<'PY'
+          import glob,json,math,os,statistics
+          rows=[]
+          for f in glob.glob('all_lanes/*.json'):
+              rows.extend(json.load(open(f))['results'])
+          good=[r for r in rows if r.get('identifiable')]
+          j_imp=[r['j_vs_global_improvement'] for r in good]
+          s_imp=[r['sector_vs_j_improvement'] for r in good]
+          jbeats=sum(r['boundary_j_model']['rmse'] < r['global_model']['rmse'] for r in good)
+          alphas={0.5:[],1.0:[]}
+          for r in good:
+              a=r['boundary_j_model']['alpha']
+              alphas[0.5].append(float(a.get('0.5',a.get('0.5'))))
+              alphas[1.0].append(float(a.get('1.0',a.get('1.0'))))
+          ast={}
+          for j,vals in alphas.items():
+              med=statistics.median(vals) if vals else None
+              spread=(max(vals)-min(vals))/max(abs(med),1e-12) if vals else None
+              ast[str(j)]={'median_alpha':med,'relative_spread':spread,'n':len(vals)}
+          m05=ast['0.5']['median_alpha']; m10=ast['1.0']['median_alpha']
+          sep=abs(m05-m10)/max((abs(m05)+abs(m10))/2.0,1e-12) if m05 is not None and m10 is not None else None
+          all_ident=(len(good)==24)
+          med_j=statistics.median(j_imp) if j_imp else None
+          med_s=statistics.median(s_imp) if s_imp else None
+          alpha_stable=bool(all_ident and all(d['relative_spread']<=0.35 for d in ast.values()))
+          support=bool(all_ident and med_j>=0.10 and jbeats>=18 and med_s<0.05 and alpha_stable and sep>=0.20)
+          out={
+            'test':'LORENTZIAN_EPRL_DELTA4_BOUNDARY_SPIN_SCALING_CLASS_AGGREGATE',
+            'n_tasks':len(rows),'all_tasks_identifiable':all_ident,
+            'median_j_vs_global_holdout_improvement':med_j,
+            'j_beats_global_count':jbeats,
+            'median_sector_vs_j_holdout_improvement':med_s,
+            'alpha_j_summary':ast,
+            'relative_median_alpha_j_separation':sep,
+            'alpha_j_regime_stable':alpha_stable,
+            'boundary_spin_scaling_class_support':support,
+            'preregistered_thresholds':{
+              'minimum_median_j_vs_global_improvement':0.10,
+              'minimum_j_beats_global_count':18,
+              'maximum_median_sector_vs_j_improvement':0.05,
+              'maximum_alpha_j_relative_regime_spread':0.35,
+              'minimum_relative_median_alpha_j_separation':0.20
+            },
+            'claim_lock':'Positive support establishes only an empirical boundary-spin classification for pinned finite-cutoff Lorentzian EPRL Delta4 data; it does not establish RG universality, a continuum limit, or new physics.'
+          }
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/delta4_boundary_spin_scaling_class_summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-boundary-spin-scaling-class-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
