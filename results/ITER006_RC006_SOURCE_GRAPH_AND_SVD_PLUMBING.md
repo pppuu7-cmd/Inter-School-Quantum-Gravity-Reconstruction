@@ -44,15 +44,48 @@ Authoritative run: `34696413575` at commit `3f984706536a24d4c8a948f4ced8724889f6
 - artifact: `10299235394` (`rc006-eq29-tikz-token-stream`);
 - digest: `sha256:4554cd9168a9f99b0d8ea6672bbd47d8cf506074a9b503bbeb5a7f17ded5cfe9`.
 
-The exact nearest TikZ environment is source lines `1094–1116` in `bc-spin-nets.tex`; environment SHA256 `47f99ddbbef16bdadaa6951933b0203bc4d671efebec67685441af67f03e6604`. The derived stream contains 68 structural tokens, 37 coordinate tokens, the required labels `J+`, `J-`, `j`, `l_1`, `l_2` (including source superscripts/subscripts), and an ordered path-operator stream. `has_required_labels=true`.
+The exact nearest TikZ environment is source lines `1094–1116` in `bc-spin-nets.tex`; environment SHA256 `47f99ddbbef16bdadaa6951933b0203bc4d671efebec67685441af67f03e6604`. The derived stream contains 68 structural tokens, 37 coordinate tokens, the required source labels and an ordered path-operator stream.
 
-Scientific classification: `PASS_EXACT_SOURCE_TOKENIZATION_PREREQUISITE_ONLY`. This materially reduces the risk of hand-transcribing the braided/oriented graph but still does not close `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE`.
+Scientific classification: `PASS_EXACT_SOURCE_TOKENIZATION_PREREQUISITE_ONLY`.
+
+## Eq.(29) path/incidence parser-invariance subgate — PASS
+
+Prospective implementation commits: `82f8e5869d77327dca00ddb958d4ff36bc44921f` (computation) and `d914090ce98100d01aeaa9fe92ed6b94932f6701` (workflow).
+
+Authoritative run: `34697961643`.
+
+- `103564616715` — `raw_comments_removed` — success;
+- `103564616779` — `trim_lines` — success;
+- `103564616696` — `collapse_spaces` — success;
+- `103564616649` — `compact_linebreaks` — success;
+- aggregate job `103564711935` — success;
+- aggregate artifact `10298684340` (`rc006-eq29-path-incidence-summary`);
+- digest `sha256:ca8afc4093abb580b704666084ee1209851fdadf661a280affa09adee4a056ae`.
+
+The frozen aggregate artifact records:
+
+- `lane_count=4`;
+- `all_lane_pass=true`;
+- `source_hash_invariant=true`;
+- `environment_hash_invariant=true`;
+- `structural_signature_invariant=true`;
+- `frozen_gate_pass=true`.
+
+The raw lane reconstructs one source `draw` object with 18 path operators, including two arcs, and the full source label set. Scientific classification: `PASS_DETERMINISTIC_SOURCE_PATH_RECONSTRUCTION_SUBGATE`.
+
+This is stronger than tokenization, but it is deliberately **not** promoted to the full `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE`: the contraction-ready quantum graph still requires explicit source-faithful association of path segments/crossings with representation labels and orientation/braiding semantics. No nearest-line/proximity inference may be silently treated as source authority.
+
+## Independent RC008 source-formula qualification
+
+Initial run `34697983144` found all frozen role keywords in the official source archives, but the amplitude (`1508.07961`) and renormalization (`1701.02311`) lanes reported zero candidate equations because the first extractor recognized only a narrow subset of TeX display environments. The phase lane passed. Because the failure occurs in source parsing before any physical quantity is calculated, classification is `INFRASTRUCTURE/IMPLEMENTATION FAIL`, not scientific FAIL.
+
+The minimal repair broadens only the TeX display-syntax recognizer (`equation/align/alignat/multline/gather/eqnarray/split/IEEEeqnarray`, `\\[...\\]`, `$$...$$`) while preserving the frozen requirement that every role have all source keywords and at least one equation-bearing source region. Fix commit: `8ce783247216f600195b0a4cfd6c179ac7506e55`; rerun `34698110637` is the authoritative RC008 source-qualification run until terminal classification.
 
 ## Current implication
 
-The next RC006 step is no longer source discovery. It is deterministic incidence/path reconstruction from the exact source environment, with a prospectively frozen parser-invariance gate. Only after that mapping passes may the minimal `k=12, gamma=1/3` Eq.(29) amplitude gate be implemented.
+RC006 source discovery and deterministic path reconstruction are now qualified. The next RC006 subgate is a contraction-ready, source-authorized oriented/braided graph object; only after that passes may the minimal `k=12, gamma=1/3` Eq.(29) amplitude run.
 
-In parallel, RC008 remains an independent permitted route toward a second true QG amplitude/refinement realization; its amplitude-level reproduction is still open.
+In parallel, RC008 remains an independent permitted route toward a second true QG amplitude/refinement realization; its amplitude-level reproduction remains open.
 
 ## Claim locks
 
@@ -62,4 +95,4 @@ In parallel, RC008 remains an independent permitted route toward a second true Q
 - `BRIDGE_DERIVED`: forbidden;
 - candidate theory: `0% / UNFORMED`;
 - synthetic SVD plumbing is not physical TNR evidence;
-- source graph extraction is not an Eq.(29) amplitude.
+- source graph extraction/path reconstruction is not an Eq.(29) amplitude.
