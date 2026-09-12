@@ -20,24 +20,20 @@
     "RC009":{"status":"SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{
-      "status":"DED_DLD_STRICT_INCIDENCE_UNPROVEN_DUAL_REPRESENTATION_TOPOLOGY_DIAGNOSTIC_ELIGIBLE",
+      "status":"DUAL_REPRESENTATION_TOPOLOGY_DIAGNOSTIC_ACTIVE",
       "source":"arXiv:1801.03771",
       "kernel":"qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f",
       "dvd23_direct_structural_audit":{"run":34710895347,"classification":"DVD23_DIRECT_TRIVIAL_EXTENSION_EXCLUDED","bridge_credit":false},
       "zero_spin_b4_primitive":{"run":34711008648,"classification":"B4_ZERO_SPIN_PRIMITIVE_AGGREGATE_PASS","bridge_credit":false},
-      "zero_spin_asymmetric_heldout":{"prereg_commit":"354c960a99aa2e5726d39e16108860bfc7f0711e","launch_commit":"d11fefbd2826c3a3772da0d4c052298c063e7f18","run":34712687076,"aggregate_job":103604345234,"artifact":10303514068,"artifact_digest":"sha256:b516d16574ee47e016fc4886cf91368c9081492989fe2da2c0c60fae0725e8c6","classification":"B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_PASS","lane_count":5,"worst_relative_error":1.74533e-6,"threshold":1e-5,"bridge_credit":false},
+      "zero_spin_asymmetric_heldout":{"run":34712687076,"aggregate_job":103604345234,"artifact":10303514068,"artifact_digest":"sha256:b516d16574ee47e016fc4886cf91368c9081492989fe2da2c0c60fae0725e8c6","classification":"B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_PASS","lane_count":5,"worst_relative_error":1.74533e-6,"threshold":1e-5,"bridge_credit":false},
       "ded_dld_topology_candidate":{"run":34712970339,"classification":"DED_DLD_STRICT_EXTENSION_CANDIDATE_SOURCE_QUALIFIED","strict_incidence_embedding_proven":false,"bridge_credit":false},
-      "cylindrical_normalization_source_map":{"run":34712985651,"artifact":10304340366,"artifact_digest":"sha256:13349d2538ed2845e64353c8488868f8800832780ec28e7afb169d567ff2d979","classification":"LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED","bridge_credit":false},
-      "ded_dld_source_figure_incidence":{"prereg_commit":"aed17144107ae13e32686e06887e4059f2101b1a","launch_commit":"09d34cef1ca42b90fec6496fdffcc5c9410175d3","run":34713333741,"job":103605960390,"artifact":10304337517,"artifact_digest":"sha256:314708a3a996bb0497691680fa40e312ce3c88332bd1b1a6f6e519f88e7316e2","classification":"DED_DLD_FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT","machine_incidence_ready":false,"bridge_credit":false},
+      "cylindrical_normalization_source_map":{"run":34712985651,"artifact":10304340366,"classification":"LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED","bridge_credit":false},
+      "ded_dld_source_figure_incidence":{"run":34713333741,"job":103605960390,"artifact":10304337517,"artifact_digest":"sha256:314708a3a996bb0497691680fa40e312ce3c88332bd1b1a6f6e519f88e7316e2","classification":"DED_DLD_FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT","machine_incidence_ready":false,"bridge_credit":false},
+      "dual_representation_topology":{"prereg_commit":"b2c34a7f5516ee61c77b5447a3b7edff168b5857","launch_commit":"c82fa1c8e3101fa0a917c1a34e37cf27c36bc558","run":34715789027,"lane_count":8,"status":"QUEUED","bridge_credit":false},
       "refinement_map_derived":false,
-      "next_gate":"PREREGISTER_DUAL_REPRESENTATION_EPS_TOPOLOGY_RECONSTRUCTION_DIAGNOSTIC; REQUIRE INDEPENDENT REPRESENTATION CONSENSUS BEFORE ANY INCIDENCE EMBEDDING CLAIM"
+      "next_gate":"CONSUME_34715789027; ONLY IF REPRESENTATION_STABLE PREREGISTER INCIDENCE_GRAPH_EXTRACTION_AND_EMBEDDING_GATE"
     }
   },
-  "active_compute":[],
-  "authoritative_recovery_order":[
-    "recovery/state.json",
-    "recovery/CURRENT_FRONT.md",
-    "results/ITER006_TERMINAL_INCIDENCE_AND_RC006_SERIALIZATION_2026-09-12.md",
-    "docs/CONSTITUTION.md"
-  ]
+  "active_compute":[{"workflow_run":34715789027,"purpose":"DED/DLD dual-representation EPS topology prerequisite","status":"QUEUED","lane_count":8}],
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_TERMINAL_INCIDENCE_AND_RC006_SERIALIZATION_2026-09-12.md","protocol/ITER006_DED_DLD_DUAL_REPRESENTATION_TOPOLOGY_PREREG.json","docs/CONSTITUTION.md"]
 }
