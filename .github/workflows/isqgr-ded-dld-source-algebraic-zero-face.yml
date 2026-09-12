@@ -1,0 +1,66 @@
+name: ISQGR DED DLD source algebraic zero-face
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'recovery/triggers/iter006_ded_dld_source_algebraic_zero_face.txt'
+
+permissions:
+  contents: read
+
+jobs:
+  source_lane:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        lane: [ded_formula_ast, dld6_formula_ast, jf0_reduction, independent_context_control]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch immutable arXiv v2 source
+        run: |
+          set -euo pipefail
+          mkdir -p work/src out
+          curl -fL --retry 4 --retry-delay 3 'https://export.arxiv.org/e-print/1801.03771v2' -o work/source.tar
+          sha256sum work/source.tar | tee out/source.sha256
+          tar -xf work/source.tar -C work/src
+      - name: Run frozen lane
+        run: |
+          python experiments/ded_dld_source_algebraic_zero_face_collapse.py lane \
+            --lane '${{ matrix.lane }}' \
+            --source-dir work/src \
+            --source-tar work/source.tar \
+            --output 'out/${{ matrix.lane }}.json'
+          cat 'out/${{ matrix.lane }}.json'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-source-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: source_lane
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ded-dld-source-*
+          path: downloaded
+          merge-multiple: false
+      - name: Frozen aggregate
+        run: |
+          set -euo pipefail
+          mkdir -p aggregate
+          python experiments/ded_dld_source_algebraic_zero_face_collapse.py aggregate \
+            --input-dir downloaded \
+            --output aggregate/aggregate.json
+          cat aggregate/aggregate.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-source-algebraic-zero-face-aggregate
+          path: aggregate/aggregate.json
+          if-no-files-found: error
