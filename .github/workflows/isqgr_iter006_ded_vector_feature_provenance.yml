@@ -1,0 +1,153 @@
+name: ISQGR Iter006 DED Vector Feature Provenance
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_ded_vector_feature_provenance.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  trace:
+    strategy:
+      fail-fast: false
+      matrix:
+        representation: [ORIGINAL_EPS, GS_EPS2WRITE_NORMALIZED]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install Ghostscript
+        run: sudo apt-get update && sudo apt-get install -y ghostscript
+      - name: Fetch pinned DED source
+        env:
+          REPRESENTATION: ${{ matrix.representation }}
+        run: |
+          set -euo pipefail
+          mkdir -p src work out
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          echo '9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303  source.tar' | sha256sum -c -
+          tar -xf source.tar -C src
+          cp src/_images/DEDconplex_plus_vg.eps work/source.eps
+          test -s work/source.eps
+          if [ "$REPRESENTATION" = GS_EPS2WRITE_NORMALIZED ]; then
+            gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=eps2write -sOutputFile=work/input.eps work/source.eps
+          else
+            cp work/source.eps work/input.eps
+          fi
+      - name: Trace vector marking operators
+        env:
+          REPRESENTATION: ${{ matrix.representation }}
+        run: |
+          cat > work/trace.ps <<'PS'
+          /traceout (%stdout) (w) file def
+          /markcount 0 def
+          /putstr { traceout exch writestring } bind def
+          /putnum { 40 string cvs traceout exch writestring } bind def
+          /sp { ( ) putstr } bind def
+          /nl { (\n) putstr } bind def
+          /logbbox {
+            /op exch def
+            gsave
+            pathbbox
+            /ury exch def /urx exch def /lly exch def /llx exch def
+            llx lly transform /dy1 exch def /dx1 exch def
+            llx ury transform /dy2 exch def /dx2 exch def
+            urx lly transform /dy3 exch def /dx3 exch def
+            urx ury transform /dy4 exch def /dx4 exch def
+            /markcount markcount 1 add def
+            (MARK) putstr sp markcount putnum sp op putstr sp
+            dx1 putnum sp dy1 putnum sp dx2 putnum sp dy2 putnum sp
+            dx3 putnum sp dy3 putnum sp dx4 putnum sp dy4 putnum nl
+            grestore
+          } bind def
+          /origstroke /stroke load def
+          /origfill /fill load def
+          /origeofill /eofill load def
+          /stroke { (stroke) logbbox origstroke } bind def
+          /fill { (fill) logbbox origfill } bind def
+          /eofill { (eofill) logbbox origeofill } bind def
+          (work/input.eps) run
+          traceout flushfile
+          quit
+          PS
+          set -o pipefail
+          gs -q -dNOSAFER -dNODISPLAY work/trace.ps > work/trace.txt
+          grep '^MARK ' work/trace.txt > work/marks.txt || true
+          python - <<'PY'
+          import json,math,os,pathlib
+          rep=os.environ['REPRESENTATION']
+          rows=[]
+          for line in pathlib.Path('work/marks.txt').read_text().splitlines():
+              p=line.split()
+              if len(p)!=11 or p[0]!='MARK': continue
+              idx=int(p[1]); op=p[2]; nums=list(map(float,p[3:]))
+              xs=nums[0::2]; ys=nums[1::2]
+              if not all(math.isfinite(x) for x in nums): continue
+              rows.append({'index':idx,'operator':op,'device_bbox':[min(xs),min(ys),max(xs),max(ys)]})
+          if not rows:
+              out={'gate':'ITER006_DED_VECTOR_FEATURE_PROVENANCE','representation':rep,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'no_path_marks'}
+              pathlib.Path('out/result.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out)); raise SystemExit(2)
+          ux0=min(r['device_bbox'][0] for r in rows); uy0=min(r['device_bbox'][1] for r in rows); ux1=max(r['device_bbox'][2] for r in rows); uy1=max(r['device_bbox'][3] for r in rows)
+          W=ux1-ux0; H=uy1-uy0
+          if W<=0 or H<=0: raise SystemExit('invalid union')
+          targets=[('A',0.189866082925573,0.5180094786729857),('B',0.7200188857412654,0.8872037914691943)]
+          for r in rows:
+              x0,y0,x1,y1=r['device_bbox']
+              r['normalized_bbox']=[(x0-ux0)/W,1-(y1-uy0)/H,(x1-ux0)/W,1-(y0-uy0)/H]
+          matches={}; nearest={}
+          for name,x,y in targets:
+              hits=[]; near=[]
+              for r in rows:
+                  a,b,c,d=r['normalized_bbox']
+                  if a<=x<=c and b<=y<=d: hits.append({'index':r['index'],'operator':r['operator'],'normalized_bbox':r['normalized_bbox']})
+                  dx=max(a-x,0,x-c); dy=max(b-y,0,y-d); dist=math.hypot(dx,dy)
+                  near.append({'distance':dist,'index':r['index'],'operator':r['operator'],'normalized_bbox':r['normalized_bbox']})
+              matches[name]=hits; nearest[name]=sorted(near,key=lambda z:(z['distance'],z['index']))[:5]
+          out={'gate':'ITER006_DED_VECTOR_FEATURE_PROVENANCE','representation':rep,'valid':True,'mark_count':len(rows),'device_union_bbox':[ux0,uy0,ux1,uy1],'target_matches':matches,'nearest_diagnostic':nearest,'source_original_uniqueness':({k:len(v) for k,v in matches.items()} if rep=='ORIGINAL_EPS' else None),'classification':'TRACE_COMPLETE','claim_lock':'Vector provenance diagnostic only; no raster retuning, topology promotion, refinement or bridge credit.'}
+          pathlib.Path('out/result.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps({'representation':rep,'mark_count':len(rows),'match_counts':{k:len(v) for k,v in matches.items()}},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-vector-provenance-${{ matrix.representation }}
+          path: out/result.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: trace
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ded-vector-provenance-*
+          path: inputs
+      - name: Apply frozen provenance classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          docs=[json.loads(pathlib.Path(p).read_text()) for p in glob.glob('inputs/**/result.json',recursive=True)]
+          by={d.get('representation'):d for d in docs}
+          O=by.get('ORIGINAL_EPS'); G=by.get('GS_EPS2WRITE_NORMALIZED')
+          valid=bool(O and G and O.get('valid') is True and G.get('valid') is True)
+          if not valid:
+              cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          else:
+              om={k:len(O['target_matches'].get(k,[])) for k in ['A','B']}; gm={k:len(G['target_matches'].get(k,[])) for k in ['A','B']}
+              distinct=False
+              if om['A']==1 and om['B']==1:
+                  distinct=O['target_matches']['A'][0]['index']!=O['target_matches']['B'][0]['index']
+              if om['A']==1 and om['B']==1 and distinct and gm['A']>=1 and gm['B']>=1:
+                  cl='DED_VECTOR_FEATURES_UNIQUELY_LOCALIZED'
+              elif om['A']>=1 and om['B']>=1:
+                  cl='DED_VECTOR_FEATURES_AMBIGUOUS'
+              else:
+                  cl='DED_VECTOR_FEATURES_UNRESOLVED'
+          out={'gate':'ITER006_DED_VECTOR_FEATURE_PROVENANCE','valid':valid,'original_match_counts':({k:len(O['target_matches'].get(k,[])) for k in ['A','B']} if O else None),'normalized_match_counts':({k:len(G['target_matches'].get(k,[])) for k in ['A','B']} if G else None),'classification':cl,'raster_topology_verdict_preserved':'TOPOLOGY_EXTRACTION_UNSTABLE','threshold_retuning_authorized':False,'refinement_map_derived':False,'bridge_credit':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-vector-feature-provenance-summary
+          path: summary.json
+          if-no-files-found: error
