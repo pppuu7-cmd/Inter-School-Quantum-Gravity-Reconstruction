@@ -69,9 +69,6 @@ def main():
     dvd2_tokens=[r"\sum_{k',l_a}","dk'",r"(-1)^{2(k'+t')}",r"\frac{\delta_{j'_3,l_4}}{d_{j'_3}}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}",r"\delta_{j_3,j'_3}"]
     dvd3_tokens=[r"\sum_{l_a}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}"]
     dvd2_token_status={x:(x in c2) for x in dvd2_tokens}; dvd3_token_status={x:(x in c3) for x in dvd3_tokens}
-    # Exact source spelling uses the author macro \Deltal and, literally, j+\Deltal as the second upper bound.
-    shell_tokens=[r'\label{giorgio}',r'C_{\Deltal}(j,j\')',r'\sum_{l=j}^{j+\Deltal}',r"\sum_{l'=j'}^{j+\Deltal}"]
-    # The apostrophe token is awkward in a Python raw literal; replace the C token with a direct compact substring check below.
     shell_token_status={
       r'\label{giorgio}': r'\label{giorgio}' in gctx,
       r'C_{\Deltal}(j,j_prime)': r"C_{\Deltal}(j,j')" in gctx,
