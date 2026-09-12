@@ -1,0 +1,178 @@
+name: ISQGR Iter006 RC006 Eq29 Rplacement Reference Topology
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_rplacement_reference_topology.yml'
+      - 'status/ITERATION_006_RC006_EQ29_RPLACEMENT_REFERENCE_TOPOLOGY.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [crossing_geometry, reference_graph, appendix_graph_chain]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+          test -s src/bc-spin-nets.tex
+
+      - name: Run frozen structural topology audit
+        env:
+          MODE: ${{ matrix.mode }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,pathlib,re
+          from fractions import Fraction
+          mode=os.environ['MODE']
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          active_lines=[]
+          for line in raw.splitlines(True):
+              cut=None
+              for i,ch in enumerate(line):
+                  if ch!='%': continue
+                  bs=0; j=i-1
+                  while j>=0 and line[j]=='\\': bs+=1; j-=1
+                  if bs%2==0: cut=i; break
+              active_lines.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+          active=''.join(active_lines)
+          subm=list(re.finditer(r'\\subsection\s*\{EPRL intertwiner model\}',active))
+          if len(subm)!=1:
+              out={'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'eprl_subsection_count'}
+              pathlib.Path(f'out/{mode}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out)); raise SystemExit(2)
+          s=subm[0]; nb=re.compile(r'\\(?:subsection|section)\s*\{').search(active,s.end()); end=nb.start() if nb else len(active); body=active[s.start():end]
+          targets=list(re.finditer(r'[^\n]*initial\s+3-valent\s+tensor[^\n]*\\eqref\{eq:eprl-3-valent\}[^\n]*',body,re.I))
+          if len(targets)!=1:
+              out={'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'target_count'}
+              pathlib.Path(f'out/{mode}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out)); raise SystemExit(2)
+          t=targets[0]; after=body[t.end():]; bm=re.search(r'\\begin\{(align\*?)\}',after)
+          if not bm: raise SystemExit('no align')
+          env=bm.group(1); rb=t.end()+bm.start(); tok='\\end{'+env+'}'; re_=body.find(tok,rb)
+          if re_<0: raise SystemExit('unclosed align')
+          re_ += len(tok); block=body[rb:re_]
+          expected='4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083'; observed=hashlib.sha256(block.encode()).hexdigest()
+          if observed!=expected:
+              out={'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'block_hash','observed':observed}
+              pathlib.Path(f'out/{mode}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out)); raise SystemExit(2)
+
+          if mode=='crossing_geometry':
+              draws=re.findall(r'\\draw\b.*?;',block,re.S)
+              if len(draws)!=1:
+                  out={'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'draw_count','count':len(draws)}
+              else:
+                  d=draws[0]
+                  # Geometry path ends before first node placement; labels are not graph segments.
+                  geom=d.split('node',1)[0]
+                  token_rx=re.compile(r'\((-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)\)|(--|arc\s*\([^)]*\))')
+                  tokens=[]
+                  for m in token_rx.finditer(geom):
+                      if m.group(1) is not None: tokens.append(('p',(Fraction(m.group(1)),Fraction(m.group(2)))))
+                      else: tokens.append(('op',m.group(3).replace(' ','')))
+                  seg=[]; prev=None; pending=None; arcs=0
+                  for typ,val in tokens:
+                      if typ=='p':
+                          if pending=='--' and prev is not None: seg.append((prev,val))
+                          prev=val; pending=None
+                      else:
+                          if val.startswith('arc'): arcs+=1; pending=None; prev=None
+                          elif val=='--': pending='--'
+                  def orient(a,b,c): return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
+                  crossings=[]
+                  for i,(a,b) in enumerate(seg):
+                      for j,(c,d2) in enumerate(seg[i+1:],i+1):
+                          if a in (c,d2) or b in (c,d2): continue
+                          o1,o2,o3,o4=orient(a,b,c),orient(a,b,d2),orient(c,d2,a),orient(c,d2,b)
+                          if o1 and o2 and o3 and o4 and ((o1>0)!=(o2>0)) and ((o3>0)!=(o4>0)):
+                              crossings.append([i,j])
+                  if crossings: cl='EQ29_STRAIGHT_CROSSING_PRESENT'
+                  elif arcs: cl='EQ29_NO_STRAIGHT_CROSSING_ARCS_UNRESOLVED'
+                  else: cl='EQ29_NO_SOURCE_CROSSING'
+                  out={'mode':mode,'valid':True,'classification':cl,'straight_segment_count':len(seg),'arc_count':arcs,'proper_crossing_pairs':crossings,'candidate_block_sha256':observed}
+          else:
+              # Structural labels and refs only; no synonym matching is used to create edges.
+              labels={m.group(1):m.start() for m in re.finditer(r'\\label\{([^}]+)\}',active)}
+              refs_body=[m.group(2) for m in re.finditer(r'\\(eqref|ref)\{([^}]+)\}',body)]
+              # Locate exact R and R^-1 source formulas and their nearest containing labeled structural objects, if any.
+              rpos=[m.start() for m in re.finditer(r'\\mathcal\{R\}\s*(?:\^\{-1\})?\s*=',active)]
+              graph_label='app:graph'
+              graph_pos=labels.get(graph_label)
+              # Direct structural qualification is intentionally strict: body must explicitly ref a label whose definition is near an R formula or app:graph.
+              r_labels=[]
+              for lab,pos in labels.items():
+                  if any(abs(pos-rp)<=2500 for rp in rpos): r_labels.append(lab)
+              targets_set=set(r_labels + ([graph_label] if graph_pos is not None else []))
+              direct=sorted(set(refs_body)&targets_set)
+              if mode=='reference_graph':
+                  cl='EQ29_R_EXPLICIT_REFERENCE_PATH_PRESENT' if direct else 'EQ29_R_EXPLICIT_REFERENCE_PATH_ABSENT'
+                  out={'mode':mode,'valid':True,'classification':cl,'body_refs':refs_body,'r_formula_offsets':rpos,'r_near_labels':sorted(r_labels),'graph_appendix_label_present':graph_pos is not None,'direct_target_refs':direct,'candidate_block_sha256':observed}
+              else:
+                  # Independently require the R-convention context itself to reference app:graph, then require EPRL body to reference that same structural object.
+                  app_refs=[m.start() for m in re.finditer(r'\\ref\{app:graph\}',active)]
+                  r_to_app=any(any(abs(ap-rp)<=5000 for ap in app_refs) for rp in rpos)
+                  eprl_to_app=graph_label in refs_body
+                  cl='EQ29_APPENDIX_GRAPH_REFERENCE_CHAIN_PRESENT' if (r_to_app and eprl_to_app) else 'EQ29_APPENDIX_GRAPH_REFERENCE_CHAIN_ABSENT'
+                  out={'mode':mode,'valid':True,'classification':cl,'r_formula_offsets':rpos,'app_graph_ref_offsets':app_refs,'r_context_refs_app_graph':r_to_app,'eprl_body_refs_app_graph':eprl_to_app,'candidate_block_sha256':observed}
+          pathlib.Path(f'out/{mode}.json').write_text(json.dumps(out,indent=2,sort_keys=True,default=str)+'\n'); print(json.dumps(out,indent=2,sort_keys=True,default=str))
+          if not out.get('valid'): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-rplacement-topology-${{ matrix.mode }}
+          path: out/${{ matrix.mode }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: eq29-rplacement-topology-*
+          path: inputs
+          merge-multiple: true
+      - name: Apply frozen classifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json,pathlib
+          names=['crossing_geometry','reference_graph','appendix_graph_chain']; rows={}
+          for n in names:
+              p=pathlib.Path('inputs')/f'{n}.json'
+              if not p.exists():
+                  out={'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':f'missing_{n}'}; pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out)); raise SystemExit(2)
+              rows[n]=json.loads(p.read_text())
+          if not all(r.get('valid') is True for r in rows.values()):
+              valid=False; cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          else:
+              valid=True; cg=rows['crossing_geometry']['classification']; rp=rows['reference_graph']['classification']
+              if cg=='EQ29_STRAIGHT_CROSSING_PRESENT' and rp=='EQ29_R_EXPLICIT_REFERENCE_PATH_PRESENT': cl='EQ29_RPLACEMENT_STRUCTURALLY_QUALIFIED'
+              elif cg=='EQ29_STRAIGHT_CROSSING_PRESENT': cl='EQ29_RPLACEMENT_STILL_BLOCKED_CROSSING_PRESENT_NO_EXPLICIT_REF'
+              elif cg=='EQ29_NO_STRAIGHT_CROSSING_ARCS_UNRESOLVED': cl='EQ29_RPLACEMENT_APPLICABILITY_INCONCLUSIVE'
+              elif cg=='EQ29_NO_SOURCE_CROSSING': cl='EQ29_R_NOT_APPLICABLE_AT_IMMUTABLE_BLOCK_LEVEL'
+              else: cl='INVALID_SOURCE_OR_IMPLEMENTATION'; valid=False
+          out={'gate':'ITER006_RC006_EQ29_RPLACEMENT_REFERENCE_TOPOLOGY','valid':valid,'lane_classifications':{n:rows[n].get('classification') for n in names},'classification':cl,'prior_partial_verdict_preserved':True,'eq29_amplitude_authorized':False,'bridge_credit':False}
+          pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-rplacement-reference-topology-summary
+          path: out/summary.json
+          if-no-files-found: error
