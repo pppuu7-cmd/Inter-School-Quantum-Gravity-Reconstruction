@@ -12,15 +12,17 @@
   "readiness_percent": {"repository_recovery_bootstrap":99,"source_grounded_interface_atlas":52,"recurrent_motif_search":70,"accepted_recurrent_motifs":30,"bridge_principle_validation":78,"executable_cross_school_obstructions":86,"amplitude_refinement_cross_realization_validation":28,"candidate_theory_construction":0,"overall_scientific_programme":44},
   "frontier": {
     "RC006": {
-      "status":"CONTRACTION_MAPPING_OPEN_CORRECTED_MATHENV_AUDIT_ACTIVE",
+      "status":"CONTRACTION_MAPPING_OPEN_ORDERED_CONTEXT_IDENTIFIABILITY_ACTIVE",
       "graphic_geometry_authority":{"run":34698228895,"classification":"SCIENTIFIC_DIAGNOSTIC_FAIL_GEOMETRY_ALONE_AMBIGUOUS"},
       "appendixf_relation_extract":{"run":34699432919,"aggregate_job":103568483952,"artifact":10300395360,"classification":"MIXED_SOURCE_RELATION_QUALIFICATION_6_OF_8_APPENDIX_F_AND_CROSSING_FAIL"},
       "tex_structure_audit":{"run":34699578046,"aggregate_job":103568866019,"artifact":10299662547,"classification":"MIXED_MACHINE_READABLE_SOURCE_STRUCTURE_5_OF_6_MONOLITHIC_NO_INCLUDE_GRAPH"},
       "reference_chain":{"run":34699660419,"aggregate_job":103569079457,"artifact":10299976524,"classification":"PASS_INTERNAL_SOURCE_REFERENCE_CHAIN_OBJECT_ONLY"},
-      "named_anchor_dependency":{"run":34699750791,"head":"b55fb9e340094df4c2608b0cae6351d680521859","aggregate_job":103569310624,"artifact":10299468120,"classification":"PASS_NAMED_SOURCE_ANCHOR_DEPENDENCY_PREREQUISITE_ONLY","connectivity":{"nodes":52,"edges":69,"reachable_targets":["eq:SVD","eq:eprl-map","eq:recoupling-basis","eq:svd","fig:recoupling"],"unreached_preregistered_target":"6j-def"}},
-      "mathenv_run1":{"run":34699899382,"head":"e4f833606c1a1911dd497f4173a8d689693efb59","aggregate_job":103569713709,"artifact":10299916895,"classification":"INFRASTRUCTURE_IMPLEMENTATION_MEASUREMENT_INVALID_GREEN_CI_NOT_SCIENTIFIC_PASS","first_causal_failure":"enclosing environment selected document; prose contaminated symbol tokens"},
-      "active_corrected_mathenv":{"run":34699987643,"head":"508764118d551fb1e85a1eee6730d52e7e732db6","classification":"RUNNING_SAME_FROZEN_GATE_MINIMAL_PARSER_FIX"},
-      "next_gate":"CONSUME_CORRECTED_MATHENV; FREEZE CONTRACTION READY MAP ONLY IF EXACT SOURCE TENSOR ORDERING IS UNIQUE"
+      "named_anchor_dependency":{"run":34699750791,"aggregate_job":103569310624,"artifact":10299468120,"classification":"PASS_NAMED_SOURCE_ANCHOR_DEPENDENCY_PREREQUISITE_ONLY"},
+      "mathenv_run1":{"run":34699899382,"aggregate_job":103569713709,"artifact":10299916895,"classification":"INFRASTRUCTURE_IMPLEMENTATION_MEASUREMENT_INVALID_GREEN_CI_NOT_SCIENTIFIC_PASS"},
+      "corrected_mathenv":{"run":34699987643,"head":"508764118d551fb1e85a1eee6730d52e7e732db6","aggregate_job":103570011082,"artifact":10299503360,"classification":"PASS_EXACT_SOURCE_MATHENV_SYMBOL_INCIDENCE_PREREQUISITE_ONLY_TENSOR_ORDERING_NOT_UNIQUE"},
+      "leg_order_identifiability":{"run":34700094892,"head":"79820bd595f6b1c34655314692c4b55fe63ce907","aggregate_job":103570231207,"artifact":10300465880,"global_job":103570205823,"global_artifact":10299837254,"classification":"VALID_COMPUTATION_SCIENTIFIC_FAIL_SOURCE_INCIDENCE_NONIDENTIFIABLE","decorated_symbol_count":34,"interchangeable_group_count":11,"log10_surviving_relabelings_lower_bound":5.469692444399043},
+      "active_ordered_context_identifiability":{"run":34700193212,"head":"be962f33625dd9973c35d820bae10c9d91ef0a44","classification":"QUEUED_OR_RUNNING_PROSPECTIVE_ORDERED_DECORATED_CONTEXT_GATE"},
+      "next_gate":"CONSUME_ORDERED_CONTEXT_GATE; ONLY SOURCE_UNIQUE ORDERING MAY ADVANCE TO CONTRACTION_READY_EQ29_MAPPING"
     },
     "RC008":{"status":"AMPLITUDE_REPRODUCTION_OPEN_PREREQUISITES_QUALIFIED","hessian_kernel":{"run":34698968902,"aggregate_job":103567272522,"artifact":10300145140,"classification":"PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY"},"volume_refinement":{"run":34699223422,"aggregate_job":103567987044,"artifact":10300335297,"classification":"PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY"},"next_gate":"IMPLEMENT_RESTRICTED_HYPERCUBOID_VERTEX_AMPLITUDE_WITHOUT_FITTING_PUBLISHED_ALPHA_STAR"},
     "RC009":{"status":"SCOPED_BLOCKED","rule":"NO_DENSER_QUADRATURE_WITHOUT_NEW_JUSTIFIED_MEASURE_CONTOUR_REGULARIZATION"},
@@ -28,6 +30,6 @@
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"OPEN"}
   },
   "active_gates":["BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE","RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE","RC006_EQ29_MINIMAL_K12_AMPLITUDE_GATE","RC006_APPENDIX_C_C1_C2_SVD_GATE","RC006_HELDOUT_NONRETUNED_SELECTOR_TRANSPORT_GATE","RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE","MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE"],
-  "active_compute":[{"workflow_run":34699987643,"purpose":"corrected 9-lane exact source math-environment/symbol-incidence audit; frozen science unchanged","status":"1_QUEUED_AT_LAST_CHECK"}],
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC006_MATHENV_RUN1_IMPLEMENTATION_INVALID.md","results/ITER006_RC006_NAMED_ANCHOR_DEPENDENCY_PASS.md","results/ITER006_RC006_EQ29_INTERNAL_REFERENCE_CHAIN_PASS.md","results/ITER006_RC006_TEX_STRUCTURE_MIXED_RESULT.md","results/ITER006_RC006_EQ29_SOURCE_RELATION_MIXED_RESULT.md","results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md","docs/CONSTITUTION.md"]
+  "active_compute":[{"workflow_run":34700193212,"purpose":"7-lane ordered decorated-index source-context identifiability audit after incidence-count scientific FAIL","status":"QUEUED_OR_IN_PROGRESS"}],
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC006_LEG_ORDER_NONIDENTIFIABLE.md","results/ITER006_RC006_MATHENV_CORRECTED_PASS_AMBIGUITY.md","results/ITER006_RC006_MATHENV_RUN1_IMPLEMENTATION_INVALID.md","results/ITER006_RC006_NAMED_ANCHOR_DEPENDENCY_PASS.md","results/ITER006_RC006_EQ29_INTERNAL_REFERENCE_CHAIN_PASS.md","results/ITER006_RC006_TEX_STRUCTURE_MIXED_RESULT.md","results/ITER006_RC006_EQ29_SOURCE_RELATION_MIXED_RESULT.md","results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md","docs/CONSTITUTION.md"]
 }
