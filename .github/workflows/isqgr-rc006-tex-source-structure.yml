@@ -1,0 +1,66 @@
+name: ISQGR RC006 TeX Source Structure
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_tex_source_structure_audit.py'
+      - '.github/workflows/isqgr-rc006-tex-source-structure.yml'
+  workflow_dispatch:
+
+permissions: {contents: read}
+
+jobs:
+  structure:
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        role: [include_graph, heading_graph, label_ref_graph, graphic_graph, eq29_component, recoupling_component]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch official arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Run frozen independent source-structure audit
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_tex_source_structure_audit.py --source-dir external/arxiv_src --role '${{ matrix.role }}' --output 'compute_out/${{ matrix.role }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'rc006-tex-structure-${{ matrix.role }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: structure
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'rc006-tex-structure-*'
+          path: all
+          merge-multiple: true
+      - name: Preserve frozen classifications
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(f)) for f in sorted(glob.glob('all/*.json'))]
+          out={'test':'RC006_TEX_SOURCE_STRUCTURE_AGGREGATE','lane_count':len(rows),'passes':sum(bool(r.get('frozen_gate_pass')) for r in rows),'fails':sum(not bool(r.get('frozen_gate_pass')) for r in rows),'by_role':{r['role']:r.get('frozen_gate_pass') for r in rows},'all_pass':len(rows)==6 and all(r.get('frozen_gate_pass') for r in rows),'claim_lock':'Independent structural diagnostic only; no relaxation of lexical failures and no Eq29 amplitude authorization.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-tex-structure-summary
+          path: summary.json
+          if-no-files-found: error
