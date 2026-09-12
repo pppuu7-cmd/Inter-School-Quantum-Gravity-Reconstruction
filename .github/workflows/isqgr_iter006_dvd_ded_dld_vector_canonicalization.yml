@@ -1,0 +1,123 @@
+name: ISQGR Iter006 DED DLD Vector Canonicalization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr_iter006_dvd_ded_dld_vector_canonicalization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        asset: [DED, DLD]
+        representation: [ORIGINAL_EPS, GS_EPS2WRITE_NORMALIZED]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install vector dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ghostscript poppler-utils
+      - name: Fetch pinned source and canonicalize vector body
+        env:
+          ASSET: ${{ matrix.asset }}
+          REPRESENTATION: ${{ matrix.representation }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          echo '9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303  source.tar' | sha256sum -c -
+          tar -xf source.tar -C src
+          if [ "$ASSET" = DED ]; then P=src/_images/DEDconplex_plus_vg.eps; else P=src/_images/DLDandVertex.eps; fi
+          test -s "$P"
+          if [ "$REPRESENTATION" = GS_EPS2WRITE_NORMALIZED ]; then
+            gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=eps2write -sOutputFile=out/input.eps "$P"
+            IN=out/input.eps
+          else
+            cp "$P" out/input.eps
+            IN=out/input.eps
+          fi
+          gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -dEPSCrop -sOutputFile=out/vector.pdf "$IN"
+          pdftocairo -svg out/vector.pdf out/vector.svg
+          test -s out/vector.svg
+          python - <<'PY'
+          import hashlib,json,os,pathlib,re
+          asset=os.environ['ASSET']; rep=os.environ['REPRESENTATION']
+          s=pathlib.Path('out/vector.svg').read_text(errors='strict')
+          # Freeze glyph exclusion to literal SVG defs block; retain rendered-body geometry exactly.
+          body=re.sub(r'<defs\b.*?</defs>','',s,flags=re.S|re.I)
+          paths=re.findall(r'<path\b[^>]*\bd\s*=\s*(["\'])(.*?)\1',body,flags=re.S|re.I)
+          ds=[re.sub(r'\s+',' ',x[1]).strip() for x in paths]
+          if not ds: raise SystemExit('no body geometric paths')
+          ordered=sorted(ds)
+          payload='\n---PATH---\n'.join(ordered).encode()
+          cmds={c:0 for c in 'MmLlCcQqAaHhVvZz'}
+          for d in ds:
+              for c in cmds: cmds[c]+=len(re.findall(re.escape(c),d))
+          root=re.search(r'<svg\b([^>]*)>',s,re.S|re.I)
+          if not root: raise SystemExit('no svg root')
+          attrs=root.group(1)
+          def attr(name):
+              m=re.search(r'\b'+re.escape(name)+r'\s*=\s*(["\'])(.*?)\1',attrs,re.S|re.I)
+              return re.sub(r'\s+',' ',m.group(2)).strip() if m else None
+          out={
+            'gate':'ITER006_DVD_DED_DLD_VECTOR_CANONICALIZATION',
+            'asset':asset,'representation':rep,'valid':True,
+            'body_path_count':len(ds),'use_count':len(re.findall(r'<use\b',body,re.I)),
+            'command_histogram':cmds,'body_path_multiset_sha256':hashlib.sha256(payload).hexdigest(),
+            'width':attr('width'),'height':attr('height'),'viewBox':attr('viewBox'),
+            'claim_lock':'Resolution-free vector prerequisite only; no embedding/refinement/bridge credit.'
+          }
+          pathlib.Path('out/result.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-vector-${{ matrix.asset }}-${{ matrix.representation }}
+          path: out/result.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ded-dld-vector-*
+          path: all
+      - name: Apply frozen exact-vector classifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(p)) for p in glob.glob('all/**/result.json',recursive=True)]
+          valid=(len(rows)==4 and all(r.get('valid') for r in rows))
+          by={(r['asset'],r['representation']):r for r in rows}
+          keys=['body_path_multiset_sha256','body_path_count','command_histogram','use_count','width','height','viewBox']
+          stable={}
+          if valid:
+              for a in ['DED','DLD']:
+                  x=by[(a,'ORIGINAL_EPS')]; y=by[(a,'GS_EPS2WRITE_NORMALIZED')]
+                  stable[a]=all(x.get(k)==y.get(k) for k in keys)
+          if not valid: cl='INVALID_SOURCE_OR_INFRASTRUCTURE'
+          elif stable=={'DED':True,'DLD':True}: cl='DED_DLD_VECTOR_CANONICALIZATION_REPRESENTATION_STABLE'
+          elif stable=={'DED':False,'DLD':True}: cl='DED_VECTOR_CANONICALIZATION_UNSTABLE_DLD_STABLE'
+          elif stable=={'DED':True,'DLD':False}: cl='DLD_VECTOR_CANONICALIZATION_UNSTABLE_DED_STABLE'
+          else: cl='DED_DLD_VECTOR_CANONICALIZATION_UNSTABLE'
+          out={'gate':'ITER006_DVD_DED_DLD_VECTOR_CANONICALIZATION','valid':valid,'asset_stability':stable,'classification':cl,'lane_count':len(rows),'bridge_credit':False,'refinement_map_authorized':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-vector-canonicalization-summary
+          path: summary.json
+          if-no-files-found: error
