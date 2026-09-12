@@ -1,0 +1,45 @@
+name: ISQGR CEMR Finite-Surface Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'code/cemr_finite_surface_inverse.py'
+      - 'code/cemr_finite_surface_campaign_summary.py'
+      - 'results/ITER002_CEMR_FINITE_SURFACE_INVERSION_PROTOCOL.md'
+      - '.github/workflows/isqgr-cemr-finite-surface-audit.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy pytest
+      - name: Re-run fail-closed unit tests
+        working-directory: code
+        run: pytest -q test_cemr_finite_surface_inverse.py
+      - name: Re-run preregistered campaign and build audit summary
+        working-directory: code
+        run: python cemr_finite_surface_campaign_summary.py
+      - name: Commit auditable numerical summary
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/ITER002_CEMR_FINITE_SURFACE_INVERSION.json results/ITER002_CEMR_FINITE_SURFACE_INVERSION.md
+          if git diff --cached --quiet; then
+            echo 'Audit summary already current.'
+          else
+            git commit -m 'Record audited CEMR finite-surface inversion results'
+            git push
+          fi
