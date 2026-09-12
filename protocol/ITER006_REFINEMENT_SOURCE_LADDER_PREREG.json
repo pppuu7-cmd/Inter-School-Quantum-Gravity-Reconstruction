@@ -1,0 +1,54 @@
+{
+  "gate": "ITER006_REFINEMENT_SOURCE_LADDER",
+  "date": "2026-09-12",
+  "objective": "Locate source-authoritative mathematical objects relevant to an eventual coarse↔fine amplitude bridge after the pinned DVD source failed to supply one, while preventing semantic splicing of unrelated maps.",
+  "sources": [
+    {
+      "arxiv": "1205.6127",
+      "role": "FORMAL_CONSISTENT_BOUNDARY",
+      "expected_scope": "coarse/fine boundary configuration or Hilbert spaces, embedding maps, cylindrical consistency"
+    },
+    {
+      "arxiv": "1407.7746",
+      "role": "SPIN_FOAM_BACKGROUND_INDEPENDENT_RG",
+      "expected_scope": "spin-foam/path-integral renormalization and cylindrical consistency"
+    },
+    {
+      "arxiv": "1609.02429",
+      "role": "EXECUTABLE_TNR_EPRL_FK_ANALOGUE",
+      "expected_scope": "tensor-network coarse graining and SVD-derived embedding maps for q-deformed EPRL/FK spin-net analogue"
+    },
+    {
+      "arxiv": "2012.11536",
+      "role": "LORENTZIAN_EPRL_KINEMATIC_GEOMETRIC_MAP",
+      "expected_scope": "SU(2)↔SL(2,C) quantum geometric embedding/projection maps; explicitly not presumed to be discretization refinement"
+    },
+    {
+      "arxiv": "2211.09578",
+      "role": "REFINEMENT_FRAMEWORK_REVIEW",
+      "expected_scope": "consistent-boundary refinement/renormalization framework and current algorithmic status"
+    }
+  ],
+  "frozen_query_classes": {
+    "embedding": "embedding map|embedding maps|injective|isometric",
+    "cylindrical": "cylindrical consistency|cylindrically consistent",
+    "boundary_spaces": "boundary Hilbert|Hilbert space|coarse boundary|finer boundary|refinement of",
+    "amplitude_consistency": "amplitude map|amplitude maps|renormalized amplitude|transition amplitude",
+    "coarse_graining": "coarse graining|coarse-graining|coarser|finer|renormalization",
+    "lorentzian_eprl": "Lorentzian EPRL|EPRL/FK|EPRL"
+  },
+  "semantic_role_rule": {
+    "FORMAL_REFINEMENT_MAP_CANDIDATE": "An explicit map iota/H_coarse→H_fine or equivalent mathematical construction between discretization levels is present.",
+    "AMPLITUDE_CONSISTENCY_CANDIDATE": "An explicit cylindrical/amplitude consistency relation across refinement levels is present.",
+    "EXECUTABLE_COARSE_GRAINING_MAP_CANDIDATE": "A concrete numerical/tensor contraction map from fine to effective coarse degrees of freedom is specified.",
+    "KINEMATIC_REPRESENTATION_MAP_ONLY": "The map changes representation/covariance data at a fixed discretization and must not be counted as coarse↔fine refinement.",
+    "FRAMEWORK_ONLY": "The source describes the programme but does not supply an executable map for the target Lorentzian DVD amplitude."
+  },
+  "promotion_rule": "No source is allowed to authorize a Lorentzian DVD refinement bridge unless a later compatibility gate demonstrates matching domain/codomain, boundary semantics, amplitude semantics, and no-retuning transport. Keyword overlap is never sufficient.",
+  "claim_locks": [
+    "DVD shell depth D is not refinement.",
+    "Euclidean/q-deformed TNR and Lorentzian EPRL DVD amplitudes are not to be spliced without an explicit compatibility map.",
+    "Y/quantum-geometric SU(2)→SL(2,C) embeddings are not automatically coarse→fine discretization embeddings.",
+    "BRIDGE_DERIVED remains false until an executable held-out coarse↔fine amplitude gate passes."
+  ]
+}
