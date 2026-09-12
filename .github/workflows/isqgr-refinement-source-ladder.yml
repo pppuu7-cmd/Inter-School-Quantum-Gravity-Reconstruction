@@ -1,0 +1,127 @@
+name: ISQGR Refinement Source Ladder
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_REFINEMENT_SOURCE_LADDER_PREREG.json'
+      - '.github/workflows/isqgr-refinement-source-ladder.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+
+jobs:
+  source:
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        include:
+          - arxiv: '1205.6127'
+            role: 'FORMAL_CONSISTENT_BOUNDARY'
+          - arxiv: '1407.7746'
+            role: 'SPIN_FOAM_BACKGROUND_INDEPENDENT_RG'
+          - arxiv: '1609.02429'
+            role: 'EXECUTABLE_TNR_EPRL_FK_ANALOGUE'
+          - arxiv: '2012.11536'
+            role: 'LORENTZIAN_EPRL_KINEMATIC_GEOMETRIC_MAP'
+          - arxiv: '2211.09578'
+            role: 'REFINEMENT_FRAMEWORK_REVIEW'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch source archive
+        env:
+          ARXIV_ID: '${{ matrix.arxiv }}'
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          (curl -fL --retry 3 --retry-delay 2 "https://export.arxiv.org/e-print/${ARXIV_ID}" -o source.tar || curl -fL --retry 3 --retry-delay 2 "https://arxiv.org/e-print/${ARXIV_ID}" -o source.tar)
+          sha256sum source.tar | tee source.sha256
+          tar -xf source.tar -C source
+      - name: Extract frozen semantic contexts
+        env:
+          ARXIV_ID: '${{ matrix.arxiv }}'
+          SOURCE_ROLE: '${{ matrix.role }}'
+        run: |
+          python - <<'PY'
+          import os,re,json,pathlib,hashlib
+          root=pathlib.Path('source')
+          patterns={
+            'embedding':r'embedding map|embedding maps|injective|isometric',
+            'cylindrical':r'cylindrical consistency|cylindrically consistent',
+            'boundary_spaces':r'boundary Hilbert|Hilbert space|coarse boundary|finer boundary|refinement of',
+            'amplitude_consistency':r'amplitude map|amplitude maps|renormalized amplitude|transition amplitude',
+            'coarse_graining':r'coarse graining|coarse-graining|coarser|finer|renormalization',
+            'lorentzian_eprl':r'Lorentzian EPRL|EPRL/FK|EPRL'
+          }
+          docs=[]
+          for p in sorted(root.rglob('*')):
+            if p.is_file() and p.suffix.lower() in {'.tex','.txt','.bib','.md'}:
+              try: docs.append((p,p.read_text(errors='ignore').splitlines()))
+              except Exception: pass
+          out_hits={}
+          for key,pat in patterns.items():
+            rx=re.compile(pat,re.I); hits=[]
+            for p,lines in docs:
+              for i,line in enumerate(lines):
+                if rx.search(line):
+                  a=max(0,i-4); b=min(len(lines),i+5)
+                  hits.append({'file':str(p.relative_to(root)),'line':i+1,'context':'\n'.join(lines[a:b])[:5000]})
+            out_hits[key]={'hit_count':len(hits),'hits':hits[:60]}
+          sha=hashlib.sha256(pathlib.Path('source.tar').read_bytes()).hexdigest()
+          out={
+            'gate':'ITER006_REFINEMENT_SOURCE_LADDER',
+            'arxiv':os.environ['ARXIV_ID'],
+            'role':os.environ['SOURCE_ROLE'],
+            'source_archive_sha256':sha,
+            'queries':out_hits,
+            'classification':'SOURCE_CONTEXTS_READY_FOR_SEMANTIC_ROLE_CLASSIFICATION',
+            'claim_lock':'Contexts are evidence inventory only; semantic level and Lorentzian-DVD compatibility must be classified separately.'
+          }
+          pathlib.Path('audit.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'arxiv':out['arxiv'],'role':out['role'],'counts':{k:v['hit_count'] for k,v in out_hits.items()}},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 'refinement-source-${{ matrix.arxiv }}'
+          path: audit.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: source
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'refinement-source-*'
+          path: all
+      - name: Aggregate source ladder
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(f)) for f in glob.glob('all/*/audit.json')]
+          rows=sorted(rows,key=lambda x:x['arxiv'])
+          complete=len(rows)==5
+          out={
+            'gate':'ITER006_REFINEMENT_SOURCE_LADDER',
+            'complete':complete,
+            'source_count':len(rows),
+            'sources':[{
+              'arxiv':r['arxiv'],'role':r['role'],'source_archive_sha256':r['source_archive_sha256'],
+              'counts':{k:v['hit_count'] for k,v in r['queries'].items()}
+            } for r in rows],
+            'classification':'SOURCE_LADDER_CONTEXTS_READY_FOR_SEMANTIC_CLASSIFICATION' if complete else 'INFRASTRUCTURE_FAIL_INCOMPLETE_SOURCE_LADDER',
+            'claim_lock':'No source is promoted by hit counts. Explicit mathematical domain/codomain and amplitude/refinement semantics must be read before any compatibility or bridge claim.'
+          }
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not complete: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: refinement-source-ladder-summary
+          path: summary.json
+          if-no-files-found: error
