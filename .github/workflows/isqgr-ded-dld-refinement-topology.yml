@@ -1,0 +1,83 @@
+name: ISQGR DED DLD Refinement Topology Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_DED_DLD_REFINEMENT_TOPOLOGY_PREREG.json'
+      - '.github/workflows/isqgr-ded-dld-refinement-topology.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  source-topology:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned primary-source archives
+        run: |
+          set -euo pipefail
+          mkdir -p dvd ref
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o dvd.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o dvd.tar
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1010.5437 -o ref.tar || curl -fL --retry 3 https://arxiv.org/e-print/1010.5437 -o ref.tar
+          sha256sum dvd.tar ref.tar | tee source.sha256
+          tar -xf dvd.tar -C dvd
+          tar -xf ref.tar -C ref
+      - name: Extract source topology evidence without inferring an embedding
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,hashlib
+          def corpus(root):
+              parts=[]
+              for p in sorted(pathlib.Path(root).rglob('*')):
+                  if p.is_file() and p.suffix.lower() in {'.tex','.txt','.md','.bib'}:
+                      try: parts.append((str(p),p.read_text(errors='ignore')))
+                      except: pass
+              return parts
+          dvd=corpus('dvd'); ref=corpus('ref')
+          def hits(parts, pattern, radius=1100):
+              out=[]
+              rx=re.compile(pattern,re.I)
+              for fn,t in parts:
+                  for m in rx.finditer(t):
+                      out.append({'file':fn,'start':m.start(),'context':t[max(0,m.start()-radius):min(len(t),m.end()+radius)]})
+              return out
+          ded=hits(dvd,r'(?<![A-Za-z])D\s*E\s*D(?![A-Za-z])|two[- ]vertex[^\n]{0,120}edge')
+          dld=hits(dvd,r'(?<![A-Za-z])D\s*L\s*D(?![A-Za-z])|internal face')
+          joint=[]
+          for fn,t in dvd:
+              low=t.lower()
+              for key in ['ded','dld','internal face','two vertices','two-vertices','two vertex']:
+                  pos=low.find(key)
+                  if pos>=0: joint.append({'file':fn,'key':key,'context':t[max(0,pos-1800):min(len(t),pos+3000)]})
+          ref_sub=hits(ref,r'subfoam|sub-foam|injective|trivial extension|cylindrical consist')
+          ded_text='\n'.join(x['context'] for x in ded).lower()
+          dld_text='\n'.join(x['context'] for x in dld).lower()
+          ref_text='\n'.join(x['context'] for x in ref_sub).lower()
+          ded_struct=bool(ded) and ('edge' in ded_text) and ('vert' in ded_text)
+          dld_struct=bool(dld) and ('face' in dld_text) and ('edge' in dld_text or 'vert' in dld_text)
+          ref_ok=('injective' in ref_text) and ('trivial extension' in ref_text) and ('subfoam' in ref_text or 'sub-foam' in ref_text)
+          candidate=ded_struct and dld_struct and ref_ok
+          explicit_relation=False
+          for x in joint:
+              c=x['context'].lower()
+              if 'ded' in c and 'dld' in c and any(k in c for k in ['subfoam','sub-foam','embedding','refin']): explicit_relation=True
+          # We deliberately do not promote explicit_relation to strict embedding: no V/E/F incidence map is reconstructed here.
+          classification='DED_DLD_STRICT_EXTENSION_CANDIDATE_SOURCE_QUALIFIED' if candidate else 'DED_DLD_SOURCE_TOPOLOGY_UNRESOLVED'
+          out={'gate':'ITER006_DED_DLD_REFINEMENT_TOPOLOGY_AUDIT','ded_hit_count':len(ded),'dld_hit_count':len(dld),'refinement_hit_count':len(ref_sub),'ded_structural_context':ded_struct,'dld_structural_context':dld_struct,'refinement_definition_context':ref_ok,'textual_joint_relation_hint':explicit_relation,'strict_incidence_embedding_proven':False,'classification':classification,'claim_lock':'Counts/context cannot prove incidence embedding. Strict refinement remains unresolved until explicit V/E/F map is reconstructed and checked.','dvd_sha256':hashlib.sha256(pathlib.Path('dvd.tar').read_bytes()).hexdigest(),'ref_sha256':hashlib.sha256(pathlib.Path('ref.tar').read_bytes()).hexdigest()}
+          pathlib.Path('topology_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          pathlib.Path('ded_contexts.json').write_text(json.dumps(ded[:30],indent=2)+'\n')
+          pathlib.Path('dld_contexts.json').write_text(json.dumps(dld[:30],indent=2)+'\n')
+          pathlib.Path('joint_contexts.json').write_text(json.dumps(joint[:40],indent=2)+'\n')
+          pathlib.Path('refinement_contexts.json').write_text(json.dumps(ref_sub[:40],indent=2)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-refinement-topology-source-audit
+          path: |
+            topology_summary.json
+            ded_contexts.json
+            dld_contexts.json
+            joint_contexts.json
+            refinement_contexts.json
+            source.sha256
+          if-no-files-found: error
