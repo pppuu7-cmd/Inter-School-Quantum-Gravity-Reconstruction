@@ -1,0 +1,105 @@
+name: ISQGR Delta4 Precision Floor Robustness
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_precision_floor_robustness.py'
+      - '.github/workflows/isqgr-delta4-precision-floor.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  precision-floor:
+    strategy:
+      fail-fast: false
+      max-parallel: 24
+      matrix:
+        lane: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clone and pin public Delta4 source data
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Run precision-floor lane
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/delta4_precision_floor_robustness.py \
+            --source-root external/HowToSpinFoamAmplitude \
+            --lane ${{ matrix.lane }} --lanes 24 \
+            --output compute_out/precision_floor_lane_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-precision-floor-lane-${{ matrix.lane }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: precision-floor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: delta4-precision-floor-lane-*
+          path: all_lanes
+          merge-multiple: true
+      - name: Aggregate precision-floor robustness
+        run: |
+          python - <<'PY'
+          import glob,json,os,statistics
+          rows=[]
+          for f in glob.glob('all_lanes/*.json'):
+              rows.extend(json.load(open(f))['results'])
+          by_dataset={}
+          for r in rows:
+              key=f"g={r['gamma']},j={r['j_boundary']}"
+              by_dataset.setdefault(key,[]).append(r)
+          summary={}
+          for key,rr in sorted(by_dataset.items()):
+              good=[r for r in rr if r.get('identifiable')]
+              alphas=[r['power_alpha'] for r in good]
+              med=statistics.median(alphas) if alphas else None
+              spread=((max(alphas)-min(alphas))/max(abs(med),1e-12)) if alphas else None
+              summary[key]={
+                'n_thresholds':len(rr),'n_identifiable':len(good),
+                'median_power_alpha':med,
+                'relative_alpha_threshold_spread':spread,
+                'max_floor_fraction':max(r['floor_fraction'] for r in rr),
+                'power_preferred_fraction':(sum(r.get('power_preferred',False) for r in good)/len(good)) if good else 0.0,
+                'median_power_advantage':statistics.median([r['power_advantage'] for r in good]) if good else None
+              }
+          identifiable_all=bool(summary and all(d['n_identifiable']==4 for d in summary.values()))
+          threshold_stable=bool(identifiable_all and all(d['relative_alpha_threshold_spread'] <= 0.25 for d in summary.values()))
+          floor_material=bool(summary and any(d['max_floor_fraction'] >= 0.10 for d in summary.values()))
+          power_support=bool(summary and all(d['power_preferred_fraction'] >= 0.75 for d in summary.values()))
+          out={
+            'test':'LORENTZIAN_EPRL_DELTA4_PRECISION_FLOOR_AGGREGATE',
+            'n_tasks':len(rows),'by_dataset':summary,
+            'all_thresholds_identifiable':identifiable_all,
+            'threshold_stable_power_exponents':threshold_stable,
+            'material_precision_floor':floor_material,
+            'power_predictive_support':power_support,
+            'clean_asymptotic_identifiability':bool(identifiable_all and threshold_stable and power_support and not floor_material),
+            'preregistered_thresholds':{'relative_alpha_threshold_spread':0.25,'material_floor_fraction':0.10,'power_preferred_fraction':0.75},
+            'claim_lock':'A clean result means only that empirical Delta4 cutoff exponents are numerically identifiable under precision censoring. It does not imply a physical refinement operator, continuum limit, or new physics.'
+          }
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/delta4_precision_floor_summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-precision-floor-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
