@@ -1,0 +1,110 @@
+name: ISQGR Lorentzian EPRL DVD Dl0 Heldout Gamma
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_DVD_DL0_HELDOUT_GAMMA_PREREG.json'
+      - 'experiments/sl2cfoam_dvd_dl0_pilot.c'
+      - 'experiments/sl2cfoam_dvd_dl0_pilot_gate.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-dvd-dl0-heldout-gamma.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+env:
+  SL2CFOAM_SHA: '052e4346028870bd76f69a3034e6cae8defb8f7f'
+
+jobs:
+  heldout:
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        gamma: ['0.3','0.8','1.6','2.5','3.0']
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc-12 g++-12 m4 lzip wget ca-certificates libgmp-dev libmpfr-dev libmpc-dev libgsl-dev libopenblas-dev libblas-dev libomp-dev
+      - name: Checkout pinned sl2cfoam-next
+        run: |
+          git clone https://github.com/qg-cpt-marseille/sl2cfoam-next.git external/sl2cfoam-next
+          git -C external/sl2cfoam-next checkout ${SL2CFOAM_SHA}
+          test "$(git -C external/sl2cfoam-next rev-parse HEAD)" = "${SL2CFOAM_SHA}"
+      - name: Build Wigner dependencies
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          mkdir -p ext test/test_data
+          cd ext
+          wget -q https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -O wigxjpf.tar.gz
+          tar -xzf wigxjpf.tar.gz && mv wigxjpf-1.13 wigxjpf
+          make -C wigxjpf CC=gcc-12 -j2
+          wget -q https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz -O fastwigxj.tar.gz
+          tar -xzf fastwigxj.tar.gz && mv fastwigxj-1.4.1 fastwigxj
+          make -C fastwigxj CC=gcc-12 CXX=g++-12 -j2
+          cd ..
+          ./ext/fastwigxj/bin/hash_js --max-E-3j=24 /dev/null ./test/test_data/table_24.3j
+          ./ext/fastwigxj/bin/hash_js --max-E-6j=24 /dev/null ./test/test_data/table_24.6j
+      - name: Build pinned library and frozen pilot
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          make CC=gcc-12 BLAS=system OMP=0 lib -j2
+          test -s lib/libsl2cfoam.so
+          cp "$GITHUB_WORKSPACE/experiments/sl2cfoam_dvd_dl0_pilot.c" test/dvd_dl0_pilot.c
+          make CC=gcc-12 BLAS=system OMP=0 bin/dvd_dl0_pilot -j1
+          test -x bin/dvd_dl0_pilot
+      - name: Compute held-out frozen Dl0 contraction twice
+        env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/external/sl2cfoam-next/lib
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          cd external/sl2cfoam-next
+          ./bin/dvd_dl0_pilot '${{ matrix.gamma }}' | tee ../../compute_out/dvd_${{ matrix.gamma }}_r1.log
+          ./bin/dvd_dl0_pilot '${{ matrix.gamma }}' | tee ../../compute_out/dvd_${{ matrix.gamma }}_r2.log
+          cd ../..
+          python experiments/sl2cfoam_dvd_dl0_pilot_gate.py \
+            --run1 'compute_out/dvd_${{ matrix.gamma }}_r1.log' \
+            --run2 'compute_out/dvd_${{ matrix.gamma }}_r2.log' \
+            --gamma '${{ matrix.gamma }}' \
+            --output 'compute_out/dvd_${{ matrix.gamma }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'dvd-dl0-heldout-gamma-${{ matrix.gamma }}'
+          path: compute_out/*
+          if-no-files-found: warn
+
+  aggregate:
+    needs: heldout
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'dvd-dl0-heldout-gamma-*'
+          path: all
+          merge-multiple: true
+      - name: Aggregate frozen held-out gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          rows=sorted(rows,key=lambda x:x.get('gamma',0))
+          ok=len(rows)==5 and all(x.get('gate_pass') for x in rows)
+          o={'test':'LORENTZIAN_EPRL_DVD_DL0_HELDOUT_GAMMA_AGGREGATE','lane_count':len(rows),'all_pass':ok,
+             'classification':'DVD_DL0_HELDOUT_GAMMA_PASS' if ok else 'DVD_DL0_HELDOUT_GAMMA_FAIL',
+             'by_gamma':[{'gamma':x.get('gamma'),'dvd2_dl0':x.get('values_first',{}).get('dvd2_dl0'),'dvd3_dl0':x.get('values_first',{}).get('dvd3_dl0'),'repeat_max_relative_difference':x.get('repeat_max_relative_difference')} for x in rows],
+             'claim_lock':'Held-out non-retuned gamma transport of the same source-labelled Dl0 contraction only; no full spin-sum, convergence, refinement, continuum, bridge or novelty claim.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          if not ok: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dvd-dl0-heldout-gamma-summary
+          path: summary.json
+          if-no-files-found: error
