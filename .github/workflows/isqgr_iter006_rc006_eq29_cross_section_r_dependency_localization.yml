@@ -1,0 +1,155 @@
+name: ISQGR Iter006 RC006 Eq29 Cross Section R Dependency Localization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_cross_section_r_dependency_localization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [r_global, appendix_f_refs, exact_ref_graph]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+          test -s src/bc-spin-nets.tex
+      - name: Run frozen exact-ref localization
+        env:
+          MODE: ${{ matrix.mode }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,pathlib,re,collections
+          mode=os.environ['MODE']
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          active_lines=[]
+          for line in raw.splitlines(True):
+              cut=None
+              for i,ch in enumerate(line):
+                  if ch!='%': continue
+                  bs=0; j=i-1
+                  while j>=0 and line[j]=='\\': bs+=1; j-=1
+                  if bs%2==0: cut=i; break
+              active_lines.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+          active=''.join(active_lines)
+          labels=[(m.start(),m.group(1)) for m in re.finditer(r'\\label\{([^}]+)\}',active)]
+          bylab=collections.defaultdict(list)
+          for p,l in labels: bylab[l].append(p)
+          dup={l:ps for l,ps in bylab.items() if len(ps)!=1}
+          refs=[(m.start(),m.group(2)) for m in re.finditer(r'\\(eqref|ref)\{([^}]+)\}',active)]
+          rapp=[m.start() for m in re.finditer(r'\\mathcal\{R\}\s*(?:\^\{-1\})?',active)]
+          rtext=[m.start() for m in re.finditer(r'R\s*-?\s*matri',active,re.I)]
+          rpos=sorted(set(rapp+rtext))
+          r_near=sorted({l for lp,l in labels if any(abs(lp-rp)<=5000 for rp in rpos)})
+          af=list(re.finditer(r'Derivation\s+of\s+EPRL\s+amplitude',active,re.I))
+          if len(af)!=1 or dup:
+              out={'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'appendix_f_or_label_uniqueness','appendix_f_count':len(af),'duplicate_labels':sorted(dup)}
+              pathlib.Path(f'out/{mode}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out)); raise SystemExit(2)
+          st=af[0].start(); bib=active.find('\\begin{thebibliography}',st); en=bib if bib>=0 else len(active); aseg=active[st:en]
+          af_refs=sorted(set(m.group(2) for m in re.finditer(r'\\(eqref|ref)\{([^}]+)\}',aseg)))
+          resolved=sorted(r for r in af_refs if r in bylab)
+          if mode=='r_global':
+              neighborhoods=[]
+              for rp in rpos:
+                  labs=sorted(l for lp,l in labels if abs(lp-rp)<=5000)
+                  rfs=sorted(set(r for q,r in refs if abs(q-rp)<=5000))
+                  neighborhoods.append({'offset':rp,'labels':labs,'refs':rfs,'sha256':hashlib.sha256(active[max(0,rp-5000):min(len(active),rp+5000)].encode()).hexdigest()})
+              out={'mode':mode,'valid':bool(rpos),'classification':'R_GLOBAL_LOCALIZED' if rpos else 'INVALID_SOURCE_OR_IMPLEMENTATION','mathcal_R_count':len(rapp),'r_matrix_text_count':len(rtext),'r_near_labels':r_near,'neighborhoods':neighborhoods}
+          elif mode=='appendix_f_refs':
+              out={'mode':mode,'valid':True,'classification':'APPENDIX_F_REFS_LOCALIZED','appendix_f_sha256':hashlib.sha256(aseg.encode()).hexdigest(),'refs':af_refs,'resolved_refs':resolved,'unresolved_refs':sorted(set(af_refs)-set(resolved)),'resolved_offsets':{r:bylab[r][0] for r in resolved}}
+          else:
+              # A deterministic linear-TeX structural owner: a ref belongs to the closest preceding unique label until the next label.
+              labs_sorted=sorted(labels)
+              def owner(pos):
+                  lo=None
+                  for lp,l in labs_sorted:
+                      if lp>pos: break
+                      lo=l
+                  return lo
+              edges=[]
+              for rp,target in refs:
+                  src=owner(rp)
+                  if src and target in bylab and src!=target: edges.append((src,target))
+              edges=sorted(set(edges))
+              adj=collections.defaultdict(set)
+              for a,b in edges: adj[a].add(b); adj[b].add(a)
+              starts=resolved
+              targets=r_near
+              def shortest(s,t):
+                  if s==t: return [s]
+                  dq=collections.deque([[s]]); seen={s}
+                  while dq:
+                      p=dq.popleft()
+                      for v in sorted(adj[p[-1]]):
+                          if v in seen: continue
+                          np=p+[v]
+                          if v==t:return np
+                          seen.add(v); dq.append(np)
+                  return None
+              pairs=[]
+              for s in starts:
+                  for t in targets:
+                      p=shortest(s,t)
+                      if p: pairs.append({'appendix_f_ref':s,'r_near_label':t,'path':p})
+              if len(pairs)==0: cl='EQ29_R_DEPENDENCY_SOURCE_NEIGHBORHOOD_ONLY'
+              elif len(pairs)==1: cl='EQ29_R_DEPENDENCY_EXACT_REF_PATH_LOCALIZED'
+              else: cl='EQ29_R_DEPENDENCY_AMBIGUOUS_MULTIPLE_PATHS'
+              out={'mode':mode,'valid':True,'classification':cl,'appendix_f_resolved_refs':starts,'r_near_labels':targets,'directed_exact_ref_edges':edges,'reachable_pairs':pairs}
+          pathlib.Path(f'out/{mode}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not out.get('valid'): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-r-dependency-${{ matrix.mode }}
+          path: out/${{ matrix.mode }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: eq29-r-dependency-*
+          path: inputs
+          merge-multiple: true
+      - name: Apply frozen diagnostic classifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json,pathlib
+          names=['r_global','appendix_f_refs','exact_ref_graph']; rows={}
+          for n in names:
+              p=pathlib.Path('inputs')/f'{n}.json'
+              if not p.exists():
+                  out={'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':f'missing_{n}'}; pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2)+'\n'); raise SystemExit(2)
+              rows[n]=json.loads(p.read_text())
+          if not all(r.get('valid') for r in rows.values()): valid=False; cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          else: valid=True; cl=rows['exact_ref_graph']['classification']
+          out={'gate':'ITER006_RC006_EQ29_CROSS_SECTION_R_DEPENDENCY_LOCALIZATION','valid':valid,'classification':cl,'lane_classifications':{n:rows[n].get('classification') for n in names},'scientific_credit':0,'prior_literal_chain_blocked_preserved':True,'eq29_amplitude_authorized':False,'bridge_credit':False}
+          pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-cross-section-r-dependency-summary
+          path: out/summary.json
+          if-no-files-found: error
