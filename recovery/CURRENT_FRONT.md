@@ -2,77 +2,55 @@
 
 Date: 2026-09-12  
 Active iteration: `ITERATION_006`  
-Iteration completion: **64%**  
-Amplitude/refinement cross-realization validation: **39%**  
-Overall scientific programme readiness: **47%**  
+Iteration completion: **70%**  
+Amplitude/refinement cross-realization validation: **42%**  
+Overall scientific programme readiness: **49%**  
 Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
 ## Preserved blockers
 
 RC006 contraction serialization remains terminal `SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE`; minimal Eq.(29) amplitude remains BLOCKED. RC008 remains source-only BLOCKED. RC009 remains `SCOPED BLOCKED`. Lorentzian Delta4 finite-cutoff/profile/scaling remains `SATURATED NEGATIVE/SCOPED` with no bridge credit.
 
-The generic lexical/proximity source-selector route for arXiv:1801.03771 also remains a preserved source-authority FAIL: run `34701317882`, only 2/8 targets stable. It has not been repaired or promoted. The active route instead uses exact source labels `DVD2` and `DVD3` plus pinned equation hashes.
+The generic lexical/proximity selector for arXiv:1801.03771 remains a preserved source-authority FAIL (`34701317882`, 2/8 stable). The active DVD route uses exact source labels plus pinned source authority.
 
 ## Genuine two-vertex Lorentzian EPRL — source-labelled DVD2/DVD3 path
 
-Pinned paper root SHA256: `27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1`.
-Pinned numerical kernel: `qg-cpt-marseille/sl2cfoam-next` commit `052e4346028870bd76f69a3034e6cae8defb8f7f`.
+Pinned source: arXiv:1801.03771, source root SHA256 `27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1`. Pinned kernel: `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f`.
 
-### Closed prerequisites
+### Closed prerequisites and finite-shell results
 
-The genuine `Dl0` two-vertex pilot remains PASS: run `34703528413`. The independent symbolic/source guard remains PASS: run `34703574873`. The non-retuned held-out `Dl0` gamma transport remains PASS 5/5: run `34703682106`.
+- genuine Dl0 two-vertex pilot PASS: `34703528413`;
+- independent symbolic/source guard PASS: `34703574873`;
+- Dl0 held-out gamma PASS 5/5: `34703682106`;
+- B4 multishell numerical-kernel PASS 12/12 after infrastructure-only Makefile-order repair: authoritative `34707794670`, aggregate `103591135360`, worst fast-vs-adaptive relative error `1.05909e-7 < 1e-5`;
+- symmetric finite DVD shell-sum PASS: `34708369655`, aggregate `103592649819`, artifact `10302776275`, digest `sha256:0ec040025f6cb55953cedbb6f79c28ab142a3563b09a41be039867e422693796`;
+- inherited held-out multishell gamma strong support 5/5: `34708554742`, aggregate `103593421078`, artifact `10302661928`, digest `sha256:a9279bd804a1768330edf4c86a5fc560b3485e38ee323943bc941da2950efbdb`;
+- asymmetric mixed-spin B4 prerequisite PASS 3/3: `34708641965`, aggregate `103593486884`, artifact `10302557098`, worst relative error `2.49464e-8 < 1e-5`;
+- preregistered asymmetric finite-shell DVD2/DVD3 PASS: `34708800382`, aggregate `103593818869`, artifact `10301904355`, digest `sha256:80ef723faff1fde9a7e6865a53cb316306166aa7076ac68aaa113c5c8f0081f6`;
+- asymmetric held-out gamma strong support 5/5: `34709003568`, head `e4c63f51acc538c734284110331ae4c4991641af`, aggregate `103594420826`, artifact `10302597203`, digest `sha256:755d1da35be78fa50f4a24e64a88d49590576ccf67d54956d20d76fe3568da52`.
 
-The 12-lane B4 multi-shell primitive qualification is now terminal PASS. The original run `34706661403` was infrastructure-invalid before science because of a Makefile race. Build ordering alone was repaired; the scientific grid and threshold were unchanged. Authoritative repaired run `34707794670`, aggregate job `103591135360`: all 12 gamma × shell lanes passed the frozen `1e-5` fast-vs-accurate threshold. Worst observed error was `1.05909e-7` at gamma=2.0, Dl=3. Durable result: `results/ITER006_DVD_B4_MULTISHELL_KERNEL_PASS.md`.
+The latest asymmetric held-out gate used gamma `{0.3,0.8,1.6,2.5,3.0}` without retuning. For every lane and both DVD2/DVD3 amplitudes the frozen D1→D2 relative shell increment was smaller than D0→D1; repeat maximum relative difference was exactly `0.0`. Classification: `DVD_ASYMMETRIC_HELDOUT_STRONG_SUPPORT`.
 
-### Source-gated finite DVD shell sums — new terminal PASS
+Durable notes include `results/ITER006_DVD_MULTISHELL_HELDOUT_GAMMA_STRONG_SUPPORT.md`, `results/ITER006_DVD_ASYMMETRIC_FINITE_SHELL_SUM_PASS.md`, and `results/ITER006_DVD_ASYMMETRIC_HELDOUT_GAMMA_STRONG_SUPPORT.md`.
 
-The prospectively frozen finite shell-sum calculation is now terminal `DVD_FINITE_MULTISHELL_SUM_AGGREGATE_PASS`:
+## Interpretation lock
 
-- authoritative run `34708369655`;
-- source-manifest job `103592473582`: PASS before numerical jobs were released;
-- gamma jobs: `103592489921` (0.5), `103592489940` (1.2), `103592489928` (2.0): all PASS;
-- aggregate job `103592649819`: PASS;
-- aggregate artifact `10302776275`, digest `sha256:0ec040025f6cb55953cedbb6f79c28ab142a3563b09a41be039867e422693796`;
-- repeat maximum relative difference: exactly `0.0` in all lanes;
-- worst Dl0 regression relative error against the previous genuine two-vertex pilot: `1.4083e-16`.
+The finite-shell pattern has now transported across both held-out gamma values and a non-symmetric source-compatible boundary. This is meaningful robustness of the source-labelled two-vertex finite-cutoff calculation. It is **not** a convergence theorem, continuum limit, cylindrical-consistency statement, or refinement bridge. Auxiliary shell cutoff `D` must not be relabelled as refinement.
 
-Frozen symmetric boundary: `j_a=j'_a=1`, `i=t=i'=t'=1`; gamma `{0.5,1.2,2.0}`; finite auxiliary cutoffs `D={0,1,2}`.
+## Active gate — explicit refinement-map source authority
 
-Observed, but not promoted to a convergence theorem: for **both DVD2 and DVD3 at all three calibration gammas**, the relative D1→D2 shell increment is smaller than the D0→D1 increment. DVD2 and DVD3 also separate immediately for D>0, so the exact Dl0 equality is a special weighted-B4/normalization property rather than equality of auxiliary support.
+Because additional shell-density/scaling runs would have low bridge information gain, the next gate is a source-authority audit rather than another cutoff extension.
 
-Durable result: `results/ITER006_DVD_FINITE_MULTISHELL_SUM_PASS.md`.
+Preregistered protocol: `protocol/ITER006_DVD_REFINEMENT_MAP_SOURCE_AUTHORITY_PREREG.json` (commit `8b780bb82fe03670389e1b70ad24c54bb8ced536`). Workflow/launch commit: `5cab51746b6d8cc25a31c1f8b56638ae047f29b5`. Authoritative run: `34709790323`.
 
-The finite cutoff is a numerical regulator modeled on the same paper's labelled shell pattern. It is **not** a source-defined refinement map. Three pre-numerical source-gate attempts were correctly blocked before any gamma amplitude ran; their parser corrections are preserved in `protocol/ITER006_DVD_MULTISHELL_SOURCE_GATE_AMENDMENT.json`.
-
-### Auxiliary-support audit
-
-Response-blind combinatorics run `34708207163` preserved its prewritten classification `DVD_SUPPORT_COMBINATORICS_INCONCLUSIVE`, because its specific hypothesis was false. Raw support counts are nevertheless informative: DVD2 vs DVD3 admissible term counts are `3 vs 1` at D0, `21 vs 16` at D1, `66 vs 49` at D2, and `147 vs 100` at D3. Hence the Dl0 numerical equality is not explained by identical support cardinality. Durable note: `results/ITER006_DVD_AUXILIARY_SUPPORT_COMBINATORICS.md`.
-
-## Active compute — two independent fronts
-
-### 1. Inherited held-out gamma transport of the multi-shell pattern
-
-Run `34708554742` is active. Exact held-out gamma set `{0.3,0.8,1.6,2.5,3.0}` was inherited from the earlier Dl0 held-out test, before any D1/D2 held-out response existed. The source-manifest has already passed. The preregistered hypothesis is that for both amplitudes the D1→D2 relative shell increment is smaller than D0→D1. Strong support requires 5/5 lanes; natural support requires at least 4/5. Even strong support licenses only finite-cutoff pattern transport, not convergence.
-
-Protocol: `protocol/ITER006_DVD_MULTISHELL_HELDOUT_GAMMA_PREREG.json`.
-
-### 2. Asymmetric-boundary prerequisite
-
-A source-compatible asymmetric boundary was frozen before numerical response:
-
-`j=(1,2,2,2)`, `j'=(1,2,2,1)`, `i=t=i'=t'=1`.
-
-This choice satisfies the exact DVD2 deltas and shared D0 auxiliary-shell constraints while breaking the fully symmetric boundary. Before computing any asymmetric DVD amplitude, run `34708641965` is validating six representative mixed-spin B4 configurations at gamma `{0.5,1.2,2.0}` against adaptive integration with the unchanged `1e-5` threshold.
-
-Protocol: `protocol/ITER006_DVD_ASYMMETRIC_BOUNDARY_PREREG.json`.
+Six independent frozen source-query lanes audit the pinned arXiv source for an explicit mathematical coarse/refined boundary or amplitude map. The aggregate is only a context inventory; terminal source-authority classification requires reading the raw contexts against the preregistered rule. A positive source candidate would only authorize a later exact-map numerical gate; it would not itself derive a bridge. A negative result is scoped only to the pinned source.
 
 ## Exact next gate / claim locks
 
-1. Consume/classify held-out run `34708554742`.
-2. Consume/classify mixed-B4 prerequisite `34708641965`.
-3. Only if the mixed-B4 prerequisite passes, implement the already frozen asymmetric finite-shell DVD2/DVD3 calculation. No parameter retuning is allowed after seeing the mixed-B4 values.
-4. A shell cutoff is not a refinement map. A bridge still requires an explicit coarse/refined amplitude map plus held-out non-retuned transfer.
+1. Consume raw artifacts/contexts from `34709790323` and classify `EXPLICIT_REFINEMENT_MAP_CANDIDATE_FOUND`, `SOURCE_REFINEMENT_AUTHORITY_NOT_FOUND`, `SOURCE_AUDIT_INCONCLUSIVE`, or infrastructure failure strictly under the preregistered rule.
+2. If an explicit source map is found, freeze that exact map and perform coarse/refined amplitude transport with held-out non-retuned boundary/gamma tests.
+3. If no map exists in the pinned source, do not reinterpret shell cutoff as refinement; broaden the source-faithful Lorentzian EPRL refinement search or advance another independent source-authorized bridge front.
 
-Iteration completion is **64%**. Amplitude/refinement cross-realization readiness is **39%**. Overall readiness is **47%**. Candidate theory remains **0% / UNFORMED**.
+Iteration completion is **70%**. Amplitude/refinement cross-realization validation is **42%**. Overall readiness is **49%**. Candidate theory remains **0% / UNFORMED**.
 
-`ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate equations and RQIR/KMQGB promotion remain forbidden.
+`ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate action/Hamiltonian/field equations, and RQIR/KMQGB promotion remain forbidden.
