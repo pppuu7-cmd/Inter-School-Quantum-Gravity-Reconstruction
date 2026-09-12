@@ -1,0 +1,28 @@
+{
+  "gate": "ITER006_DVD23_DIRECT_REFINEMENT_STRUCTURAL_AUDIT",
+  "date": "2026-09-12",
+  "sources": {
+    "dvd": "arXiv:1801.03771",
+    "refinement": "arXiv:1010.5437"
+  },
+  "question": "Can DVD2 and DVD3 be directly related as a nontrivial trivial-extension refinement under the fixed-boundary foam order of arXiv:1010.5437?",
+  "frozen_source_facts_to_verify": [
+    "The DVD family is a one-vertex dipole-vertex-dipole foam family.",
+    "Appendix C/Figure 20 lists four topologically distinct DVD vertex graphs when non-minimal-cycle faces are allowed.",
+    "Figure 20 states these are integrable graphs for a 4-valent vertex with eight faces.",
+    "DVD2 and DVD3 are respectively the second and third Figure-20 vertex graphs.",
+    "arXiv:1010.5437 defines C1<=C2 by an incidence-preserving embedding and defines a trivial extension by assigning j=0 to faces present only in the larger foam."
+  ],
+  "frozen_logic": {
+    "face_cardinality_argument": "If both candidate foams contain exactly 8 faces, an injective map F(C1)->F(C2) is bijective. Hence a direct C1->C2 trivial extension has zero additional faces in C2 on which to place the required new trivial j=0 coloring.",
+    "topology_argument": "If the complete face set is already exhausted and the two source graphs are explicitly topologically distinct, the source does not authorize treating one as the other's nontrivial trivial extension.",
+    "positive_direct_refinement_rule": "DIRECT_REFINEMENT_CANDIDATE only if the source audit finds a strict larger-foam face set or an explicit incidence embedding despite the equal-face/topology facts.",
+    "negative_rule": "DIRECT_TRIVIAL_EXTENSION_EXCLUDED if both have 8 faces, are source-labelled topologically distinct, and no explicit direct embedding is supplied."
+  },
+  "claim_locks": [
+    "A negative direct DVD2/DVD3 result does not disprove fixed-boundary foam refinement in Lorentzian EPRL.",
+    "It only means a new explicit refined foam must be constructed rather than relabelling DVD2 or DVD3.",
+    "No amplitude values are inspected or used by this structural gate.",
+    "BRIDGE_DERIVED remains false."
+  ]
+}
