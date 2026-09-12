@@ -1,0 +1,32 @@
+name: ISQGR RC-008 Published Boundary Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-rc008-published-boundary-audit.yml'
+      - 'experiments/rc008_published_boundary_robustness_audit.py'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Compute source-data robustness diagnostics
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/rc008_published_boundary_robustness_audit.py \
+            --output compute_out/rc008_published_boundary_robustness.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-rc008-published-boundary-robustness
+          path: compute_out/*.json
+          if-no-files-found: error
