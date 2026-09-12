@@ -1,0 +1,27 @@
+{
+  "gate": "ITER006_LORENTZIAN_GRAPH_REFINEMENT_SOURCE_GATE",
+  "date": "2026-09-12",
+  "objective": "Determine whether primary spin-foam sources closest to the Lorentzian EPRL/DVD setting provide an explicit graph/foam refinement or subdivision operation together with an amplitude-consistency/cylindrical-consistency rule that can authorize a later DVD boundary-refinement implementation.",
+  "sources": [
+    {"arxiv":"0909.0939","role":"KKL_ARBITRARY_GRAPH_EPRL"},
+    {"arxiv":"1010.5227","role":"LOCAL_SPIN_FOAM_CYLINDRICAL_CONSISTENCY"},
+    {"arxiv":"1010.5437","role":"SUMMING_IS_REFINING_COMBINATORIAL_LIMIT"}
+  ],
+  "frozen_query_classes": {
+    "cylindrical": "cylindrical consistency|cylindrically consistent",
+    "refinement": "refinement|refine|refined|refining",
+    "subdivision": "subdivision|subdivide|subdividing|edge splitting|face splitting",
+    "boundary_graph": "boundary graph|spin network|boundary state|graph",
+    "trivial_labels": "trivial representation|zero spin|spin zero|j=0|trivial face",
+    "composition": "composition law|composition|gluing|glue",
+    "eprl_lorentzian": "EPRL|Lorentzian|SL(2,C)"
+  },
+  "positive_rule": "A positive candidate must contain an explicit mathematical refinement/subdivision map or equivalence relation and an amplitude-invariance/consistency/composition statement under that operation. Merely allowing arbitrary graphs or mentioning a continuum limit is insufficient.",
+  "compatibility_rule": "Even a positive source candidate only authorizes a later implementation if its operation can be applied to the two-4-link-dipole Lorentzian DVD boundary or to an explicitly equivalent EPRL boundary state without changing the physical semantic level.",
+  "claim_locks": [
+    "DVD2 and DVD3 are fixed-boundary foams and are not to be relabelled coarse/fine.",
+    "Booster shell cutoff D is not graph refinement.",
+    "Euclidean-only normalization results cannot be silently promoted to Lorentzian EPRL.",
+    "BRIDGE_DERIVED remains false until a numerical held-out boundary-refinement amplitude gate passes."
+  ]
+}
