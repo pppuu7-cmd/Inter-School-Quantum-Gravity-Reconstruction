@@ -1,0 +1,67 @@
+{
+  "protocol": "ITER006_DVD_MULTISHELL_CONTRACTION_PREREG",
+  "date": "2026-09-12",
+  "status": "FROZEN_BEFORE_NUMERICAL_RESPONSE",
+  "source": {
+    "arxiv_id": "1801.03771",
+    "root_sha256": "27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1",
+    "dvd2_equation_hash": "799f56dc22f55a09bf744d62c459ee95e38794e5be02c114a73d06c057d0e94c",
+    "dvd3_equation_hash": "7d2fb958574c76f67e52d32ffea2cb22beb01c1e7d6583d383fce159b2eadfab",
+    "same_paper_shell_pattern_label": "giorgio",
+    "same_paper_shell_pattern_hash": "01bee2ae0c4b3455c9b9fd3a69af23a4c7c9fa1d7d6cf3557bdab86897ae5d2"
+  },
+  "numerical_kernel": {
+    "repository": "qg-cpt-marseille/sl2cfoam-next",
+    "commit": "052e4346028870bd76f69a3034e6cae8defb8f7f",
+    "primitive": "sl2cfoam_b4",
+    "multishell_prerequisite_run": 34707794670,
+    "multishell_prerequisite": "12/12 PASS"
+  },
+  "frozen_boundary": {
+    "j1_j2_j3_j4": [1, 1, 1, 1],
+    "j1p_j2p_j3p_j4p": [1, 1, 1, 1],
+    "i": 1,
+    "t": 1,
+    "ip": 1,
+    "tp": 1
+  },
+  "grid": {
+    "gamma": [0.5, 1.2, 2.0],
+    "delta_l_max": [0, 1, 2],
+    "l_rule": "each unfixed auxiliary l_a takes integer spins j_a, j_a+1, ..., j_a+Delta_l_max"
+  },
+  "regulator_lock": "The finite l cutoff is a numerical shell regulator modeled on the same paper's labelled C_Delta_l shell-cutoff pattern. It is not a claim that the source defines a finite DVD2/DVD3 sum or a refinement map.",
+  "dvd2_reduction": {
+    "boundary_prefactor": 9,
+    "delta_collapse": "l4 = j3p = 1",
+    "sum": "sum over l1,l2,l3 in [1,1+D] and over kprime admissible simultaneously in the second and third B4 factors",
+    "weight": "2*kprime+1",
+    "sign": "+1 on the frozen integer-spin boundary",
+    "formula": "9*B4((1,1,1,1);(1,1,1,1);i=1,k=1)*SUM[(2k+1)*B4((1,1,1,1);(l1,l2,l3,1);i=1,k)*B4((1,1,1,1);(1,l3,l2,l1);i=1,k)]"
+  },
+  "dvd3_reduction": {
+    "boundary_prefactor": 27,
+    "sum": "sum over l1,l2,l3,l4 in [1,1+D]",
+    "formula": "27*SUM[B4((1,1,1,1);(1,1,l3,l4);i=1,k=1)*B4((1,1,1,1);(l1,l2,l3,l4);i=1,k=1)*B4((1,1,1,1);(1,1,l2,l1);i=1,k=1)]",
+    "inadmissible_rule": "a requested intertwiner element outside the B4 admissible range contributes zero"
+  },
+  "frozen_gates": {
+    "source_manifest_must_pass": true,
+    "repeat_relative_difference_max": 1e-12,
+    "delta_l_zero_regression_relative_error_max": 1e-12,
+    "all_values_finite": true,
+    "no_monotonicity_or_convergence_direction_gate": true
+  },
+  "delta_l_zero_reference": {
+    "0.5": 0.0005496983896037186,
+    "1.2": 0.000012780379206216302,
+    "2.0": 0.00000037591052442651034
+  },
+  "diagnostics_only": [
+    "relative shell increment from D-1 to D",
+    "DVD2/DVD3 ratio",
+    "normalized DVD2-DVD3 split",
+    "nonzero term counts"
+  ],
+  "claim_lock": "A PASS authorizes only a source-labelled finite shell-sum Lorentzian EPRL two-vertex amplitude diagnostic. It does not authorize refinement-map, cylindrical-consistency, continuum-limit, bridge, novelty, new-physics, or candidate-theory claims."
+}
