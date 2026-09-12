@@ -2,7 +2,7 @@
 
 Date: 2026-09-12  
 Active iteration: `ITERATION_006`  
-Iteration completion: **55%**  
+Iteration completion: **57%**  
 Overall scientific programme readiness: **44%**  
 Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
@@ -12,33 +12,39 @@ RC006 contraction serialization remains terminal `SCIENTIFIC_FAIL_CONTRACTION_SE
 
 ## Genuine multi-vertex Lorentzian EPRL
 
-Pinned source `arXiv:1801.03771` passed source qualification and exact extraction, but the frozen leave-one-anchor selection-robustness gate remained a scientific/source-authority FAIL: run `34701317882`, aggregate `103573499012`, artifact `10299439561`, only 2/8 stable. This negative result is preserved.
+Pinned source `arXiv:1801.03771` passed source qualification and exact extraction, but the frozen leave-one-anchor selection-robustness gate remains a preserved scientific/source-authority FAIL: run `34701317882`, aggregate `103573499012`, artifact `10299439561`, only 2/8 stable. The label-owner diagnostic run `34702654029` did not repair that generic source-lock.
 
-The subsequent label-owner diagnostic completed: run `34702654029`, head `a208f433bc8902bd5bd8eaa76abdee71d851674e`, aggregate job `103577055870`, summary artifact `10300861302`, classification `LABEL_OWNER_DIAGNOSTIC_COMPLETE`. Only `two_vertex_amplitude` and `cutoff_or_truncation` had a unique math-owner label (`decaffeinato`); the other four audited unstable targets had no math-owner label. Diagnostic only; it does not repair the failed generic source-lock.
+### Explicit source-labelled DVD2/DVD3 Δl=0 path
 
-### Explicit source-labelled DVD2/DVD3 Dl0 pilot
+The separately preregistered genuine two-vertex Lorentzian EPRL single-shell `Δl=0` pilot remains `SCIENTIFIC_PASS_SCOPED_DVD_DL0_TWO_VERTEX_PILOT`: run `34703528413`, head `cb21a8aaf938c8c893ec9ea58036522bfb382497`, aggregate job `103579476677`, artifact `10301595889`, digest `sha256:ef6ed6fa672b79eb259d8d348fe4aebb4983b8aa71966809d408ce8b63abc1d9`. Independent symbolic/source guard: run `34703574873`, job `103579481295`, artifact `10301042008`, `DVD_DL0_SYMBOLIC_GUARD_PASS`.
 
-A narrower explicit DVD2/DVD3 source path was separately preregistered. The genuine two-vertex Lorentzian EPRL single-shell `Delta l=0` pilot passed all three frozen gamma lanes:
+The held-out non-retuned gamma transport gate is now terminal scientific PASS:
 
-- run `34703528413`, head `cb21a8aaf938c8c893ec9ea58036522bfb382497`, aggregate job `103579476677`, summary artifact `10301595889`, digest `sha256:ef6ed6fa672b79eb259d8d348fe4aebb4983b8aa71966809d408ce8b63abc1d9`;
-- classification `SCIENTIFIC_PASS_SCOPED_DVD_DL0_TWO_VERTEX_PILOT`;
-- gamma `0.5`: DVD2/DVD3 `5.496983896037186e-4`;
-- gamma `1.2`: DVD2 `1.2780379206216302e-5`, DVD3 `1.2780379206216305e-5`;
-- gamma `2.0`: DVD2 `3.7591052442651034e-7`, DVD3 `3.759105244265104e-7`;
-- repeat relative difference `0` in all lanes.
+- run `34703682106`, head `958514e1342b451511c40188b776e19e76d2a1d0`;
+- aggregate job `103579890972`;
+- aggregate artifact `10301416544`, digest `sha256:590b11ec27f3d41ae5265b0c41091eb77303fd6e4a28db3914a838e59b38a425`;
+- classification `DVD_DL0_HELDOUT_GAMMA_PASS`;
+- all `5/5` held-out gamma lanes (`0.3,0.8,1.6,2.5,3.0`) passed the frozen gate;
+- repeat maximum relative difference was exactly `0.0` in every lane.
 
-Independent source/symbolic guard passed: run `34703574873`, head `8d79350e35acc772b12c00e74db059993d262bce`, job `103579481295`, artifact `10301042008`, classification `DVD_DL0_SYMBOLIC_GUARD_PASS`.
+Durable result: `results/ITER006_DVD_DL0_HELDOUT_GAMMA_PASS.md` (result commit `447261e1eeaafcdce431cc4146846b6a5b8f4f3f`).
 
-This is only a source-faithful single-shell numerical contraction prerequisite; not a full spin sum, multi-shell convergence result, refinement map, continuum limit, bridge derivation or novelty claim.
+This closes only held-out transport/reproducibility of the same `Δl=0` source-labelled contraction. It does not establish a full spin sum, multi-shell convergence, refinement map, continuum limit, bridge derivation, or novelty.
 
-### Active compute
+### Active compute — frozen B4 multi-shell validity
 
-Run `34703682106`, head `958514e1342b451511c40188b776e19e76d2a1d0`: five independent held-out non-retuned gamma lanes (`0.3,0.8,1.6,2.5,3.0`) test transport/reproducibility of the same frozen source-labelled Dl0 contraction. Gate frozen prospectively in `protocol/ITER006_DVD_DL0_HELDOUT_GAMMA_PREREG.json`; no monotonicity/scaling behaviour is assumed or fitted.
+The next source-relevant numerical prerequisite was frozen before execution in `protocol/ITER006_DVD_B4_MULTISHELL_PREREG.json` (prereg commit `513dc6f2f59d0e1af21eb5fa2918ade052af5907`). It tests the pinned Lorentzian EPRL B4 primitive on the uniform shell slice `j_a=1`, `l_a=1+Δl`, with `gamma={0.5,1.2,2.0}` and `Δl={0,1,2,3}`: 12 independent lanes, `fail-fast:false`, maximum safe parallelism 6.
+
+Frozen validity criterion: upstream `b4_test` fast-vs-adaptive comparison must report at least one comparison, all relative errors finite, and maximum relative error `<=1e-5` in every lane. No monotonic shell-decay requirement is imposed or fitted.
+
+Authoritative workflow launch commit: `40cfcff8932a19a2be8086f9bffaa863d26efdab`. Run `34706661403` (`ISQGR Lorentzian EPRL DVD B4 MultiShell`) is the active compute authority.
 
 ## Exact next gate / claim locks
 
-Consume/classify run `34703682106`. The next high-information source-faithful direction is a prospectively frozen multi-shell diagnostic/reproduction object; it must not be promoted to a refinement map without an explicit coarse/refined amplitude map and held-out transfer test.
+Consume/classify run `34706661403` from raw artifacts/logs. A PASS authorizes only a separately preregistered implementation of the **labelled DVD2/DVD3 multi-shell contraction/shell sum**. A lane failure is first a `NUMERICAL/INFRASTRUCTURE` multi-shell-kernel validity failure until its causal source is localized; it is not a physical amplitude FAIL.
 
-Iteration completion is **55%**. Overall readiness remains **44%** and candidate theory remains **0% / UNFORMED**; no bridge credit is awarded for single-shell or transport diagnostics.
+Only after a source-faithful multi-shell contraction is validated may convergence/shell-contribution diagnostics be interpreted. None of these steps is a refinement map. A bridge claim still requires an explicit coarse/refined amplitude map plus held-out non-retuned transfer.
+
+Iteration completion is **57%**. Overall readiness remains **44%**. Candidate theory remains **0% / UNFORMED**.
 
 `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate equations and RQIR/KMQGB promotion remain forbidden.
