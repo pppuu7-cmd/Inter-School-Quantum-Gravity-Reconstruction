@@ -1,0 +1,68 @@
+name: ISQGR Lorentzian EPRL Two Vertex Source Graph Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/lorentzian_eprl_two_vertex_source_graph_audit.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-two-vertex-source-graph-audit.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+env:
+  ARXIV_ID: '1801.03771'
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        mode: [label_graph, equation_bundle, resource_manifest]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Run source-authored audit
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_two_vertex_source_graph_audit.py --source-dir external/two_vertex_src --mode '${{ matrix.mode }}' --output 'compute_out/${{ matrix.mode }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'two-vertex-source-graph-${{ matrix.mode }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'two-vertex-source-graph-*'
+          path: all
+          merge-multiple: true
+      - name: Aggregate diagnostics without promotion
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[]
+          for f in glob.glob('all/*.json'):
+            x=json.load(open(f)); rows.append({'mode':x.get('mode'),'valid':x.get('valid'),'classification':x.get('classification'),'root_sha256':x.get('root_sha256'),'promotion_authorized':x.get('promotion_authorized')})
+          valid=len(rows)==3 and all(r.get('valid') for r in rows) and len({r.get('root_sha256') for r in rows})==1
+          o={'test':'LORENTZIAN_EPRL_TWO_VERTEX_SOURCE_GRAPH_AUDIT_AGGREGATE','valid':valid,'record_count':len(rows),'records':rows,'classification':'SOURCE_GRAPH_AUDIT_COMPLETE' if valid else 'SOURCE_GRAPH_AUDIT_INCOMPLETE','promotion_authorized':False,'interpretation_lock':'Diagnostic only; source-lock/numerical implementation require a separately preregistered semantic authority gate.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: two-vertex-source-graph-summary
+          path: summary.json
+          if-no-files-found: error
