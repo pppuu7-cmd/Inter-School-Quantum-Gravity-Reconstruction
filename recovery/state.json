@@ -2,19 +2,20 @@
   "project": "Inter-School Quantum Gravity Reconstruction",
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-12",
-  "phase": "PHASE_1_BRIDGE_FALSIFICATION_ACTIVE",
-  "active_iteration": "ITERATION_004",
-  "iteration_completion_percent": 90,
-  "last_completed_iteration": "ITERATION_003",
+  "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
+  "active_iteration": "ITERATION_006",
+  "iteration_completion_percent": 12,
+  "last_completed_iteration": "ITERATION_005",
   "constitution": "docs/CONSTITUTION.md",
   "active_bridge_hypotheses": [
     "BH-001_SCALE_COMPATIBLE_PHYSICAL_COMPOSITION",
     "BH-001B_BOUNDARY_AWARE_COMPOSITIONAL_COHERENCE",
     "BH-002_CAUSAL_ENTANGLEMENT_METRIC_RECONSTRUCTION",
     "BH-003_CAUSAL_SPECTRAL_ENTANGLEMENT_CLOSURE",
-    "BH-004_PROJECTOR_MEASURE_COVARIANT_SCALE_TRANSPORT"
+    "BH-004_PROJECTOR_MEASURE_COVARIANT_SCALE_TRANSPORT",
+    "BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR"
   ],
-  "lead_bridge_hypothesis": "BH-004_PROJECTOR_MEASURE_COVARIANT_SCALE_TRANSPORT",
+  "lead_bridge_hypothesis": "BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
   "accepted_recurrent_motifs": [
     "RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA"
   ],
@@ -27,18 +28,20 @@
     "known_schools_fail": false,
     "new_theory_required": false,
     "new_physics_found": false,
+    "bridge_derived": false,
     "rqir_promotion_authorized": false,
     "kmqgb_promotion_authorized": false
   },
   "readiness_percent": {
-    "repository_recovery_bootstrap": 97,
-    "source_grounded_interface_atlas": 45,
-    "recurrent_motif_search": 60,
-    "accepted_recurrent_motifs": 25,
-    "bridge_principle_validation": 62,
-    "executable_cross_school_obstructions": 74,
+    "repository_recovery_bootstrap": 99,
+    "source_grounded_interface_atlas": 49,
+    "recurrent_motif_search": 68,
+    "accepted_recurrent_motifs": 30,
+    "bridge_principle_validation": 76,
+    "executable_cross_school_obstructions": 84,
+    "amplitude_refinement_cross_realization_validation": 18,
     "candidate_theory_construction": 0,
-    "overall_scientific_programme": 34
+    "overall_scientific_programme": 42
   },
   "realization_cards": [
     "RC-001_EPRL_LORENTZIAN_VERTEX",
@@ -73,7 +76,15 @@
     "RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA",
     "BH-004_PROJECTOR_MEASURE_COVARIANT_SCALE_TRANSPORT",
     "ITER004_BH004_NEAREST_FRAMEWORK_AUDIT",
-    "ITER004_BH004_NESTED_THINNING_HELDOUT_TRANSPORT"
+    "ITER004_BH004_NESTED_THINNING_HELDOUT_TRANSPORT",
+    "ITER004_BH004_STABLE_CORE_NEGATIVE_ENVELOPE_SIGNAL",
+    "BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
+    "ITER004_BH004B_ENVELOPE_LOCAL_SELECTOR_HELDOUT",
+    "ITER005_RC006_EPRL_FUSION_SUPPORT_CLOSURE",
+    "ITER005_RC006_MULTI_STEP_SUPPORT_ENVELOPE_GROWTH",
+    "ITER005_BH004B_LONGJUMP_HELDOUT",
+    "ITER005_EPRL_SHELL_DISTANCE_ORIENTATION",
+    "ITER005_FRG_EH_SCHEME_COVARIANCE"
   ],
   "compute_campaigns": {
     "campaign_001": {"workflow_run": 34652279466, "reproduction_run": 34652499160, "status": "REPRODUCED_EXECUTABLE"},
@@ -87,42 +98,52 @@
     "eprl_crossshell_gamma": {"workflow_run": 34664303833, "status": "SUCCESS"},
     "eprl_shared_unitary_orientation_null": {"workflow_run": 34664484242, "status": "SUCCESS_STRONG_SUPPORT_ALL_GAMMA"},
     "bh004_nested_thinning_heldout": {"workflow_run": 34664755715, "status": "SUCCESS_NATURAL_SUPPORT_STRONG_NOT_REACHED"},
-    "bh004_stable_core_disjoint_seed_holdout": {"workflow_run": 34664913496, "status": "IN_PROGRESS"}
+    "bh004_stable_core_disjoint_seed_holdout": {"workflow_run": 34664913496, "status": "SUCCESS_PREREGISTERED_STABLE_CORE_FAIL_ENVELOPE_SIGNAL"},
+    "bh004b_envelope_local_selector": {"workflow_run": 34665149672, "status": "SUCCESS_NATURAL_SUPPORT_STRONG_NOT_REACHED"},
+    "iter005_rc006_fusion_support": {"workflow_run": 34665801653, "status": "SUCCESS_SEMANTIC_BH004B_SUPPORT_ALL_SOURCE_CASES"},
+    "iter005_bh004b_longjump": {"workflow_run": 34665815765, "status": "SUCCESS_STRONG_SUPPORT_BOTH_LANES"},
+    "iter005_eprl_shell_distance": {"workflow_run": 34665851619, "status": "SUCCESS_STRONG_SUPPORT_ALL_GAMMA"},
+    "iter005_frg_eh_scheme_covariance": {"workflow_run": 34665907393, "status": "SUCCESS_COVARIANCE_STRESS"},
+    "iter005_rc006_support_growth": {"workflow_run": 34665997309, "status": "SUCCESS_MULTI_STEP_ENVELOPE_GROWTH"},
+    "iter006_fusion_basis_amplitude_control": {"head_sha": "2917fce29f9dca8c4741be4f6aee2eaccca75dda", "status": "LAUNCHED"}
+  },
+  "iteration_005_preregistered_promotion": {
+    "required_positive_lines": 2,
+    "positive_lines": 3,
+    "causal_longjump": "STRONG_PASS_BOTH_LANES",
+    "rc006_support_factorization": "PASS_ALL_SOURCE_CASES",
+    "lorentzian_eprl_far_shell": "STRONG_PASS_ALL_GAMMA",
+    "decision": "BH004_BH004B_STRENGTHENED_NOT_BRIDGE_DERIVED"
   },
   "active_gates": [
-    "CEMR-I1_IDENTIFIABILITY_GATE",
-    "CEMR-I2_CAUSAL_RESCUE_GATE",
-    "RM001_ORIENTATION_CLOSURE_GATE",
-    "BH004_THREE_SCALE_HELDOUT_TRANSPORT_GATE_NATURAL_PASS",
-    "BH004_STABLE_CORE_DISJOINT_SEED_FOURTH_LEVEL_GATE"
+    "BH004B_INDEPENDENT_AMPLITUDE_REFINEMENT_GATE",
+    "RC006_QDEFORMED_AMPLITUDE_TNR_REPRODUCTION_GATE",
+    "NEAREST_FRAMEWORK_ABSORPTION_CONTROL",
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE",
+    "CEMR_SOURCE_DEFINED_CAUSAL_RESCUE_GATE"
   ],
-  "iteration_004_targets": [
-    "complete_BH004_stable_core_disjoint_seed_fourth_level_holdout",
-    "determine_whether_unstable_principal_direction_tail_is_source_independently_identifiable",
-    "separate_projector_orientation_transport_from_measure_normalization_flow",
-    "seek_second_true_scale_refinement_realization_beyond_causal_set",
-    "replace_remaining_synthetic_causal_rescue_component_with_source_defined_observable_if_possible",
-    "keep_candidate_equations_locked_until_BH004_cross_realization_scale_gate"
+  "iteration_006_targets": [
+    "reproduce_independent_qdeformed_amplitude_coarse_graining_code_and_extract_embedding_map_svd_invariants",
+    "reconstruct_or_reproduce_RC006_amplitude_level_TNR_for_at_least_one_BC_control_and_one_EPRL_FK_case",
+    "define_amplitude_level_envelope_selector_metric_before_inspecting_target_results",
+    "seek_multivertex_Lorentzian_EPRL_or_true_spinfoam_refinement_realization",
+    "test_whether_BH004B_is_absorbed_by_standard_embedding_map_TNR_structure",
+    "keep_candidate_theory_equations_locked_until_independent_amplitude_refinement_gate"
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
-    "results/ITER004_BH004_NESTED_THINNING_HELDOUT_TRANSPORT.md",
-    "results/ITER004_BH004_NEAREST_FRAMEWORK_AUDIT.md",
+    "results/ITER005_BH004B_LONGJUMP_HELDOUT.md",
+    "results/ITER005_RC006_EPRL_FUSION_SUPPORT_CLOSURE.md",
+    "results/ITER005_RC006_MULTI_STEP_SUPPORT_ENVELOPE_GROWTH.md",
+    "results/ITER005_EPRL_SHELL_DISTANCE_ORIENTATION.md",
+    "results/ITER005_FRG_EH_SCHEME_COVARIANCE.md",
+    "results/ITER004_BH004B_ENVELOPE_LOCAL_SELECTOR_HELDOUT.md",
+    "hypotheses/BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR.md",
     "hypotheses/BH-004_PROJECTOR_MEASURE_COVARIANT_SCALE_TRANSPORT.md",
     "results/RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA_2026-09-12.md",
     "results/ITER004_RM001_SPECTRAL_INSUFFICIENCY_THEOREM.md",
     "results/ITER004_EPRL_SHARED_UNITARY_ORIENTATION_NULL.md",
-    "results/ITER004_EPRL_CROSSSHELL_GAMMA_ROBUSTNESS.md",
-    "results/BH003_SOURCE_SECTOR_THINNING_2026-09-12.md",
-    "results/BH003_THINNING_PROJECTOR_TRANSFER_NEGATIVE_2026-09-12.md",
-    "results/BH003_GEOMETRY_HOLDOUT_2026-09-12.md",
-    "results/BH001_BH003_SPECTRAL_CLOSURE_BRIDGE_2026-09-12.md",
-    "results/ITER004_CAUSAL_RESCUE_GATE.md",
-    "hypotheses/BH-003_CAUSAL_SPECTRAL_ENTANGLEMENT_CLOSURE.md",
-    "realizations/RC-007_CAUSAL_SET_SPACETIME_ENTANGLEMENT.md",
-    "results/ITER003_BH001_SCALE_COMPOSITION_LEAKAGE_IDENTITY.md",
-    "realizations/RC-006_EPRL_FK_TENSOR_COARSE_GRAINING.md",
     "docs/CONSTITUTION.md",
     "protocol/INTERFACE_FAILURE_TAXONOMY.md"
   ]
