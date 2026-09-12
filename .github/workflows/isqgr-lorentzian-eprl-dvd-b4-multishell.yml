@@ -43,7 +43,7 @@ jobs:
           git clone https://github.com/qg-cpt-marseille/sl2cfoam-next.git external/sl2cfoam-next
           git -C external/sl2cfoam-next checkout ${SL2CFOAM_SHA}
           test "$(git -C external/sl2cfoam-next rev-parse HEAD)" = "${SL2CFOAM_SHA}"
-      - name: Build Wigner dependencies and B4 test
+      - name: Build Wigner dependencies
         working-directory: external/sl2cfoam-next
         run: |
           set -euo pipefail
@@ -58,7 +58,12 @@ jobs:
           cd ..
           ./ext/fastwigxj/bin/hash_js --max-E-3j=24 /dev/null ./test/test_data/table_24.3j
           ./ext/fastwigxj/bin/hash_js --max-E-6j=24 /dev/null ./test/test_data/table_24.6j
-          make CC=gcc-12 BLAS=system OMP=0 tests -j2
+      - name: Build library then B4 test sequentially
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          make CC=gcc-12 BLAS=system OMP=0 lib -j2
+          make CC=gcc-12 BLAS=system OMP=0 bin/b4_test -j1
           test -x bin/b4_test
       - name: Run frozen uniform multi-shell B4 fast-vs-accurate gate
         env:
