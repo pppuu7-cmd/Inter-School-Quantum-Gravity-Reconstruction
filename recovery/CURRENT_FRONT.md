@@ -2,7 +2,7 @@
 
 Date: 2026-09-12  
 Active iteration: `ITERATION_006`  
-Iteration completion: **44%**  
+Iteration completion: **46%**  
 Overall scientific programme readiness: **44%**  
 Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
@@ -12,19 +12,19 @@ Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
 ## RC006
 
-`RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` remains **OPEN**. Source-path reconstruction passed (`34697961643`), geometry-nearest assignment failed scientifically (`34698228895`), explicit source-semantic authority passed (`34698427276`), and the inline-node parser was stable but non-discriminating (`34698521612`). The next allowed RC006 gate is a contraction-ready Eq.(29) graph assembled from explicit source semantics/conventions, not geometric nearest-label inference. Minimal `k=12, gamma=1/3` amplitude remains blocked until that mapping is frozen.
+`RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` remains **OPEN**. Source-path reconstruction passed (`34697961643`), geometry-nearest assignment failed scientifically (`34698228895`), explicit source-semantic authority passed (`34698427276`), and the inline-node parser was stable but non-discriminating (`34698521612`). Minimal `k=12, gamma=1/3` amplitude remains blocked until a contraction-ready mapping is frozen from explicit source semantics/conventions.
+
+Active independent source gate: run `34699432919`, head `bdcda53f683f9d684de90d29e2b956b57bfd75a2`, prospectively frozen 8-lane Eq.(29)/Appendix-F relation-context extraction. It uses the official arXiv `1609.02429` source and separately extracts Eq29 context, R-matrix, crossing/braiding, representation labels, internal `l` channels, recoupling identities, Appendix-F context and simplicity-map context. PASS can only mean source relation context is machine-readable; it does not authorize a unique graph contraction or amplitude.
 
 ## RC008
 
 Durable note: `results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md`.
 
-Source inventory, dependency closure, machine-readable AST and exact source snapshots are qualified. The source-derived stationary-phase Hessian gate is now terminal **SCIENTIFIC PASS (prerequisite only)**: run `34698968902`, head `026838089ce084555c9d9b2e7d225a5c48ba72f2`, aggregate job `103567272522`, artifact `10300145140`, digest `sha256:5512bf1cc4ec5d79c586a013d2b96897309c9de992945d2ed79a9e7de974f72d`. All 8/8 lanes passed; worst symmetry error `0.0`, worst log-det scaling error `1.0658141036401503e-14`. Classification: `PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY`. This is not full amplitude/refinement evidence.
+The source-derived stationary-phase Hessian gate is terminal **SCIENTIFIC PASS (prerequisite only)**: run `34698968902`, head `026838089ce084555c9d9b2e7d225a5c48ba72f2`, aggregate job `103567272522`, artifact `10300145140`, digest `sha256:5512bf1cc4ec5d79c586a013d2b96897309c9de992945d2ed79a9e7de974f72d`. All 8/8 lanes passed; worst symmetry error `0.0`, worst log-det scaling error `1.0658141036401503e-14`. Classification: `PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY`.
 
-### Active computation
+The `Eq:4Volume` hypercuboid observable/refinement pre-gate is also terminal **SCIENTIFIC PASS (prerequisite only)**: run `34699223422`, head `7a8390780e84a4513c5bc82d1a01ed28264b170a`, aggregate job `103567987044`, artifact `10300335297`, digest `sha256:ef13f1cfc8ef579dcd84d2ef9410b97a4a1f3c1f2dae50eb0034ae0bca19aeb6`. All 24/24 lanes passed. Worst geometry/scaling/refinement errors were `2.045697690782737e-16`, `5.875395533044386e-16`, and `5.203796573403926e-16`; minimum independent-face-area negative-control shift was `0.01639635681485324`. Classification: `PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY`.
 
-Run `34699223422`, head `7a8390780e84a4513c5bc82d1a01ed28264b170a`: 24-lane `Eq:4Volume` hypercuboid observable/refinement pre-gate. It prospectively tests source-faithful `V4=(a_xy a_xz a_xt a_yz a_yt a_zt)^(1/3)`, 4-volume homogeneity, non-retuned slicing/refinement conservation, and an independent-area perturbation negative control. Frozen thresholds were committed before results. This is a prerequisite only; it cannot by itself count as amplitude reproduction or bridge derivation.
-
-At the latest check: 9 lanes `in_progress`, 15 `queued`; no scientifically avoidable idle capacity.
+These two PASS results do not reproduce the restricted EPRL-FK vertex amplitude, published volume-variance curves, RG fixed point or a held-out `alpha' -> alpha` transport map.
 
 ## Saturated / blocked
 
@@ -34,16 +34,18 @@ At the latest check: 9 lanes `in_progress`, 15 `queued`; no scientifically avoid
 
 ## Active gates
 
-1. `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` — OPEN.
+1. `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` — OPEN; source relation extraction running.
 2. `RC006_EQ29_MINIMAL_K12_AMPLITUDE_GATE` — BLOCKED on 1.
 3. `RC006_APPENDIX_C_C1_C2_SVD_GATE` — BLOCKED on 2.
 4. `RC006_HELDOUT_NONRETUNED_SELECTOR_TRANSPORT_GATE` — BLOCKED on 3.
 5. `BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE` — OPEN.
-6. `RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE` — OPEN; Hessian prerequisite passed, volume/refinement prerequisite running.
+6. `RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE` — OPEN; source/Hessian/volume prerequisites qualified.
 7. `MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE` — OPEN.
 
 ## Exact next allowed route
 
-After terminal classification of run `34699223422`, if the frozen volume/refinement prerequisite passes, implement the restricted hypercuboid vertex amplitude from the pinned source equations **without fitting published `alpha_*`**, reproduce at least two boundary calculations, freeze the inferred `alpha' -> alpha` transport map, then apply it to a held-out boundary state without retuning. In parallel, RC006 may proceed only through explicit source-semantic contraction mapping, and genuine multi-vertex Lorentzian EPRL refinement remains an independent open route.
+RC008: implement the restricted hypercuboid vertex amplitude from the pinned source equations **without fitting published `alpha_*`**, reproduce at least two coarse/refined boundary calculations, freeze the inferred `alpha' -> alpha` transport map, then apply it to a held-out boundary state without retuning.
+
+RC006: consume/classify run `34699432919`; only source-authorized relations may enter the contraction mapping. If relation contexts are sufficient, freeze a contraction-ready Eq.(29) graph and then run the minimal `k=12, gamma=1/3` amplitude. A failed/ambiguous relation lane is preserved as a blocker; no geometry fallback or relaxed threshold is allowed.
 
 Candidate theory stays `0% / UNFORMED`. `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate equations and RQIR/KMQGB promotion remain forbidden.
