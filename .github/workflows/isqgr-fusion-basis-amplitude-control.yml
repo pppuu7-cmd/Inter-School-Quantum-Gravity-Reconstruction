@@ -35,11 +35,13 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p=Path('Fusion_vec.jl')
           s=p.read_text()
-          if 'iterations = 15' not in s:
-              raise SystemExit('expected source iteration setting not found')
-          p.write_text(s.replace('iterations = 15','iterations = 3',1))
+          s2,n=re.subn(r'iterations\s*=\s*\d+\s*;', 'iterations = 3;', s, count=1)
+          if n != 1:
+              raise SystemExit(f'expected exactly one iteration assignment, got {n}')
+          p.write_text(s2)
           PY
           grep -n 'iterations =' Fusion_vec.jl
           cat constants.jl
