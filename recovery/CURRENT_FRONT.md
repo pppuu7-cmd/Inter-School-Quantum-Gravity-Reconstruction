@@ -1,8 +1,8 @@
 # ISQGR CURRENT FRONT
 
-Date: 2026-09-12  
+Date: 2026-09-13  
 Active iteration: `ITERATION_006`  
-Iteration completion: **80%**  
+Iteration completion: **81%**  
 Amplitude/refinement cross-realization validation: **46%**  
 Overall scientific programme readiness: **49%**  
 Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
@@ -33,29 +33,49 @@ Appendix-B Eq.(B13) source mapping passed in run `34716905247` for frozen `k=6,1
 
 ### Eq. (29) source authority
 
-Dependency closure run `34715908026` remains fail-closed as `EQ29_DEPENDENCY_GRAPH_INCOMPLETE` at that historical point.
+Pinned source is arXiv:1609.02429v2, bundle SHA256 `3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee`, file `bc-spin-nets.tex`. Immutable EPRL align-block SHA256 is `4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083`.
 
-Pinned source is arXiv:1609.02429v2, bundle SHA256 `3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee`, file `bc-spin-nets.tex`. Primary source extraction run `34717474214` returned `EQ29_PRIMARY_SOURCE_EXTRACTION_READY` with source-discovery authority only.
+Source-semantic extraction run `34717945469`, head `e11e138f1457aee1a40af6fcd53cfc24c5844ff9`, extract job `103618458478`, independent job `103618458340`, remains terminal `EQ29_EPRL_SOURCE_BLOCK_EXTRACTED`. Main artifact `10305616057`, digest `sha256:dbcbeeff950cdf936553864830d7a9dc9ae79ec27ddad0dc1edb894daecf6c26`; independent artifact `10305466023`, digest `sha256:74c12b93c118fadfffdb153fb9f79729598c32277b5fd214a2252cf1e2550a02`. Authorization is raw source block only.
 
-Literal source-block run `34717600962` failed closed because `initial 3-valent tensor` occurs three times. Diagnostic run `34717736113`, job `103618085662`, artifact `10305896153`, digest `sha256:812badb44df244a1e55a53fae8d162fe26b237eae60cbb0786d4bd522f72ec16`, confirmed all three remain active after TeX `%` comment semantics: `ACTIVE_TEX_ANCHOR_STILL_AMBIGUOUS`; +0 diagnostic only.
+The prospectively frozen three-lane dependency gate remains terminal: run `34718554940`, head `9729cef2573778a3b48f6b80b42c6d5fd721366b`, aggregate job `103620177874`, summary artifact `10305491683`, digest `sha256:ca82d129681a540d7b0daa618b43b831957e2001a527e1556ea0852c8387ada8`. Aggregate classification is **`EQ29_SOURCE_DEPENDENCIES_PARTIAL`**. Geometry is `SOURCE_LABEL_GEOMETRY_QUALIFIED`; source-level incidence is `SOURCE_PATH_INCIDENCE_QUALIFIED`; R-placement remained `SOURCE_R_PLACEMENT_NOT_MACHINE_QUALIFIED`. No threshold/selector retuning is allowed. Eq.(29) amplitude remains unauthorized and bridge credit remains zero.
 
-A source-semantic discriminator restricted extraction to the unique active subsection `EPRL intertwiner model` and the sentence explicitly referencing `\\eqref{eq:eprl-3-valent}`. Run `34717945469`, head `e11e138f1457aee1a40af6fcd53cfc24c5844ff9`, extract job `103618458478`, independent job `103618458340`, is terminal `EQ29_EPRL_SOURCE_BLOCK_EXTRACTED`. Main artifact `10305616057`, digest `sha256:dbcbeeff950cdf936553864830d7a9dc9ae79ec27ddad0dc1edb894daecf6c26`; independent artifact `10305466023`, digest `sha256:74c12b93c118fadfffdb153fb9f79729598c32277b5fd214a2252cf1e2550a02`. Immutable align-block SHA256: `4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083`. Authorization is raw source block only.
+### Terminal R-placement structural topology
 
-The prospectively frozen three-lane dependency gate is now terminal. Prereg commit `4d48152cc183877ea0af5bfd20a0dc4dade43234`; implementation `be3615fb36f4c1863b221b86fcf80d7cf4f11125`; trigger/head `9729cef2573778a3b48f6b80b42c6d5fd721366b`; run `34718554940`; aggregate job `103620177874`; summary artifact `10305491683`, digest `sha256:ca82d129681a540d7b0daa618b43b831957e2001a527e1556ea0852c8387ada8`.
+The exact structural-topology gate is terminal. Prereg commit `95a176d84353a9bf358035140f4fd7423b45873e`; implementation `745ecd2f3c999dbf130d4e7ed4520a3f0f28f13a`; trigger/head `892c4b55f4099ced2743fbc0d34dc121e09fa070`; run `34718784867`; aggregate job `103620738661`; summary artifact `10305042483`, digest `sha256:482bc4998d96fd11b0ad2b742038b626d76bc6eacf950efa358cb6333212fc96`.
 
-Frozen aggregate classification: **`EQ29_SOURCE_DEPENDENCIES_PARTIAL`**. Geometry is `SOURCE_LABEL_GEOMETRY_QUALIFIED` (artifact `10306086345`, digest `sha256:0bbd669a1f3b137c9f88d374e4ed87ec8d9b969ae676dd92aa5dec5c95d8ed27`). Source-level incidence is `SOURCE_PATH_INCIDENCE_QUALIFIED` (artifact `10305437790`, digest `sha256:b02efc00fa45d8d6ed247f650e71322d89b1fb99efcd88740e09e5db08477af2`). R-placement is `SOURCE_R_PLACEMENT_NOT_MACHINE_QUALIFIED` (artifact `10305516543`, digest `sha256:2cb8e85f8adc35884bc8186474639b3284eeec39d0791a71e20f25c577eeabb6`): source-global R, inverse-R and crossing semantics exist, but no deterministic Eq.(29)-specific source link passed the frozen gate. This PARTIAL verdict is preserved; no threshold/selector retuning is allowed. Eq.(29) amplitude remains unauthorized and bridge credit remains zero.
+Frozen classification: **`EQ29_RPLACEMENT_APPLICABILITY_INCONCLUSIVE`**.
 
-A distinct source-structure object explicitly permitted by the earlier mixed source-relation result is now active: TeX structural reference topology, without easier lexical patterns. Prereg commit `95a176d84353a9bf358035140f4fd7423b45873e`; implementation commit `745ecd2f3c999dbf130d4e7ed4520a3f0f28f13a`; trigger/head `892c4b55f4099ced2743fbc0d34dc121e09fa070`; run `34718784867`. Three independent `fail-fast:false` lanes are queued: exact-rational straight-crossing geometry, explicit TeX label/ref graph, and appendix-graph reference chain. This diagnostic cannot revise the preceding PARTIAL verdict and cannot award bridge credit.
+Raw lane evidence:
+
+- `reference_graph`: job `103620663803`, artifact `10305992257`, digest `sha256:e77cb1acca0d6983fd0abaefc496872e7e54e98932085b76d321b5cf910ea98d`, classification `EQ29_R_EXPLICIT_REFERENCE_PATH_PRESENT`; exact direct target ref is `eq:eprl-3-valent`.
+- `crossing_geometry`: job `103620663910`, artifact `10304927980`, digest `sha256:36dee43fb0e6d774a59dcce71292050ba818f69c85dbad78c94b46cf186ab698`, classification `EQ29_NO_STRAIGHT_CROSSING_ARCS_UNRESOLVED`; 15 straight segments, 2 arcs, zero proper straight-line crossing pairs.
+- `appendix_graph_chain`: job `103620663950`, artifact `10305123431`, digest `sha256:d52ddf3612fc5dd03fee37d56f730b5b558d4c0bd67906c7c659063724fc7366`, classification `EQ29_APPENDIX_GRAPH_REFERENCE_CHAIN_ABSENT`.
+
+This is a valid scoped diagnostic, not an infrastructure failure and not an Eq.(29) scientific FAIL. The exact R-reference route is now source-qualified, while R applicability is unresolved solely because the frozen predecessor did not model the two TikZ arcs. The prior PARTIAL verdict is preserved, `eq29_amplitude_authorized=false`, and `bridge_credit=false`.
+
+### Active exact arc-aware geometry gate
+
+The sole dependent follow-up allowed by the predecessor gate was prospectively frozen before implementation in `status/ITERATION_006_RC006_EQ29_ARC_AWARE_SOURCE_GEOMETRY.md`.
+
+- prereg commit: `9c8221a066369e51367b569f7a65169ba757aa8c`;
+- implementation/head commit: `286c67c9c7ab444a86bdbea12b9159b5aae36461`;
+- authoritative run: `34721521848`;
+- frozen object: full immutable Eq.(29) TikZ path, including line-line, line-arc and arc-arc proper-intersection topology;
+- independent precision lanes: 80 and 120 decimal digits;
+- frozen endpoint margin: `1e-25`; primitive-equation residual threshold: `1e-40`;
+- post-result tolerance/source-block changes forbidden;
+- gate itself cannot authorize Eq.(29) amplitude and cannot award bridge credit.
 
 ## Exact next admissible gates
 
-1. Consume all lanes and aggregate of `34718784867` against the frozen structural-topology classifier.
-2. If exact crossing geometry is present but no explicit TeX reference path exists, preserve R-placement as BLOCKED and do not fit a crossing selector. If applicability is inconclusive because arcs remain unresolved, only a separately preregistered exact arc-aware source geometry object is admissible.
-3. A literal Eq.(29) tensor reconstruction remains forbidden unless R-placement becomes independently qualified or is prospectively proven not applicable to the immutable block; neither outcome alone gives bridge credit.
-4. DED/DLD topology remains failed; only independently justified source-semantic/vector-level identification is admissible, never retuning of the failed raster prerequisite.
-5. Synthetic DVD23 self-consistency is not a genuine refinement map; source-derived V/E/F incidence preservation remains required.
-6. RC008 remains source-only BLOCKED; RC009 remains SCOPED BLOCKED. No denser RC009 quadrature without a new mathematically justified regularization/measure/contour object.
+1. Consume all lanes and aggregate of `34721521848` against the preregistered arc-aware classifier.
+2. If the full source geometry has zero proper crossings, record `EQ29_ARC_AWARE_NO_PROPER_CROSSING`; R/R^-1 is then not applicable at this immutable block geometry level. A literal Eq.(29) tensor reconstruction still requires separate preregistration and all other source dependencies to remain satisfied.
+3. If exactly one proper crossing exists and the frozen exact R-reference control remains qualified, record `EQ29_ARC_AWARE_UNIQUE_PROPER_CROSSING_R_REF_QUALIFIED`; only then may a separate literal Eq.(29) reconstruction gate be preregistered. This result alone gives no amplitude or bridge credit.
+4. Multiple crossings, missing R-reference control, or 80/120-digit topology disagreement remain BLOCKED; no post-hoc crossing selector or tolerance retuning.
+5. DED/DLD topology remains failed; only independently justified source-semantic/vector-level identification is admissible, never retuning of the failed raster prerequisite.
+6. Synthetic DVD23 self-consistency is not a genuine refinement map; source-derived V/E/F incidence preservation remains required.
+7. RC008 remains source-only BLOCKED; RC009 remains SCOPED BLOCKED. No denser RC009 quadrature without a new mathematically justified regularization/measure/contour object.
 
-Latest durable results: `results/ITER006_EQ29_SOURCE_DEPENDENCIES_PARTIAL_2026-09-12.md` and `results/ITER006_EQ29_EPRL_SOURCE_BLOCK_AND_DEPENDENCY_LAUNCH_2026-09-12.md`.
+Latest durable result: `results/ITER006_EQ29_RPLACEMENT_TOPOLOGY_INCONCLUSIVE_2026-09-13.md`.
 
-Iteration completion: **80%**. Amplitude/refinement validation: **46%**. Overall readiness: **49%**. Candidate theory: **0% / UNFORMED**.
+Iteration completion: **81%**. Amplitude/refinement validation: **46%**. Overall readiness: **49%**. Candidate theory: **0% / UNFORMED**.
