@@ -1,0 +1,67 @@
+name: ISQGR RC006 Eq29 R-matrix Factor
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_eq29_rmatrix_factor_audit.py'
+      - '.github/workflows/isqgr-rc006-eq29-rmatrix-factor.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r-factor:
+    strategy:
+      fail-fast: false
+      max-parallel: 11
+      matrix:
+        lane: [0,1,2,3,4,5,6,7,8,9,10]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Evaluate explicit Eq26 factor
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_eq29_rmatrix_factor_audit.py --lane ${{ matrix.lane }} --output compute_out/rfactor_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-eq29-rfactor-${{ matrix.lane }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: r-factor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-eq29-rfactor-*
+          path: all
+          merge-multiple: true
+      - name: Aggregate frozen factor gate
+        run: |
+          python - <<'PY'
+          import glob,json,os
+          rows=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          out={'test':'RC006_EQ29_RMATRIX_FACTOR_AGGREGATE','lane_count':len(rows),
+               'all_11_present':len(rows)==11,
+               'all_explicit_R_channels_nonzero':len(rows)==11 and all(r['all_explicit_R_channels_nonzero'] for r in rows),
+               'total_R_channels':sum(r['channel_count'] for r in rows),
+               'minimum_R_coefficient_abs':min((r['minimum_R_coefficient_abs'] for r in rows),default=0.0),
+               'claim_lock':'Partial Eq.(26) amplitude-factor result only; full Eq.(29) q-spin-network graph remains unresolved.'}
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not (out['all_11_present'] and out['all_explicit_R_channels_nonzero']): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-eq29-rfactor-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
