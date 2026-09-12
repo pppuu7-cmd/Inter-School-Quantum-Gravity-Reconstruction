@@ -1,0 +1,19 @@
+name: ISQGR RC006 Eq29 Dependency Closure Gate
+
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr-rc006-eq29-dependency-gate.yml'
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run source dependency closure gate
+        run: python experiments/rc006_eq29_dependency_gate.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-eq29-dependency-gate
+          path: rc006_eq29_dependency_gate.json
