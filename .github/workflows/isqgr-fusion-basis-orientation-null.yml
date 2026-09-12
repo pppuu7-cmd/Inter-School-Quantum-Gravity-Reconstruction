@@ -1,0 +1,170 @@
+name: ISQGR Fusion-Basis Embedding Orientation Null
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-fusion-basis-orientation-null.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  lane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        g: ['0.0','0.5','1.0']
+        mode: ['baseline','orientation_null']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Clone and pin nearest-framework implementation
+        run: |
+          set -euo pipefail
+          git clone https://github.com/ssteinhaus/Fusion-basis-coarse-graining.git external/Fusion-basis-coarse-graining
+          git -C external/Fusion-basis-coarse-graining checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
+          test "$(git -C external/Fusion-basis-coarse-graining rev-parse HEAD)" = "bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4"
+      - name: Freeze three-step clean protocol and inject post-SVD orientation null
+        working-directory: external/Fusion-basis-coarse-graining/half_int/no_torsion
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('Fusion_vec.jl')
+          s=p.read_text()
+          s,n=re.subn(r'iterations\s*=\s*\d+\s*;', 'iterations = 3;', s, count=1)
+          if n != 1: raise SystemExit(f'iteration patch count {n}')
+          # Remove source autorun; matrix job calls exactly one frozen coupling.
+          s,n2=re.subn(r'@time\s+main_vec\([^\n]+\)', '', s, count=1)
+          if n2 != 1: raise SystemExit(f'autorun patch count {n2}')
+          p.write_text(s)
+
+          q=Path('svd_1.jl')
+          t=q.read_text()
+          needle='embmap[x4,y4,:] = mapU[x4,y4,:] * temp_phase'
+          if t.count(needle) != 1: raise SystemExit('embedding assignment not uniquely found')
+          replacement=needle+'''\n\n            # ISQGR counterfactual null: after the SVD spectrum and leading U\n            # are computed, rotate only the embedding-vector orientation by a\n            # norm-preserving cyclic permutation inside the admissible block.\n            # decomp.S, mapV and the current-step singular spectrum are untouched.\n            if get(ENV, "ISQGR_ORIENTATION_NULL", "0") == "1"\n                ncfg = configs_10p_ind1_svd[x4,y4]\n                if ncfg > 1\n                    tmp_isqgr = copy(embmap[x4,y4,1:ncfg])\n                    embmap[x4,y4,1:ncfg] = circshift(tmp_isqgr,1)\n                end\n            end'''
+          q.write_text(t.replace(needle,replacement,1))
+          PY
+          grep -n 'iterations =' Fusion_vec.jl
+          grep -n 'ISQGR counterfactual' svd_1.jl
+      - name: Execute baseline or orientation-null RG flow
+        working-directory: external/Fusion-basis-coarse-graining/half_int/no_torsion
+        env:
+          ISQGR_ORIENTATION_NULL: ${{ matrix.mode == 'orientation_null' && '1' || '0' }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/compute_out"
+          julia -L Fusion_vec.jl -e 'Fusion.main_vec(parse(Float64, ARGS[1]));' '${{ matrix.g }}' \
+            > "$GITHUB_WORKSPACE/compute_out/${{ matrix.mode }}_g_${{ matrix.g }}.log" 2>&1
+          tail -n 60 "$GITHUB_WORKSPACE/compute_out/${{ matrix.mode }}_g_${{ matrix.g }}.log"
+      - name: Extract machine comparison vectors
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,re
+          mode='${{ matrix.mode }}'; g=float('${{ matrix.g }}')
+          f=next(pathlib.Path('compute_out').glob('*.log'))
+          s=f.read_text(errors='replace')
+          numpat=r'[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?'
+          first=re.findall(r'List of first singular values from various blocks:\s*\n\s*(\[[^\n]+\])',s)
+          second=re.findall(r'List of first singular values from different blocks:\s*\n\s*(\[[^\n]+\])',s)
+          if len(first)!=3 or len(second)!=3:
+              raise SystemExit(f'expected 3+3 normalized block spectra, got {len(first)}+{len(second)}')
+          parse=lambda x:[float(v) for v in re.findall(numpat,x)]
+          marker=s.split('Expectation values of Ribbon operators',1)
+          if len(marker)!=2: raise SystemExit('expectation marker missing')
+          rows=[]
+          for line in marker[1].splitlines():
+              vals=[float(v) for v in re.findall(numpat,line)]
+              if len(vals)>=4: rows.append(vals)
+          if len(rows)<4: raise SystemExit(f'expected >=4 expectation rows, got {len(rows)}')
+          out={
+            'test':'FUSION_BASIS_EMBEDDING_ORIENTATION_NULL_LANE',
+            'mode':mode,'g':g,
+            'source_commit':'bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4',
+            'first_svd_maps_by_iteration':[parse(x) for x in first],
+            'second_svd_maps_by_iteration':[parse(x) for x in second],
+            'final_ribbon_expectations':rows[-1],
+            'iterations_seen':[int(x) for x in re.findall(r'Iteration\s+(\d+)',s)],
+            'claim_lock':'Counterfactual nearest-framework TNR test. The orientation null is a post-SVD norm-preserving permutation of the first embedding vector; current-step singular values are untouched, but exact SVD reconstruction is intentionally broken to test information sufficiency.'
+          }
+          pathlib.Path(f'compute_out/{mode}_g_{g}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'mode':mode,'g':g,'first_iter_first_svd':out['first_svd_maps_by_iteration'][0],'final_second_svd':out['second_svd_maps_by_iteration'][-1],'final_ribbon':out['final_ribbon_expectations']},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fusion-orientation-${{ matrix.mode }}-g-${{ matrix.g }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [lane]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fusion-orientation-*
+          path: campaign
+          merge-multiple: true
+      - name: Aggregate preregistered spectrum-sufficiency null
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,math
+          fs=sorted(pathlib.Path('campaign').glob('*.json'))
+          ds=[json.loads(p.read_text()) for p in fs]
+          if len(ds)!=6: raise SystemExit(f'expected 6 lane results, got {len(ds)}')
+          def rel(a,b):
+              n=max(math.sqrt(sum(x*x for x in a)),1e-15)
+              return math.sqrt(sum((x-y)**2 for x,y in zip(a,b)))/n
+          rows=[]
+          for g in (0.0,0.5,1.0):
+              b=next(d for d in ds if d['g']==g and d['mode']=='baseline')
+              n=next(d for d in ds if d['g']==g and d['mode']=='orientation_null')
+              first_rel=rel(b['first_svd_maps_by_iteration'][0],n['first_svd_maps_by_iteration'][0])
+              final_svd_rel=rel(b['second_svd_maps_by_iteration'][-1],n['second_svd_maps_by_iteration'][-1])
+              final_obs_rel=rel(b['final_ribbon_expectations'],n['final_ribbon_expectations'])
+              rows.append({
+                'g':g,
+                'first_svd_spectrum_relative_difference':first_rel,
+                'final_second_svd_relative_difference':final_svd_rel,
+                'final_ribbon_relative_difference':final_obs_rel,
+                'current_spectrum_preserved':first_rel<=1e-12,
+                'downstream_changed':max(final_svd_rel,final_obs_rel)>1e-6,
+              })
+          preserved=all(r['current_spectrum_preserved'] for r in rows)
+          nchanged=sum(r['downstream_changed'] for r in rows)
+          natural=bool(preserved and nchanged>=2)
+          strong=bool(preserved and nchanged==3)
+          out={
+            'test':'FUSION_BASIS_EMBEDDING_ORIENTATION_NULL_AGGREGATE',
+            'status':'PASS_EXECUTION',
+            'preregistered_gate':{
+              'spectrum_preservation':'first-step first-SVD normalized block spectrum relative difference <=1e-12 for all couplings',
+              'downstream_change':'max(final second-SVD relative difference, final ribbon relative difference) >1e-6',
+              'natural_absorption_support':'spectrum preserved all couplings and downstream changes in >=2/3 couplings',
+              'strong_absorption_support':'spectrum preserved all couplings and downstream changes in 3/3 couplings'
+            },
+            'natural_nearest_framework_absorption_support':natural,
+            'strong_nearest_framework_absorption_support':strong,
+            'by_coupling':rows,
+            'claim_lock':'Shows whether singular values alone are insufficient in a standard amplitude-level q-deformed TNR control. Positive result narrows ISQGR novelty; it is not quantum-gravity evidence.'
+          }
+          pathlib.Path('fusion_basis_embedding_orientation_null_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-fusion-basis-embedding-orientation-null-summary
+          path: fusion_basis_embedding_orientation_null_summary.json
+          if-no-files-found: error
