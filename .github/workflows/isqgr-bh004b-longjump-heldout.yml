@@ -1,0 +1,133 @@
+name: ISQGR BH-004B Long-Jump Heldout
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh004b-longjump-heldout.yml'
+      - 'experiments/bh004b_envelope_local_selector.py'
+
+permissions:
+  contents: read
+
+jobs:
+  longjump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        lane:
+          - {name: ratio2, pp: 0.75, pc: 0.375}
+          - {name: ratio3, pp: 0.75, pc: 0.25}
+        n_full: [768, 1152, 1536]
+        seed: [701, 702, 703]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --upgrade numpy scipy
+      - name: Run source-native long-jump prediction
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          PYTHONPATH=experiments python experiments/bh004b_envelope_local_selector.py \
+            --n-full ${{ matrix.n_full }} \
+            --p-parent ${{ matrix.lane.pp }} --p-child ${{ matrix.lane.pc }} \
+            --seed ${{ matrix.seed }} --n-random 24 \
+            --output compute_out/${{ matrix.lane.name }}_n${{ matrix.n_full }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bh004b-${{ matrix.lane.name }}-n${{ matrix.n_full }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [longjump]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bh004b-ratio*
+          path: campaign
+          merge-multiple: true
+      - name: Aggregate fixed gates by jump lane
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,statistics
+          fs=sorted(pathlib.Path('campaign').glob('*.json'))
+          if len(fs)!=18: raise SystemExit(f'expected 18 heldout results, got {len(fs)}')
+          ds=[json.loads(p.read_text()) for p in fs]
+          groups={}
+          for d in ds:
+              lv=d['levels']; key=(round(lv['p_parent'],6),round(lv['p_child'],6))
+              groups.setdefault(key,[]).append(d)
+          if len(groups)!=2: raise SystemExit(f'expected 2 lanes, got {list(groups)}')
+          outlanes={}
+          for key,arr in sorted(groups.items()):
+              rows=[]
+              for d in arr:
+                  p=d['prediction']; c=d['closure']; a=p['alignment_to_source']
+                  rows.append({
+                      'n_full':d['n_full'],'seed':d['seed'],
+                      'rank_error':p['rank_relative_error'],
+                      'mean_cosine':a['mean_principal_cosine'],
+                      'min_cosine':a['min_principal_cosine'],
+                      'distance_ratio':p['predicted_over_envelope_projector_distance'],
+                      'source_capture':p['source_norm_capture_by_envelope'],
+                      'leak_gain':c['random_median_over_predicted_leakage'],
+                      'seq_gain':c['random_median_over_predicted_seq_defect'],
+                  })
+              med=lambda k:statistics.median(r[k] for r in rows)
+              frac_both=sum(r['leak_gain']>1 and r['seq_gain']>1 for r in rows)/len(rows)
+              s={
+                  'n_jobs':len(rows),
+                  'median_rank_relative_error':med('rank_error'),
+                  'median_mean_principal_cosine':med('mean_cosine'),
+                  'median_min_principal_cosine':med('min_cosine'),
+                  'median_predicted_over_envelope_projector_distance':med('distance_ratio'),
+                  'median_source_norm_capture_by_envelope':med('source_capture'),
+                  'median_random_over_predicted_leakage':med('leak_gain'),
+                  'median_random_over_predicted_seq_defect':med('seq_gain'),
+                  'fraction_jobs_both_closure_gains_gt_1':frac_both,
+              }
+              natural=(s['median_rank_relative_error']<=0.15 and
+                       s['median_mean_principal_cosine']>0.95 and
+                       s['median_min_principal_cosine']>0.50 and
+                       s['median_predicted_over_envelope_projector_distance']<0.80 and
+                       s['median_random_over_predicted_leakage']>1.0 and
+                       s['median_random_over_predicted_seq_defect']>1.0 and
+                       frac_both>=2/3)
+              strong=(s['median_rank_relative_error']<=0.08 and
+                      s['median_mean_principal_cosine']>0.98 and
+                      s['median_min_principal_cosine']>0.80 and
+                      s['median_predicted_over_envelope_projector_distance']<0.60 and
+                      s['median_random_over_predicted_leakage']>1.5 and
+                      s['median_random_over_predicted_seq_defect']>1.5 and
+                      frac_both>=0.80)
+              lane=f'p{key[0]}_to_p{key[1]}'
+              outlanes[lane]={'natural_support':natural,'strong_support':strong,'summary':s,'by_job':rows}
+          out={
+              'test':'BH004B_LONG_JUMP_HELDOUT_AGGREGATE',
+              'status':'PASS_EXECUTION',
+              'fixed_gate':{
+                  'natural':'rank error<=.15; mean cosine>.95; min cosine>.50; predicted/envelope distance<.80; med closure gains>1; >=2/3 jobs both gain',
+                  'strong':'rank error<=.08; mean cosine>.98; min cosine>.80; predicted/envelope distance<.60; med closure gains>1.5; >=.80 jobs both gain'
+              },
+              'all_lanes_natural_support':all(v['natural_support'] for v in outlanes.values()),
+              'all_lanes_strong_support':all(v['strong_support'] for v in outlanes.values()),
+              'lanes':outlanes,
+              'claim_lock':'New sizes/seeds and larger nested thinning jumps. Child source projector/rank and closure target remain evaluation-only. One free-field causal-set realization only.'
+          }
+          pathlib.Path('bh004b_longjump_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh004b-longjump-summary
+          path: bh004b_longjump_summary.json
+          if-no-files-found: error
