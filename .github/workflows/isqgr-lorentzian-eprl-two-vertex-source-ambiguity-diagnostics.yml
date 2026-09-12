@@ -1,0 +1,104 @@
+name: ISQGR Lorentzian EPRL Two Vertex Source Ambiguity Diagnostics
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/lorentzian_eprl_two_vertex_anchor_ambiguity_map.py'
+      - 'experiments/lorentzian_eprl_two_vertex_explicit_reference_audit.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-two-vertex-source-ambiguity-diagnostics.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+
+env:
+  ARXIV_ID: '1801.03771'
+
+jobs:
+  ambiguity:
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        target: [two_vertex_amplitude, internal_face_sum, simplified_amplitude, large_spin_scaling, immirzi, cutoff_or_truncation]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Map frozen-anchor ambiguity
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_two_vertex_anchor_ambiguity_map.py --source-dir external/two_vertex_src --target '${{ matrix.target }}' --output 'compute_out/ambiguity_${{ matrix.target }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'two-vertex-ambiguity-${{ matrix.target }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  explicit-reference:
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        target: [two_vertex_amplitude, internal_face_sum, simplified_amplitude, large_spin_scaling, immirzi, cutoff_or_truncation]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Audit explicit equation references
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_two_vertex_explicit_reference_audit.py --source-dir external/two_vertex_src --target '${{ matrix.target }}' --output 'compute_out/reference_${{ matrix.target }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'two-vertex-reference-${{ matrix.target }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: [ambiguity, explicit-reference]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'two-vertex-*'
+          path: all
+          merge-multiple: true
+      - name: Aggregate diagnostic manifest without promotion
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[]
+          for f in glob.glob('all/*.json'):
+              x=json.load(open(f)); rows.append({'test':x.get('test'),'target':x.get('target'),'valid':x.get('valid'),'classification':x.get('classification'),'distinct_selected_hash_count':x.get('distinct_selected_hash_count'),'resolved_math_hash_count':x.get('resolved_math_hash_count')})
+          valid=len(rows)==12 and all(r.get('valid') for r in rows)
+          o={'test':'LORENTZIAN_EPRL_TWO_VERTEX_SOURCE_AMBIGUITY_DIAGNOSTICS_AGGREGATE','valid':valid,'record_count':len(rows),'records':rows,
+             'classification':'DIAGNOSTIC_BATCH_COMPLETE' if valid else 'DIAGNOSTIC_BATCH_INCOMPLETE',
+             'promotion_authorized':False,
+             'interpretation_lock':'Diagnostic only. Numerical two-vertex implementation remains blocked after the preserved 2/8 source-lock FAIL. Any new source-authority rule must be prospectively frozen after consuming these diagnostics.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: two-vertex-source-ambiguity-diagnostic-summary
+          path: summary.json
+          if-no-files-found: error
