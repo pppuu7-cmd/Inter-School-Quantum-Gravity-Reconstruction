@@ -1,0 +1,80 @@
+name: ISQGR Iter006 RC006 Eq29 Dependency Reconciliation
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_dependency_reconciliation.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download immutable dependency summary
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 34718554940
+          name: eq29-source-dependencies-summary
+          path: dep
+      - name: Download immutable complete-geometry summary
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 34719362365
+          name: eq29-arc-aware-geometry-summary
+          path: geom
+      - name: Apply frozen reconciliation classifier
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,pathlib
+          dp=pathlib.Path('dep/summary.json'); gp=pathlib.Path('geom/summary.json')
+          if not dp.exists() or not gp.exists():
+              out={'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'missing_summary'}
+          else:
+              d=json.loads(dp.read_text()); g=json.loads(gp.read_text())
+              # Freeze logical content; upstream artifact digests are independently pinned in preregistration/status.
+              d_ok=(d.get('valid') is True and d.get('classification')=='EQ29_SOURCE_DEPENDENCIES_PARTIAL' and
+                    d.get('lane_classifications',{}).get('geometry')=='SOURCE_LABEL_GEOMETRY_QUALIFIED' and
+                    d.get('lane_classifications',{}).get('incidence')=='SOURCE_PATH_INCIDENCE_QUALIFIED' and
+                    d.get('lane_classifications',{}).get('rplacement')=='SOURCE_R_PLACEMENT_NOT_MACHINE_QUALIFIED')
+              crossings=g.get('proper_crossing_pairs',[])
+              g_ok=(g.get('valid') is True and g.get('classification')=='EQ29_COMPLETE_SOURCE_NO_CROSSING' and crossings==[] and
+                    g.get('arc_counts')==[2,2] and g.get('line_counts')==[16,16])
+              if d_ok and g_ok:
+                  cl='EQ29_IMMUTABLE_SOURCE_DEPENDENCIES_COMPLETE_R_NOT_APPLICABLE'; valid=True
+              elif d_ok and g.get('valid') is True:
+                  cl='EQ29_IMMUTABLE_SOURCE_DEPENDENCIES_PARTIAL'; valid=True
+              else:
+                  cl='INVALID_SOURCE_OR_IMPLEMENTATION'; valid=False
+              out={
+                'gate':'ITER006_RC006_EQ29_DEPENDENCY_RECONCILIATION',
+                'valid':valid,
+                'historical_dependency_classification':d.get('classification'),
+                'geometry_lane':d.get('lane_classifications',{}).get('geometry'),
+                'incidence_lane':d.get('lane_classifications',{}).get('incidence'),
+                'historical_rplacement_lane':d.get('lane_classifications',{}).get('rplacement'),
+                'complete_geometry_classification':g.get('classification'),
+                'complete_geometry_proper_crossing_pairs':crossings,
+                'classification':cl,
+                'literal_tensor_reconstruction_preregistration_authorized': cl=='EQ29_IMMUTABLE_SOURCE_DEPENDENCIES_COMPLETE_R_NOT_APPLICABLE',
+                'numerical_eq29_amplitude_authorized':False,
+                'bridge_credit':False,
+                'historical_partial_verdict_rewritten':False
+              }
+          pathlib.Path('reconciliation.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not out.get('valid'): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-dependency-reconciliation
+          path: reconciliation.json
+          if-no-files-found: error
