@@ -95,7 +95,8 @@
     "ITER005_FRG_EH_SCHEME_COVARIANCE",
     "ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION",
     "ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL",
-    "ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS"
+    "ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS",
+    "ITER006_RC006_QGROUP_KERNEL_QUALIFICATION"
   ],
   "compute_campaigns": {
     "campaign_001": {"workflow_run": 34652279466, "reproduction_run": 34652499160, "status": "REPRODUCED_EXECUTABLE"},
@@ -118,7 +119,8 @@
     "iter005_rc006_support_growth": {"workflow_run": 34665997309, "status": "SUCCESS_MULTI_STEP_ENVELOPE_GROWTH"},
     "iter006_fusion_basis_amplitude_reproduction": {"workflow_run": 34666262016, "status": "SUCCESS_CLEAN_THREE_STEP_ALL_COUPLINGS"},
     "iter006_fusion_basis_embedding_orientation_null": {"workflow_run": 34666545108, "status": "SUCCESS_STRONG_NEAREST_FRAMEWORK_ABSORPTION"},
-    "iter006_rc008_published_boundary_audit": {"workflow_run": 34666680657, "status": "SUCCESS_SOURCE_DATA_AUDIT"}
+    "iter006_rc008_published_boundary_audit": {"workflow_run": 34666680657, "status": "SUCCESS_SOURCE_DATA_AUDIT"},
+    "iter006_rc006_qgroup_kernel_qualification": {"workflow_run": 34694602675, "aggregate_job": 103555842825, "aggregate_artifact": 10298547764, "status": "SCIENTIFIC_PASS_CONVENTION_QUALIFICATION_ONLY"}
   },
   "iteration_005_preregistered_promotion": {
     "required_positive_lines": 2,
@@ -132,6 +134,7 @@
     "BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE",
     "RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE",
     "RC006_QDEFORMED_EPRL_FK_AMPLITUDE_TNR_RECONSTRUCTION_GATE",
+    "RC006_APPENDIX_B13_SOURCE_TO_KERNEL_MAPPING_GATE",
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE",
     "CEMR_SOURCE_DEFINED_CAUSAL_RESCUE_GATE"
   ],
@@ -146,6 +149,7 @@
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_RC006_QGROUP_KERNEL_QUALIFICATION.md",
     "results/ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL.md",
     "results/ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION.md",
     "results/ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS.md",
