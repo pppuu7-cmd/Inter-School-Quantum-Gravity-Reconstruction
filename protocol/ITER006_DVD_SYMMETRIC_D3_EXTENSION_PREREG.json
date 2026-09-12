@@ -1,0 +1,34 @@
+{
+  "protocol": "ITER006_DVD_SYMMETRIC_D3_EXTENSION_PREREG",
+  "date": "2026-09-12",
+  "status": "FROZEN_BEFORE_ANY_D3_AMPLITUDE_RESPONSE",
+  "inheritance": {
+    "boundary": "j_a=j'_a=1, i=t=i'=t'=1",
+    "calibration_gammas": [0.5,1.2,2.0],
+    "heldout_gammas": [0.3,0.8,1.6,2.5,3.0],
+    "all_gammas": [0.3,0.5,0.8,1.2,1.6,2.0,2.5,3.0],
+    "previous_D012_calibration_run": 34708369655,
+    "previous_D012_heldout_run": 34708554742,
+    "B4_D3_kernel_qualification_run": 34707794670
+  },
+  "new_response": "Only D=3 amplitudes are new. D=0,1,2 are recomputed in the same executable for internal regression/reproducibility.",
+  "finite_cutoff": [0,1,2,3],
+  "source_and_kernel": {
+    "paper_root_sha256": "27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1",
+    "DVD2_hash": "799f56dc22f55a09bf744d62c459ee95e38794e5be02c114a73d06c057d0e94c",
+    "DVD3_hash": "7d2fb958574c76f67e52d32ffea2cb22beb01c1e7d6583d383fce159b2eadfab",
+    "sl2cfoam_commit": "052e4346028870bd76f69a3034e6cae8defb8f7f"
+  },
+  "numerical_gates": {
+    "repeat_relative_difference_max": 1e-12,
+    "all_values_finite": true,
+    "D012_regression_relative_error_max": 1e-12
+  },
+  "prospective_pattern_hypothesis": {
+    "motivation": "D0-D2 results showed a smaller relative increment on the second shell step than on the first at all 8 fixed gamma values and for both DVD2 and DVD3.",
+    "lane_support": "dvd2_increment_D3 < dvd2_increment_D2 AND dvd3_increment_D3 < dvd3_increment_D2",
+    "strong_support": "all 8 gamma lanes satisfy lane_support",
+    "natural_support": "at least 7 of 8 lanes satisfy lane_support"
+  },
+  "claim_lock": "Even 8/8 D3 support is only another finite-cutoff stabilization test. It is not a proof of convergence, a refinement map, cylindrical consistency, a continuum limit, a bridge derivation, novelty or new physics."
+}
