@@ -1,0 +1,96 @@
+name: ISQGR RC-006 EPRL Fusion Support Closure
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-rc006-eprl-fusion-support.yml'
+      - 'experiments/rc006_eprl_fusion_support_closure.py'
+
+permissions:
+  contents: read
+
+jobs:
+  support:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        case:
+          - {name: k6_g1_3, k: 6, gn: 1, gd: 3}
+          - {name: k10_g3_5, k: 10, gn: 3, gd: 5}
+          - {name: k12_g1_3, k: 12, gn: 1, gd: 3}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Run exact support-level recoupling audit
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/rc006_eprl_fusion_support_closure.py \
+            --k ${{ matrix.case.k }} --gamma-num ${{ matrix.case.gn }} --gamma-den ${{ matrix.case.gd }} \
+            --output compute_out/${{ matrix.case.name }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-${{ matrix.case.name }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [support]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-*
+          path: campaign
+          merge-multiple: true
+      - name: Aggregate preregistered support gate
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,statistics
+          fs=sorted(pathlib.Path('campaign').glob('*.json'))
+          if len(fs)!=3: raise SystemExit(f'expected 3 source cases, got {len(fs)}')
+          ds=[json.loads(p.read_text()) for p in fs]
+          rows=[]
+          for d in ds:
+              rows.append({
+                  'k':d['k'],'gamma':d['gamma'],
+                  'source_allowed_l':d['source_allowed_l'],
+                  'events':d['n_recoupling_events'],
+                  'leaked_events':d['n_leaked_events'],
+                  'leak_fraction':d['raw_support_leak_fraction'],
+                  'strict_envelope':d['raw_envelope_strictly_larger_than_source_image'],
+                  'targets_captured':d['all_defined_source_targets_captured_by_envelope'],
+                  'local_selector_recovery':d['local_selector_support_recovery'],
+              })
+          all_strict=all(r['strict_envelope'] for r in rows)
+          all_capture=all(r['targets_captured'] for r in rows)
+          all_selector=all(r['local_selector_recovery'] for r in rows)
+          all_leak=all(r['leaked_events']>0 for r in rows)
+          out={
+              'test':'RC006_EPRL_FUSION_SUPPORT_CLOSURE_AGGREGATE',
+              'status':'PASS_EXECUTION',
+              'preregistered_questions':{
+                  'raw_envelope_strictly_larger_all_cases':all_strict,
+                  'nonzero_raw_support_leakage_all_cases':all_leak,
+                  'source_targets_captured_all_cases':all_capture,
+                  'local_selector_support_recovery_all_cases':all_selector,
+              },
+              'semantic_bh004b_support':bool(all_strict and all_leak and all_capture and all_selector),
+              'median_raw_support_leak_fraction':statistics.median(r['leak_fraction'] for r in rows),
+              'by_case':rows,
+              'claim_lock':'Support-level SU(2)_k fusion audit only. No q-deformed tensor amplitudes, SVD/TNR reproduction, continuum claim, or full EPRL verdict.'
+          }
+          pathlib.Path('rc006_eprl_fusion_support_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-rc006-eprl-fusion-support-summary
+          path: rc006_eprl_fusion_support_summary.json
+          if-no-files-found: error
