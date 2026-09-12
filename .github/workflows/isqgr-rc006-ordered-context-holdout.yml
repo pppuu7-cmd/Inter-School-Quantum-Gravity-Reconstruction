@@ -1,0 +1,64 @@
+name: ISQGR RC006 Ordered Context Holdout
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_ordered_context_holdout.py'
+      - '.github/workflows/isqgr-rc006-ordered-context-holdout.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  holdout:
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix:
+        role: [app:EPRL-diagram, app:EPRL-norm, app:graph, eq:BC-3-int, eq:BC-3-valent, eq:eprl-3-valent, eq:eprl-map, eq:recoupling-basis, null_unordered]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch official arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Run frozen holdout/null audit
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_ordered_context_holdout.py --source-dir external/arxiv_src --role '${{ matrix.role }}' --output 'compute_out/${{ strategy.job-index }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'rc006-order-holdout-${{ strategy.job-index }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: holdout
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'rc006-order-holdout-*'
+          path: all
+          merge-multiple: true
+      - name: Apply frozen interpretation
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          r=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          hs=[x for x in r if x['role']!='null_unordered']; ns=[x for x in r if x['role']=='null_unordered']
+          robust=len(r)==9 and len(hs)==8 and len(ns)==1 and all(x['valid_computation'] and x['scientific_classification']=='SCIENTIFIC_PASS_HOLDOUT_UNIQUE' for x in hs) and ns[0]['valid_computation'] and ns[0]['scientific_classification']=='SCIENTIFIC_PASS_NULL_RESTORES_AMBIGUITY'
+          o={'test':'RC006_ORDERED_CONTEXT_HOLDOUT_AGGREGATE','lane_count':len(r),'holdout_passes':sum(x.get('scientific_classification')=='SCIENTIFIC_PASS_HOLDOUT_UNIQUE' for x in hs),'null_classification':ns[0].get('scientific_classification') if len(ns)==1 else 'MISSING','robust_source_order_gate_pass':robust,'claim_lock':'Robust source-order prerequisite only; no Eq29 amplitude or bridge claim.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n');print(json.dumps(o,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-order-holdout-summary
+          path: summary.json
+          if-no-files-found: error
