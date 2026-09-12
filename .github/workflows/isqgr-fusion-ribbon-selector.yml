@@ -1,0 +1,97 @@
+name: ISQGR Fusion Ribbon Selector Predictivity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/fusion_ribbon_selector_predictivity.py'
+      - '.github/workflows/isqgr-fusion-ribbon-selector.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  selector:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        g: ['0.0','0.25','0.5','0.75','1.0','1.15']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Clone pinned source
+        run: |
+          set -euo pipefail
+          git clone https://github.com/ssteinhaus/Fusion-basis-coarse-graining.git external/Fusion-basis-coarse-graining
+          git -C external/Fusion-basis-coarse-graining checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
+          test "$(git -C external/Fusion-basis-coarse-graining rev-parse HEAD)" = "bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4"
+      - name: Freeze five RG iterations and disable autorun
+        working-directory: external/Fusion-basis-coarse-graining/half_int/no_torsion
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('Fusion_vec.jl'); s=p.read_text()
+          s,n=re.subn(r'iterations\s*=\s*\d+\s*;', 'iterations = 5;', s, count=1)
+          if n!=1: raise SystemExit(f'iteration patch count={n}')
+          s=s.replace('@time main_vec(1.15)','',1)
+          p.write_text(s)
+          PY
+      - name: Execute amplitude-level RG flow
+        working-directory: external/Fusion-basis-coarse-graining/half_int/no_torsion
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/compute_out"
+          julia -L Fusion_vec.jl -e 'Fusion.main_vec(parse(Float64, ARGS[1]));' '${{ matrix.g }}' > "$GITHUB_WORKSPACE/compute_out/fusion_${{ matrix.g }}.log" 2>&1
+          grep -q 'Iteration 5' "$GITHUB_WORKSPACE/compute_out/fusion_${{ matrix.g }}.log"
+      - name: Evaluate source-native ribbon selector
+        run: |
+          python experiments/fusion_ribbon_selector_predictivity.py --log 'compute_out/fusion_${{ matrix.g }}.log' --g '${{ matrix.g }}' --iterations 5 --output 'compute_out/selector_${{ matrix.g }}.json'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ribbon-selector-g-${{ matrix.g }}
+          path: compute_out/
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [selector]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ribbon-selector-g-*
+          path: campaign
+      - name: Aggregate preregistered selector gate
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,statistics
+          fs=sorted(pathlib.Path('campaign').glob('**/selector_*.json'))
+          ds=[json.loads(p.read_text()) for p in fs]
+          if len(ds)!=6: raise SystemExit(f'expected 6 lanes, got {len(ds)}')
+          a1=[d['summary']['mean_svd1_gain_over_random'] for d in ds]
+          a2=[d['summary']['mean_svd2_gain_over_random'] for d in ds]
+          fb=[d['summary']['fraction_steps_both_gain_gt_1'] for d in ds]
+          out={'test':'FUSION_RIBBON_SOURCE_SELECTOR_PREDICTIVITY_AGGREGATE','lane_count':len(ds),
+               'median_svd1_gain_over_random':statistics.median(a1),
+               'median_svd2_gain_over_random':statistics.median(a2),
+               'median_fraction_steps_both_gain_gt_1':statistics.median(fb),
+               'fraction_couplings_both_mean_gains_gt_1':sum(x>1 and y>1 for x,y in zip(a1,a2))/len(ds),
+               'natural_support': statistics.median(a1)>1 and statistics.median(a2)>1 and sum(x>1 and y>1 for x,y in zip(a1,a2))/len(ds)>=2/3,
+               'strong_support': statistics.median(a1)>1.5 and statistics.median(a2)>1.5 and statistics.median(fb)>=0.8,
+               'by_coupling':[{'g':d['g'],**d['summary']} for d in ds],
+               'claim_lock':'Nearest-framework control only. Threshold 1e-2 is frozen from the prior SVD-envelope audit. Support means ribbon-observable sector labels predict SVD support better than rank-matched random labels; it does not establish a gravity selector or new physics.'}
+          pathlib.Path('fusion_ribbon_selector_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fusion-ribbon-selector-summary
+          path: fusion_ribbon_selector_summary.json
+          if-no-files-found: error
