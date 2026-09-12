@@ -1,0 +1,94 @@
+name: ISQGR Delta4 Multi-Vertex Shellflow Contractivity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_multivertex_shellflow_contractivity.py'
+      - '.github/workflows/isqgr-delta4-multivertex-shellflow-contractivity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shellflow:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [0,1,2,3,4,5,6,7]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clone and pin public Delta4 source data
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Run frozen shell-flow gate
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/delta4_multivertex_shellflow_contractivity.py \
+            --source-root external/HowToSpinFoamAmplitude \
+            --lane ${{ matrix.lane }} --lanes 8 \
+            --output compute_out/shellflow_lane_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-shellflow-lane-${{ matrix.lane }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: shellflow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: delta4-shellflow-lane-*
+          path: all_lanes
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate frozen gate
+        run: |
+          python - <<'PY'
+          import glob,json,math,os
+          rows=[]
+          for f in glob.glob('all_lanes/*.json'):
+              d=json.load(open(f)); rows.extend(d['results'])
+          eligible=[r for r in rows if r.get('eligible')]
+          passed=[r for r in eligible if r.get('lane_pass')]
+          frac=len(passed)/len(eligible) if eligible else 0.0
+          out={
+            'test':'LORENTZIAN_EPRL_DELTA4_MULTIVERTEX_SHELLFLOW_CONTRACTIVITY_AGGREGATE',
+            'n_datasets':len(rows),'n_eligible':len(eligible),'n_passed':len(passed),
+            'pass_fraction':frac,
+            'natural_support': bool(eligible and frac >= 0.5),
+            'strong_support': bool(eligible and frac == 1.0),
+            'by_dataset':[{
+              'gamma':r.get('gamma'),'j_boundary':r.get('j_boundary'),
+              'Dl_max':r.get('Dl_max'),'n_channels':r.get('n_channels'),
+              'contraction_ratio':r.get('tail_to_head_contraction_ratio'),
+              'monotone_fraction':r.get('fraction_nonincreasing_step_error'),
+              'tail_final_error':r.get('tail_max_final_direction_error'),
+              'persistence_vs_null_fraction':r.get('persistence_beats_cyclic_label_null_fraction'),
+              'pass':r.get('lane_pass')
+            } for r in eligible],
+            'claim_lock':'Positive support means contracting cutoff-shell boundary-profile flow in pinned four-vertex Lorentzian EPRL data only. This is not yet a genuine coarse/fine refinement map and does not establish new physics.'
+          }
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/delta4_shellflow_summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-shellflow-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
