@@ -1,0 +1,54 @@
+{
+  "protocol": "ITER006_DVD_ASYMMETRIC_BOUNDARY_PREREG",
+  "date": "2026-09-12",
+  "status": "FROZEN_BEFORE_ASYMMETRIC_NUMERICAL_RESPONSE",
+  "source": {
+    "arxiv_id": "1801.03771",
+    "root_sha256": "27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1",
+    "DVD2_hash": "799f56dc22f55a09bf744d62c459ee95e38794e5be02c114a73d06c057d0e94c",
+    "DVD3_hash": "7d2fb958574c76f67e52d32ffea2cb22beb01c1e7d6583d383fce159b2eadfab"
+  },
+  "boundary": {
+    "j": [1,2,2,2],
+    "jprime": [1,2,2,1],
+    "i": 1,
+    "t": 1,
+    "iprime": 1,
+    "tprime": 1,
+    "selection_reason": "Chosen from source delta and shared-shell compatibility before numerical evaluation. DVD2 requires j1=j1prime, j2=j2prime, j3=j3prime and l4=j3prime. This choice also makes the D0 shared auxiliary labels exactly compatible across all B4 factors while j4 differs from j4prime, breaking the fully symmetric boundary."
+  },
+  "finite_shell_ranges": {
+    "D": [0,1,2],
+    "l1": "1..1+D",
+    "l2": "2..2+D",
+    "l3": "2..2+D",
+    "dvd2_l4": "fixed to j3prime=2 by the exact source delta",
+    "dvd3_l4": "2..2+D"
+  },
+  "source_reductions": {
+    "dvd2_prefactor": "d_i*d_iprime*d_t/d_j3prime = 27/5; source phase is +1 for the frozen integer-spin support",
+    "dvd2_factors": [
+      "B4[j=(1,2,2,2), l=(1,2,2,2); i=1,k=1]",
+      "B4[j=(1,2,2,2), l=(l1,l2,l3,2); i=1,k=kprime]",
+      "B4[jprime=(1,2,2,1), l=(1,l3,l2,l1); i=1,k=kprime]"
+    ],
+    "dvd3_prefactor": "d_i*d_iprime*d_t = 27",
+    "dvd3_factors": [
+      "B4[j=(1,2,2,2), l=(1,2,l3,l4); i=1,k=1]",
+      "B4[j=(1,2,2,2), l=(l1,l2,l3,l4); i=1,k=1]",
+      "B4[jprime=(1,2,2,1), l=(1,2,l2,l1); i=1,k=1]"
+    ]
+  },
+  "gamma": [0.5,1.2,2.0],
+  "prerequisite": {
+    "mixed_B4_fast_vs_accurate_threshold": 1e-5,
+    "must_pass_before_amplitude": true
+  },
+  "future_amplitude_gates": {
+    "repeat_relative_difference_max": 1e-12,
+    "all_values_finite": true,
+    "no_expected_D0_equality": true,
+    "no_monotonicity_or_convergence_direction_gate": true
+  },
+  "claim_lock": "The asymmetric calculation is a held-out boundary robustness test of source-labelled finite shell sums. It is not a refinement map, cylindrical consistency test, continuum limit, bridge, novelty or new physics."
+}
