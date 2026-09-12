@@ -1,0 +1,105 @@
+name: ISQGR Delta4 Cross-Gamma Boundary-Spin Transfer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_cross_gamma_boundary_spin_transfer.py'
+      - '.github/workflows/isqgr-delta4-cross-gamma-boundary-spin-transfer.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  transfer:
+    strategy:
+      fail-fast: false
+      max-parallel: 24
+      matrix:
+        lane: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clone and pin public Delta4 source data
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Run preregistered cross-gamma transfer lane
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/delta4_cross_gamma_boundary_spin_transfer.py \
+            --source-root external/HowToSpinFoamAmplitude \
+            --lane ${{ matrix.lane }} --lanes 24 \
+            --output compute_out/cross_gamma_lane_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-cross-gamma-transfer-lane-${{ matrix.lane }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: transfer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: delta4-cross-gamma-transfer-lane-*
+          path: all_lanes
+          merge-multiple: true
+      - name: Aggregate frozen cross-gamma gate
+        run: |
+          python - <<'PY'
+          import glob,json,os,statistics
+          rows=[]
+          for f in glob.glob('all_lanes/*.json'):
+              rows.extend(json.load(open(f))['results'])
+          good=[r for r in rows if r.get('identifiable')]
+          ig=[r['correct_j_vs_global_improvement'] for r in good]
+          isn=[r['correct_j_vs_swapped_improvement'] for r in good]
+          nbg=sum(r['correct_j_beats_global'] for r in good)
+          nbs=sum(r['correct_j_beats_swapped'] for r in good)
+          by_gamma={}
+          for r in good:
+              by_gamma.setdefault(str(r['heldout_gamma']),[]).append(r['correct_j_vs_global_improvement'])
+          gamma_medians={g:statistics.median(v) for g,v in sorted(by_gamma.items())}
+          all_ident=len(good)==72
+          med_g=statistics.median(ig) if ig else None
+          med_s=statistics.median(isn) if isn else None
+          support=bool(all_ident and med_g>=0.10 and nbg>=48 and med_s>=0.10 and nbs>=48 and
+                       len(gamma_medians)==3 and all(v>0.0 for v in gamma_medians.values()))
+          out={
+            'test':'LORENTZIAN_EPRL_DELTA4_CROSS_GAMMA_BOUNDARY_SPIN_TRANSFER_AGGREGATE',
+            'n_tasks':len(rows),'all_tasks_identifiable':all_ident,
+            'median_correct_j_vs_global_improvement':med_g,
+            'correct_j_beats_global_count':nbg,
+            'median_correct_j_vs_swapped_improvement':med_s,
+            'correct_j_beats_swapped_count':nbs,
+            'per_heldout_gamma_median_j_vs_global_improvement':gamma_medians,
+            'cross_gamma_boundary_spin_transfer_support':support,
+            'frozen_thresholds':{
+              'minimum_median_correct_j_vs_global_improvement':0.10,
+              'minimum_correct_j_beats_global_count':48,
+              'minimum_median_correct_j_vs_swapped_improvement':0.10,
+              'minimum_correct_j_beats_swapped_count':48,
+              'per_heldout_gamma_median_correct_j_vs_global_improvement_strictly_positive':True
+            },
+            'claim_lock':'Finite-cutoff held-out transfer only; not an RG universality class, continuum/refinement result, bridge derivation, or new physics.'
+          }
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/delta4_cross_gamma_transfer_summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if len(rows)!=72: raise SystemExit(f'expected 72 tasks, got {len(rows)}')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-cross-gamma-transfer-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
