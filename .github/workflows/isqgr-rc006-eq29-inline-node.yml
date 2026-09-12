@@ -1,0 +1,55 @@
+name: ISQGR RC006 Eq29 Inline Node Attachment
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_eq29_inline_node_attachment.py'
+      - '.github/workflows/isqgr-rc006-eq29-inline-node.yml'
+  workflow_dispatch:
+
+permissions: {contents: read}
+
+jobs:
+  attach:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: {mode: [raw, trim, spaces, lines]}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch official arXiv source
+        run: |
+          set -euo pipefail; mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Reconstruct grammar attachment
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_eq29_inline_node_attachment.py --source-dir external/arxiv_src --mode '${{ matrix.mode }}' --output 'compute_out/${{ matrix.mode }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: 'rc006-inline-${{ matrix.mode }}', path: 'compute_out/*.json', if-no-files-found: error}
+  aggregate:
+    needs: attach
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {pattern: 'rc006-inline-*', path: all, merge-multiple: true}
+      - name: Apply frozen grammar-invariance gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib,sys
+          rows=[json.load(open(f)) for f in sorted(glob.glob('all/*.json'))]
+          ok=(len(rows)==4 and all(r.get('lane_pass') for r in rows) and len({r['attachment_signature'] for r in rows})==1 and len({r['tex_sha256'] for r in rows})==1)
+          out={'test':'RC006_EQ29_INLINE_NODE_AGGREGATE','lane_count':len(rows),'all_lane_pass':all(r.get('lane_pass') for r in rows) if rows else False,'attachment_signature_invariant':len({r['attachment_signature'] for r in rows})==1 if rows else False,'frozen_gate_pass':ok,'claim_lock':'Source-native TikZ grammar attachment only; amplitude/orientation authority remains separately gated.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n');print(json.dumps(out,indent=2,sort_keys=True));sys.exit(0 if ok else 2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: rc006-inline-node-summary, path: summary.json, if-no-files-found: error}
