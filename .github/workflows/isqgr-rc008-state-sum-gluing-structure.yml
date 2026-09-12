@@ -1,0 +1,72 @@
+name: ISQGR RC008 State Sum Gluing Structure
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc008_state_sum_gluing_structure.py'
+      - '.github/workflows/isqgr-rc008-state-sum-gluing-structure.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  structure:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        requirement: [face_product, edge_product, vertex_product, spin_sum, intertwiner_sum, shared_boundary_data, coarse_refined_complex, amplitude_composition]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned RC008 source
+        run: |
+          set -euo pipefail
+          mkdir -p external/rc008_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1508.07961 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1508.07961 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/rc008_src
+      - name: Audit exact state-sum structure
+        run: |
+          mkdir -p compute_out
+          python experiments/rc008_state_sum_gluing_structure.py --source-dir external/rc008_src --requirement '${{ matrix.requirement }}' --output 'compute_out/${{ matrix.requirement }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'rc008-gluing-${{ matrix.requirement }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: structure
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'rc008-gluing-*'
+          path: all
+          merge-multiple: true
+      - name: Apply frozen structural-authority rule
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          r=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          d={x['requirement']:x['present'] for x in r}
+          valid=len(r)==8 and all(x.get('valid') for x in r)
+          product=all(d.get(k,False) for k in ['face_product','edge_product','vertex_product'])
+          internal=bool(d.get('spin_sum') or d.get('intertwiner_sum'))
+          context=all(d.get(k,False) for k in ['shared_boundary_data','coarse_refined_complex','amplitude_composition'])
+          gate=bool(valid and product and internal and context)
+          o={'test':'RC008_STATE_SUM_GLUING_STRUCTURE_AGGREGATE','valid':valid,'presence':d,'face_edge_vertex_product_complete':product,
+             'internal_label_sum_present':internal,'refinement_context_complete':context,'structural_gluing_authority_pass':gate,
+             'scientific_classification':'SOURCE_STRUCTURAL_GLUING_AUTHORITY_PASS' if gate else ('SOURCE_STRUCTURAL_GLUING_AUTHORITY_BLOCKED' if valid else 'INFRASTRUCTURE_OR_NUMERICAL_INVALID'),
+             'frozen_rule':'Require explicit face+edge+vertex product structure, at least one internal-label sum, boundary data, coarse/refined-complex context, and amplitude-composition context.',
+             'interpretation_lock':'Independent exact-source structural gate only. The prior wording-based closure result is unchanged; no amplitude/refinement bridge claim.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc008-gluing-structure-summary
+          path: summary.json
+          if-no-files-found: error
