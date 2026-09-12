@@ -1,0 +1,86 @@
+name: ISQGR RC008 Source Formula Inventory
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc008_source_formula_inventory.py'
+      - '.github/workflows/isqgr-rc008-source-formula-inventory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-inventory:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - arxiv: '1508.07961'
+            role: amplitude
+          - arxiv: '1605.07649'
+            role: phase
+          - arxiv: '1701.02311'
+            role: renormalization
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch official arXiv source archive
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 'https://export.arxiv.org/e-print/${{ matrix.arxiv }}' -o /tmp/src.tar || \
+           curl -fL --retry 3 --retry-delay 2 'https://arxiv.org/e-print/${{ matrix.arxiv }}' -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Inventory equation-bearing source regions
+        run: |
+          mkdir -p compute_out
+          python experiments/rc008_source_formula_inventory.py \
+            --source-dir external/arxiv_src \
+            --arxiv-id '${{ matrix.arxiv }}' \
+            --role '${{ matrix.role }}' \
+            --output 'compute_out/rc008_${{ matrix.role }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc008-source-${{ matrix.role }}
+          path: compute_out/*.json
+          if-no-files-found: warn
+
+  aggregate:
+    needs: source-inventory
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc008-source-*
+          path: all
+          merge-multiple: true
+      - name: Apply frozen source-qualification gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib,sys
+          fs=sorted(glob.glob('all/*.json')); rows=[json.load(open(f)) for f in fs]
+          roles={r.get('role') for r in rows}
+          ok=(len(rows)==3 and roles=={'amplitude','phase','renormalization'} and
+              all(r.get('source_qualification_pass') for r in rows))
+          out={'test':'RC008_SOURCE_FORMULA_INVENTORY_AGGREGATE','lane_count':len(rows),
+               'roles':sorted(roles),'frozen_gate_pass':ok,
+               'claim_lock':'Source qualification only; amplitude/refinement reproduction remains open.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True)); sys.exit(0 if ok else 2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc008-source-formula-summary
+          path: summary.json
+          if-no-files-found: error
