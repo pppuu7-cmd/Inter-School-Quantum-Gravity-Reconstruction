@@ -1,0 +1,113 @@
+name: ISQGR Iter006 RC006 Eq29 Exact Source Block
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_exact_source_block.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch hash-pinned arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+          test -s src/bc-spin-nets.tex
+      - name: Extract immutable Eq29 source block and raw TikZ primitives
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re
+          p=pathlib.Path('src/bc-spin-nets.tex')
+          text=p.read_text(errors='strict')
+          anchor_rx=re.compile(r'initial\s+3-valent\s+tensor',re.I)
+          anchors=list(anchor_rx.finditer(text))
+          out={'gate':'ITER006_RC006_EQ29_EXACT_SOURCE_BLOCK','source_file':'bc-spin-nets.tex','source_file_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'anchor_count':len(anchors)}
+          if len(anchors)!=1:
+              out.update({'classification':'EQ29_SOURCE_BLOCK_AMBIGUOUS','reason':'anchor_count_not_one','eq29_amplitude_authorized':False,'bridge_credit':False})
+          else:
+              m=anchors[0]
+              begin_rx=re.compile(r'\\begin\{align\*?\}')
+              bm=begin_rx.search(text,m.end())
+              if not bm:
+                  out.update({'classification':'EQ29_SOURCE_BLOCK_AMBIGUOUS','reason':'no_following_align','eq29_amplitude_authorized':False,'bridge_credit':False})
+              else:
+                  env='align*' if text[bm.start():bm.end()].endswith('align*}') else 'align'
+                  end_token='\\end{'+env+'}'
+                  ee=text.find(end_token,bm.end())
+                  if ee<0:
+                      out.update({'classification':'EQ29_SOURCE_BLOCK_AMBIGUOUS','reason':'unclosed_align','eq29_amplitude_authorized':False,'bridge_credit':False})
+                  else:
+                      ee += len(end_token)
+                      block=text[bm.start():ee]
+                      # Bounded prose after Eq29 up to next subsection/section or 12000 chars.
+                      tail=text[ee:min(len(text),ee+12000)]
+                      sec=re.search(r'\\(?:subsection|section)\s*\{',tail)
+                      prose=tail[:sec.start()] if sec else tail
+                      tikz=re.findall(r'\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}',block,re.S)
+                      draws=re.findall(r'\\draw\b.*?;',block,re.S)
+                      nodes=[]
+                      for idx,d in enumerate(draws):
+                          coords=re.findall(r'\([^\n()]*?\)',d)
+                          labels=re.findall(r'node\s*(?:\[[^\]]*\])?\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}',d,re.S)
+                          nodes.append({'draw_index':idx,'raw':d,'coordinates':coords,'labels':labels})
+                      context=text[max(0,m.start()-600):min(len(text),ee+1200)]
+                      pathlib.Path('out/eq29_align_block.tex').write_text(block)
+                      pathlib.Path('out/eq29_following_prose.tex').write_text(prose)
+                      pathlib.Path('out/eq29_context.tex').write_text(context)
+                      pathlib.Path('out/eq29_tikz_blocks.tex').write_text('\n\n% --- TIKZ BLOCK ---\n\n'.join(tikz))
+                      ok=bool(block.strip() and tikz and draws and prose.strip())
+                      cls='EQ29_EXACT_SOURCE_BLOCK_EXTRACTED' if ok else 'EQ29_SOURCE_BLOCK_AMBIGUOUS'
+                      out.update({
+                        'anchor_offset':m.start(),'align_environment':env,'align_block_sha256':hashlib.sha256(block.encode()).hexdigest(),
+                        'context_sha256':hashlib.sha256(context.encode()).hexdigest(),'following_prose_sha256':hashlib.sha256(prose.encode()).hexdigest(),
+                        'tikz_picture_count':len(tikz),'draw_command_count':len(draws),'draws':nodes,
+                        'following_prose_chars':len(prose),'classification':cls,
+                        'authorization':'RAW_SOURCE_BLOCK_ONLY; graph/incidence/R-placement qualification requires a later frozen audit.',
+                        'eq29_amplitude_authorized':False,'bridge_credit':False
+                      })
+          pathlib.Path('out/eq29_source_block.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({k:out.get(k) for k in ['anchor_count','anchor_offset','align_environment','tikz_picture_count','draw_command_count','following_prose_chars','classification']},indent=2,sort_keys=True))
+          if out.get('classification')=='INVALID_INFRASTRUCTURE': raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-exact-source-block
+          path: out/
+          if-no-files-found: error
+
+  independent-verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch independently and verify source identity plus unique textual anchor
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          mkdir src
+          tar -xf source.bundle -C src
+          python - <<'PY'
+          import json,pathlib,re
+          t=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          n=len(re.findall(r'initial\s+3-valent\s+tensor',t,re.I))
+          has_eprl='EPRL intertwiner model' in t
+          has_r=('\\mathcal{R}' in t or 'R$ matrix' in t or 'R matrix' in t)
+          out={'gate':'ITER006_RC006_EQ29_SOURCE_BLOCK_INDEPENDENT_VERIFY','unique_initial_3valent_anchor':n==1,'anchor_count':n,'eprl_section_anchor':has_eprl,'rmatrix_source_anchor':has_r,
+               'classification':'SOURCE_IDENTITY_AND_ANCHOR_PASS' if n==1 and has_eprl and has_r else 'SOURCE_IDENTITY_OR_ANCHOR_FAIL',
+               'scientific_credit':'+0 verification only'}
+          pathlib.Path('verify.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if out['classification']!='SOURCE_IDENTITY_AND_ANCHOR_PASS': raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-source-block-independent-verify
+          path: verify.json
+          if-no-files-found: error
