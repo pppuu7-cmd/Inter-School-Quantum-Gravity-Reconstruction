@@ -1,0 +1,116 @@
+name: ISQGR Iter006 Dual-Rep Aggregate Recovery
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_dual_rep_aggregate_recovery.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  frozen-aggregate-recovery:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install unchanged aggregate dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Download immutable source-run lane artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 34715789027
+          pattern: ded-dld-topology-*
+          path: all
+      - name: Apply unchanged frozen aggregate classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib,numpy as np
+          dirs=[pathlib.Path(p).parent for p in glob.glob('all/**/result.json',recursive=True)]
+          rows=[json.load(open(d/'result.json')) for d in dirs]
+          valid=len(rows)==8 and all(r.get('valid') for r in rows)
+          by={(r['asset'],r['representation'],r['dpi']):(r,d) for r,d in zip(rows,dirs)}
+          cross=[]; dpi_ok=True
+          if valid:
+            for asset in ['DED','DLD']:
+              for rep in ['ORIGINAL_EPS','GS_EPS2WRITE_NORMALIZED']:
+                c=[by[(asset,rep,d)][0]['filtered_component_count'] for d in [300,600]]
+                dpi_ok &= (c[0]==c[1])
+              for dpi in [300,600]:
+                r0,d0=by[(asset,'ORIGINAL_EPS',dpi)]; r1,d1=by[(asset,'GS_EPS2WRITE_NORMALIZED',dpi)]
+                m0=np.unpackbits(np.frombuffer((d0/'mask.bin').read_bytes(),dtype=np.uint8))[:1024*1024]
+                m1=np.unpackbits(np.frombuffer((d1/'mask.bin').read_bytes(),dtype=np.uint8))[:1024*1024]
+                dis=float(np.mean(m0!=m1))
+                f0=r0['foreground_fraction']; f1=r1['foreground_fraction']; rel=abs(f0-f1)/max(abs(f0),abs(f1),1e-30)
+                cross.append({'asset':asset,'dpi':dpi,'binary_disagreement_fraction':dis,'foreground_fraction_relative_difference':rel,'pass':dis<=0.002 and rel<=0.005})
+          cross_ok=bool(valid and cross and all(x['pass'] for x in cross))
+          if not valid: cls='INVALID'
+          elif cross_ok and dpi_ok: cls='REPRESENTATION_STABLE'
+          elif dpi_ok: cls='REPRESENTATION_DEPENDENT'
+          else: cls='TOPOLOGY_EXTRACTION_UNSTABLE'
+          out={'gate':'ITER006_DED_DLD_DUAL_REPRESENTATION_TOPOLOGY_DIAGNOSTIC','source_run':34715789027,'lane_count':len(rows),'valid':valid,'dpi_component_count_stable':bool(dpi_ok),'cross_representation':cross,'classification':cls,'recovery_scope':'Infrastructure-only aggregate recovery; eight original science lanes were not rerun.','claim_lock':'Prerequisite diagnostic only. No DED-DLD embedding, amplitude identity, cylindrical consistency or bridge credit from this gate.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - name: Upload recovered frozen summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-dual-representation-topology-summary-recovered
+          path: summary.json
+          if-no-files-found: error
+
+  independent-bitcount-crosscheck:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download immutable source-run lane artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 34715789027
+          pattern: ded-dld-topology-*
+          path: all
+      - name: Pure-Python independent arithmetic cross-check
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          dirs=[pathlib.Path(p).parent for p in glob.glob('all/**/result.json',recursive=True)]
+          rows=[json.load(open(d/'result.json')) for d in dirs]
+          keys=[(r['asset'],r['representation'],r['dpi']) for r in rows]
+          valid=(len(rows)==8 and len(set(keys))==8 and all(r.get('valid') for r in rows))
+          by={k:(r,d) for k,r,d in zip(keys,rows,dirs)}
+          cross=[]; dpi_ok=True; masks_ok=True
+          if valid:
+            for asset in ['DED','DLD']:
+              for rep in ['ORIGINAL_EPS','GS_EPS2WRITE_NORMALIZED']:
+                c=[by[(asset,rep,d)][0]['filtered_component_count'] for d in [300,600]]
+                dpi_ok = dpi_ok and (c[0]==c[1])
+              for dpi in [300,600]:
+                r0,d0=by[(asset,'ORIGINAL_EPS',dpi)]; r1,d1=by[(asset,'GS_EPS2WRITE_NORMALIZED',dpi)]
+                b0=(d0/'mask.bin').read_bytes(); b1=(d1/'mask.bin').read_bytes()
+                masks_ok = masks_ok and len(b0)==131072 and len(b1)==131072
+                nbits=min(len(b0),len(b1))*8
+                diff=sum((x^y).bit_count() for x,y in zip(b0,b1))
+                dis=(diff/nbits) if nbits else 1.0
+                f0=r0['foreground_fraction']; f1=r1['foreground_fraction']; rel=abs(f0-f1)/max(abs(f0),abs(f1),1e-30)
+                cross.append({'asset':asset,'dpi':dpi,'binary_disagreement_fraction':dis,'foreground_fraction_relative_difference':rel,'pass':dis<=0.002 and rel<=0.005})
+          valid=bool(valid and masks_ok)
+          cross_ok=bool(valid and cross and all(x['pass'] for x in cross))
+          if not valid: cls='INVALID'
+          elif cross_ok and dpi_ok: cls='REPRESENTATION_STABLE'
+          elif dpi_ok: cls='REPRESENTATION_DEPENDENT'
+          else: cls='TOPOLOGY_EXTRACTION_UNSTABLE'
+          out={'gate':'ITER006_DUAL_REPRESENTATION_INDEPENDENT_BITCOUNT_CROSSCHECK','source_run':34715789027,'lane_count':len(rows),'unique_key_count':len(set(keys)),'mask_lengths_exact':bool(masks_ok),'valid':valid,'dpi_component_count_stable':bool(dpi_ok),'cross_representation':cross,'classification':cls,'scientific_credit':'+0 validation only; cannot promote bridge claims.'}
+          pathlib.Path('crosscheck.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - name: Upload independent cross-check
+        uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-dual-representation-topology-independent-crosscheck
+          path: crosscheck.json
+          if-no-files-found: error
