@@ -1,0 +1,38 @@
+name: ISQGR RC006 Eq29 TikZ Token Stream
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_eq29_tikz_token_stream.py'
+      - '.github/workflows/isqgr-rc006-eq29-tikz-token-stream.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  token-stream:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch official arXiv source archive
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || \
+           curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Reconstruct derived structural token stream
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_eq29_tikz_token_stream.py --source-dir external/arxiv_src --output compute_out/eq29_tikz_token_stream.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-eq29-tikz-token-stream
+          path: compute_out/*.json
+          if-no-files-found: error
