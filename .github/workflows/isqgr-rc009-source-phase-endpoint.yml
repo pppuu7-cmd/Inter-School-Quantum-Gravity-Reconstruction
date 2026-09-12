@@ -1,0 +1,77 @@
+name: ISQGR RC-009 Source Phase Endpoint Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc009_source_phase_endpoint_audit.py'
+      - '.github/workflows/isqgr-rc009-source-phase-endpoint.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase-endpoint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix:
+        include:
+          - {mode: coarse, anchor: '0.2', tag: coarse}
+          - {mode: fine_diag, anchor: '0.2', tag: fine-diag}
+          - {mode: fine_edge, anchor: '0.05', tag: edge-005}
+          - {mode: fine_edge, anchor: '0.10', tag: edge-010}
+          - {mode: fine_edge, anchor: '0.20', tag: edge-020}
+          - {mode: fine_edge, anchor: '0.50', tag: edge-050}
+          - {mode: fine_edge, anchor: '1.00', tag: edge-100}
+          - {mode: fine_edge, anchor: '2.00', tag: edge-200}
+          - {mode: fine_edge, anchor: '4.00', tag: edge-400}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit source phase near endpoint
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/rc009_source_phase_endpoint_audit.py \
+            --mode '${{ matrix.mode }}' --anchor '${{ matrix.anchor }}' \
+            --output 'compute_out/${{ matrix.tag }}.json'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc009-source-phase-${{ matrix.tag }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [phase-endpoint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc009-source-phase-*
+          path: campaign
+          merge-multiple: true
+      - name: Aggregate source-phase exclusions
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          rows=[json.loads(p.read_text()) for p in sorted(pathlib.Path('campaign').glob('*.json'))]
+          out={'test':'RC009_SOURCE_PHASE_ENDPOINT_AGGREGATE','lane_count':len(rows),
+               'all_nine_present':len(rows)==9,
+               'all_source_branch_oscillatory_escapes_excluded_scoped':len(rows)==9 and all(r['source_branch_oscillatory_escape_excluded_scoped'] for r in rows),
+               'rows':[{'mode':r['mode'],'anchor':r['anchor'],'excluded':r['source_branch_oscillatory_escape_excluded_scoped'],'sign_stable':r['combined_tail_sign_stable'],'blocks':r['block_audits']} for r in rows],
+               'claim_lock':'Reduced isotemporal RC-009 source branch only; no no-go for Lorentzian EPRL, alternative contours/measures, or full spin-foam refinement.'}
+          pathlib.Path('rc009_source_phase_endpoint_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if len(rows)!=9: raise SystemExit('missing lanes')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc009-source-phase-endpoint-summary
+          path: rc009_source_phase_endpoint_summary.json
+          if-no-files-found: error
