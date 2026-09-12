@@ -1,0 +1,126 @@
+name: ISQGR BH-004 Nested Thinning Heldout Transport
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh004-nested-thinning-heldout.yml'
+      - 'experiments/bh004_nested_thinning_heldout_transport.py'
+
+permissions:
+  contents: read
+
+jobs:
+  transport:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        n_full: [512, 768, 1024]
+        seed: [301, 302, 303, 304]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --upgrade numpy scipy
+      - name: Run frozen three-level held-out transport
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          PYTHONPATH=experiments python experiments/bh004_nested_thinning_heldout_transport.py \
+            --n-full ${{ matrix.n_full }} --p1 0.75 --p2 0.50 \
+            --seed ${{ matrix.seed }} --n-random 16 \
+            --output compute_out/bh004_n${{ matrix.n_full }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bh004-n${{ matrix.n_full }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [transport]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate preregistered BH-004 gate
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, statistics
+          fs=sorted(pathlib.Path('campaign').glob('*.json'))
+          if len(fs)!=12: raise SystemExit(f'expected 12 results, got {len(fs)}')
+          ds=[json.loads(p.read_text()) for p in fs]
+          rows=[]
+          for d in ds:
+              h=d['heldout_prediction']
+              rows.append({
+                  'n_full':d['levels']['n0'], 'seed':d['seed'],
+                  'rank_error':h['rank_relative_error'],
+                  'mean_cosine':h['alignment_to_source']['mean_principal_cosine'],
+                  'min_cosine':h['alignment_to_source']['min_principal_cosine'],
+                  'leak_improvement':h['random_median_over_predicted_leakage'],
+                  'seq_improvement':h['random_median_over_predicted_seq_defect'],
+                  'frac_random_worse_leak':h['fraction_random_worse_leakage'],
+                  'frac_random_worse_seq':h['fraction_random_worse_seq_defect'],
+                  'alpha':d['training']['rank_flow_alpha_from_p0_p1'],
+              })
+          med=lambda k: statistics.median(r[k] for r in rows)
+          frac_both=sum(r['leak_improvement']>1 and r['seq_improvement']>1 for r in rows)/len(rows)
+          frac_majority=sum(r['frac_random_worse_leak']>0.5 and r['frac_random_worse_seq']>0.5 for r in rows)/len(rows)
+          summary={
+              'n_jobs':len(rows),
+              'median_rank_relative_error':med('rank_error'),
+              'median_mean_principal_cosine':med('mean_cosine'),
+              'median_min_principal_cosine':med('min_cosine'),
+              'median_random_over_predicted_leakage':med('leak_improvement'),
+              'median_random_over_predicted_seq_defect':med('seq_improvement'),
+              'fraction_jobs_both_closure_improvements_gt_1':frac_both,
+              'fraction_jobs_majority_random_worse_both_metrics':frac_majority,
+              'median_trained_rank_flow_alpha':med('alpha'),
+          }
+          # Frozen before campaign results:
+          # natural: cosine > .90; rank error <= .20; med closure gains >1; >=2/3 jobs gain on both.
+          # strong:  cosine > .95; rank error <= .15; med closure gains >1.5; >=0.80 jobs gain on both.
+          natural=(summary['median_mean_principal_cosine']>0.90 and
+                   summary['median_rank_relative_error']<=0.20 and
+                   summary['median_random_over_predicted_leakage']>1.0 and
+                   summary['median_random_over_predicted_seq_defect']>1.0 and
+                   frac_both>=2/3)
+          strong=(summary['median_mean_principal_cosine']>0.95 and
+                  summary['median_rank_relative_error']<=0.15 and
+                  summary['median_random_over_predicted_leakage']>1.5 and
+                  summary['median_random_over_predicted_seq_defect']>1.5 and
+                  frac_both>=0.80)
+          out={
+              'test':'BH004_NESTED_THINNING_HELDOUT_PROJECTOR_MEASURE_TRANSPORT_AGGREGATE',
+              'status':'PASS_EXECUTION',
+              'preregistered_gate':{
+                  'natural':'median cosine >0.90; median rank error <=0.20; median leakage and sequential random/predicted gains >1; >=2/3 jobs improve both',
+                  'strong':'median cosine >0.95; median rank error <=0.15; median leakage and sequential gains >1.5; >=0.80 jobs improve both'
+              },
+              'natural_support':natural,
+              'strong_support':strong,
+              'summary':summary,
+              'by_job':rows,
+              'claim_lock':'Nested-thinning held-out transport in one 1+1D causal-set free-field realization. p2 source projector is evaluation-only; no target-closure retuning. Positive support is a bridge result, not a fundamental QG RG law.'
+          }
+          pathlib.Path('bh004_nested_thinning_heldout_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh004-nested-thinning-heldout-summary
+          path: bh004_nested_thinning_heldout_summary.json
+          if-no-files-found: error
