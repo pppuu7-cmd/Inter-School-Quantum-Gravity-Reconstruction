@@ -1,0 +1,59 @@
+name: ISQGR RC006 Eq29 Source Semantic Authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_eq29_source_semantic_authority.py'
+      - '.github/workflows/isqgr-rc006-eq29-source-semantics.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  authority:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        authority: [braiding, representations, internal_channels, eq29_context]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch official arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Audit explicit source authority
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_eq29_source_semantic_authority.py --source-dir external/arxiv_src --authority '${{ matrix.authority }}' --output 'compute_out/${{ matrix.authority }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-source-semantic-${{ matrix.authority }}
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: authority
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {pattern: 'rc006-source-semantic-*', path: all, merge-multiple: true}
+      - name: Preserve lane classifications
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(f)) for f in sorted(glob.glob('all/*.json'))]
+          out={'test':'RC006_EQ29_SOURCE_SEMANTIC_AGGREGATE','lane_count':len(rows),'passes':sum(bool(r.get('frozen_gate_pass')) for r in rows),'fails':sum(not bool(r.get('frozen_gate_pass')) for r in rows),'by_authority':{r['authority']:r.get('frozen_gate_pass') for r in rows},'all_pass':len(rows)==4 and all(r.get('frozen_gate_pass') for r in rows),'claim_lock':'A failed source-authority lane is preserved; thresholds are not weakened and the Eq29 amplitude remains blocked until contraction authority is explicit.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with: {name: rc006-source-semantic-summary, path: summary.json, if-no-files-found: error}
