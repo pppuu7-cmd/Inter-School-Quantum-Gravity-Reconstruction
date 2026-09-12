@@ -2,7 +2,7 @@
 
 Date: 2026-09-12  
 Active iteration: `ITERATION_006`  
-Iteration completion: **78%**  
+Iteration completion: **79%**  
 Amplitude/refinement cross-realization validation: **46%**  
 Overall scientific programme readiness: **49%**  
 Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
@@ -53,24 +53,25 @@ Dependency closure run `34715908026` remains fail-closed as `EQ29_DEPENDENCY_GRA
 
 Manual primary-source inspection of arXiv:1609.02429v2 confirmed that printed Eq.(29) is the initial 3-valent EPRL intertwiner tensor; surrounding discussion states that `J+` and `J-` couple to `l` without the latter coupling necessarily satisfying the original simplicity constraints, and the source separately defines over/undercrossings through the quantum-group R-matrix and inverse.
 
-Preregistered two-stream run `34717474214` returned `EQ29_PRIMARY_SOURCE_EXTRACTION_READY`. Pinned source-bundle SHA256: `3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee`; sole TeX source file: `bc-spin-nets.tex`. This is source-discovery authority only; graph incidence and R-matrix placement in Eq.(29) remain unqualified.
+Preregistered two-stream run `34717474214` returned `EQ29_PRIMARY_SOURCE_EXTRACTION_READY`. Pinned source-bundle SHA256: `3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee`; sole TeX source file: `bc-spin-nets.tex`. This is source-discovery authority only.
 
-The next preregistered run `34717600962` attempted exact source-block extraction using the literal `initial 3-valent tensor` anchor. It correctly failed closed: both the main extractor and independent verifier found **three** literal occurrences, so classification is `EQ29_SOURCE_BLOCK_AMBIGUOUS` / independent `SOURCE_IDENTITY_OR_ANCHOR_FAIL`. This is not a physics failure and not an infrastructure failure. No source block was selected and no amplitude was authorized.
+Run `34717600962` correctly failed closed because the literal phrase `initial 3-valent tensor` occurs three times. Follow-up diagnostic run `34717736113`, job `103618085662`, artifact `10305896153`, digest `sha256:812badb44df244a1e55a53fae8d162fe26b237eae60cbb0786d4bd522f72ec16`, confirmed that all three also remain active after TeX `%` comment semantics: `ACTIVE_TEX_ANCHOR_STILL_AMBIGUOUS`. This is a +0 source diagnostic, not a physics failure.
 
-Active +0 diagnostic run `34717736113` now distinguishes literal source from **active TeX after `%` comment semantics**, reports all anchors with nearest structural headers, and asks only whether the active-document anchor is unique. Manual selection among the three literal occurrences is forbidden. Only if active-TeX uniqueness is established may a new comment-aware exact-block extractor be preregistered.
+A separately preregistered source-semantic discriminator then restricted extraction to the unique active subsection `EPRL intertwiner model` and the sentence explicitly referencing `\\eqref{eq:eprl-3-valent}`. Authoritative run `34717945469`, head `e11e138f1457aee1a40af6fcd53cfc24c5844ff9`, extract job `103618458478`, independent-verify job `103618458340`, is terminal `EQ29_EPRL_SOURCE_BLOCK_EXTRACTED`. Artifact `10305616057`, digest `sha256:dbcbeeff950cdf936553864830d7a9dc9ae79ec27ddad0dc1edb894daecf6c26`; independent artifact `10305466023`, digest `sha256:74c12b93c118fadfffdb153fb9f79729598c32277b5fd214a2252cf1e2550a02`.
 
-## Auto-research state
+The immutable source block has active-source anchor line `1090`, EPRL subsection SHA256 `58690793c1a0f11b169d3dae259b557f23c432c2a6ec86b27f588e5a5aa33dac`, align-block SHA256 `4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083`, one TikZ picture, one draw command and 12 extracted labels. Authorization remains `RAW_SOURCE_BLOCK_ONLY`: path incidence, R/inverse-R placement and literal Eq.(29) tensor reconstruction are not yet qualified; amplitude and bridge credit remain false.
 
-`ISQGR Автоисследование` is enabled on its hourly schedule with anti-duplicate/anti-idle rules and explicit scientific-vs-infrastructure classification. Its previous stale snapshot arose because an auto iteration finished before the topology run became terminal, not because automation was broken. `recovery/state.json` and this file are synchronized to the terminal DED/B13/source-extraction/source-block results and active diagnostic `34717736113`.
+The next dependency gate was preregistered before implementation at commit `4d48152cc183877ea0af5bfd20a0dc4dade43234`, implemented at `be3615fb36f4c1863b221b86fcf80d7cf4f11125`, and triggered without changing frozen science at `9729cef2573778a3b48f6b80b42c6d5fd721366b`. Active run `34718554940` has three independent `fail-fast:false` lanes: label geometry, source-level path incidence, and R/inverse-R placement. At the latest check geometry is terminal green but not yet promoted scientifically, R-placement is in progress, and incidence is queued; aggregate classification is pending.
 
 ## Exact next admissible gates
 
-1. Consume `34717736113`. Only if active TeX contains a unique Eq.(29) anchor, preregister a new comment-aware exact TeX/TikZ block extractor. Do not manually choose among literal duplicates.
-2. After an immutable active Eq.(29) block is obtained, preregister a source-faithful parser/audit of label geometry, path incidence and R-matrix placement. Do not launch the Eq.(29) amplitude before each dependency independently passes.
-3. For DED/DLD, do not retune the failed raster topology prerequisite. A further attempt is admissible only as a prospectively defined source-semantic/vector-level identification of the two localized DED features, followed by a new independently justified representation if warranted.
-4. Synthetic DVD23 self-consistency is not a refinement map. A genuine claim requires source-derived V/E/F incidence preservation.
-5. RC008 remains source-only BLOCKED; RC009 remains SCOPED BLOCKED. Do not spend compute on denser RC009 quadrature without a new mathematically justified regularization/measure/contour object.
+1. Consume all three lanes and aggregate of `34718554940` against the frozen classifier. Green CI alone is not PASS.
+2. Only if `EQ29_SOURCE_DEPENDENCIES_COMPLETE`, preregister a literal Eq.(29) tensor reconstruction gate using exactly the immutable block hash above. COMPLETE itself gives no bridge credit.
+3. If PARTIAL/BLOCKED, preserve the missing dependency as BLOCKED; do not fit a parser, crossing selector or incidence graph after seeing results.
+4. For DED/DLD, do not retune the failed raster topology prerequisite. A further attempt is admissible only as a prospectively defined source-semantic/vector-level identification of the two localized DED features, followed by a new independently justified representation if warranted.
+5. Synthetic DVD23 self-consistency is not a refinement map. A genuine claim requires source-derived V/E/F incidence preservation.
+6. RC008 remains source-only BLOCKED; RC009 remains SCOPED BLOCKED. Do not spend compute on denser RC009 quadrature without a new mathematically justified regularization/measure/contour object.
 
-Latest durable update: `results/ITER006_EQ29_SOURCE_BLOCK_AMBIGUITY_2026-09-12.md` plus `results/ITER006_PARALLEL_PROGRESS_2026-09-12_2037Z.md`.
+Latest durable update: `results/ITER006_EQ29_EPRL_SOURCE_BLOCK_AND_DEPENDENCY_LAUNCH_2026-09-12.md`.
 
-Iteration completion: **78%**. Amplitude/refinement validation: **46%**. Overall readiness: **49%**. Candidate theory: **0% / UNFORMED**.
+Iteration completion: **79%**. Amplitude/refinement validation: **46%**. Overall readiness: **49%**. Candidate theory: **0% / UNFORMED**.
