@@ -4,30 +4,47 @@
   "date":"2026-09-12",
   "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration":"ITERATION_006",
-  "iteration_completion_percent":74,
+  "iteration_completion_percent":76,
   "candidate_theory_status":"UNFORMED",
   "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"rqir_promotion_authorized":false,"kmqgb_promotion_authorized":false},
-  "readiness_percent":{"amplitude_refinement_cross_realization_validation":44,"candidate_theory_construction":0,"overall_scientific_programme":49},
+  "readiness_percent":{"amplitude_refinement_cross_realization_validation":46,"candidate_theory_construction":0,"overall_scientific_programme":49},
   "frontier":{
-    "RC006":{"status":"EQ29_AMPLITUDE_BLOCKED_SERIALIZATION_UNSTABLE","classification":"SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE"},
+    "RC006":{
+      "status":"RELATION_AWARE_SERIALIZATION_RETRY_QUEUED_AFTER_NEW_SOURCE_AUTHORITY",
+      "previous_serialization":{"run":34700639086,"classification":"SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE"},
+      "four_anchor_relation_authority":{"run":34712998699,"head":"078fd4846a587156836b293c323fee83d0f943d1","job":103605052196,"artifact":10304191011,"artifact_digest":"sha256:d4c4cbbe7fe84fcbb0844ea02ccc4ebf794e2965288bafa66a52b7d322781c8a","classification":"RC006_FOUR_ANCHOR_EXPLICIT_RELATION_SOURCE_PASS"},
+      "relation_aware_retry":{"prereg_commit":"c03b50a33d9937f542668b90751ec295bc235c24","launch_commit":"7a034f0766277656eb5fc09d3c492299e364281e","run":34713459961,"status":"QUEUED","lane_count":10},
+      "eq29_amplitude_authorized":false
+    },
     "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
     "RC009":{"status":"SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{
-      "status":"ZERO_SPIN_ASYMMETRIC_HELDOUT_ACTIVE",
+      "status":"SOURCE_FIGURE_INCIDENCE_AUDIT_QUEUED_AFTER_ZERO_SPIN_HELDOUT_PASS_AND_NORMALIZATION_SOURCE_MAP",
       "source":"arXiv:1801.03771",
       "kernel":"qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f",
       "dvd_refinement_source_authority":{"run":34709790323,"classification":"SOURCE_REFINEMENT_AUTHORITY_NOT_FOUND","bridge_credit":false},
-      "dvd_pair_semantics":{"classification":"DVD2_DVD3_FIXED_BOUNDARY_FOAMS_NOT_DIRECT_REFINEMENT_PAIR","bridge_credit":false},
-      "refinement_source_ladder":{"run":34710188640,"classification":"REFINEMENT_SEMANTIC_COMPONENTS_FOUND_BUT_LORENTZIAN_DVD_COMPATIBILITY_NOT_YET_ESTABLISHED","bridge_credit":false},
-      "lorentzian_graph_refinement_source_gate":{"run":34710443728,"classification":"SOURCE_CONTEXTS_READY_FOR_TERMINAL_SEMANTIC_CLASSIFICATION"},
-      "dvd23_direct_structural_audit":{"run":34710895347,"launch_commit":"674d842e256bba054a8a090509d1cc332e4710e9","classification":"DVD23_DIRECT_TRIVIAL_EXTENSION_EXCLUDED","bridge_credit":false},
+      "dvd23_direct_structural_audit":{"run":34710895347,"classification":"DVD23_DIRECT_TRIVIAL_EXTENSION_EXCLUDED","bridge_credit":false},
       "zero_spin_b4_primitive":{"run":34711008648,"head":"b60cc12ac2927404d9d76a50be1fdd3f533c36a3","aggregate_job":103599966017,"artifact":10303646260,"artifact_digest":"sha256:c9404133ba09be62129f217b97d05c16a0f6236d8772e34e2fe23b5b577d8814","classification":"B4_ZERO_SPIN_PRIMITIVE_AGGREGATE_PASS","lane_count":3,"worst_relative_error":2.03838e-16,"threshold":1e-5,"bridge_credit":false},
-      "zero_spin_asymmetric_heldout":{"prereg_commit":"354c960a99aa2e5726d39e16108860bfc7f0711e","launch_commit":"d11fefbd2826c3a3772da0d4c052298c063e7f18","run":34712687076,"status":"QUEUED_OR_RUNNING","lane_count":5,"bridge_credit":false},
+      "zero_spin_asymmetric_heldout":{"prereg_commit":"354c960a99aa2e5726d39e16108860bfc7f0711e","launch_commit":"d11fefbd2826c3a3772da0d4c052298c063e7f18","run":34712687076,"aggregate_job":103604345234,"classification":"B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_AGGREGATE_PASS","lane_count":5,"worst_relative_error":1.74533e-6,"threshold":1e-5,"bridge_credit":false},
+      "ded_dld_topology_candidate":{"run":34712970339,"head":"811a207f4bcd16c5709fc8c3b6b7429a154776b1","artifact":10304455008,"artifact_digest":"sha256:d62023021e50213e3424c46a2d4cb2fb75c7138287f21ba51c093486d515c4b6","classification":"DED_DLD_STRICT_EXTENSION_CANDIDATE_SOURCE_QUALIFIED","strict_incidence_embedding_proven":false,"bridge_credit":false},
+      "cylindrical_normalization_source_map":{"run":34712985651,"head":"0f1b5993147498af6a961bde27ba04b0389c1908","job":103605014961,"artifact":10304340366,"artifact_digest":"sha256:13349d2538ed2845e64353c8488868f8800832780ec28e7afb169d567ff2d979","classification":"LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED","bridge_credit":false},
+      "ded_dld_source_figure_incidence":{"prereg_commit":"aed17144107ae13e32686e06887e4059f2101b1a","launch_commit":"09d34cef1ca42b90fec6496fdffcc5c9410175d3","run":34713333741,"status":"QUEUED"},
       "refinement_map_derived":false,
-      "next_gate":"CONSUME_34712687076; IF PASS CONSTRUCT_AND_PREREGISTER_EXPLICIT_STRICT_LARGER_FIXED_BOUNDARY_LORENTZIAN_FOAM_WITH_AT_LEAST_ONE_SOURCE_AUTHORIZED_J0_ADDED_FACE_BEFORE_ANY_AMPLITUDE_IDENTITY_TEST"
+      "next_gate":"CONSUME_34713333741; ONLY IF MACHINE-READABLE INCIDENCE IS SUFFICIENT, RECONSTRUCT_AND_VERIFY AN EXPLICIT V/E/F INJECTIVE DED_TO_DLD SUBFOAM MAP BEFORE ANY AMPLITUDE IDENTITY"
     }
   },
-  "active_compute":[{"workflow_run":34712687076,"purpose":"held-out asymmetric one-zero-spin B4 numerical robustness","status":"QUEUED_OR_RUNNING"}],
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_ZERO_SPIN_PRIMITIVE_AND_DIRECT_REFINEMENT_UPDATE.md","protocol/ITER006_LORENTZIAN_ZERO_SPIN_ASYMMETRIC_HELDOUT_PREREG.json","docs/CONSTITUTION.md"]
+  "active_compute":[
+    {"workflow_run":34713333741,"purpose":"DED/DLD source-vector incidence audit","status":"QUEUED"},
+    {"workflow_run":34713459961,"purpose":"RC006 relation-aware contraction serialization retry","status":"QUEUED","lane_count":10}
+  ],
+  "authoritative_recovery_order":[
+    "recovery/state.json",
+    "recovery/CURRENT_FRONT.md",
+    "results/ITER006_ZERO_SPIN_PRIMITIVE_AND_DIRECT_REFINEMENT_UPDATE.md",
+    "results/ITER006_RC006_FOUR_ANCHOR_RELATION_AUTHORITY.md",
+    "protocol/ITER006_DED_DLD_SOURCE_FIGURE_INCIDENCE_PREREG.json",
+    "protocol/ITER006_RC006_RELATION_AWARE_SERIALIZATION_RETRY_PREREG.json",
+    "docs/CONSTITUTION.md"
+  ]
 }
