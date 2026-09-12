@@ -69,3 +69,7 @@ No outcome changes the frozen `EQ29_SOURCE_DEPENDENCIES_PARTIAL` result. No brid
 ## Claim locks
 
 No numerical Eq.(29) amplitude, RC006 bridge credit, `BRIDGE_DERIVED`, candidate theory, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, or `NEW_PHYSICS_FOUND` claim is authorized by this diagnostic.
+
+## Administrative launch annotation
+
+The implementation workflow was registered at commit `745ecd2f3c999dbf130d4e7ed4520a3f0f28f13a`. This annotation only triggers the already-frozen workflow and changes no scientific object, criterion, source, parameter, control or interpretation rule above.
