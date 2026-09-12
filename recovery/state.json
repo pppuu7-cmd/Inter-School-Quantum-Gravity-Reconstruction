@@ -4,90 +4,35 @@
   "date": "2026-09-12",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 47,
+  "iteration_completion_percent": 48,
   "last_completed_iteration": "ITERATION_005",
   "candidate_theory_status": "UNFORMED",
   "lead_bridge_hypothesis": "BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
-  "claim_locks": {
-    "known_schools_fail": false,
-    "new_theory_required": false,
-    "new_physics_found": false,
-    "bridge_derived": false,
-    "generic_orientation_beyond_spectrum_is_novel": false,
-    "rqir_promotion_authorized": false,
-    "kmqgb_promotion_authorized": false
-  },
-  "novelty_audit": {
-    "generic_orientation_beyond_spectrum": "ABSORBED_BY_STANDARD_AMPLITUDE_LEVEL_TNR",
-    "remaining_possible_isqgr_novelty_domain": "SOURCE_NATIVE_PHYSICAL_SELECTOR_PLUS_NONRETUNED_QG_REFINEMENT_TRANSPORT",
-    "nearest_framework_control_run": 34666545108
-  },
-  "readiness_percent": {
-    "repository_recovery_bootstrap": 99,
-    "source_grounded_interface_atlas": 52,
-    "recurrent_motif_search": 70,
-    "accepted_recurrent_motifs": 30,
-    "bridge_principle_validation": 78,
-    "executable_cross_school_obstructions": 86,
-    "amplitude_refinement_cross_realization_validation": 28,
-    "candidate_theory_construction": 0,
-    "overall_scientific_programme": 44
-  },
+  "claim_locks": {"known_schools_fail": false,"new_theory_required": false,"new_physics_found": false,"bridge_derived": false,"generic_orientation_beyond_spectrum_is_novel": false,"rqir_promotion_authorized": false,"kmqgb_promotion_authorized": false},
+  "readiness_percent": {"repository_recovery_bootstrap":99,"source_grounded_interface_atlas":52,"recurrent_motif_search":70,"accepted_recurrent_motifs":30,"bridge_principle_validation":78,"executable_cross_school_obstructions":86,"amplitude_refinement_cross_realization_validation":28,"candidate_theory_construction":0,"overall_scientific_programme":44},
   "frontier": {
     "RC006": {
-      "status": "CONTRACTION_MAPPING_OPEN_NAMED_ANCHOR_DEPENDENCY_ACTIVE",
-      "path_reconstruction": {"run": 34697961643, "aggregate_job": 103564711935, "artifact": 10298684340, "classification": "PASS_DETERMINISTIC_SOURCE_PATH_RECONSTRUCTION_SUBGATE"},
-      "graphic_geometry_authority": {"run": 34698228895, "aggregate_job": 103565420131, "artifact": 10299149029, "classification": "SCIENTIFIC_DIAGNOSTIC_FAIL_GEOMETRY_ALONE_AMBIGUOUS"},
-      "source_semantic_authority": {"run": 34698427276, "aggregate_job": 103565838907, "artifact": 10299273364, "classification": "PASS_EXPLICIT_SOURCE_AUTHORITY_EXISTS_MAPPING_STILL_OPEN"},
-      "inline_node_grammar": {"run": 34698521612, "artifact": 10299119164, "classification": "PASS_PARSER_STABILITY_NONDISCRIMINATING_NO_EDGE_AUTHORITY_GAIN"},
-      "appendixf_relation_extract": {"run": 34699432919, "head": "bdcda53f683f9d684de90d29e2b956b57bfd75a2", "aggregate_job": 103568483952, "artifact": 10300395360, "classification": "MIXED_SOURCE_RELATION_QUALIFICATION_6_OF_8_APPENDIX_F_AND_CROSSING_FAIL"},
-      "tex_structure_audit": {"run": 34699578046, "head": "2675d390fac61b305478eee79815daa1f02293a1", "aggregate_job": 103568866019, "artifact": 10299662547, "classification": "MIXED_MACHINE_READABLE_SOURCE_STRUCTURE_5_OF_6_MONOLITHIC_NO_INCLUDE_GRAPH"},
-      "reference_chain": {"run": 34699660419, "head": "40cd1ffbe8fce3a10e7e4481189a472e1b134cd3", "aggregate_job": 103569079457, "artifact": 10299976524, "classification": "PASS_INTERNAL_SOURCE_REFERENCE_CHAIN_OBJECT_ONLY"},
-      "active_named_anchor_dependency": {"run": 34699750791, "head": "b55fb9e340094df4c2608b0cae6351d680521859", "classification": "IN_PROGRESS_PROSPECTIVE_NAMED_ANCHOR_DEPENDENCY_GATE"},
-      "next_gate": "CONSUME_NAMED_ANCHOR_DEPENDENCY_THEN_FREEZE_UNIQUE_CONTRACTION_READY_EQ29_MAPPING_ONLY_IF_TENSOR_ORDERING_AUTHORITY_IS_SUFFICIENT"
+      "status":"CONTRACTION_MAPPING_OPEN_MATHENV_SYMBOL_AUDIT_ACTIVE",
+      "path_reconstruction":{"run":34697961643,"aggregate_job":103564711935,"artifact":10298684340,"classification":"PASS_DETERMINISTIC_SOURCE_PATH_RECONSTRUCTION_SUBGATE"},
+      "graphic_geometry_authority":{"run":34698228895,"aggregate_job":103565420131,"artifact":10299149029,"classification":"SCIENTIFIC_DIAGNOSTIC_FAIL_GEOMETRY_ALONE_AMBIGUOUS"},
+      "appendixf_relation_extract":{"run":34699432919,"head":"bdcda53f683f9d684de90d29e2b956b57bfd75a2","aggregate_job":103568483952,"artifact":10300395360,"classification":"MIXED_SOURCE_RELATION_QUALIFICATION_6_OF_8_APPENDIX_F_AND_CROSSING_FAIL"},
+      "tex_structure_audit":{"run":34699578046,"head":"2675d390fac61b305478eee79815daa1f02293a1","aggregate_job":103568866019,"artifact":10299662547,"classification":"MIXED_MACHINE_READABLE_SOURCE_STRUCTURE_5_OF_6_MONOLITHIC_NO_INCLUDE_GRAPH"},
+      "reference_chain":{"run":34699660419,"head":"40cd1ffbe8fce3a10e7e4481189a472e1b134cd3","aggregate_job":103569079457,"artifact":10299976524,"classification":"PASS_INTERNAL_SOURCE_REFERENCE_CHAIN_OBJECT_ONLY"},
+      "named_anchor_dependency":{"run":34699750791,"head":"b55fb9e340094df4c2608b0cae6351d680521859","aggregate_job":103569310624,"artifact":10299468120,"classification":"PASS_NAMED_SOURCE_ANCHOR_DEPENDENCY_PREREQUISITE_ONLY","connectivity":{"nodes":52,"edges":69,"reachable_targets":["eq:SVD","eq:eprl-map","eq:recoupling-basis","eq:svd","fig:recoupling"],"unreached_preregistered_target":"6j-def"}},
+      "active_mathenv_symbol_audit":{"run":34699899382,"head":"e4f833606c1a1911dd497f4173a8d689693efb59","classification":"QUEUED_OR_RUNNING_PROSPECTIVE_EXACT_MATHENV_SYMBOL_INCIDENCE_GATE"},
+      "next_gate":"CONSUME_MATHENV_SYMBOL_AUDIT; FREEZE CONTRACTION READY MAP ONLY IF EXACT SOURCE TENSOR ORDERING IS UNIQUE"
     },
     "RC008": {
-      "status": "AMPLITUDE_REPRODUCTION_OPEN_PREREQUISITES_QUALIFIED",
-      "source_formula_inventory": {"run": 34698110637, "aggregate_job": 103565184050, "artifact": 10298993915, "classification": "PASS_SOURCE_FORMULA_QUALIFICATION_ONLY"},
-      "dependency_closure": {"run": 34698443872, "aggregate_job": 103565886990, "artifact": 10298714927, "classification": "PASS_SOURCE_DEPENDENCY_CLOSURE_ONLY"},
-      "equation_ast": {"run": 34698546988, "aggregate_job": 103566152634, "artifact": 10299224016, "classification": "PASS_MACHINE_READABLE_SOURCE_STRUCTURE_ONLY"},
-      "primary_equation_snapshots": {"run": 34698656157, "aggregate_job": 103566457190, "artifact": 10300010002, "classification": "PASS_EXACT_SOURCE_IMPLEMENTATION_INPUTS_ONLY"},
-      "dependency_equation_snapshots": {"run": 34698849889, "aggregate_job": 103566977773, "artifact": 10299144588, "classification": "PASS_EXACT_DEPENDENCY_IMPLEMENTATION_INPUTS_ONLY"},
-      "hessian_kernel": {"run": 34698968902, "head": "026838089ce084555c9d9b2e7d225a5c48ba72f2", "aggregate_job": 103567272522, "artifact": 10300145140, "classification": "PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY"},
-      "volume_refinement": {"run": 34699223422, "head": "7a8390780e84a4513c5bc82d1a01ed28264b170a", "aggregate_job": 103567987044, "artifact": 10300335297, "classification": "PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY"},
-      "next_gate": "IMPLEMENT_RESTRICTED_HYPERCUBOID_VERTEX_AMPLITUDE_WITHOUT_FITTING_PUBLISHED_ALPHA_STAR"
+      "status":"AMPLITUDE_REPRODUCTION_OPEN_PREREQUISITES_QUALIFIED",
+      "hessian_kernel":{"run":34698968902,"aggregate_job":103567272522,"artifact":10300145140,"classification":"PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY"},
+      "volume_refinement":{"run":34699223422,"aggregate_job":103567987044,"artifact":10300335297,"classification":"PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY"},
+      "next_gate":"IMPLEMENT_RESTRICTED_HYPERCUBOID_VERTEX_AMPLITUDE_WITHOUT_FITTING_PUBLISHED_ALPHA_STAR"
     },
-    "RC009": {"status": "SCOPED_BLOCKED", "rule": "NO_DENSER_QUADRATURE_WITHOUT_NEW_JUSTIFIED_MEASURE_CONTOUR_REGULARIZATION"},
-    "LORENTZIAN_DELTA4": {"status": "FINITE_CUTOFF_SCALING_FRONT_SATURATED_NEGATIVE_SCOPED", "bridge_credit": false},
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status": "OPEN"}
+    "RC009":{"status":"SCOPED_BLOCKED","rule":"NO_DENSER_QUADRATURE_WITHOUT_NEW_JUSTIFIED_MEASURE_CONTOUR_REGULARIZATION"},
+    "LORENTZIAN_DELTA4":{"status":"FINITE_CUTOFF_SCALING_FRONT_SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"OPEN"}
   },
-  "active_gates": [
-    "BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE",
-    "RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE",
-    "RC006_EQ29_MINIMAL_K12_AMPLITUDE_GATE",
-    "RC006_APPENDIX_C_C1_C2_SVD_GATE",
-    "RC006_HELDOUT_NONRETUNED_SELECTOR_TRANSPORT_GATE",
-    "RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE",
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE",
-    "CEMR_SOURCE_DEFINED_CAUSAL_RESCUE_GATE"
-  ],
-  "active_compute": [
-    {"workflow_run": 34699750791, "purpose": "7-lane exact named-anchor label/reference dependency audit for Eq29 contraction authority", "status": "IN_PROGRESS"}
-  ],
-  "authoritative_recovery_order": [
-    "recovery/state.json",
-    "recovery/CURRENT_FRONT.md",
-    "results/ITER006_RC006_EQ29_INTERNAL_REFERENCE_CHAIN_PASS.md",
-    "results/ITER006_RC006_TEX_STRUCTURE_MIXED_RESULT.md",
-    "results/ITER006_RC006_EQ29_SOURCE_RELATION_MIXED_RESULT.md",
-    "results/ITER006_RC006_SOURCE_GRAPH_AND_SVD_PLUMBING.md",
-    "results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md",
-    "results/ITER006_RC006_EQ29_PREAMPLITUDE_PREREQUISITES.md",
-    "results/ITER006_RC006_APPENDIX_B13_MAPPING.md",
-    "results/ITER006_RC006_QGROUP_KERNEL_QUALIFICATION.md",
-    "results/ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL.md",
-    "results/ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION.md",
-    "results/ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS.md",
-    "docs/CONSTITUTION.md"
-  ]
+  "active_gates":["BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE","RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE","RC006_EQ29_MINIMAL_K12_AMPLITUDE_GATE","RC006_APPENDIX_C_C1_C2_SVD_GATE","RC006_HELDOUT_NONRETUNED_SELECTOR_TRANSPORT_GATE","RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE","MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE"],
+  "active_compute":[{"workflow_run":34699899382,"purpose":"9-lane exact source math-environment and symbol-incidence audit over qualified Eq29/EPRL/BC/recoupling anchors","status":"QUEUED_OR_IN_PROGRESS"}],
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC006_NAMED_ANCHOR_DEPENDENCY_PASS.md","results/ITER006_RC006_EQ29_INTERNAL_REFERENCE_CHAIN_PASS.md","results/ITER006_RC006_TEX_STRUCTURE_MIXED_RESULT.md","results/ITER006_RC006_EQ29_SOURCE_RELATION_MIXED_RESULT.md","results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md","results/ITER006_RC006_EQ29_PREAMPLITUDE_PREREQUISITES.md","docs/CONSTITUTION.md"]
 }
