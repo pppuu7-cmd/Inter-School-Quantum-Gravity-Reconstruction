@@ -1,87 +1,142 @@
 # ISQGR CURRENT FRONT
 
 Date: 2026-09-12  
-Active iteration: `ITERATION_004`  
-Iteration completion: **90%**  
-Overall scientific programme readiness: **34%**  
+Active iteration: `ITERATION_006`  
+Iteration completion: **12%**  
+Last completed iteration: **ITERATION_005 — 100%**  
+Overall scientific programme readiness: **42%**  
 Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
 ## Current lead
 
-`BH-004_PROJECTOR_MEASURE_COVARIANT_SCALE_TRANSPORT`
+`BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR`
 
-The programme has crossed from motif discovery into falsifiable bridge transport, but it has **not** crossed into candidate-theory construction.
+The programme has now passed repeated held-out scale tests and cross-realization structural tests. The active blocker is no longer discovery of an orientation/closure motif; it is obtaining a **second true amplitude/refinement realization** that tests the envelope + selector factorization without reducing the problem to support combinatorics or a one-vertex shell extension.
 
-## What is now established inside ISQGR
+## Iteration 005 completed
 
-### RM-001 accepted
+Three preregistered confirmation lines were required to yield at least two positives. All three were positive.
 
-`RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA` is the first accepted recurrent motif.
+### 1. Causal-set long-jump transport — STRONG PASS
 
-Structural statement:
+GitHub Actions run `34665815765`.
 
-> projected composition is not determined in general by retained rank and operator spectra alone; relative orientation of the retained/source-defined subspace to the composition operators is independent closure data.
+New sizes/seeds were used at two substantially larger nested thinning jumps.
 
-Evidence stack:
+`p=0.75 -> 0.375`:
 
-1. exact `2x2` spectral-insufficiency theorem for `Delta = P C2 (I-P) C1 P`;
-2. causal-set SSEE/source-sector chain with held-out orientation-to-closure prediction;
-3. pinned SU(2) BF shared-unitary orientation null;
-4. direct pinned Lorentzian EPRL shared-unitary orientation null across `gamma=0.5,1.2,2.0`.
+- median rank error `0.0500`;
+- mean/min principal cosine `0.989998 / 0.937160`;
+- predicted/envelope projector-distance ratio `0.487849`;
+- closure gains over rank-matched random `3.171x / 6.518x`;
+- `9/9` jobs improve both closure metrics;
+- strong gate: **PASS**.
 
-The Lorentzian EPRL campaign passes its preregistered strong-support orientation gate for all three gamma lanes. This is gravity-side support for RM-001, not full spin-foam refinement or GR recovery.
+`p=0.75 -> 0.25`:
 
-### BH-004 admitted and first scale gate passed
+- median rank error `0.07895`;
+- mean/min principal cosine `0.990514 / 0.946815`;
+- projector-distance ratio `0.424011`;
+- closure gains `3.218x / 7.287x`;
+- `9/9` jobs improve both metrics;
+- strong gate: **PASS**.
 
-BH-004 encodes effective scale data minimally as
+Conclusion: the causal-set BH-004B factorization survives much larger scale jumps and is not a local-thinning artifact in the tested realization.
 
-`E_s = (P_s, mu_s)`
+### 2. RC-006 reduced EPRL/FK support closure — PASS
 
-where `P_s` carries retained-sector orientation and `mu_s` denotes independent scale/measure/normalization data. The notation is a bridge requirement, not a fundamental ontology.
+GitHub Actions runs `34665801653` and `34665997309`.
 
-The first true three-level nested-thinning holdout used only `p0=1` and `p1=0.75` to predict the unseen `p2=0.50` projector/rank.
+Exact finite `SU(2)_k` fusion-support audits show the same semantic architecture:
 
-Aggregate over `N=512,768,1024` and seeds `301..304`:
+`source simplicity support -> overcomplete recoupling envelope -> source-native local selector`.
 
-- median held-out rank error: `0.02427`;
-- median trained rank-flow exponent: `0.50349`;
-- median mean principal cosine: `0.9000466`;
-- median minimum principal cosine: `0.08089`;
-- median random/predicted leakage gain: `2.1255x`;
-- median random/predicted sequential-defect gain: `5.3339x`;
-- all `12/12` jobs beat rank-matched random controls on both closure metrics.
+One-step raw support leakage:
 
-Decision: `NATURAL SUPPORT = YES`; `STRONG SUPPORT = NO`.
+- `k=6, gamma=1/3`: `2/6` events leaked;
+- `k=10, gamma=3/5`: `2/6` leaked;
+- `k=12, gamma=1/3`: `60/71` leaked.
 
-Interpretation: a closure-relevant bulk/core of the source sector transports to an unseen nested scale, but a directional tail remains unstable.
+All source targets remained inside the recoupling envelope and the frozen source simplicity selector recovered the source support.
 
-### Novelty lock tightened
+Multi-step raw support growth:
 
-Projector/isometry-aware coarse graining has close precedents in tensor-network RG, projected effective dynamics, and spin-foam coarse graining. Therefore generic projector-awareness is **not** an ISQGR new-physics claim.
+- `k=6`: `2 -> 4 -> 8 -> 8`;
+- `k=10`: `2 -> 4 -> 9 -> 12`;
+- `k=12`: `3 -> 45 -> 119 -> 119`.
 
-Potentially distinctive content is restricted to a source-native, constraint-preserving, non-retuned QG transport law that predicts unseen refinements and survives comparison with the nearest standard framework.
+For `k=12`, the fraction of saturated support still obeying the source EPRL map falls to about `2.5%`.
 
-## Active computation
+Claim lock: this is support-level combinatorics, not q-deformed amplitude/TNR reproduction.
 
-GitHub Actions run `34664913496` — `ISQGR BH-004 Stable-Core Heldout`.
+### 3. Lorentzian EPRL farther-shell orientation — STRONG PASS
 
-Design:
+GitHub Actions run `34665851619`.
 
-1. training seeds `401..404` and sizes `512,768,1024` determine one global stable-core singular-value threshold from source-subspace geometry only, using transitions `p0->p1` and `p1->p2`;
-2. no closure target is allowed in threshold fitting;
-3. the threshold is frozen globally;
-4. distinct test seeds `501..504` evaluate the fourth nested level `p3=0.421875`;
-5. success requires stronger principal-angle stability while retaining substantial source rank and preserving closure advantage over rank-matched random controls.
+The previous pinned one-vertex orientation-null diagnostic was extended from `Dl=1` to `Dl=2` across `gamma=0.5,1.2,2.0`.
 
-This is the current decisive computation.
+Far-shell median orientation-null/source return improvements:
+
+- `gamma=0.5`: `1.847x`, majority-null-worse `0.623`;
+- `gamma=1.2`: `4.238x`, majority-null-worse `0.697`;
+- `gamma=2.0`: `4.144x`, majority-null-worse `0.694`.
+
+All three gamma lanes pass the preregistered strong gate. Median far/near orientation-gain ratio is about `1.041`, so the effect does not decay at the second shell in this diagnostic.
+
+Claim lock: one-vertex shell distance is not multi-vertex spin-foam refinement.
+
+## FRG covariance stress
+
+GitHub Actions run `34665907393`.
+
+Two Einstein–Hilbert truncation regulator schemes retain a positive NGFP but move its raw coordinates substantially:
+
+- optimized/Litim: `(g*,lambda*)=(0.7073,0.1932)`;
+- sharp cutoff: `(0.4027,0.3297)`.
+
+More composite/local-flow quantities are substantially more stable:
+
+- `g* lambda*` relative spread ~`2.9%`;
+- dominant local-Jacobian right-singular direction angle in common `(g,lambda)` coordinates ~`1.84 degrees`.
+
+This is treated as a covariance/representation warning, not an identification of FRG eigendirections with RM-001.
+
+## Iteration 005 decision
+
+Preregistered promotion condition: at least two positive lines among causal long-jump, RC-006 support factorization, and Lorentzian EPRL far shell.
+
+Observed: **3/3 positive**.
+
+Decision:
+
+`BH-004/BH-004B = STRENGTHENED`  
+`BRIDGE_DERIVED = NO`
+
+Reason: the independent spin-foam coarse-graining realization is still support-level, while the direct Lorentzian EPRL realization remains one-vertex rather than a true refinement map.
+
+## Iteration 006 active computation
+
+GitHub workflow launched from commit `2917fce29f9dca8c4741be4f6aee2eaccca75dda`:
+
+`ISQGR Fusion-Basis Amplitude Control`.
+
+It pins Sebastian Steinhaus's public `Fusion-basis-coarse-graining` implementation at commit
+
+`bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4`,
+
+and attempts a three-RG-step execution at couplings `g=0,0.5,1.0`.
+
+Purpose: establish an executable **amplitude-level q-deformed nearest-framework control** with genuine SVD embedding maps and RG singular values before testing whether BH-004B merely redescribes standard tensor-network embedding-map structure.
+
+This control is not an EPRL gravity realization and cannot promote the QG bridge by itself.
 
 ## Active blockers
 
-1. Determine whether the low minimum principal cosines are an identifiable unstable edge/tail or evidence of genuine nontransportability.
-2. Reproduce a true scale/refinement transport result in a second sufficiently independent QG realization. The present EPRL result is one-vertex shell change, not a refinement map.
-3. Keep projector orientation flow distinct from scalar measure/normalization flow.
-4. Complete the nearest-framework absorption test before any novelty promotion.
-5. Replace the remaining synthetic causal-rescue component in the CEMR branch with a source-defined observable if a defensible realization is available.
+1. Reproduce or reconstruct an amplitude-level version of RC-006 with at least one BC control and one EPRL/FK case.
+2. Obtain a genuine multi-vertex Lorentzian EPRL/spinfoam refinement or another independent QG amplitude/refinement realization.
+3. Test whether envelope + local selector remains informative after comparison with standard TNR embedding maps and singular-value truncation.
+4. Define all amplitude-level orientation/closure metrics before inspecting target outputs.
+5. Keep candidate-theory construction locked until an independent amplitude/refinement gate passes.
 
 ## Claim locks
 
@@ -90,22 +145,24 @@ Still forbidden:
 - `ALL_KNOWN_SCHOOLS_FAIL`;
 - `NEW_QG_THEORY_REQUIRED`;
 - `NEW_PHYSICS_FOUND`;
+- `BRIDGE_DERIVED`;
 - candidate action/Hamiltonian/field equation;
-- RQIR/KMQGB promotion based only on ISQGR motif evidence.
+- RQIR/KMQGB candidate promotion from ISQGR structural evidence alone.
 
 Current correct status:
 
-`FIRST_RECURRENT_MOTIF_ACCEPTED + FIRST_SCALE_HOLDOUT_NATURAL_PASS + CANDIDATE_THEORY_UNFORMED`.
+`RM-001 ACCEPTED + BH-004B STRONGLY SUPPORTED IN CAUSAL SCALE TESTS + CROSS-REALIZATION SUPPORT/ONE-VERTEX GRAVITY SUPPORT + AMPLITUDE-REFINEMENT GATE OPEN`.
 
 ## Recovery order
 
 1. `recovery/state.json`
 2. `recovery/CURRENT_FRONT.md`
-3. `results/ITER004_BH004_NESTED_THINNING_HELDOUT_TRANSPORT.md`
-4. `results/ITER004_BH004_NEAREST_FRAMEWORK_AUDIT.md`
-5. `hypotheses/BH-004_PROJECTOR_MEASURE_COVARIANT_SCALE_TRANSPORT.md`
-6. `results/RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA_2026-09-12.md`
-7. `results/ITER004_RM001_SPECTRAL_INSUFFICIENCY_THEOREM.md`
-8. `results/ITER004_EPRL_SHARED_UNITARY_ORIENTATION_NULL.md`
-9. `results/ITER004_EPRL_CROSSSHELL_GAMMA_ROBUSTNESS.md`
-10. `docs/CONSTITUTION.md`
+3. `results/ITER005_BH004B_LONGJUMP_HELDOUT.md`
+4. `results/ITER005_RC006_EPRL_FUSION_SUPPORT_CLOSURE.md`
+5. `results/ITER005_RC006_MULTI_STEP_SUPPORT_ENVELOPE_GROWTH.md`
+6. `results/ITER005_EPRL_SHELL_DISTANCE_ORIENTATION.md`
+7. `results/ITER005_FRG_EH_SCHEME_COVARIANCE.md`
+8. `results/ITER004_BH004B_ENVELOPE_LOCAL_SELECTOR_HELDOUT.md`
+9. `hypotheses/BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR.md`
+10. `results/RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA_2026-09-12.md`
+11. `docs/CONSTITUTION.md`
