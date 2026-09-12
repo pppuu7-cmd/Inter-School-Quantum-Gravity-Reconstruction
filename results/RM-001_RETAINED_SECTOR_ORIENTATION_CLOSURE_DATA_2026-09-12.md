@@ -1,10 +1,10 @@
 # RM-001 — Retained-Sector Orientation Is Composition-Closure Data
 
 Date: 2026-09-12  
-Status: `RECURRENT_MOTIF_ACCEPTED / BRIDGE NOT YET DERIVED`  
+Status: `RECURRENT_MOTIF_ACCEPTED / THREE REALIZATION CHAINS / BRIDGE NOT YET DERIVED`  
 Primary interface class: `IF-04 COMPOSITION/GLUING`  
 Secondary interface: `IF-08 CONTINUUM/COARSE-GRAINING`  
-Claim level: `DERIVED_ISQGR + NUMERICALLY_VERIFIED`  
+Claim level: `PROVED STRUCTURAL INSUFFICIENCY + NUMERICALLY_VERIFIED REALIZATION SUPPORT`  
 
 ## Motif
 
@@ -17,6 +17,14 @@ Equivalently, a viable coarse-graining map must in general transport at least
 rather than only a scalar cutoff, rank, or spectrum.
 
 This is a recurrent structural motif, not a theory equation and not a new-physics claim.
+
+## Exact structural result
+
+`results/ITER004_RM001_SPECTRAL_INSUFFICIENCY_THEOREM.md` proves by an explicit `2x2` shared-similarity counterexample that
+
+`Delta = P C2 (I-P) C1 P`
+
+is not determined by the spectra of `C1,C2` and the rank of `P`. With fixed spectra, rotating `C1,C2` jointly relative to a frozen `P` changes `||Delta||` from zero to a nonzero maximum. Therefore orientation or equivalent mixed-block data are mathematically required in the generic projected-composition problem.
 
 ## Chain A — causal-set SSEE / Pauli–Jordan sector
 
@@ -59,25 +67,41 @@ Completed campaign:
 
 Interpretation of Chain B: preserving operator spectra and pair structure is insufficient to preserve closure performance. Relative orientation to the retained source/train sector is an independent variable.
 
+## Chain C — pinned Lorentzian EPRL vertex orientation null
+
+Source lineage: pinned `qg-cpt-marseille/sl2cfoam-next` commit `052e4346028870bd76f69a3034e6cae8defb8f7f`.
+
+The campaign uses `Dl=0` and `Dl=1` Lorentzian EPRL 4-simplex tensors. For each of `640` exhaustive partial-slice cases per Immirzi parameter, the rank-1 projector is learned from the `Dl=0` all-zero train slice and then frozen. The same Haar unitary is applied by similarity to both holdout operators, preserving their spectra while scrambling orientation relative to the projector.
+
+Across `gamma = 0.5, 1.2, 2.0`, all three lanes pass the preregistered strong-support gate:
+
+- median case median-null/source return improvement: `1.7498x`, `4.0274x`, `4.0264x`;
+- fraction of exhaustive cases with majority of orientation-null draws worse than source orientation: `0.6141`, `0.7016`, `0.7016`;
+- for the previously specified `001 -> 111` slice, median improvements are `3.6821x`, `7.0665x`, `7.1407x`.
+
+Interpretation of Chain C: the RM-001 orientation effect survives in a direct Lorentzian EPRL gravity-side realization across a substantial Immirzi-parameter change.
+
+This is still one pinned one-vertex realization and is not full spinfoam gluing/refinement.
+
 ## Independence audit
 
-The two chains are independent at the source-realization level:
+The motif now has three source-realization chains:
 
-- Chain A uses a causal-set Pauli–Jordan/Wightman realization and stochastic sprinklings;
-- Chain B uses a pinned SU(2) BF tensor-network vertex implementation and boundary-state deformations;
-- they do not share a continuum effective action, numerical ensemble, spectral cutoff, or source repository.
+- Chain A: causal-set Pauli–Jordan/Wightman realization and stochastic sprinklings;
+- Chain B: pinned SU(2) BF tensor-network vertex with boundary-state deformations;
+- Chain C: pinned Lorentzian EPRL `sl2cfoam-next` one-vertex shell-change realization.
 
-They **do** intentionally share the ISQGR closure diagnostic language (`P`, `Q=I-P`, leakage/return). This is a common comparator, not a shared physical derivation. Therefore the recurrence claim is limited to the common interface statement about retained-sector orientation.
+Chain A is fully independent of the spin-foam/tensor chains in source lineage, state object and numerical ensemble. Chains B and C are related at the broad spin-network/tensor-amplitude level and therefore are **not counted as two fully independent schools against each other**. Their role is different: Chain B provided the initial independent tensor realization; Chain C upgrades the motif with direct Lorentzian EPRL gravity-side support.
 
-SU(2) BF is not EPRL gravity, so Chain B may not be used to claim an EPRL or GR result.
+All chains intentionally share the ISQGR closure diagnostic language (`P`, `Q=I-P`, leakage/return). This is a common comparator, not a shared physical derivation.
 
 ## Same-semantic-level test
 
-Both chains ask the same IF-04 question:
+All three chains ask the same IF-04 question:
 
-> after a retained sector is frozen from source-native data, does changing only its relative orientation to the composition/dynamics operators change discarded-sector return?
+> after a retained sector is frozen from source-native/train-native data, does changing only its relative orientation to the composition/dynamics operators change discarded-sector return?
 
-Chain A answers this through source-sector stability and held-out closure prediction; Chain B isolates orientation by a shared-unitary null that leaves spectra unchanged.
+Chain A answers this through source-sector stability and held-out closure prediction; Chains B and C isolate orientation with shared-unitary nulls that leave holdout spectra unchanged.
 
 This is narrower than MC-001 (`physical constraint sector not automatically closed under scale flow`) and does not automatically promote MC-001.
 
@@ -95,18 +119,18 @@ with coarse-graining transport
 
 where `P` transports retained-sector orientation and `mu` represents scale/measure/normalization data. This is notation for a requirement, not a proposed fundamental theory.
 
-The motif would be weakened or rejected if independent source-defined realizations show that closure is fully predicted by rank/spectrum while orientation scrambling leaves leakage/return invariant, or if the causal held-out orientation signal fails under larger unseen density/mass/background campaigns.
+The motif would be weakened if larger independent realizations show that closure is fully predicted by rank/spectrum while orientation scrambling leaves leakage/return invariant, or if the causal held-out signal and Lorentzian EPRL strong-support result fail under scale/refinement extensions.
 
 ## What RM-001 does not establish
 
 - no claim that all known QG schools fail;
 - no claim that a new QG theory is required;
 - no claim that `(P,mu)` is fundamental or unique;
-- no claim of GR/Lorentzian recovery;
+- no claim of GR/continuum recovery;
 - no claim of a new observable;
 - no authorization for RQIR or KMQGB promotion;
 - no `NEW_PHYSICS_CANDIDATE` label.
 
 ## Next decisive test
 
-Use the corrected Lorentzian EPRL cross-shell gamma campaign as a stronger gravity-side test. If a pinned Lorentzian EPRL realization shows the same orientation-sensitive closure pattern robustly across Immirzi parameter values and shell changes, RM-001 gains a direct gravity-side realization. If not, keep RM-001 scoped to the two accepted chains and investigate why the EPRL map differs.
+Move from one-vertex/shell orientation to an actual scale/refinement map. The next bridge must specify how `P_s` is transported together with `mu_s` and must predict a closure quantity on a held-out scale without refitting the orientation law. This is the admission test for a projector-aware bridge hypothesis, not yet for a candidate QG theory.
