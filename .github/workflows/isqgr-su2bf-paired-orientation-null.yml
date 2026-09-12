@@ -95,3 +95,5 @@ jobs:
           name: isqgr-su2bf-paired-orientation-null-summary
           path: su2bf_paired_orientation_null_summary.json
           if-no-files-found: error
+
+# research retrigger 2026-09-12T03:41+03:00
