@@ -1,0 +1,221 @@
+name: ISQGR BH-004 Stable-Core Heldout
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh004-stable-core-heldout.yml'
+      - 'experiments/bh004_stable_core_transport.py'
+
+permissions:
+  contents: read
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        n_full: [512, 768, 1024]
+        seed: [401, 402, 403, 404]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --upgrade numpy scipy
+      - name: Train stable-core geometry score without closure target
+        run: |
+          mkdir -p compute_out
+          PYTHONPATH=experiments python experiments/bh004_stable_core_transport.py \
+            --mode train --n-full ${{ matrix.n_full }} --seed ${{ matrix.seed }} \
+            --output compute_out/train_n${{ matrix.n_full }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stable-train-n${{ matrix.n_full }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  freeze_training:
+    if: always()
+    needs: [train]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: train_campaign
+          merge-multiple: true
+      - name: Freeze one global tau from training seeds only
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,statistics
+          fs=sorted(pathlib.Path('train_campaign').glob('*.json'))
+          if len(fs)!=12: raise SystemExit(f'expected 12 training results, got {len(fs)}')
+          ds=[json.loads(p.read_text()) for p in fs]
+          common=sorted(set.intersection(*(set(d['score_by_tau']) for d in ds)), key=float)
+          pooled={}
+          for t in common:
+              vals=[d['score_by_tau'][t]['mean_projector_distance'] for d in ds]
+              pooled[t]={
+                  'median_projector_distance':statistics.median(vals),
+                  'mean_projector_distance':statistics.fmean(vals),
+                  'median_training_cosine':statistics.median(d['score_by_tau'][t]['mean_principal_cosine'] for d in ds),
+                  'median_training_rank_ratio':statistics.median(d['score_by_tau'][t]['mean_rank_ratio_to_source'] for d in ds),
+              }
+          # Primary objective is frozen in advance: minimum median normalized projector distance.
+          best=min(common,key=lambda t:(pooled[t]['median_projector_distance'],float(t)))
+          out={
+              'test':'BH004_STABLE_CORE_GLOBAL_TRAINING_FREEZE',
+              'n_training_jobs':len(ds),
+              'training_seeds':[401,402,403,404],
+              'frozen_tau':float(best),
+              'selection_rule':'minimize median source-subspace normalized projector distance over p0->p1 and p1->p2 training transitions only; tie -> lower tau',
+              'pooled_grid':pooled,
+              'claim_lock':'No closure metric and no held-out p3/test seed is used to choose tau.'
+          }
+          pathlib.Path('frozen_tau.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bh004-stable-core-frozen-training
+          path: frozen_tau.json
+          if-no-files-found: error
+
+  test:
+    needs: [freeze_training]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        n_full: [512, 768, 1024]
+        seed: [501, 502, 503, 504]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --upgrade numpy scipy
+      - uses: actions/download-artifact@v4
+        with:
+          name: bh004-stable-core-frozen-training
+          path: frozen
+      - name: Run fourth-level held-out test with frozen tau
+        run: |
+          set -euo pipefail
+          TAU=$(python - <<'PY'
+          import json
+          print(json.load(open('frozen/frozen_tau.json'))['frozen_tau'])
+          PY
+          )
+          echo "Frozen training-only tau=$TAU"
+          mkdir -p compute_out
+          PYTHONPATH=experiments python experiments/bh004_stable_core_transport.py \
+            --mode test --n-full ${{ matrix.n_full }} --seed ${{ matrix.seed }} \
+            --tau "$TAU" --n-random 16 \
+            --output compute_out/test_n${{ matrix.n_full }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stable-test-n${{ matrix.n_full }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate_test:
+    if: always()
+    needs: [test, freeze_training]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: stable-test-*
+          path: test_campaign
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: bh004-stable-core-frozen-training
+          path: frozen
+      - name: Aggregate preregistered stable-core gate
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,statistics
+          fs=sorted(pathlib.Path('test_campaign').glob('*.json'))
+          if len(fs)!=12: raise SystemExit(f'expected 12 heldout results, got {len(fs)}')
+          ds=[json.loads(p.read_text()) for p in fs]
+          frozen=json.load(open('frozen/frozen_tau.json'))
+          rows=[]
+          for d in ds:
+              h=d['heldout']; b=d['unpruned_parent_restriction_baseline']
+              dist=h['alignment_to_source']['normalized_projector_distance']
+              bdist=b['alignment_to_source']['normalized_projector_distance']
+              rows.append({
+                  'n_full':d['n_full'],'seed':d['seed'],
+                  'mean_cosine':h['alignment_to_source']['mean_principal_cosine'],
+                  'min_cosine':h['alignment_to_source']['min_principal_cosine'],
+                  'rank_fraction':h['rank_fraction_of_source'],
+                  'projector_distance':dist,
+                  'unpruned_projector_distance':bdist,
+                  'distance_ratio_stable_over_unpruned':dist/max(bdist,1e-15),
+                  'leak_improvement':h['random_median_over_predicted_leakage'],
+                  'seq_improvement':h['random_median_over_predicted_seq_defect'],
+                  'frac_random_worse_leak':h['fraction_random_worse_leakage'],
+                  'frac_random_worse_seq':h['fraction_random_worse_seq_defect'],
+              })
+          med=lambda k:statistics.median(r[k] for r in rows)
+          frac_both=sum(r['leak_improvement']>1 and r['seq_improvement']>1 for r in rows)/len(rows)
+          summary={
+              'n_heldout_jobs':len(rows),
+              'frozen_tau':frozen['frozen_tau'],
+              'median_mean_principal_cosine':med('mean_cosine'),
+              'median_min_principal_cosine':med('min_cosine'),
+              'median_rank_fraction_of_source':med('rank_fraction'),
+              'median_distance_ratio_stable_over_unpruned':med('distance_ratio_stable_over_unpruned'),
+              'median_random_over_stable_leakage':med('leak_improvement'),
+              'median_random_over_stable_seq_defect':med('seq_improvement'),
+              'fraction_jobs_both_closure_improvements_gt_1':frac_both,
+          }
+          # Frozen before held-out test:
+          # natural: mean cosine>.92, min cosine>.25, retain >=.50 source rank,
+          #          stable distance <.95 of unpruned, med closure gains>1, >=2/3 jobs both>1.
+          # strong:  mean cosine>.95, min cosine>.50, retain >=.60 source rank,
+          #          stable distance <.80 of unpruned, med gains>1.5, >=.80 jobs both>1.
+          natural=(summary['median_mean_principal_cosine']>0.92 and
+                   summary['median_min_principal_cosine']>0.25 and
+                   summary['median_rank_fraction_of_source']>=0.50 and
+                   summary['median_distance_ratio_stable_over_unpruned']<0.95 and
+                   summary['median_random_over_stable_leakage']>1.0 and
+                   summary['median_random_over_stable_seq_defect']>1.0 and
+                   frac_both>=2/3)
+          strong=(summary['median_mean_principal_cosine']>0.95 and
+                  summary['median_min_principal_cosine']>0.50 and
+                  summary['median_rank_fraction_of_source']>=0.60 and
+                  summary['median_distance_ratio_stable_over_unpruned']<0.80 and
+                  summary['median_random_over_stable_leakage']>1.5 and
+                  summary['median_random_over_stable_seq_defect']>1.5 and
+                  frac_both>=0.80)
+          out={
+              'test':'BH004_STABLE_CORE_DISJOINT_SEED_FOURTH_LEVEL_AGGREGATE',
+              'status':'PASS_EXECUTION',
+              'training':frozen,
+              'preregistered_gate':{
+                  'natural':'median mean cosine>.92; min cosine>.25; rank fraction>=.50; stable/unpruned distance<.95; med closure gains>1; >=2/3 jobs both improve',
+                  'strong':'median mean cosine>.95; min cosine>.50; rank fraction>=.60; stable/unpruned distance<.80; med closure gains>1.5; >=.80 jobs both improve'
+              },
+              'natural_support':natural,
+              'strong_support':strong,
+              'summary':summary,
+              'by_job':rows,
+              'claim_lock':'Global stable-core tau is frozen from disjoint training seeds and source-subspace geometry only. Held-out test uses different seeds and a fourth nested level. No closure-target tuning.'
+          }
+          pathlib.Path('bh004_stable_core_heldout_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh004-stable-core-heldout-summary
+          path: bh004_stable_core_heldout_summary.json
+          if-no-files-found: error
