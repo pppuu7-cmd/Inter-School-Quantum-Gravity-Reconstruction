@@ -1,0 +1,45 @@
+{
+  "gate_id": "ITER006_RC006_EQ29_EPRL_SECTION_BLOCK",
+  "date": "2026-09-12",
+  "status": "PREREGISTERED_BEFORE_IMPLEMENTATION",
+  "source": {
+    "paper": "arXiv:1609.02429v2",
+    "bundle_sha256": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
+    "file": "bc-spin-nets.tex"
+  },
+  "prior_diagnostic": {
+    "run": 34717736113,
+    "classification": "ACTIVE_TEX_ANCHOR_STILL_AMBIGUOUS",
+    "finding": "Three active occurrences exist, but exactly one lies inside the subsection titled EPRL intertwiner model and explicitly compares with eqref{eq:eprl-3-valent}; another is in BC intertwiner model and the third is generic tensor-network methodology."
+  },
+  "frozen_identification_rule": [
+    "Strip only unescaped-percent TeX comments while preserving line order.",
+    "Locate exactly one active subsection whose literal title is EPRL intertwiner model.",
+    "Bound that subsection at the next active subsection or section command.",
+    "Inside that bounded subsection require exactly one sentence containing initial 3-valent tensor and eqref{eq:eprl-3-valent}.",
+    "Select the first complete align or align* environment after that sentence and before the subsection boundary.",
+    "Do not use the BC subsection, the generic methodology occurrence, expected contraction order, or any desired graph to disambiguate."
+  ],
+  "required_outputs": [
+    "active EPRL subsection hash",
+    "selected anchor line and offset",
+    "selected align-block hash",
+    "raw align block",
+    "raw tikzpicture blocks",
+    "ordered draw commands",
+    "node-label strings",
+    "bounded following prose within the same subsection"
+  ],
+  "frozen_classification": {
+    "EQ29_EPRL_SOURCE_BLOCK_EXTRACTED": "the EPRL subsection, target anchor and following align block are each unique under the frozen rule and the block contains TikZ/draw content",
+    "EQ29_EPRL_SOURCE_BLOCK_AMBIGUOUS": "any required uniqueness/boundary condition fails or no TikZ/draw block is recovered",
+    "INVALID_INFRASTRUCTURE": "the hash-pinned source cannot be acquired or parsed"
+  },
+  "nonpromotion_rule": "PASS authorizes only use of the immutable raw source block in a later separately preregistered graph/label/incidence/R-matrix-placement audit. It does not itself mark any Eq29 dependency as physically validated and does not authorize amplitude computation.",
+  "claim_locks": {
+    "eq29_amplitude_authorized": false,
+    "bridge_derived": false,
+    "new_physics_found": false,
+    "candidate_theory": "UNFORMED"
+  }
+}
