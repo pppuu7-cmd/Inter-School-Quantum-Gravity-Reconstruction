@@ -1,0 +1,32 @@
+{
+  "protocol": "ITER006_DVD_ASYMMETRIC_HELDOUT_GAMMA_PREREG",
+  "date": "2026-09-12",
+  "status": "FROZEN_BEFORE_ANY_ASYMMETRIC_HELDOUT_GAMMA_RESPONSE",
+  "inheritance": {
+    "boundary_protocol": "ITER006_DVD_ASYMMETRIC_BOUNDARY_PREREG",
+    "boundary_calibration_run": 34708800382,
+    "heldout_gamma_set": [0.3,0.8,1.6,2.5,3.0],
+    "heldout_gamma_origin": "Inherited from the earlier symmetric Dl0/multishell heldout gamma grid; no asymmetric amplitudes have been evaluated at these gamma values.",
+    "mixed_B4_prerequisite_run": 34708641965
+  },
+  "boundary": {
+    "j": [1,2,2,2],
+    "jprime": [1,2,2,1],
+    "i": 1,
+    "t": 1,
+    "iprime": 1,
+    "tprime": 1
+  },
+  "finite_cutoff": [0,1,2],
+  "numerical_gates": {
+    "repeat_relative_difference_max": 1e-12,
+    "all_values_finite": true
+  },
+  "prospective_pattern_hypothesis": {
+    "motivation": "The three calibration asymmetric gamma lanes descriptively showed a smaller D1-to-D2 relative increment than D0-to-D1 for both DVD2 and DVD3; this direction was not preregistered in calibration and therefore is tested only now on untouched heldout gammas.",
+    "lane_support": "dvd2_increment_D2 < dvd2_increment_D1 AND dvd3_increment_D2 < dvd3_increment_D1",
+    "strong_support": "all 5 heldout gamma lanes satisfy lane_support",
+    "natural_support": "at least 4 of 5 lanes satisfy lane_support"
+  },
+  "claim_lock": "Heldout asymmetric support means robustness of the finite-cutoff stabilization pattern across both gamma and boundary data. It is not convergence, refinement, cylindrical consistency, continuum, bridge, novelty or new physics."
+}
