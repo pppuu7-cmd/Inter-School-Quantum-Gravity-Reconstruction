@@ -1,0 +1,128 @@
+name: ISQGR DED DLD Dual Representation Topology
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_ded_dld_dual_rep_topology.yml'
+
+jobs:
+  diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        asset: [DED, DLD]
+        representation: [ORIGINAL_EPS, GS_EPS2WRITE_NORMALIZED]
+        dpi: [300, 600]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ghostscript
+          python -m pip install --disable-pip-version-check pillow scipy numpy
+      - name: Fetch pinned source and run frozen lane
+        env:
+          ASSET: ${{ matrix.asset }}
+          REPRESENTATION: ${{ matrix.representation }}
+          DPI: ${{ matrix.dpi }}
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          test "$(sha256sum source.tar | awk '{print $1}')" = "9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303"
+          tar -xf source.tar -C src
+          if [ "$ASSET" = DED ]; then P=src/_images/DEDconplex_plus_vg.eps; else P=src/_images/DLDandVertex.eps; fi
+          test -s "$P"
+          sha256sum "$P" > out/asset.sha256
+          if [ "$REPRESENTATION" = GS_EPS2WRITE_NORMALIZED ]; then
+            gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=eps2write -sOutputFile=out/input.eps "$P"
+            IN=out/input.eps
+          else
+            cp "$P" out/input.eps
+            IN=out/input.eps
+          fi
+          gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray -r"$DPI" -sOutputFile=out/render.png "$IN"
+          python - <<'PY'
+          import json, os, pathlib, hashlib
+          import numpy as np
+          from PIL import Image
+          from scipy import ndimage
+          asset=os.environ['ASSET']; rep=os.environ['REPRESENTATION']; dpi=int(os.environ['DPI'])
+          a=np.array(Image.open('out/render.png').convert('L'))
+          mask=a<200
+          ys,xs=np.where(mask)
+          if not len(xs): raise SystemExit('empty foreground')
+          mask=mask[ys.min():ys.max()+1,xs.min():xs.max()+1]
+          labels,n=ndimage.label(mask, structure=np.ones((3,3),dtype=int))
+          sizes=np.bincount(labels.ravel())[1:]
+          min_area=max(1,int(mask.size*0.00001))
+          kept=int(np.sum(sizes>=min_area))
+          fg=float(mask.mean())
+          im=Image.fromarray((mask.astype(np.uint8)*255)).resize((1024,1024), Image.Resampling.NEAREST)
+          norm=(np.array(im)>0)
+          packed=np.packbits(norm.ravel())
+          pathlib.Path('out/mask.bin').write_bytes(packed.tobytes())
+          result={
+            'gate':'ITER006_DED_DLD_DUAL_REPRESENTATION_TOPOLOGY_DIAGNOSTIC',
+            'asset':asset,'representation':rep,'dpi':dpi,'valid':True,
+            'crop_shape':[int(mask.shape[0]),int(mask.shape[1])],
+            'foreground_fraction':fg,'filtered_component_count':kept,
+            'normalized_mask_sha256':hashlib.sha256(packed.tobytes()).hexdigest(),
+            'pixel_threshold':200,'minimum_component_area_fraction':0.00001
+          }
+          pathlib.Path('out/result.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(result,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-topology-${{ matrix.asset }}-${{ matrix.representation }}-${{ matrix.dpi }}
+          path: out/
+          if-no-files-found: error
+
+  aggregate:
+    needs: diagnostic
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ded-dld-topology-*
+          path: all
+      - name: Apply frozen aggregate classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib,numpy as np
+          dirs=[pathlib.Path(p).parent for p in glob.glob('all/**/result.json',recursive=True)]
+          rows=[json.load(open(d/'result.json')) for d in dirs]
+          valid=len(rows)==8 and all(r.get('valid') for r in rows)
+          by={(r['asset'],r['representation'],r['dpi']):(r,d) for r,d in zip(rows,dirs)}
+          cross=[]; dpi_ok=True
+          if valid:
+            for asset in ['DED','DLD']:
+              for rep in ['ORIGINAL_EPS','GS_EPS2WRITE_NORMALIZED']:
+                c=[by[(asset,rep,d)][0]['filtered_component_count'] for d in [300,600]]
+                dpi_ok &= (c[0]==c[1])
+              for dpi in [300,600]:
+                r0,d0=by[(asset,'ORIGINAL_EPS',dpi)]; r1,d1=by[(asset,'GS_EPS2WRITE_NORMALIZED',dpi)]
+                m0=np.unpackbits(np.frombuffer((d0/'mask.bin').read_bytes(),dtype=np.uint8))[:1024*1024]
+                m1=np.unpackbits(np.frombuffer((d1/'mask.bin').read_bytes(),dtype=np.uint8))[:1024*1024]
+                dis=float(np.mean(m0!=m1))
+                f0=r0['foreground_fraction']; f1=r1['foreground_fraction']; rel=abs(f0-f1)/max(abs(f0),abs(f1),1e-30)
+                cross.append({'asset':asset,'dpi':dpi,'binary_disagreement_fraction':dis,'foreground_fraction_relative_difference':rel,'pass':dis<=0.002 and rel<=0.005})
+          cross_ok=bool(valid and cross and all(x['pass'] for x in cross))
+          if not valid: cls='INVALID'
+          elif cross_ok and dpi_ok: cls='REPRESENTATION_STABLE'
+          elif dpi_ok: cls='REPRESENTATION_DEPENDENT'
+          else: cls='TOPOLOGY_EXTRACTION_UNSTABLE'
+          out={'gate':'ITER006_DED_DLD_DUAL_REPRESENTATION_TOPOLOGY_DIAGNOSTIC','lane_count':len(rows),'valid':valid,'dpi_component_count_stable':bool(dpi_ok),'cross_representation':cross,'classification':cls,'claim_lock':'Prerequisite diagnostic only. No DED-DLD embedding, amplitude identity, cylindrical consistency or bridge credit from this gate.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-dual-representation-topology-summary
+          path: summary.json
+          if-no-files-found: error
