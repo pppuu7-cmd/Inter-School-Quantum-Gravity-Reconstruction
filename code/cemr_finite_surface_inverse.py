@@ -54,6 +54,14 @@ SCENARIOS = {
     "channel_profiled",
 }
 
+# The Jacobian is obtained by finite differences inside scipy. Exact analytic
+# degeneracies therefore acquire tiny numerical singular values. We treat a
+# direction as unresolved when its singular value is below 1e-8 of the leading
+# one. This is deliberately much looser than machine epsilon but still eight
+# orders of magnitude below the resolved directions in the registered system.
+# It is a numerical identifiability tolerance, not a fit-quality threshold.
+RANK_REL_TOL = 1.0e-8
+
 
 @dataclass(frozen=True)
 class Surface:
@@ -88,10 +96,10 @@ class FitSummary:
 
 THETA_TRUE = np.array([0.18, 0.11, -0.07, 0.04], dtype=float)
 
-# Deliberately redundant geometry.  Each base rectangle is observed twice with
-# opposite channel labels.  A genuine scalar conformal factor predicts the
-# same geometric area for both copies; a channel-dependent distortion cannot
-# be absorbed by changing Omega.
+# Deliberately redundant geometry. Each base rectangle is observed twice with
+# opposite channel labels. A genuine scalar conformal factor predicts the same
+# geometric area for both copies; a channel-dependent distortion cannot be
+# absorbed by changing Omega.
 _BASE_RECTS = [
     ("q_sw", -1.00, -0.15, -1.00, -0.20),
     ("q_se", 0.10, 1.00, -1.00, -0.15),
@@ -177,7 +185,7 @@ def _numerical_rank_and_condition(jac: np.ndarray) -> tuple[int, np.ndarray, flo
     svals = np.linalg.svd(jac, compute_uv=False)
     if len(svals) == 0:
         return 0, svals, None
-    tol = np.finfo(float).eps * max(jac.shape) * svals[0]
+    tol = RANK_REL_TOL * svals[0]
     rank = int(np.sum(svals > tol))
     if svals[-1] <= tol:
         cond = None
@@ -222,6 +230,7 @@ def fit_scenario(
     notes: list[str] = [
         "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
         "Absolute scale is interpretable only in the calibrated scenario.",
+        f"Numerical Jacobian rank uses relative singular-value tolerance {RANK_REL_TOL:.1e}.",
     ]
 
     # Classification is intentionally structural before goodness-of-fit.
