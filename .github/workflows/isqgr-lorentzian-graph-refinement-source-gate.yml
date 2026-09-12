@@ -1,0 +1,106 @@
+name: ISQGR Lorentzian Graph Refinement Source Gate
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_LORENTZIAN_GRAPH_REFINEMENT_SOURCE_GATE.json'
+      - '.github/workflows/isqgr-lorentzian-graph-refinement-source-gate.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+
+jobs:
+  source:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - arxiv: '0909.0939'
+            role: 'KKL_ARBITRARY_GRAPH_EPRL'
+          - arxiv: '1010.5227'
+            role: 'LOCAL_SPIN_FOAM_CYLINDRICAL_CONSISTENCY'
+          - arxiv: '1010.5437'
+            role: 'SUMMING_IS_REFINING_COMBINATORIAL_LIMIT'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch primary source
+        env:
+          ARXIV_ID: '${{ matrix.arxiv }}'
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          (curl -fL --retry 3 --retry-delay 2 "https://export.arxiv.org/e-print/${ARXIV_ID}" -o source.tar || curl -fL --retry 3 --retry-delay 2 "https://arxiv.org/e-print/${ARXIV_ID}" -o source.tar)
+          sha256sum source.tar | tee source.sha256
+          tar -xf source.tar -C source
+      - name: Extract preregistered contexts
+        env:
+          ARXIV_ID: '${{ matrix.arxiv }}'
+          SOURCE_ROLE: '${{ matrix.role }}'
+        run: |
+          python - <<'PY'
+          import os,re,json,pathlib,hashlib
+          root=pathlib.Path('source')
+          patterns={
+            'cylindrical':r'cylindrical consistency|cylindrically consistent',
+            'refinement':r'refinement|refine|refined|refining',
+            'subdivision':r'subdivision|subdivide|subdividing|edge splitting|face splitting',
+            'boundary_graph':r'boundary graph|spin network|boundary state|graph',
+            'trivial_labels':r'trivial representation|zero spin|spin zero|j\s*=\s*0|trivial face',
+            'composition':r'composition law|composition|gluing|glue',
+            'eprl_lorentzian':r'EPRL|Lorentzian|SL\(2,\s*C\)'
+          }
+          docs=[]
+          for p in sorted(root.rglob('*')):
+            if p.is_file() and p.suffix.lower() in {'.tex','.txt','.bib','.md'}:
+              try: docs.append((p,p.read_text(errors='ignore').splitlines()))
+              except Exception: pass
+          queries={}
+          for key,pat in patterns.items():
+            rx=re.compile(pat,re.I); hits=[]
+            for p,lines in docs:
+              for i,line in enumerate(lines):
+                if rx.search(line):
+                  a=max(0,i-5); b=min(len(lines),i+6)
+                  hits.append({'file':str(p.relative_to(root)),'line':i+1,'context':'\n'.join(lines[a:b])[:6000]})
+            queries[key]={'hit_count':len(hits),'hits':hits[:80]}
+          sha=hashlib.sha256(pathlib.Path('source.tar').read_bytes()).hexdigest()
+          out={'gate':'ITER006_LORENTZIAN_GRAPH_REFINEMENT_SOURCE_GATE','arxiv':os.environ['ARXIV_ID'],'role':os.environ['SOURCE_ROLE'],'source_archive_sha256':sha,'queries':queries,'classification':'SOURCE_CONTEXTS_READY_FOR_SEMANTIC_CLASSIFICATION','claim_lock':'Hit counts do not authorize refinement; explicit operation plus amplitude consistency and Lorentzian/DVD compatibility are required.'}
+          pathlib.Path('audit.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'arxiv':out['arxiv'],'role':out['role'],'counts':{k:v['hit_count'] for k,v in queries.items()}},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 'lorentzian-refinement-source-${{ matrix.arxiv }}'
+          path: audit.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: source
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'lorentzian-refinement-source-*'
+          path: all
+      - name: Aggregate primary-source inventory
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(f)) for f in glob.glob('all/*/audit.json')]
+          rows=sorted(rows,key=lambda x:x['arxiv'])
+          complete=len(rows)==3
+          out={'gate':'ITER006_LORENTZIAN_GRAPH_REFINEMENT_SOURCE_GATE','complete':complete,'source_count':len(rows),'sources':[{'arxiv':r['arxiv'],'role':r['role'],'source_archive_sha256':r['source_archive_sha256'],'counts':{k:v['hit_count'] for k,v in r['queries'].items()}} for r in rows],'classification':'SOURCE_CONTEXTS_READY_FOR_TERMINAL_SEMANTIC_CLASSIFICATION' if complete else 'INFRASTRUCTURE_FAIL_INCOMPLETE_SOURCE_GATE','claim_lock':'Terminal classification requires reading exact contexts; no keyword count can establish a Lorentzian DVD refinement bridge.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not complete: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lorentzian-refinement-source-summary
+          path: summary.json
+          if-no-files-found: error
