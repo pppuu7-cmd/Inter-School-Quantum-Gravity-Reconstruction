@@ -1,0 +1,101 @@
+name: ISQGR Delta4 Shellflow Convergence Law
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_shellflow_convergence_law.py'
+      - '.github/workflows/isqgr-delta4-shellflow-convergence-law.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  convergence-law:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [0,1,2,3,4,5,6,7,8,9,10,11]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clone and pin public Delta4 source data
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Run convergence-law lane
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/delta4_shellflow_convergence_law.py \
+            --source-root external/HowToSpinFoamAmplitude \
+            --lane ${{ matrix.lane }} --lanes 12 \
+            --output compute_out/convergence_lane_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-convergence-law-lane-${{ matrix.lane }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: convergence-law
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: delta4-convergence-law-lane-*
+          path: all_lanes
+          merge-multiple: true
+      - name: Aggregate cross-sector transferability
+        run: |
+          python - <<'PY'
+          import glob,json,math,os,statistics
+          rows=[]
+          for f in glob.glob('all_lanes/*.json'):
+              rows.extend(json.load(open(f))['results'])
+          eligible=[r for r in rows if r.get('eligible')]
+          preferred=[r for r in eligible if r.get('exponential_preferred')]
+          by_j={}
+          for r in eligible: by_j.setdefault(str(r['j_boundary']),[]).append(r)
+          groups={}
+          for j,rr in by_j.items():
+              slopes=[r['exponential_log_slope'] for r in rr]
+              mean=sum(slopes)/len(slopes)
+              spread=(max(slopes)-min(slopes))/max(abs(mean),1e-12)
+              groups[j]={
+                'n':len(rr),'mean_exponential_log_slope':mean,
+                'relative_slope_spread':spread,
+                'all_contracting':all(s<0 for s in slopes),
+                'all_exponential_preferred':all(r['exponential_preferred'] for r in rr)
+              }
+          # Strong transferability is intentionally demanding: all sectors contract,
+          # >= 2/3 prefer exponential out of sample, and within-j slope spread <=50%.
+          pref_frac=len(preferred)/len(eligible) if eligible else 0.0
+          slope_transfer=bool(groups and all(g['all_contracting'] and g['relative_slope_spread']<=0.50 for g in groups.values()))
+          out={
+            'test':'LORENTZIAN_EPRL_DELTA4_SHELLFLOW_CONVERGENCE_LAW_AGGREGATE',
+            'n_datasets':len(rows),'n_eligible':len(eligible),
+            'exponential_preferred_fraction':pref_frac,
+            'by_j_boundary':groups,
+            'cross_sector_slope_transfer':slope_transfer,
+            'natural_support':bool(eligible and pref_frac>=0.5 and slope_transfer),
+            'strong_support':bool(eligible and pref_frac>=2/3 and slope_transfer),
+            'by_dataset':eligible,
+            'claim_lock':'Support means a reproducible cutoff-convergence law in pinned four-vertex Lorentzian EPRL Delta4 data. It does not establish a physical coarse/fine refinement map or new physics.'
+          }
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/delta4_convergence_law_summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-convergence-law-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
