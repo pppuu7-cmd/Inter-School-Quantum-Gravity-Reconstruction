@@ -2,95 +2,69 @@
 
 Date: 2026-09-12  
 Active iteration: `ITERATION_006`  
-Iteration completion: **30%**  
+Iteration completion: **34%**  
 Last completed iteration: **ITERATION_005 — 100%**  
-Overall scientific programme readiness: **42%**  
+Overall scientific programme readiness: **44%**  
 Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
 ## Current lead
 
 `BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR`
 
-The programme has passed repeated held-out scale tests and cross-realization structural tests.  The active blocker remains a **second true amplitude/refinement QG realization** that tests envelope + source-native selector factorization beyond support combinatorics or a one-vertex shell extension.
+The programme has repeated held-out scale support and cross-realization structural support, but the active blocker remains a **second true QG amplitude/refinement realization** with source-native non-retuned transport/refinement content. Generic projector/orientation/envelope structure is treated as absorbed by standard amplitude-level TNR and is not novelty.
 
-## Iteration 005 retained result
+## Newly consumed terminal result — RC006 q-group kernel qualification
 
-All three preregistered confirmation lines were positive:
+Authoritative result note: `results/ITER006_RC006_QGROUP_KERNEL_QUALIFICATION.md`.
 
-1. causal-set long-jump transport — STRONG PASS (`34665815765`);
-2. reduced EPRL/FK support closure — PASS (`34665801653`, `34665997309`);
-3. Lorentzian EPRL farther-shell orientation — STRONG PASS (`34665851619`).
+The initial raw tetrahedral-symmetry qualification was retained as a failure at k=12, rather than weakened after inspection. A convention-relevant follow-up was then frozen: orthogonality of every nontrivial square admissible recoupling matrix built from the pinned `sixjr` object.
 
-Decision remains:
+Authoritative workflow run: `34694602675`  
+Aggregate job: `103555842825`  
+Aggregate artifact: `10298547764`  
+Artifact SHA256: `a271a9de96dbf77dea0ec9b68b9480c0d0edd666c29ae7e3e89739eb93055f5e`
 
-`BH-004/BH-004B = STRENGTHENED`  
-`BRIDGE_DERIVED = NO`
+Frozen gate:
 
-The independent spin-foam coarse-graining evidence remains support-level and the direct Lorentzian EPRL evidence remains one-vertex rather than a true refinement map.
+`max(||M M^T-I||_inf, ||M^T M-I||_inf) <= 1e-9`
 
-## Iteration 006 completed sub-results
+for every nontrivial square admissible block.
 
-### A. Pinned fusion-basis amplitude control — PASS_EXECUTION
+Scientific classification: **PASS — convention/kernel qualification only**.
 
-GitHub Actions run `34666262016` successfully reproduced the pinned public `Fusion-basis-coarse-graining` implementation at commit `bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4` for three RG iterations at `g=0,0.5,1.0`.
+- k=6: 16 nontrivial blocks, 0 bad, max error about `1.50e-15`;
+- k=10: 216 blocks, 0 bad, max error about `3.72e-15`;
+- k=12: 505 blocks, 0 bad, max error about `2.47e-15`.
 
-The logs contain genuine block SVD spectra and ribbon-operator observables.  This is an amplitude-level q-deformed lattice-gauge/TNR nearest-framework control, **not** an EPRL gravity realization.
+This permits reuse of the pinned kernel only for fusion/admissibility and recoupling identities directly validated by the qualification. It does **not** reproduce the EPRL tensor, Eq. (29), Appendix-C RG flow, a refinement map, or a bridge.
 
-### B. RC-009 endpoint power audit — BLOCKED SCOPED
+## Active computation — RC006 Appendix-B13 source-to-kernel mapping
 
-Run `34669113055`, 9 parallel lanes.
+Independent source-side implementation commit:
 
-The reduced isotemporal algebraic envelope behaves approximately as a severe negative endpoint power in every tested direction:
+`442f3bb3304cc9b07947cf980db1499cd3880dc1`
 
-- coarse: `p ~ -141.77`;
-- fine edges: roughly `p ~ -330 ... -344`;
-- simultaneous fine diagonal: `p ~ -1200.15`.
+Workflow-launch commit:
 
-All fits had very high log-log quality and all failed the corresponding simple absolute-integrability threshold.  Therefore denser quadrature alone cannot repair this reduced positive-measure branch.
+`3f036645fa0d66d16a7078f4d8c6a46a759ffbf9`
 
-### C. RC-009 source-phase endpoint audit — STRONGER BLOCKED SCOPED
+The gate exhaustively compares the source-side Appendix-B Eq. (B13) normalized graphical recoupling coefficient against the pinned `Fusion-basis-coarse-graining` `sixjr()` implementation at levels k=6,10,12.
 
-Run `34671649669`, 9/9 lanes + aggregate SUCCESS.
+Frozen per-case gate:
 
-The remaining source-internal conditional-convergence escape route was tested directly using the frozen branch
+`absolute_error <= 1e-11 OR relative_error <= 1e-11`
 
-`cos(S_R/G + arg D) + cos(gamma S_R/G - Lambda V4/G)`.
+for every admissible integer-sector sextuple.
 
-Result: **all 9 lanes exclude this source branch as an endpoint regularizer in the reduced isotemporal realization**.  Toward the endpoint the phase variations shrink, the branch remains bounded away from zero, and the combined sign is stable.
+A PASS authorizes using the pinned `sixjr` only where the RC006 source graph has explicitly been reduced via the paper's B13/B16 identities. Eq. (29) remains unimplemented until its whole graph is mapped without ambiguity.
 
-Representative coarse terminal variations:
+## Other open / blocked fronts
 
-- phase 1: `2.568476e-4 rad`;
-- phase 2: `1.222066e-4 rad`;
-- minimum branch magnitude: `1.373953`.
-
-Classification:
-
-`RC009_REDUCED_ISOTEMPORAL_SOURCE_BRANCH_ENDPOINT_DIVERGENCE_NOT_RESCUED_BY_ITS_FROZEN_OSCILLATORY_FACTOR`.
-
-Claim lock: no no-go for Lorentzian EPRL, other contours/measures, degrees of freedom removed by the reduction, or full multi-vertex refinement.
-
-## Active parallel computation
-
-### Fusion-basis SVD invariant audit
-
-GitHub Actions run `34671694256`.
-
-Six coupling lanes are running at
-
-`g = 0, 0.25, 0.5, 0.75, 1.0, 1.15`
-
-for five RG iterations each.  The preregistered outputs are normalized SVD-flow distances, effective retained-sector ranks, normalized spectral entropy and off-diagonal envelope mass.
-
-Purpose: determine how much of `envelope + selector` language is already generic to standard SVD/TNR embedding-map coarse graining.  A generic persistent envelope in this control would weaken any uniqueness claim for the envelope part of BH-004B; only a **source-native local selector with extra closure/transport content** could remain discriminative.
-
-## Current decisions
-
-1. Stop spending compute on denser quadrature of the blocked RC-009 reduced isotemporal positive branch.
-2. Consume the five-step fusion-basis SVD-control artifacts and quantify which BH-004B ingredients are generic TNR structure.
-3. Continue searching for a genuine multi-vertex Lorentzian EPRL/spinfoam amplitude/refinement realization or another independent QG amplitude/refinement realization.
-4. Keep amplitude-level orientation/closure metrics frozen before inspecting target QG outputs.
-5. Keep candidate-theory construction locked until an independent amplitude/refinement gate passes.
+- `BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE`: OPEN; no independent true QG amplitude/refinement bridge yet.
+- `RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE`: OPEN.
+- `RC006_QDEFORMED_EPRL_FK_AMPLITUDE_TNR_RECONSTRUCTION_GATE`: OPEN; B13 convention bridge is the current prerequisite.
+- `MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE`: OPEN; finite-cutoff Delta4 diagnostics are not sufficient without a genuine refinement map.
+- `RC009_REDUCED_ISOTEMPORAL_POSITIVE_BRANCH`: **SCOPED BLOCKED** after endpoint-power and source-phase audits; do not spend compute on denser quadrature without a mathematically justified new measure/contour/regularization object.
 
 ## Claim locks
 
@@ -105,19 +79,23 @@ Still forbidden:
 
 Current correct status:
 
-`RM-001 ACCEPTED + BH-004B STRONGLY SUPPORTED IN CAUSAL SCALE TESTS + CROSS-REALIZATION SUPPORT/ONE-VERTEX GRAVITY SUPPORT + RC009 REDUCED BRIDGE BLOCKED + AMPLITUDE/TNR DISCRIMINATION GATE RUNNING`.
+`RM-001 ACCEPTED + BH-004B STRUCTURALLY/STRESS-TEST SUPPORTED + GENERIC TNR ENVELOPE ABSORBED + RC009 REDUCED BRIDGE SCOPED BLOCKED + RC006 SOURCE-FAITHFUL Q-DEFORMED AMPLITUDE RECONSTRUCTION IN PROGRESS`.
+
+## Exact next allowed gate
+
+If Appendix-B13 mapping passes: map the remaining Eq. (29) EPRL graphical factor source-faithfully into the validated B13/B16 recoupling objects, freeze a minimal k=12 amplitude check, and only after that attempt Appendix-C coarse graining/SVD with held-out non-retuned transport/selector tests.
+
+If Appendix-B13 mapping fails: retain the failure and isolate the exact source/kernel convention mismatch without changing the frozen threshold.
 
 ## Recovery order
 
 1. `recovery/state.json`
 2. `recovery/CURRENT_FRONT.md`
-3. `results/ITER006_RC009_SOURCE_PHASE_ENDPOINT_AUDIT.md`
-4. `results/ITER006_RC009_ENDPOINT_POWER_AUDIT.md`
-5. `results/ITER005_BH004B_LONGJUMP_HELDOUT.md`
-6. `results/ITER005_RC006_EPRL_FUSION_SUPPORT_CLOSURE.md`
-7. `results/ITER005_RC006_MULTI_STEP_SUPPORT_ENVELOPE_GROWTH.md`
-8. `results/ITER005_EPRL_SHELL_DISTANCE_ORIENTATION.md`
-9. `results/ITER005_FRG_EH_SCHEME_COVARIANCE.md`
-10. `hypotheses/BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR.md`
-11. `results/RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA_2026-09-12.md`
-12. `docs/CONSTITUTION.md`
+3. `results/ITER006_RC006_QGROUP_KERNEL_QUALIFICATION.md`
+4. `experiments/rc006_b13_sixjr_source_mapping.jl`
+5. `results/ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL.md`
+6. `results/ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION.md`
+7. `results/ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS.md`
+8. `results/ITER006_RC009_SOURCE_PHASE_ENDPOINT_AUDIT.md`
+9. `results/ITER006_RC009_ENDPOINT_POWER_AUDIT.md`
+10. `docs/CONSTITUTION.md`
