@@ -2,7 +2,7 @@
   "amendment": "ITER006_DVD_MULTISHELL_SOURCE_GATE_AMENDMENT",
   "date": "2026-09-12",
   "timing": "BEFORE_ANY_MULTISHELL_NUMERICAL_GAMMA_LANE_EXECUTED",
-  "failed_source_gate_runs": [34708171148, 34708252113],
+  "failed_source_gate_runs": [34708171148, 34708252113, 34708300983],
   "numerical_jobs_in_failed_runs": "SKIPPED",
   "scientific_grid_changed": false,
   "numerical_thresholds_changed": false,
@@ -15,8 +15,10 @@
     },
     {
       "item": "same-paper shell-cutoff provenance label giorgio",
-      "problem": "The source uses author macros \\be/\\ee around this displayed equation. A parser restricted to literal \\begin{equation}/\\end{equation} captured an unrelated early macro-definition boundary, making its derived equation hash non-authoritative.",
-      "correction": "Do not promote that literal-equation hash. Verify the shell-cutoff formula semantically in a bounded context around the exact source label giorgio, while keeping the root SHA256 locked.",
+      "problem": "The source display is macro/align-delimited rather than a literal equation environment. A parser restricted to literal equation boundaries captured an unrelated early macro-definition boundary, making its derived equation hash non-authoritative.",
+      "correction": "Verify the shell-cutoff expression in a bounded context around the exact source label giorgio while keeping the root SHA256 locked.",
+      "exact_source_spelling": "C_{\\Deltal}(j,j')=\\sum_{l=j}^{j+\\Deltal}\\sum_{l'=j'}^{j+\\Deltal}C_{l,l'}(j,j')",
+      "important_literal_detail": "The second upper bound in the source TeX is j+\\Deltal, not j'+\\Deltal. On the frozen symmetric j=j'=1 boundary these coincide.",
       "regulator_status": "The DVD finite cutoff remains explicitly a numerical regulator modeled on a same-paper shell pattern, never asserted as the source definition of a finite DVD sum."
     }
   ],
