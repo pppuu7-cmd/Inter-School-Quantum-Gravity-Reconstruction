@@ -1,0 +1,127 @@
+name: ISQGR Lorentzian EPRL DVD Asymmetric Sum
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_DVD_ASYMMETRIC_BOUNDARY_PREREG.json'
+      - 'experiments/sl2cfoam_dvd_asymmetric_sum.c'
+      - 'experiments/sl2cfoam_dvd_asymmetric_sum_gate.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-dvd-asymmetric-sum.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+env:
+  ARXIV_ID: '1801.03771'
+  SL2CFOAM_SHA: '052e4346028870bd76f69a3034e6cae8defb8f7f'
+
+jobs:
+  source-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Re-verify source-labelled DVD2 DVD3 authority
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_dvd_multishell_source_manifest.py --source-dir external/two_vertex_src --output compute_out/source_manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dvd-asymmetric-source-manifest
+          path: compute_out/source_manifest.json
+
+  gamma:
+    needs: source-manifest
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        gamma: ['0.5','1.2','2.0']
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc-12 g++-12 m4 lzip wget ca-certificates libgmp-dev libmpfr-dev libmpc-dev libgsl-dev libopenblas-dev libblas-dev libomp-dev
+      - name: Checkout pinned sl2cfoam-next
+        run: |
+          git clone https://github.com/qg-cpt-marseille/sl2cfoam-next.git external/sl2cfoam-next
+          git -C external/sl2cfoam-next checkout ${SL2CFOAM_SHA}
+          test "$(git -C external/sl2cfoam-next rev-parse HEAD)" = "${SL2CFOAM_SHA}"
+      - name: Build Wigner dependencies
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          mkdir -p ext test/test_data
+          cd ext
+          wget -q https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -O wigxjpf.tar.gz
+          tar -xzf wigxjpf.tar.gz && mv wigxjpf-1.13 wigxjpf
+          make -C wigxjpf CC=gcc-12 -j2
+          wget -q https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz -O fastwigxj.tar.gz
+          tar -xzf fastwigxj.tar.gz && mv fastwigxj-1.4.1 fastwigxj
+          make -C fastwigxj CC=gcc-12 CXX=g++-12 -j2
+          cd ..
+          ./ext/fastwigxj/bin/hash_js --max-E-3j=24 /dev/null ./test/test_data/table_24.3j
+          ./ext/fastwigxj/bin/hash_js --max-E-6j=24 /dev/null ./test/test_data/table_24.6j
+      - name: Build library and preregistered asymmetric evaluator
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          make CC=gcc-12 BLAS=system OMP=0 lib -j2
+          cp "$GITHUB_WORKSPACE/experiments/sl2cfoam_dvd_asymmetric_sum.c" test/dvd_asymmetric_sum.c
+          make CC=gcc-12 BLAS=system OMP=0 bin/dvd_asymmetric_sum -j1
+          test -x bin/dvd_asymmetric_sum
+      - name: Evaluate frozen asymmetric boundary twice
+        env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/external/sl2cfoam-next/lib
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          cd external/sl2cfoam-next
+          ./bin/dvd_asymmetric_sum '${{ matrix.gamma }}' 2 | tee '../../compute_out/asym_${{ matrix.gamma }}_r1.log'
+          ./bin/dvd_asymmetric_sum '${{ matrix.gamma }}' 2 | tee '../../compute_out/asym_${{ matrix.gamma }}_r2.log'
+          cd ../..
+          python experiments/sl2cfoam_dvd_asymmetric_sum_gate.py --run1 'compute_out/asym_${{ matrix.gamma }}_r1.log' --run2 'compute_out/asym_${{ matrix.gamma }}_r2.log' --gamma '${{ matrix.gamma }}' --output 'compute_out/asym_${{ matrix.gamma }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'dvd-asymmetric-sum-gamma-${{ matrix.gamma }}'
+          path: compute_out/*
+          if-no-files-found: warn
+
+  aggregate:
+    needs: gamma
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'dvd-asymmetric-sum-gamma-*'
+          path: all
+          merge-multiple: true
+      - name: Aggregate frozen asymmetric-boundary reliability gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          rows=sorted(rows,key=lambda x:x.get('gamma',0))
+          ok=len(rows)==3 and all(x.get('gate_pass') for x in rows)
+          out={'test':'LORENTZIAN_EPRL_DVD_ASYMMETRIC_FINITE_SHELL_SUM_AGGREGATE','lane_count':len(rows),'all_pass':ok,
+               'classification':'DVD_ASYMMETRIC_FINITE_SHELL_SUM_AGGREGATE_PASS' if ok else 'DVD_ASYMMETRIC_FINITE_SHELL_SUM_AGGREGATE_FAIL',
+               'by_gamma':[{'gamma':x.get('gamma'),'repeat_max_relative_difference':x.get('repeat_max_relative_difference'),'diagnostics':x.get('diagnostics')} for x in rows],
+               'claim_lock':'Asymmetric boundary robustness only; no preregistered convergence direction, refinement map, cylindrical consistency, continuum, bridge, novelty or new physics.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n');print(json.dumps(out,indent=2,sort_keys=True))
+          if not ok:raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dvd-asymmetric-sum-summary
+          path: summary.json
+          if-no-files-found: error
