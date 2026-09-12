@@ -1,0 +1,33 @@
+name: ISQGR RC-009 Hyperfrustum Branch Interference
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc009_hyperfrustum_branch_interference.py'
+      - '.github/workflows/isqgr-rc009-branch-interference.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run preregistered amplitude-branch interference audit
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/rc009_hyperfrustum_branch_interference.py \
+            --output compute_out/rc009_hyperfrustum_branch_interference.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-rc009-hyperfrustum-branch-interference
+          path: compute_out/*.json
+          if-no-files-found: error
