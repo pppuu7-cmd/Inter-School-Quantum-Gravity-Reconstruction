@@ -1,0 +1,38 @@
+{
+  "protocol": "ITER006_DVD_MULTISHELL_HELDOUT_GAMMA_PREREG",
+  "date": "2026-09-12",
+  "status": "FROZEN_BEFORE_HELDOUT_D1_D2_RESPONSE",
+  "inheritance": {
+    "heldout_gamma_source_run": 34703682106,
+    "heldout_gamma_set": [0.3, 0.8, 1.6, 2.5, 3.0],
+    "reason": "Exact same gamma values were already frozen and evaluated only at Dl0 before the calibration multishell result existed. No D1/D2 heldout response has been seen.",
+    "calibration_multishell_run": 34708369655
+  },
+  "fixed_boundary": "j_a=j'_a=1, i=t=i'=t'=1",
+  "finite_shell_cutoff": [0,1,2],
+  "source_and_kernel": {
+    "paper_root_sha256": "27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1",
+    "DVD2_hash": "799f56dc22f55a09bf744d62c459ee95e38794e5be02c114a73d06c057d0e94c",
+    "DVD3_hash": "7d2fb958574c76f67e52d32ffea2cb22beb01c1e7d6583d383fce159b2eadfab",
+    "sl2cfoam_commit": "052e4346028870bd76f69a3034e6cae8defb8f7f"
+  },
+  "heldout_dl0_reference": {
+    "0.3": 0.0013370736856606288,
+    "0.8": 0.00010909544347890166,
+    "1.6": 0.000001922261779345611,
+    "2.5": 0.00000006617261720924785,
+    "3.0": 0.000000015100198765908135
+  },
+  "numerical_gates": {
+    "repeat_relative_difference_max": 1e-12,
+    "dl0_regression_relative_error_max": 1e-12,
+    "all_values_finite": true
+  },
+  "heldout_pattern_hypothesis": {
+    "calibration_observation": "For both DVD2 and DVD3, the relative shell increment from D=1 to D=2 was smaller than the relative increment from D=0 to D=1 at all three calibration gammas.",
+    "lane_support": "dvd2_increment_D2 < dvd2_increment_D1 AND dvd3_increment_D2 < dvd3_increment_D1",
+    "aggregate_strong_support": "all 5 inherited heldout gamma lanes satisfy lane_support",
+    "aggregate_natural_support": "at least 4 of 5 heldout gamma lanes satisfy lane_support"
+  },
+  "claim_lock": "Even strong heldout support means only that the finite-cutoff stabilization pattern transports across the inherited gamma grid. It is not a convergence proof, refinement map, cylindrical consistency result, continuum limit, bridge derivation, novelty or new physics."
+}
