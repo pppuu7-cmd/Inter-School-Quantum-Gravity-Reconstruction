@@ -1,0 +1,65 @@
+name: ISQGR Lorentzian Cylindrical Normalization Source Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_LORENTZIAN_CYLINDRICAL_NORMALIZATION_PREREG.json'
+      - '.github/workflows/isqgr-lorentzian-cylindrical-normalization.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  normalization-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch primary source
+        run: |
+          set -euo pipefail
+          mkdir -p src
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1010.5437 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1010.5437 -o source.tar
+          sha256sum source.tar | tee source.sha256
+          tar -xf source.tar -C src
+      - name: Map exact normalization contexts
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,hashlib
+          chunks=[]
+          for p in sorted(pathlib.Path('src').rglob('*')):
+              if p.is_file() and p.suffix.lower() in {'.tex','.txt','.md','.bib'}:
+                  try: chunks.append((str(p),p.read_text(errors='ignore')))
+                  except: pass
+          roles={
+            'subfoam':r'subfoam|sub-foam',
+            'trivial_extension':r'trivial extension',
+            'cylindrical':r'cylindrical consist',
+            'multiplicity':r'multiplicit|automorphism|cardinalit|number of (?:foam|color|colour)|\\lvert\s*\\sigma|\|\s*\\sigma',
+            'amplitude':r'Z_\{|Z\^|amplitude'
+          }
+          contexts={}; present={}
+          for role,pat in roles.items():
+              rx=re.compile(pat,re.I); rows=[]
+              for fn,t in chunks:
+                  for m in rx.finditer(t): rows.append({'file':fn,'start':m.start(),'match':m.group(0),'context':t[max(0,m.start()-1400):min(len(t),m.end()+1800)]})
+              contexts[role]=rows[:50]; present[role]=bool(rows)
+          joined='\n'.join(x['context'] for vals in contexts.values() for x in vals).lower()
+          # Source-level PASS requires all frozen semantic objects to be explicitly present. Exact equations are preserved in artifacts for human/source verification.
+          all_roles=all(present.values())
+          linked=False
+          for vals in contexts.values():
+              for x in vals:
+                  c=x['context'].lower()
+                  if 'trivial extension' in c and 'cylindrical' in c and any(k in c for k in ['multiplic','automorph','cardinal','|\\sigma','\\lvert \\sigma']): linked=True
+          passed=all_roles and linked
+          out={'gate':'ITER006_LORENTZIAN_CYLINDRICAL_NORMALIZATION_SOURCE_AUDIT','role_presence':present,'local_linkage_of_trivial_extension_cylindrical_and_factor':linked,'source_map_gate_pass':passed,'classification':'LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED' if passed else 'LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_UNRESOLVED','claim_lock':'Source semantics only; numerical cylindrical consistency and realization-specific refinement remain untested.','source_sha256':hashlib.sha256(pathlib.Path('source.tar').read_bytes()).hexdigest()}
+          pathlib.Path('normalization_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          for role,rows in contexts.items(): pathlib.Path(f'{role}_contexts.json').write_text(json.dumps(rows,indent=2)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lorentzian-cylindrical-normalization-source-audit
+          path: |
+            normalization_summary.json
+            *_contexts.json
+            source.sha256
+          if-no-files-found: error
