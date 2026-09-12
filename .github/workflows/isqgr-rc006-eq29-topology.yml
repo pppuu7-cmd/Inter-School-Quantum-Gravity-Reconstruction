@@ -1,0 +1,31 @@
+name: ISQGR RC006 Eq29 Topology Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_eq29_source_topology_audit.py'
+      - '.github/workflows/isqgr-rc006-eq29-topology.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  topology:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run source-topology/channel prerequisite
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_eq29_source_topology_audit.py --output compute_out/rc006_eq29_topology.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-eq29-topology
+          path: compute_out/*.json
+          if-no-files-found: error

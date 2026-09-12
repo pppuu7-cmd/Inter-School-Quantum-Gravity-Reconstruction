@@ -1,0 +1,31 @@
+name: ISQGR RC006 Appendix-C Block Feasibility
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_appendix_c_block_feasibility.py'
+      - '.github/workflows/isqgr-rc006-appendix-c-feasibility.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  block-feasibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enumerate first-step Appendix-C blocks
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_appendix_c_block_feasibility.py --output compute_out/rc006_appendix_c_feasibility.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-appendix-c-feasibility
+          path: compute_out/*.json
+          if-no-files-found: error
