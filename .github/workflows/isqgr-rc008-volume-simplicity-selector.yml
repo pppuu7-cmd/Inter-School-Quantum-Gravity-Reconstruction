@@ -1,0 +1,33 @@
+name: ISQGR RC-008 Volume Simplicity Selector Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc008_volume_simplicity_dynamic_selector_audit.py'
+      - '.github/workflows/isqgr-rc008-volume-simplicity-selector.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run preregistered equal-scale geometricity audit
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/rc008_volume_simplicity_dynamic_selector_audit.py \
+            --output compute_out/rc008_volume_simplicity_dynamic_selector.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-rc008-volume-simplicity-selector
+          path: compute_out/*.json
+          if-no-files-found: error
