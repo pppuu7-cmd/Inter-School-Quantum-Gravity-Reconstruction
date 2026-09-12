@@ -1,0 +1,77 @@
+name: ISQGR Iter006 RC006 Eq29 Anchor Disambiguation
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_anchor_disambiguation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch hash-pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+      - name: Enumerate literal and active-TeX anchors
+        run: |
+          python - <<'PY'
+          import json,pathlib,re
+          p=pathlib.Path('src/bc-spin-nets.tex')
+          raw=p.read_text()
+          rx=re.compile(r'initial\s+3-valent\s+tensor',re.I)
+          # TeX comment stripper: remove unescaped % through end-of-line, preserving newlines.
+          active_lines=[]
+          comment_map=[]
+          for ln,line in enumerate(raw.splitlines(True),start=1):
+              cut=None
+              for i,ch in enumerate(line):
+                  if ch!='%': continue
+                  # '%' is escaped iff preceded by an odd run of backslashes.
+                  bs=0; j=i-1
+                  while j>=0 and line[j]=='\\': bs+=1; j-=1
+                  if bs%2==0:
+                      cut=i; break
+              active=line if cut is None else line[:cut] + ('\n' if line.endswith('\n') else '')
+              active_lines.append(active)
+              comment_map.append({'line':ln,'raw':line.rstrip('\n'),'active':active.rstrip('\n'),'comment_cut':cut})
+          active=''.join(active_lines)
+          literal=[]
+          for m in rx.finditer(raw):
+              line=raw.count('\n',0,m.start())+1
+              # nearest structural headers before anchor
+              prefix=raw[:m.start()]
+              headers=list(re.finditer(r'\\(section|subsection|subsubsection)\s*\{([^}]*)\}',prefix,re.I))
+              h=headers[-1] if headers else None
+              literal.append({'offset':m.start(),'line':line,'line_raw':raw.splitlines()[line-1],
+                              'nearest_header':({'kind':h.group(1),'title':h.group(2),'offset':h.start()} if h else None)})
+          active_hits=[]
+          for m in rx.finditer(active):
+              line=active.count('\n',0,m.start())+1
+              prefix=active[:m.start()]
+              headers=list(re.finditer(r'\\(section|subsection|subsubsection)\s*\{([^}]*)\}',prefix,re.I))
+              h=headers[-1] if headers else None
+              bm=re.search(r'\\begin\{align\*?\}',active[m.end():])
+              next_align=(m.end()+bm.start()) if bm else None
+              active_hits.append({'offset':m.start(),'line':line,'line_active':active.splitlines()[line-1],
+                                  'nearest_header':({'kind':h.group(1),'title':h.group(2),'offset':h.start()} if h else None),
+                                  'next_align_offset':next_align})
+          out={'gate':'ITER006_RC006_EQ29_ANCHOR_DISAMBIGUATION','literal_anchor_count':len(literal),'active_tex_anchor_count':len(active_hits),
+               'literal_anchors':literal,'active_tex_anchors':active_hits,
+               'classification':'ACTIVE_TEX_ANCHOR_UNIQUE' if len(active_hits)==1 else 'ACTIVE_TEX_ANCHOR_STILL_AMBIGUOUS',
+               'scientific_credit':'+0 diagnostic only; no graph/incidence/R-placement PASS; no amplitude authorization.'}
+          pathlib.Path('out/anchor_disambiguation.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-anchor-disambiguation
+          path: out/anchor_disambiguation.json
+          if-no-files-found: error
