@@ -4,7 +4,7 @@
   "date": "2026-09-12",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 34,
+  "iteration_completion_percent": 40,
   "last_completed_iteration": "ITERATION_005",
   "constitution": "docs/CONSTITUTION.md",
   "active_bridge_hypotheses": [
@@ -46,7 +46,7 @@
     "accepted_recurrent_motifs": 30,
     "bridge_principle_validation": 78,
     "executable_cross_school_obstructions": 86,
-    "amplitude_refinement_cross_realization_validation": 24,
+    "amplitude_refinement_cross_realization_validation": 26,
     "candidate_theory_construction": 0,
     "overall_scientific_programme": 44
   },
@@ -96,7 +96,12 @@
     "ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION",
     "ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL",
     "ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS",
-    "ITER006_RC006_QGROUP_KERNEL_QUALIFICATION"
+    "ITER006_RC006_QGROUP_KERNEL_QUALIFICATION",
+    "ITER006_RC006_APPENDIX_B13_SOURCE_TO_KERNEL_MAPPING",
+    "ITER006_RC006_EQ29_SOURCE_TOPOLOGY_CHANNEL_AUDIT",
+    "ITER006_RC006_APPENDIX_C_FIRST_STEP_FEASIBILITY",
+    "ITER006_RC006_EQ29_RMATRIX_FACTOR_AUDIT",
+    "ITER006_RC006_ARXIV_SOURCE_GRAPH_DISCOVERY"
   ],
   "compute_campaigns": {
     "campaign_001": {"workflow_run": 34652279466, "reproduction_run": 34652499160, "status": "REPRODUCED_EXECUTABLE"},
@@ -120,7 +125,14 @@
     "iter006_fusion_basis_amplitude_reproduction": {"workflow_run": 34666262016, "status": "SUCCESS_CLEAN_THREE_STEP_ALL_COUPLINGS"},
     "iter006_fusion_basis_embedding_orientation_null": {"workflow_run": 34666545108, "status": "SUCCESS_STRONG_NEAREST_FRAMEWORK_ABSORPTION"},
     "iter006_rc008_published_boundary_audit": {"workflow_run": 34666680657, "status": "SUCCESS_SOURCE_DATA_AUDIT"},
-    "iter006_rc006_qgroup_kernel_qualification": {"workflow_run": 34694602675, "aggregate_job": 103555842825, "aggregate_artifact": 10298547764, "status": "SCIENTIFIC_PASS_CONVENTION_QUALIFICATION_ONLY"}
+    "iter006_rc006_qgroup_kernel_qualification": {"workflow_run": 34694602675, "aggregate_job": 103555842825, "aggregate_artifact": 10298547764, "status": "SCIENTIFIC_PASS_CONVENTION_QUALIFICATION_ONLY"},
+    "iter006_rc006_b13_mapping": {"workflow_run": 34694997395, "aggregate_job": 103556894034, "aggregate_artifact": 10298094519, "status": "PASS_8009_OF_8009_SOURCE_KERNEL_MAPPING"},
+    "iter006_rc006_eq29_topology": {"workflow_run": 34695720379, "job": 103558741023, "artifact": 10299100320, "status": "PASS_STRUCTURAL_CHANNEL_PREREQUISITE_AMPLITUDE_BLOCKED"},
+    "iter006_rc006_appendix_c_feasibility": {"workflow_run": 34695720384, "job": 103558741014, "artifact": 10298825789, "status": "PASS_IMPLEMENTATION_FEASIBILITY_ONLY"},
+    "iter006_rc006_eq26_rfactor": {"workflow_run": 34695809537, "aggregate_job": 103558996929, "aggregate_artifact": 10298790946, "status": "PASS_PARTIAL_AMPLITUDE_FACTOR_ONLY"},
+    "iter006_rc006_source_graph_discovery": {"workflow_run": 34695891870, "job": 103559192504, "artifact": 10299011021, "status": "PASS_OFFICIAL_ARXIV_TEX_TIKZ_PROVENANCE_DISCOVERY"},
+    "iter006_rc006_appendix_c_synthetic_regression": {"workflow_run": 34696095267, "status": "QUEUED_RESPONSE_BLIND_NUMERICAL_REGRESSION"},
+    "iter006_rc006_tikz_graph_ast": {"workflow_run": 34696214389, "status": "QUEUED_SOURCE_GRAPH_MAPPING"}
   },
   "iteration_005_preregistered_promotion": {
     "required_positive_lines": 2,
@@ -132,37 +144,37 @@
   },
   "active_gates": [
     "BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE",
+    "RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE",
+    "RC006_EQ29_MINIMAL_K12_AMPLITUDE_GATE",
+    "RC006_APPENDIX_C_C1_C2_SVD_GATE",
+    "RC006_HELDOUT_NONRETUNED_SELECTOR_TRANSPORT_GATE",
     "RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE",
-    "RC006_QDEFORMED_EPRL_FK_AMPLITUDE_TNR_RECONSTRUCTION_GATE",
-    "RC006_APPENDIX_B13_SOURCE_TO_KERNEL_MAPPING_GATE",
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE",
     "CEMR_SOURCE_DEFINED_CAUSAL_RESCUE_GATE"
   ],
   "iteration_006_targets": [
-    "reconstruct_RC008_quantum_cuboid_coarse_refined_amplitudes_and_volume_variance_for_at_least_two_boundary_states",
-    "freeze_RC008_alpha_flow_on_training_boundary_and_test_heldout_boundary_without_retuning",
-    "reconstruct_or_reproduce_RC006_amplitude_level_TNR_for_at_least_one_BC_control_and_one_EPRL_FK_case",
-    "seek_multivertex_Lorentzian_EPRL_or_true_spinfoam_refinement_realization",
-    "test_QG_specific_source_native_selector_structure_beyond_standard_TNR_embedding_maps",
+    "complete_exact_source_mapping_of_RC006_Eq29_oriented_braided_q_spin_network_graph",
+    "compute_source_faithful_minimal_k12_gamma_1_over_3_Eq29_amplitudes",
+    "run_Appendix_C_C1_C2_blockwise_SVD_only_after_Eq29_amplitude_gate",
+    "test_heldout_nonretuned_source_native_selector_transport_in_RC006",
+    "continue_search_for_independent_true_QG_amplitude_refinement_realization",
     "keep_candidate_theory_equations_locked_until_independent_QG_amplitude_refinement_gate"
+  ],
+  "active_compute": [
+    {"workflow_run": 34696095267, "purpose": "Appendix-C response-blind synthetic SVD regression", "status": "QUEUED"},
+    {"workflow_run": 34696214389, "purpose": "official-arXiv TikZ graph AST mapping for Eq29", "status": "QUEUED"}
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_RC006_EQ29_PREAMPLITUDE_PREREQUISITES.md",
+    "results/ITER006_RC006_APPENDIX_B13_MAPPING.md",
     "results/ITER006_RC006_QGROUP_KERNEL_QUALIFICATION.md",
     "results/ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL.md",
     "results/ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION.md",
     "results/ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS.md",
-    "realizations/RC-008_QUANTUM_CUBOID_HYPERCUBOID_RENORMALIZATION.md",
-    "results/ITER005_BH004B_LONGJUMP_HELDOUT.md",
-    "results/ITER005_RC006_EPRL_FUSION_SUPPORT_CLOSURE.md",
-    "results/ITER005_RC006_MULTI_STEP_SUPPORT_ENVELOPE_GROWTH.md",
-    "results/ITER005_EPRL_SHELL_DISTANCE_ORIENTATION.md",
-    "results/ITER005_FRG_EH_SCHEME_COVARIANCE.md",
-    "results/ITER004_BH004B_ENVELOPE_LOCAL_SELECTOR_HELDOUT.md",
-    "hypotheses/BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR.md",
-    "hypotheses/BH-004_PROJECTOR_MEASURE_COVARIANT_SCALE_TRANSPORT.md",
-    "results/RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA_2026-09-12.md",
+    "results/ITER006_RC009_SOURCE_PHASE_ENDPOINT_AUDIT.md",
+    "results/ITER006_RC009_ENDPOINT_POWER_AUDIT.md",
     "docs/CONSTITUTION.md",
     "protocol/INTERFACE_FAILURE_TAXONOMY.md"
   ]
