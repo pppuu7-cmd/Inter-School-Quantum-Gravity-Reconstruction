@@ -1,39 +1,177 @@
 {
-  "project":"Inter-School Quantum Gravity Reconstruction",
-  "repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
-  "date":"2026-09-12",
-  "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration":"ITERATION_006",
-  "iteration_completion_percent":78,
-  "candidate_theory_status":"UNFORMED",
-  "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"rqir_promotion_authorized":false,"kmqgb_promotion_authorized":false},
-  "readiness_percent":{"amplitude_refinement_cross_realization_validation":46,"candidate_theory_construction":0,"overall_scientific_programme":49},
-  "frontier":{
-    "RC006":{
-      "status":"SCIENTIFIC_FAIL_RELATION_AWARE_SERIALIZATION_UNSTABLE_EQ29_BLOCKED",
-      "source_authority":{"run":34712998699,"artifact":10304191011,"classification":"RC006_FOUR_ANCHOR_EXPLICIT_RELATION_SOURCE_PASS"},
-      "relation_aware_retry":{"prereg_commit":"c03b50a33d9937f542668b90751ec295bc235c24","launch_commit":"7a034f0766277656eb5fc09d3c492299e364281e","run":34713459961,"aggregate_job":103610235012,"artifact":10303748952,"artifact_digest":"sha256:5d55228c00ddf467147e928599ca11405c088fc0793605417e350d12afa46fe5","lane_count":10,"valid":true,"full_unique":true,"holdout_unique_count":6,"min_pairwise_order_agreement":0.8698752228163993,"null_ambiguous":true,"classification":"SCIENTIFIC_FAIL_RELATION_AWARE_CONTRACTION_SERIALIZATION_UNSTABLE"},
-      "eq29_amplitude_authorized":false,
-      "next_gate":"BLOCKED_ABSENT_GENUINELY_NEW_INDEPENDENT_SOURCE_AUTHORITY"
+  "project": "Inter-School Quantum Gravity Reconstruction",
+  "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
+  "date": "2026-09-12",
+  "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
+  "active_iteration": "ITERATION_006",
+  "iteration_completion_percent": 78,
+  "candidate_theory_status": "UNFORMED",
+  "claim_locks": {
+    "known_schools_fail": false,
+    "new_theory_required": false,
+    "new_physics_found": false,
+    "bridge_derived": false,
+    "rqir_promotion_authorized": false,
+    "kmqgb_promotion_authorized": false
+  },
+  "readiness_percent": {
+    "amplitude_refinement_cross_realization_validation": 46,
+    "candidate_theory_construction": 0,
+    "overall_scientific_programme": 49
+  },
+  "frontier": {
+    "RC006": {
+      "status": "EQ29_SOURCE_DEPENDENCIES_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
+      "source_authority": {
+        "run": 34712998699,
+        "artifact": 10304191011,
+        "classification": "RC006_FOUR_ANCHOR_EXPLICIT_RELATION_SOURCE_PASS"
+      },
+      "relation_aware_retry": {
+        "prereg_commit": "c03b50a33d9937f542668b90751ec295bc235c24",
+        "launch_commit": "7a034f0766277656eb5fc09d3c492299e364281e",
+        "run": 34713459961,
+        "aggregate_job": 103610235012,
+        "artifact": 10303748952,
+        "artifact_digest": "sha256:5d55228c00ddf467147e928599ca11405c088fc0793605417e350d12afa46fe5",
+        "lane_count": 10,
+        "valid": true,
+        "full_unique": true,
+        "holdout_unique_count": 6,
+        "min_pairwise_order_agreement": 0.8698752228163993,
+        "null_ambiguous": true,
+        "classification": "SCIENTIFIC_FAIL_RELATION_AWARE_CONTRACTION_SERIALIZATION_UNSTABLE"
+      },
+      "appendix_b13_mapping": {
+        "run": 34716905247,
+        "levels_k": [6, 10, 12],
+        "bad_cases_each": 0,
+        "classification": "RC006_B13_SOURCE_MAPPING_PASS",
+        "scope": "CONVENTION_SOURCE_FORMULA_ONLY"
+      },
+      "eq29_dependency_closure": {
+        "run": 34715908026,
+        "classification": "EQ29_DEPENDENCY_GRAPH_INCOMPLETE",
+        "present_at_run": ["qgroup_recoupling_kernel", "appendix_b13_mapping"],
+        "missing": ["eq29_source_semantics", "eq29_label_geometry", "eq29_rmatrix_factor", "eq29_path_incidence"]
+      },
+      "eq29_primary_source_manual_audit": {
+        "source": "arXiv:1609.02429v2",
+        "section": "VII.B",
+        "equation": 29,
+        "source_semantics_found": true,
+        "machine_graph_incidence_qualified": false,
+        "classification": "NEW_SOURCE_AUTHORITY_SEMANTICS_ONLY"
+      },
+      "eq29_amplitude_authorized": false,
+      "next_gate": "PROSPECTIVELY_QUALIFY_EQ29_SEMANTICS_LABEL_GEOMETRY_RMATRIX_PLACEMENT_AND_PATH_INCIDENCE"
     },
-    "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
-    "RC009":{"status":"SCOPED_BLOCKED"},
-    "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{
-      "status":"DUAL_REPRESENTATION_TOPOLOGY_DIAGNOSTIC_ACTIVE",
-      "source":"arXiv:1801.03771",
-      "kernel":"qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f",
-      "dvd23_direct_structural_audit":{"run":34710895347,"classification":"DVD23_DIRECT_TRIVIAL_EXTENSION_EXCLUDED","bridge_credit":false},
-      "zero_spin_b4_primitive":{"run":34711008648,"classification":"B4_ZERO_SPIN_PRIMITIVE_AGGREGATE_PASS","bridge_credit":false},
-      "zero_spin_asymmetric_heldout":{"run":34712687076,"aggregate_job":103604345234,"artifact":10303514068,"artifact_digest":"sha256:b516d16574ee47e016fc4886cf91368c9081492989fe2da2c0c60fae0725e8c6","classification":"B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_PASS","lane_count":5,"worst_relative_error":1.74533e-6,"threshold":1e-5,"bridge_credit":false},
-      "ded_dld_topology_candidate":{"run":34712970339,"classification":"DED_DLD_STRICT_EXTENSION_CANDIDATE_SOURCE_QUALIFIED","strict_incidence_embedding_proven":false,"bridge_credit":false},
-      "cylindrical_normalization_source_map":{"run":34712985651,"artifact":10304340366,"classification":"LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED","bridge_credit":false},
-      "ded_dld_source_figure_incidence":{"run":34713333741,"job":103605960390,"artifact":10304337517,"artifact_digest":"sha256:314708a3a996bb0497691680fa40e312ce3c88332bd1b1a6f6e519f88e7316e2","classification":"DED_DLD_FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT","machine_incidence_ready":false,"bridge_credit":false},
-      "dual_representation_topology":{"prereg_commit":"b2c34a7f5516ee61c77b5447a3b7edff168b5857","launch_commit":"c82fa1c8e3101fa0a917c1a34e37cf27c36bc558","run":34715789027,"lane_count":8,"status":"QUEUED","bridge_credit":false},
-      "refinement_map_derived":false,
-      "next_gate":"CONSUME_34715789027; ONLY IF REPRESENTATION_STABLE PREREGISTER INCIDENCE_GRAPH_EXTRACTION_AND_EMBEDDING_GATE"
+    "RC008": {
+      "status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"
+    },
+    "RC009": {
+      "status": "SCOPED_BLOCKED"
+    },
+    "LORENTZIAN_DELTA4": {
+      "status": "SATURATED_NEGATIVE_SCOPED",
+      "bridge_credit": false
+    },
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
+      "status": "DED_DPI_COMPONENT_BIRTH_LOCALIZATION_ACTIVE_TOPOLOGY_PREREQUISITE_FAILED",
+      "source": "arXiv:1801.03771",
+      "kernel": "qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f",
+      "dvd23_direct_structural_audit": {
+        "run": 34710895347,
+        "classification": "DVD23_DIRECT_TRIVIAL_EXTENSION_EXCLUDED",
+        "bridge_credit": false
+      },
+      "dvd23_synthetic_structural_gate": {
+        "run": 34715884817,
+        "workflow_classification": "DVD23_STRUCTURAL_REFINEMENT_MAP_ADMISSIBLE",
+        "programme_classification": "SYNTHETIC_STRUCTURAL_SELF_CONSISTENCY_PASS_SOURCE_AUTHORITY_ABSENT",
+        "source_derived": false,
+        "bridge_credit": false
+      },
+      "zero_spin_b4_primitive": {
+        "run": 34711008648,
+        "classification": "B4_ZERO_SPIN_PRIMITIVE_AGGREGATE_PASS",
+        "bridge_credit": false
+      },
+      "zero_spin_asymmetric_heldout": {
+        "run": 34712687076,
+        "aggregate_job": 103604345234,
+        "artifact": 10303514068,
+        "artifact_digest": "sha256:b516d16574ee47e016fc4886cf91368c9081492989fe2da2c0c60fae0725e8c6",
+        "classification": "B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_PASS",
+        "lane_count": 5,
+        "worst_relative_error": 1.74533e-6,
+        "threshold": 1e-5,
+        "bridge_credit": false
+      },
+      "ded_dld_topology_candidate": {
+        "run": 34712970339,
+        "classification": "DED_DLD_STRICT_EXTENSION_CANDIDATE_SOURCE_QUALIFIED",
+        "strict_incidence_embedding_proven": false,
+        "bridge_credit": false
+      },
+      "cylindrical_normalization_source_map": {
+        "run": 34712985651,
+        "artifact": 10304340366,
+        "classification": "LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED",
+        "bridge_credit": false
+      },
+      "ded_dld_source_figure_incidence": {
+        "run": 34713333741,
+        "job": 103605960390,
+        "artifact": 10304337517,
+        "artifact_digest": "sha256:314708a3a996bb0497691680fa40e312ce3c88332bd1b1a6f6e519f88e7316e2",
+        "classification": "DED_DLD_FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT",
+        "machine_incidence_ready": false,
+        "bridge_credit": false
+      },
+      "dual_representation_topology": {
+        "prereg_commit": "b2c34a7f5516ee61c77b5447a3b7edff168b5857",
+        "launch_commit": "c82fa1c8e3101fa0a917c1a34e37cf27c36bc558",
+        "source_run": 34715789027,
+        "recovery_run": 34716846693,
+        "lane_count": 8,
+        "status": "TERMINAL_SCIENTIFIC_DIAGNOSTIC_FAIL",
+        "classification": "TOPOLOGY_EXTRACTION_UNSTABLE",
+        "cross_representation_thresholds_pass": true,
+        "dpi_component_count_stable": false,
+        "bridge_credit": false
+      },
+      "topology_instability_localization": {
+        "run": 34716979296,
+        "classification": "DPI_COMPONENT_COUNT_INSTABILITY_LOCALIZED",
+        "DED_ORIGINAL_EPS_counts_300_600": [121, 123],
+        "DED_GS_EPS2WRITE_NORMALIZED_counts_300_600": [121, 123],
+        "DLD_ORIGINAL_EPS_counts_300_600": [15, 15],
+        "DLD_GS_EPS2WRITE_NORMALIZED_counts_300_600": [15, 15]
+      },
+      "ded_component_birth_localization": {
+        "run": 34717249322,
+        "status": "QUEUED_OR_RUNNING",
+        "purpose": "LOCALIZE_TWO_600DPI_DED_COMPONENT_BIRTHS_WITH_FROZEN_EXTRACTION_RULE",
+        "bridge_credit": false
+      },
+      "refinement_map_derived": false,
+      "next_gate": "CONSUME_34717249322; DO_NOT_RETUNE_FROZEN_TOPOLOGY_GATE; REQUIRE_SOURCE_DERIVED_INCIDENCE_FOR_ANY_REFINEMENT_CLAIM"
     }
   },
-  "active_compute":[{"workflow_run":34715789027,"purpose":"DED/DLD dual-representation EPS topology prerequisite","status":"QUEUED","lane_count":8}],
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_TERMINAL_INCIDENCE_AND_RC006_SERIALIZATION_2026-09-12.md","protocol/ITER006_DED_DLD_DUAL_REPRESENTATION_TOPOLOGY_PREREG.json","docs/CONSTITUTION.md"]
+  "active_compute": [
+    {
+      "workflow_run": 34717249322,
+      "purpose": "DED 300/600 dpi component birth localization under frozen threshold and area rule",
+      "status": "QUEUED_OR_RUNNING",
+      "lane_count": 4
+    }
+  ],
+  "authoritative_recovery_order": [
+    "recovery/state.json",
+    "recovery/CURRENT_FRONT.md",
+    "results/ITER006_TERMINAL_TOPOLOGY_B13_EQ29_UPDATE_2026-09-12.md",
+    "results/ITER006_TERMINAL_INCIDENCE_AND_RC006_SERIALIZATION_2026-09-12.md",
+    "docs/CONSTITUTION.md"
+  ]
 }
