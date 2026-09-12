@@ -17,51 +17,72 @@ RC008 remains source-only BLOCKED. RC009 remains `SCOPED BLOCKED`. Lorentzian De
 
 Pinned DVD source: arXiv:1801.03771. Pinned numerical kernel: `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f`.
 
-Direct DVD2↔DVD3 strict trivial extension is excluded by run `34710895347`: `DVD23_DIRECT_TRIVIAL_EXTENSION_EXCLUDED`; this is scoped only to that direct pair.
+Direct DVD2↔DVD3 strict trivial extension remains excluded by run `34710895347`: `DVD23_DIRECT_TRIVIAL_EXTENSION_EXCLUDED`; this is scoped only to that direct pair.
 
-The one-zero-spin B4 primitive passed in run `34711008648`. Independent asymmetric held-out run `34712687076`, head `d11fefbd2826c3a3772da0d4c052298c063e7f18`, aggregate job `103604345234`, artifact `10303514068`, digest `sha256:b516d16574ee47e016fc4886cf91368c9081492989fe2da2c0c60fae0725e8c6`, passed 5/5 frozen gamma lanes with worst relative error `1.74533e-06 < 1e-5`. Classification `B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_PASS`. Primitive-level zero-spin robustness is saturated unless a new failure mode appears; neither primitive result is a refinement bridge.
+The one-zero-spin B4 primitive passed in run `34711008648`. Independent asymmetric held-out run `34712687076`, aggregate job `103604345234`, artifact `10303514068`, digest `sha256:b516d16574ee47e016fc4886cf91368c9081492989fe2da2c0c60fae0725e8c6`, passed 5/5 frozen gamma lanes with worst relative error `1.74533e-06 < 1e-5`. Classification `B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_PASS`. Primitive-level zero-spin robustness is saturated unless a new failure mode appears; neither primitive result is a refinement bridge.
 
-DED→DLD source qualification run `34712970339` found candidate source context but no explicit injective V/E/F map. The subsequent source-vector incidence audit was terminal:
-- prereg `aed17144107ae13e32686e06887e4059f2101b1a`
-- launch/head `09d34cef1ca42b90fec6496fdffcc5c9410175d3`
-- run `34713333741`, job `103605960390`
-- artifact `10304337517`, digest `sha256:314708a3a996bb0497691680fa40e312ce3c88332bd1b1a6f6e519f88e7316e2`
-- classification `DED_DLD_FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT`; `machine_incidence_ready=false`.
+DED→DLD source qualification run `34712970339` found candidate source context but no explicit injective V/E/F map. Source-vector incidence audit run `34713333741` was terminal `DED_DLD_FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT`, `machine_incidence_ready=false`; no strict refinement promotion or amplitude identity was authorized.
 
-Both EPS assets were valid, but the preregistered vector extraction did not recover a source/machine-verifiable routing/incidence map. This does not prove non-embedding; it blocks promotion of DED→DLD to a strict refinement pair. No amplitude identity is authorized.
+### Terminal dual-representation topology prerequisite
 
-The independent arXiv:1010.5437 normalization audit remains `LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED` (run `34712985651`, artifact `10304340366`, digest `sha256:13349d2538ed2845e64353c8488868f8800832780ec28e7afb169d567ff2d979`). It fixes source semantics only, not a realization-specific bridge.
+The preregistered dual-representation EPS topology experiment used DED/DLD × original/GS-eps2write × 300/600 dpi, with prereg commit `b2c34a7f5516ee61c77b5447a3b7edff168b5857`, launch commit `c82fa1c8e3101fa0a917c1a34e37cf27c36bc558`, run `34715789027`.
 
-### Active Lorentzian gate
+All eight science lanes completed. The original aggregate failed only because `numpy` was missing. Recovery run `34716846693` reused those immutable artifacts and evaluated them via both the unchanged frozen classifier and an independent pure-Python bit-count cross-check. Both returned:
 
-A dual-representation EPS topology prerequisite was frozen before implementation:
-- prereg commit `b2c34a7f5516ee61c77b5447a3b7edff168b5857`
-- implementation/launch commit `c82fa1c8e3101fa0a917c1a34e37cf27c36bc558`
-- run `34715789027`
-- 8 lanes = DED/DLD × original/GS-eps2write representations × 300/600 dpi, `fail-fast:false`.
+`TOPOLOGY_EXTRACTION_UNSTABLE`
 
-Frozen classifier: `REPRESENTATION_STABLE`, `REPRESENTATION_DEPENDENT`, `TOPOLOGY_EXTRACTION_UNSTABLE`, or `INVALID`. Even `REPRESENTATION_STABLE` gives zero bridge credit; it only authorizes a separately preregistered incidence-graph extraction/embedding gate.
+All four original-vs-Ghostscript comparisons pass the frozen representation thresholds, but DPI component-count stability fails. Therefore the preregistered condition required to proceed to incidence/embedding did **not** pass. No incidence extraction, amplitude identity, cylindrical consistency or bridge credit is authorized from this gate.
+
+Localization run `34716979296` is terminal `DPI_COMPONENT_COUNT_INSTABILITY_LOCALIZED`:
+- DED / ORIGINAL_EPS: `121 → 123` components from 300→600 dpi
+- DED / GS_EPS2WRITE_NORMALIZED: `121 → 123`
+- DLD / ORIGINAL_EPS: `15 → 15`
+- DLD / GS_EPS2WRITE_NORMALIZED: `15 → 15`
+
+Thus the instability is DED-specific and representation-independent. No threshold or minimum-area retuning is admissible as a way to convert the failed frozen gate into a PASS.
+
+Follow-up run `34717249322` is active to localize the two 600-dpi DED component births under the unchanged extraction rule. It is diagnostic-only and cannot grant bridge credit or retroactively promote the topology prerequisite.
+
+### DVD23 synthetic structural audit
+
+Run `34715884817` returned `DVD23_STRUCTURAL_REFINEMENT_MAP_ADMISSIBLE`, but code audit shows the test itself constructs the fine graph by splitting the declared coarse edge `int01 → int0m,intm1` while preserving the boundary. It is therefore a synthetic self-consistency test, not a source-derived DVD2→DVD3 refinement map.
+
+Programme classification: `SYNTHETIC_STRUCTURAL_SELF_CONSISTENCY_PASS_SOURCE_AUTHORITY_ABSENT`; bridge/refinement credit `0`; no cylindrical-consistency/amplitude permission.
 
 ## RC006 source-faithful reconstruction
 
-The earlier contraction-serialization failure was localized to four anchors. A new source-authority audit (`34712998699`) established explicit inter-anchor relations and authorized exactly one frozen relation-aware retry.
-
-That retry is terminal:
-- prereg `c03b50a33d9937f542668b90751ec295bc235c24`
-- launch/head `7a034f0766277656eb5fc09d3c492299e364281e`
+The relation-aware contraction-serialization retry remains terminal scientific FAIL:
 - run `34713459961`, aggregate job `103610235012`
-- artifact `10303748952`, digest `sha256:5d55228c00ddf467147e928599ca11405c088fc0793605417e350d12afa46fe5`
-- all 10 lanes computationally valid
-- full unique = true; holdout unique = `6/8`; minimum pairwise-order agreement `0.8698752228163993`; unordered null ambiguous = true
+- all 10 lanes valid; full unique = true; holdout unique = `6/8`
+- minimum pairwise-order agreement `0.8698752228163993`; unordered null ambiguous = true
 - classification `SCIENTIFIC_FAIL_RELATION_AWARE_CONTRACTION_SERIALIZATION_UNSTABLE`.
 
-This is a scientific FAIL under the unchanged hard gate, not an infrastructure failure. Per frozen stop rule, minimal Eq.(29) amplitude remains BLOCKED absent genuinely new independent source authority. No immediate retuned serialization retry is admissible.
+Per frozen stop rule, the minimal Eq.(29) amplitude remains BLOCKED absent genuinely new independent source authority. No immediate retuned serialization retry is admissible.
+
+### Appendix-B Eq. (B13) source mapping
+
+The first B13 recheck failed before mathematics because the pinned kernel path was wrong. Only that infrastructure path was corrected to `half_int/no_torsion/qgroup_def.jl` at pinned Fusion-basis commit `bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4`.
+
+Run `34716905247` then passed all frozen `k=6,10,12` lanes and aggregate with `bad_cases=0`, terminal classification:
+
+`RC006_B13_SOURCE_MAPPING_PASS`
+
+This qualifies only the convention/source-formula mapping between Appendix-B Eq. (B13) and pinned `sixjr()` where the RC006 source graph is explicitly reduced by the source identities. It is not an EPRL tensor, RG-flow, refinement, continuum, bridge or new-physics result.
+
+### Eq. (29) dependency and source authority
+
+Dependency closure run `34715908026` correctly failed closed as `EQ29_DEPENDENCY_GRAPH_INCOMPLETE`. The q-group kernel and B13 mapping exist; source-faithful Eq.(29) semantics, label geometry, R-matrix-factor placement and path incidence still require independent qualification before any literal Eq.(29) tensor implementation.
+
+A new manual primary-source inspection of arXiv:1609.02429v2, Sec. VII.B, Eq. (29), confirms source semantics: the equation is the initial 3-valent EPRL intertwiner tensor; its diagram couples `J+` and `J-` to `l`, and the surrounding text explicitly notes that this latter coupling need not satisfy the original simplicity constraints. The same source earlier defines over/undercrossing through the quantum-group R-matrix and its inverse. This is genuinely useful source authority for semantics, but **not yet** a machine-qualified graph/incidence reconstruction.
 
 ## Exact next admissible gates
 
-1. Consume run `34715789027`. Only if representation stability passes may a separately preregistered incidence-graph extraction/embedding test be implemented; no amplitude identity before explicit incidence preservation.
-2. RC006: do not retry serialization or launch Eq.(29) amplitude unless genuinely new independent source authority is first found and prospectively audited.
-3. RC008 remains source-only BLOCKED; RC009 remains SCOPED BLOCKED. Do not spend compute on denser RC009 quadrature without a new mathematically justified regularization/measure/contour object.
-4. Do not substitute figure complexity, internal-face count, shell depth or finite-cutoff stabilization for a genuine refinement map.
+1. Consume run `34717249322` and identify the two DED components responsible for the DPI birth. Treat it as failure localization only; do not retune the frozen topology gate.
+2. RC006: use the newly inspected primary source to prospectively qualify Eq.(29) source semantics, label geometry, R-factor placement and path incidence as separate claim-locked objects. Do not launch the Eq.(29) amplitude until all required source-faithful dependencies have their own terminal PASS.
+3. Do not treat the synthetic DVD23 self-consistency gate as a refinement map. A true refinement claim still requires source-derived V/E/F incidence preservation.
+4. RC008 remains source-only BLOCKED; RC009 remains SCOPED BLOCKED. Do not spend compute on denser RC009 quadrature without a new mathematically justified regularization/measure/contour object.
+5. Do not substitute figure complexity, internal-face count, shell depth, finite-cutoff stabilization, raster threshold retuning, or synthetic graph construction for a genuine refinement map.
+
+Authoritative update: `results/ITER006_TERMINAL_TOPOLOGY_B13_EQ29_UPDATE_2026-09-12.md`.
 
 Iteration completion: **78%**. Amplitude/refinement validation: **46%**. Overall readiness: **49%**. Candidate theory: **0% / UNFORMED**.
