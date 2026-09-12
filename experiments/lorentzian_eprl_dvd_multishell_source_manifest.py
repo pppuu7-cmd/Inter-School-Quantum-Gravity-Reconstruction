@@ -5,8 +5,7 @@ import argparse, hashlib, json, re
 ROOT_SHA='27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1'
 EQ_HASH={
  'DVD2':'799f56dc22f55a09bf744d62c459ee95e38794e5be02c114a73d06c057d0e94c',
- 'DVD3':'7d2fb958574c76f67e52d32ffea2cb22beb01c1e7d6583d383fce159b2eadfab',
- 'giorgio':'01bee2ae0c4b3455c9b9fd3a69af23a4c7c9fa1d7d6cf3557bdab86897ae5d2'
+ 'DVD3':'7d2fb958574c76f67e52d32ffea2cb22beb01c1e7d6583d383fce159b2eadfab'
 }
 TITLE=re.compile(r'\\title\{([^}]*)\}',re.S)
 
@@ -53,9 +52,9 @@ def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--source-dir',required=True); ap.add_argument('--output',required=True); a=ap.parse_args()
     f,t,title=root(a.source_dir)
     rsha=hashlib.sha256(t.encode()).hexdigest() if t else None
-    raws={lab:equation(t,lab) if t else None for lab in EQ_HASH}
-    hashes={lab:h(raws[lab]) for lab in raws}
-    fs2=factors(raws['DVD2']); fs3=factors(raws['DVD3'])
+    raw2=equation(t,'DVD2') if t else None; raw3=equation(t,'DVD3') if t else None
+    hashes={'DVD2':h(raw2),'DVD3':h(raw3)}
+    fs2=factors(raw2); fs3=factors(raw3)
     expected2=[
       {'j':['j_1','j_2','j_3','j_4'],'l':['j_1','j_2','j_3','l_4'],'i':'t','k':"t'"},
       {'j':['j_1','j_2','j_3','j_4'],'l':['l_1','l_2','l_3','l_4'],'i':'i','k':"k'"},
@@ -66,31 +65,31 @@ def main():
       {'j':['j_1','j_2','j_3','j_4'],'l':['l_1','l_2','l_3','l_4'],'i':'i','k':"t'"},
       {'j':["j'_1","j'_2","j'_3","j'_4"],'l':["j'_1","j'_2",'l_2','l_1'],'i':"i'",'k':"t'"}
     ]
-    c2=compact(raws['DVD2']); c3=compact(raws['DVD3']); cg=compact(raws['giorgio']); gctx=compact(label_context(t,'giorgio'))
+    c2=compact(raw2); c3=compact(raw3); gctx=compact(label_context(t,'giorgio'))
     dvd2_tokens=[r"\sum_{k',l_a}","dk'",r"(-1)^{2(k'+t')}",r"\frac{\delta_{j'_3,l_4}}{d_{j'_3}}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}",r"\delta_{j_3,j'_3}"]
     dvd3_tokens=[r"\sum_{l_a}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}"]
-    dvd2_token_status={x:(x in c2) for x in dvd2_tokens}
-    dvd3_token_status={x:(x in c3) for x in dvd3_tokens}
-    shell_tokens=[r'C_{\Delta l}',r'\sum_{l=j}^{j+\Delta l}',r"\sum_{l'=j'}^{j'+\Delta l}"]
-    shell_token_status_context={x:(x in gctx) for x in shell_tokens}
-    token2=all(dvd2_token_status.values()); token3=all(dvd3_token_status.values()); shell_pattern=all(shell_token_status_context.values())
-    ok=bool(rsha==ROOT_SHA and hashes['DVD2']==EQ_HASH['DVD2'] and hashes['DVD3']==EQ_HASH['DVD3'] and fs2==expected2 and fs3==expected3 and token2 and token3 and shell_pattern)
+    dvd2_token_status={x:(x in c2) for x in dvd2_tokens}; dvd3_token_status={x:(x in c3) for x in dvd3_tokens}
+    # Exact source spelling uses the author macro \Deltal and, literally, j+\Deltal as the second upper bound.
+    shell_tokens=[r'\label{giorgio}',r'C_{\Deltal}(j,j\')',r'\sum_{l=j}^{j+\Deltal}',r"\sum_{l'=j'}^{j+\Deltal}"]
+    # The apostrophe token is awkward in a Python raw literal; replace the C token with a direct compact substring check below.
+    shell_token_status={
+      r'\label{giorgio}': r'\label{giorgio}' in gctx,
+      r'C_{\Deltal}(j,j_prime)': r"C_{\Deltal}(j,j')" in gctx,
+      r'\sum_{l=j}^{j+\Deltal}': r'\sum_{l=j}^{j+\Deltal}' in gctx,
+      r"\sum_{l'=j'}^{j+\Deltal}": r"\sum_{l'=j'}^{j+\Deltal}" in gctx
+    }
+    token2=all(dvd2_token_status.values()); token3=all(dvd3_token_status.values()); shell_pattern=all(shell_token_status.values())
+    ok=bool(rsha==ROOT_SHA and hashes==EQ_HASH and fs2==expected2 and fs3==expected3 and token2 and token3 and shell_pattern)
     out={
-      'test':'LORENTZIAN_EPRL_DVD_MULTISHELL_SOURCE_MANIFEST',
-      'root_path':str(f) if f else None,'root_title':title,'root_sha256':rsha,
-      'equation_hashes':hashes,'expected_equation_hashes':EQ_HASH,
-      'dvd2_factor_mapping':fs2,'dvd3_factor_mapping':fs3,
-      'dvd2_source_tokens_pass':token2,'dvd3_source_tokens_pass':token3,
-      'dvd2_token_status':dvd2_token_status,'dvd3_token_status':dvd3_token_status,
-      'same_paper_shell_pattern_pass':shell_pattern,'shell_token_status_context':shell_token_status_context,
-      'diagnostic_dvd2_compact_prefix':c2[:1800],
-      'diagnostic_giorgio_equation_parser_compact':cg[:700],
-      'diagnostic_giorgio_label_context_compact':gctx[:1800],
-      'regulator_statement':"Finite DVD shell cutoff is a numerical regulator modeled on the same paper's C_Delta_l shell convention; it is not asserted to be the source definition of a finite DVD sum.",
+      'test':'LORENTZIAN_EPRL_DVD_MULTISHELL_SOURCE_MANIFEST','root_path':str(f) if f else None,'root_title':title,'root_sha256':rsha,
+      'equation_hashes':hashes,'expected_equation_hashes':EQ_HASH,'dvd2_factor_mapping':fs2,'dvd3_factor_mapping':fs3,
+      'dvd2_source_tokens_pass':token2,'dvd3_source_tokens_pass':token3,'dvd2_token_status':dvd2_token_status,'dvd3_token_status':dvd3_token_status,
+      'same_paper_shell_pattern_pass':shell_pattern,'shell_token_status_context':shell_token_status,
+      'source_literal_shell_formula':r"C_{\Deltal}(j,j')=\sum_{l=j}^{j+\Deltal}\sum_{l'=j'}^{j+\Deltal}C_{l,l'}(j,j')",
+      'regulator_statement':"Finite DVD shell cutoff is a numerical regulator modeled on this same-paper shell pattern. On the frozen j=j'=1 boundary the literal second upper bound j+Delta_l equals j'+Delta_l. It is not asserted to be the source definition of a finite DVD sum.",
       'gate_pass':ok,'classification':'DVD_MULTISHELL_SOURCE_MANIFEST_PASS' if ok else 'DVD_MULTISHELL_SOURCE_MANIFEST_FAIL',
       'claim_lock':'Source authority and regulator provenance only. No numerical amplitude, refinement, continuum, bridge, or novelty claim.'
     }
-    Path(a.output).write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
-    print(json.dumps(out,indent=2,sort_keys=True))
+    Path(a.output).write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
     if not ok: raise SystemExit(2)
 if __name__=='__main__': main()
