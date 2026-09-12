@@ -105,10 +105,10 @@
         "prior_literal_chain_blocked_preserved": true
       },
       "eq29_amplitude_authorized": false,
-      "next_gate": "BLOCKED_AT_UNIQUE_DERIVATION_COMPOSITION; NO_MORE_LEXICAL_OR_REFERENCE_SELECTOR_SCAN_WITHOUT_NEW_INDEPENDENT_MATHEMATICAL_OR_SOURCE_OBJECT"
+      "next_gate": "BLOCKED_AT_UNIQUE_DERIVATION_COMPOSITION; REQUIRE_GENUINELY_NEW_INDEPENDENT_MATHEMATICAL_OR_SOURCE_OBJECT"
     },
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "VECTOR_CANONICALIZATION_ACTIVE_AFTER_RASTER_AND_SOURCE_PROSE_BLOCKERS",
+      "status": "DED_DLD_RASTER_SOURCE_PROSE_AND_STRICT_VECTOR_ROUTES_BLOCKED",
       "source": "arXiv:1801.03771",
       "source_tar_sha256": "9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303",
       "dvd23_direct_structural_audit": {
@@ -152,34 +152,37 @@
         "prereg_commit": "c1384a675a53e3aaf3bde61808b280bcc6cdbb5b",
         "implementation_commit": "27b8127a8be154051662515c2953d4b7a17b6030",
         "run": 34722257762,
-        "status": "QUEUED_OR_RUNNING",
-        "lane_count": 4,
+        "aggregate_job": 103630201105,
+        "aggregate_artifact": 10306487662,
+        "aggregate_digest": "sha256:7011e93d7c2bdb29f6860d197319875c14968429baf5532757f46e714f9f3975",
+        "classification": "DED_DLD_VECTOR_CANONICALIZATION_UNSTABLE",
+        "asset_stability": {"DED": false, "DLD": false},
+        "valid_lane_count": 4,
+        "posthoc_rounding_or_tolerance_authorized": false,
         "bridge_credit": false
       },
       "refinement_map_derived": false,
-      "next_gate": "CONSUME_34722257762; IF_EXACT_VECTOR_STABLE_ONLY_THEN_PREREGISTER_VECTOR_INCIDENCE_EXTRACTION; OTHERWISE_PRESERVE_BLOCKED_NO_POSTHOC_ROUNDING"
+      "next_gate": "BLOCKED_UNTIL_GENUINELY_NEW_PROSPECTIVE_SOURCE_OR_VECTOR_OBJECT; NO_RASTER_RETUNE_OR_POSTHOC_VECTOR_TOLERANCE"
     },
     "RC008": {"status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
     "RC009": {"status": "SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
-  "active_compute": [
-    {
-      "workflow_run": 34722257762,
-      "purpose": "Resolution-free DED/DLD vector canonicalization across original and eps2write-normalized EPS",
-      "status": "QUEUED_OR_RUNNING",
-      "lane_count": 4,
-      "scientific_credit": 0
-    }
-  ],
+  "active_compute": [],
+  "idle_capacity": {
+    "scientifically_useful_jobs_queued": 0,
+    "scientifically_useful_jobs_in_progress": 0,
+    "avoidable_idle": false,
+    "reason": "All currently preregistrable Phase-1 routes are terminally blocked/saturated under frozen authority; new compute requires a genuinely new independent mathematical/source object."
+  },
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_DED_DLD_VECTOR_CANONICALIZATION_UNSTABLE_2026-09-13.md",
     "results/ITER006_DED_DLD_SOURCE_CONTEXT_ONLY_2026-09-13.md",
     "results/ITER006_EQ29_CROSS_SECTION_R_DEPENDENCY_AMBIGUOUS_2026-09-13.md",
     "results/ITER006_EQ29_LITERAL_DERIVATION_CHAIN_PARTIAL_2026-09-13.md",
     "results/ITER006_EQ29_ARC_AWARE_NO_CROSSING_2026-09-13.md",
-    "results/ITER006_EQ29_RPLACEMENT_TOPOLOGY_INCONCLUSIVE_2026-09-13.md",
     "docs/CONSTITUTION.md"
   ]
 }
