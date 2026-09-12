@@ -23,7 +23,10 @@ const z = (k+1)^2
 const num_q_values = max(8*p,256)
 const TOLERANCE = 1e-13
 const A = exp(2im*pi/p)
-include(qfile)
+# Julia resolves include() relative to the including source file. qfile is passed
+# relative to the repository root, so explicitly anchor it one level above
+# @__DIR__ (experiments/). This is an infrastructure-only fix.
+include(normpath(joinpath(@__DIR__,"..",qfile)))
 
 jmax=level_k÷2
 phys=collect(0:jmax)
