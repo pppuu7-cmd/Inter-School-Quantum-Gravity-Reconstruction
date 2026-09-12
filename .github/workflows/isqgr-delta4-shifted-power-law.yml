@@ -1,0 +1,114 @@
+name: ISQGR Delta4 Shifted Power Law
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_shifted_power_law_audit.py'
+      - '.github/workflows/isqgr-delta4-shifted-power-law.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shifted-power:
+    strategy:
+      fail-fast: false
+      max-parallel: 24
+      matrix:
+        lane: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clone and pin public Delta4 source data
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Run shifted-power lane
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/delta4_shifted_power_law_audit.py \
+            --source-root external/HowToSpinFoamAmplitude \
+            --lane ${{ matrix.lane }} --lanes 24 \
+            --output compute_out/shifted_power_lane_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-shifted-power-lane-${{ matrix.lane }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: shifted-power
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: delta4-shifted-power-lane-*
+          path: all_lanes
+          merge-multiple: true
+      - name: Aggregate shifted-power transferability
+        run: |
+          python - <<'PY'
+          import glob,json,os,statistics
+          rows=[]
+          for f in glob.glob('all_lanes/*.json'):
+              rows.extend(json.load(open(f))['results'])
+          by_dataset={}
+          for r in rows:
+              key=f"g={r['gamma']},j={r['j_boundary']}"
+              by_dataset.setdefault(key,[]).append(r)
+          datasets={}
+          for key,rr in sorted(by_dataset.items()):
+              alphas=[r['shifted_alpha'] for r in rr]
+              d0s=[r['shift_d0'] for r in rr]
+              med=statistics.median(alphas)
+              split_spread=(max(alphas)-min(alphas))/max(abs(med),1e-12)
+              datasets[key]={
+                'n_splits':len(rr),
+                'median_shifted_alpha':med,
+                'relative_alpha_split_spread':split_spread,
+                'median_d0':statistics.median(d0s),
+                'preferred_10pct_fraction':sum(r['shifted_preferred_10pct'] for r in rr)/len(rr),
+                'median_advantage_vs_best_baseline':statistics.median(r['shifted_advantage_vs_best_baseline'] for r in rr)
+              }
+          by_j={}
+          for key,d in datasets.items():
+              j=key.split('j=')[1]
+              by_j.setdefault(j,[]).append(d['median_shifted_alpha'])
+          transfer={}
+          for j,aa in sorted(by_j.items()):
+              mean=sum(aa)/len(aa)
+              transfer[j]={
+                'n_gamma':len(aa),'mean_alpha':mean,
+                'relative_cross_gamma_alpha_spread':(max(aa)-min(aa))/max(abs(mean),1e-12)
+              }
+          pref=sum(r['shifted_preferred_10pct'] for r in rows)/len(rows) if rows else 0.0
+          split_stable=bool(datasets and all(d['relative_alpha_split_spread'] <= 0.35 for d in datasets.values()))
+          gamma_transfer=bool(transfer and all(d['relative_cross_gamma_alpha_spread'] <= 0.35 for d in transfer.values()))
+          out={
+            'test':'LORENTZIAN_EPRL_DELTA4_SHIFTED_POWER_LAW_AGGREGATE',
+            'n_tasks':len(rows),'shifted_preferred_10pct_fraction':pref,
+            'by_dataset':datasets,'by_j_boundary':transfer,
+            'split_stability':split_stable,'cross_gamma_alpha_transfer':gamma_transfer,
+            'natural_support':bool(pref>=0.5 and split_stable),
+            'strong_support':bool(pref>=2/3 and split_stable and gamma_transfer),
+            'preregistered_thresholds':{'preference_advantage':0.10,'relative_alpha_spread':0.35},
+            'claim_lock':'Support means a reproducible shifted-power booster-cutoff law in pinned four-vertex Lorentzian EPRL Delta4 amplitudes only. It does not establish a physical refinement operator, continuum limit, or new physics.'
+          }
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/delta4_shifted_power_summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-shifted-power-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
