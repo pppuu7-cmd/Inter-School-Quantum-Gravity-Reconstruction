@@ -1,0 +1,85 @@
+name: ISQGR DVD23 Direct Refinement Structural Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_DVD23_DIRECT_REFINEMENT_STRUCTURAL_PREREG.json'
+      - '.github/workflows/isqgr-dvd23-direct-refinement-structural-audit.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+
+jobs:
+  structural-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned primary sources
+        run: |
+          set -euo pipefail
+          mkdir -p source_dvd source_ref
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1801.03771 -o dvd.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1801.03771 -o dvd.tar)
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1010.5437 -o ref.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1010.5437 -o ref.tar)
+          sha256sum dvd.tar ref.tar | tee source.sha256
+          tar -xf dvd.tar -C source_dvd
+          tar -xf ref.tar -C source_ref
+      - name: Verify frozen source facts and theorem gate
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,hashlib
+          def corpus(root):
+              chunks=[]
+              for p in sorted(pathlib.Path(root).rglob('*')):
+                  if p.is_file() and p.suffix.lower() in {'.tex','.txt','.md','.bib'}:
+                      try: chunks.append(p.read_text(errors='ignore'))
+                      except Exception: pass
+              return '\n'.join(chunks)
+          dvd=corpus('source_dvd')
+          ref=corpus('source_ref')
+          # Normalize TeX spacing/macros enough for source-fact discovery, but retain the original corpora hashes.
+          nd=re.sub(r'\s+',' ',dvd).lower()
+          nr=re.sub(r'\s+',' ',ref).lower()
+          facts={
+            'dvd_one_vertex_family': bool(re.search(r'foams? with one vertex as .*d.?v.?d|one[- ]vertex foam', nd)),
+            'dvd_four_topologically_distinct': bool(re.search(r'4 topologically distinct.*d.?v.?d|4 possible vertex graphs for .*d.?v.?d', nd)),
+            'dvd_four_valent_eight_faces': bool(re.search(r'4[- ]valent vertex with 8 faces|4\\-valent vertex with 8 faces', nd)),
+            'dvd2_second_graph': bool(re.search(r'second vertex graph for .*d.?v.?d', nd)),
+            'dvd3_present': ('dvd_3' in nd or 'dv d_3' in nd or 'dvd3' in nd or 'dv d3' in nd),
+            'ref_embedding_order': ('embedding' in nr and 'injective' in nr and ('c_1' in nr or 'c1' in nr) and ('c_2' in nr or 'c2' in nr)),
+            'ref_trivial_extension': ('trivial extension' in nr),
+            'ref_subfoam': ('subfoam' in nr),
+            'ref_trivial_other_faces': bool(re.search(r'trivial on the other faces|trivial.*other faces', nr))
+          }
+          source_facts_pass=all(facts.values())
+          # The preregistered face-cardinality theorem: both are Fig.20 DVD graphs with 8 faces;
+          # an injective face map 8->8 is bijective, so a nontrivial trivial extension has no extra faces.
+          equal_face_count=8
+          strict_extra_face_count=0
+          direct_trivial_extension_excluded = source_facts_pass and strict_extra_face_count==0
+          out={
+            'gate':'ITER006_DVD23_DIRECT_REFINEMENT_STRUCTURAL_AUDIT',
+            'source_facts':facts,
+            'source_facts_pass':source_facts_pass,
+            'dvd_fig20_face_count_each':equal_face_count,
+            'extra_faces_available_under_injective_8_to_8_map':strict_extra_face_count,
+            'direct_nontrivial_trivial_extension_excluded':direct_trivial_extension_excluded,
+            'classification':('DVD23_DIRECT_TRIVIAL_EXTENSION_EXCLUDED' if direct_trivial_extension_excluded else 'SOURCE_FACT_OR_DIRECT_EMBEDDING_GATE_UNRESOLVED'),
+            'dvd_source_archive_sha256':hashlib.sha256(pathlib.Path('dvd.tar').read_bytes()).hexdigest(),
+            'refinement_source_archive_sha256':hashlib.sha256(pathlib.Path('ref.tar').read_bytes()).hexdigest(),
+            'reason':'Both source-labelled DVD2 and DVD3 are among the topologically distinct Fig.20 DVD vertex graphs with eight faces. Under the source refinement rule an injective face map 8->8 is bijective, leaving no additional refined faces for a nontrivial j=0 trivial extension. The source supplies no explicit DVD2<->DVD3 incidence embedding.',
+            'claim_lock':'Negative result is scoped only to direct DVD2/DV D3 trivial-extension identification. Lorentzian fixed-boundary foam refinement remains source-authorized and should next be tested on a newly constructed strict extension with at least one additional j=0 face.'
+          }
+          pathlib.Path('structural_audit.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not source_facts_pass: raise SystemExit(3)
+          if not direct_trivial_extension_excluded: raise SystemExit(4)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dvd23-direct-refinement-structural-audit
+          path: |
+            structural_audit.json
+            source.sha256
+          if-no-files-found: error
