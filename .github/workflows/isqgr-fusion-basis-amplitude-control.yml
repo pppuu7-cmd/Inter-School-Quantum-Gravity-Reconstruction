@@ -30,7 +30,7 @@ jobs:
           git -C external/Fusion-basis-coarse-graining checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
           test "$(git -C external/Fusion-basis-coarse-graining rev-parse HEAD)" = "bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4"
       - name: Reduce iteration count for reproducibility pilot
-        working-directory: external/Fusion-basis-coarse-graining/int/no_torsion
+        working-directory: external/Fusion-basis-coarse-graining/half_int/no_torsion
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -41,12 +41,15 @@ jobs:
           s2,n=re.subn(r'iterations\s*=\s*\d+\s*;', 'iterations = 3;', s, count=1)
           if n != 1:
               raise SystemExit(f'expected exactly one iteration assignment, got {n}')
+          # Execution-only patch: prevent the pinned source from autorunning g=1.15
+          # when loaded; the matrix lane invokes main_vec exactly once at its frozen g.
+          s2=s2.replace('@time main_vec(1.15)','',1)
           p.write_text(s2)
           PY
           grep -n 'iterations =' Fusion_vec.jl
           cat constants.jl
       - name: Execute pinned amplitude-level coarse-graining pilot
-        working-directory: external/Fusion-basis-coarse-graining/int/no_torsion
+        working-directory: external/Fusion-basis-coarse-graining/half_int/no_torsion
         run: |
           set -euo pipefail
           mkdir -p "$GITHUB_WORKSPACE/compute_out"
