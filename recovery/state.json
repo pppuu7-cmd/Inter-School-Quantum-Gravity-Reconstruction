@@ -4,7 +4,7 @@
   "date": "2026-09-12",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 78,
+  "iteration_completion_percent": 79,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -21,7 +21,7 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ29_ANCHOR_DISAMBIGUATION_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
+      "status": "EQ29_SOURCE_BLOCK_AUTHORITY_ESTABLISHED_DEPENDENCY_AUDIT_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
       "source_authority": {
         "run": 34712998699,
         "artifact": 10304191011,
@@ -86,14 +86,47 @@
       },
       "eq29_anchor_disambiguation": {
         "run": 34717736113,
+        "job": 103618085662,
+        "artifact": 10305896153,
+        "artifact_digest": "sha256:812badb44df244a1e55a53fae8d162fe26b237eae60cbb0786d4bd522f72ec16",
         "launch_commit": "10a5bcdde79b3652059c0b7bae40d4a769713d74",
-        "status": "QUEUED_OR_RUNNING",
-        "purpose": "PLUS_ZERO_DIAGNOSTIC_OF_LITERAL_VS_ACTIVE_TEX_ANCHORS_USING_PERCENT_COMMENT_SEMANTICS",
+        "status": "TERMINAL_DIAGNOSTIC_NEGATIVE",
+        "literal_anchor_count": 3,
+        "active_tex_anchor_count": 3,
+        "classification": "ACTIVE_TEX_ANCHOR_STILL_AMBIGUOUS",
         "scientific_credit": 0,
         "eq29_amplitude_authorized": false
       },
+      "eq29_eprl_section_block": {
+        "run": 34717945469,
+        "head_commit": "e11e138f1457aee1a40af6fcd53cfc24c5844ff9",
+        "extract_job": 103618458478,
+        "independent_verify_job": 103618458340,
+        "artifact": 10305616057,
+        "artifact_digest": "sha256:dbcbeeff950cdf936553864830d7a9dc9ae79ec27ddad0dc1edb894daecf6c26",
+        "independent_artifact": 10305466023,
+        "independent_artifact_digest": "sha256:74c12b93c118fadfffdb153fb9f79729598c32277b5fd214a2252cf1e2550a02",
+        "classification": "EQ29_EPRL_SOURCE_BLOCK_EXTRACTED",
+        "anchor_line": 1090,
+        "eprl_subsection_sha256": "58690793c1a0f11b169d3dae259b557f23c432c2a6ec86b27f588e5a5aa33dac",
+        "align_block_sha256": "4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083",
+        "authorization": "RAW_SOURCE_BLOCK_ONLY",
+        "eq29_amplitude_authorized": false,
+        "bridge_credit": false
+      },
+      "eq29_source_dependency_audit": {
+        "prereg_commit": "4d48152cc183877ea0af5bfd20a0dc4dade43234",
+        "implementation_commit": "be3615fb36f4c1863b221b86fcf80d7cf4f11125",
+        "trigger_commit": "9729cef2573778a3b48f6b80b42c6d5fd721366b",
+        "run": 34718554940,
+        "status": "QUEUED_OR_RUNNING",
+        "lanes": ["geometry", "incidence", "rplacement"],
+        "lane_count": 3,
+        "frozen_classifier": ["EQ29_SOURCE_DEPENDENCIES_COMPLETE", "EQ29_SOURCE_DEPENDENCIES_PARTIAL", "EQ29_SOURCE_DEPENDENCIES_BLOCKED", "INVALID_SOURCE_OR_IMPLEMENTATION"],
+        "bridge_credit": false
+      },
       "eq29_amplitude_authorized": false,
-      "next_gate": "CONSUME_34717736113; ONLY_IF_ACTIVE_TEX_ANCHOR_IS_UNIQUE, PREREGISTER_A_NEW_COMMENT_AWARE_EXACT_SOURCE_BLOCK_EXTRACTOR; NEVER_MANUALLY_SELECT_ONE_OF_THREE_LITERAL_ANCHORS"
+      "next_gate": "CONSUME_34718554940; ONLY_IF_EQ29_SOURCE_DEPENDENCIES_COMPLETE_PREREGISTER_LITERAL_EQ29_TENSOR_RECONSTRUCTION; OTHERWISE_PRESERVE_MISSING_DEPENDENCIES_WITHOUT_POSTHOC_FITTING"
     },
     "RC008": {
       "status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"
@@ -200,18 +233,19 @@
   },
   "active_compute": [
     {
-      "workflow_run": 34717736113,
-      "purpose": "Eq29 literal-vs-active-TeX anchor disambiguation under source comment semantics",
+      "workflow_run": 34718554940,
+      "purpose": "Eq29 immutable EPRL-block source dependency qualification: label geometry, source-level incidence, R/inverse-R placement",
       "status": "QUEUED_OR_RUNNING",
-      "lane_count": 1,
+      "lane_count": 3,
       "scientific_credit": 0
     }
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
+    "results/ITER006_EQ29_EPRL_SOURCE_BLOCK_AND_DEPENDENCY_LAUNCH_2026-09-12.md",
+    "recovery/CURRENT_FRONT.md",
     "results/ITER006_EQ29_SOURCE_BLOCK_AMBIGUITY_2026-09-12.md",
     "results/ITER006_PARALLEL_PROGRESS_2026-09-12_2037Z.md",
-    "recovery/CURRENT_FRONT.md",
     "results/ITER006_DED_COMPONENT_BIRTH_LOCALIZATION_2026-09-12.md",
     "results/ITER006_TERMINAL_TOPOLOGY_B13_EQ29_UPDATE_2026-09-12.md",
     "results/ITER006_TERMINAL_INCIDENCE_AND_RC006_SERIALIZATION_2026-09-12.md",
