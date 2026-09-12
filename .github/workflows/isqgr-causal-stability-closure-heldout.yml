@@ -1,0 +1,102 @@
+name: ISQGR Causal Stability Closure Heldout Prediction
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-causal-stability-closure-heldout.yml'
+      - 'experiments/causal_set_sector_stability_closure_joint.py'
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        n: [384, 512, 768]
+        seed: [93, 94, 101, 102, 201, 202, 203, 204]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy scipy
+      - name: Run preregistered stability and closure diagnostics
+        run: |
+          set -euo pipefail
+          python experiments/causal_set_sector_stability_closure_joint.py \
+            --n ${{ matrix.n }} --seed ${{ matrix.seed }} \
+            --mus '0.01,0.03,0.06,0.10,0.15' --n-random 32 \
+            --output "compute_out/n${{ matrix.n }}_s${{ matrix.seed }}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heldout-${{ matrix.n }}-${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [sweep]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip numpy
+      - name: Fit on old seeds and score unseen seeds
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,math
+          import numpy as np
+          train_seeds={93,94,101,102}; test_seeds={201,202,203,204}
+          files=list(pathlib.Path('campaign').glob('*.json'))
+          if len(files)!=24: raise SystemExit(f'expected 24 realization files, got {len(files)}')
+          pts=[]
+          for p in files:
+              d=json.loads(p.read_text())
+              for r in d['rows']:
+                  pts.append({'n':d['n'],'seed':d['seed'],'mu':r['mu'],
+                    'distance':r['stability']['normalized_projector_distance'],
+                    'cosine':r['stability']['mean_principal_cosine'],
+                    'y':math.log(max(r['mean_return_improvement_both_orders'],1e-15))})
+          tr=[x for x in pts if x['seed'] in train_seeds]; te=[x for x in pts if x['seed'] in test_seeds]
+          if len(tr)!=60 or len(te)!=60: raise SystemExit((len(tr),len(te)))
+          def design(rows,metric=None):
+              cols=[np.ones(len(rows)),np.array([x['mu'] for x in rows]),np.log([x['n'] for x in rows])]
+              if metric: cols.append(np.array([x[metric] for x in rows]))
+              return np.column_stack(cols)
+          ytr=np.array([x['y'] for x in tr]); yte=np.array([x['y'] for x in te])
+          def fit_score(metric=None):
+              Xtr=design(tr,metric); Xte=design(te,metric)
+              b=np.linalg.lstsq(Xtr,ytr,rcond=None)[0]; pred=Xte@b
+              rmse=float(np.sqrt(np.mean((yte-pred)**2)))
+              mae=float(np.mean(np.abs(yte-pred)))
+              return {'coefficients':[float(v) for v in b],'rmse':rmse,'mae':mae}
+          base=fit_score(); dist=fit_score('distance'); cos=fit_score('cosine')
+          out={'test':'CAUSAL_STABILITY_CLOSURE_HELDOUT_PREDICTION','n_train':len(tr),'n_test':len(te),
+               'train_seeds':sorted(train_seeds),'test_seeds':sorted(test_seeds),
+               'baseline_mu_logN':base,'plus_projector_distance':dist,'plus_mean_cosine':cos,
+               'distance_rmse_ratio_vs_baseline':dist['rmse']/base['rmse'],
+               'cosine_rmse_ratio_vs_baseline':cos['rmse']/base['rmse'],
+               'distance_improves_heldout_rmse':dist['rmse']<base['rmse'],
+               'cosine_improves_heldout_rmse':cos['rmse']<base['rmse'],
+               'claim_lock':'Out-of-sample predictive audit: coefficients are fit only on preregistered old seeds 93/94/101/102 and scored on unseen 201/202/203/204. Improvement supports predictive association only, not causality or a QG model.'}
+          pathlib.Path('causal_stability_closure_heldout_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-causal-stability-closure-heldout-summary
+          path: causal_stability_closure_heldout_summary.json
+          if-no-files-found: error
