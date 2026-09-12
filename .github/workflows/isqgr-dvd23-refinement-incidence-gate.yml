@@ -1,0 +1,18 @@
+name: ISQGR DVD23 Strict Refinement Incidence Gate
+
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr-dvd23-refinement-incidence-gate.yml'
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run strict structural incidence gate
+        run: python experiments/dvd23_refinement_incidence_gate.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dvd23-refinement-incidence
+          path: dvd23_refinement_incidence.json
