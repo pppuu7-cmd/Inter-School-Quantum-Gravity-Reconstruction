@@ -1,0 +1,14 @@
+{
+  "gate":"ITER006_LORENTZIAN_CYLINDRICAL_NORMALIZATION_SOURCE_AUDIT",
+  "date":"2026-09-12",
+  "source":"arXiv:1010.5437",
+  "purpose":"Freeze the exact source distinction between raw spin-foam amplitude under trivial extension and the multiplicity/automorphism-corrected cylindrically consistent amplitude before any numerical refinement identity is tested.",
+  "frozen_requirements":[
+    "Extract exact source contexts for subfoam/refinement, trivial extension and cylindrical consistency.",
+    "Extract the exact equation context containing the multiplicity or equivalence-class factor associated with a coloring/foam.",
+    "Identify source symbols for the raw amplitude and corrected amplitude only when explicitly present in the source; do not infer missing symbols.",
+    "PASS requires source-explicit linkage between trivial extension, the relevant amplitude relation, and the correction/multiplicity factor. Otherwise report unresolved."
+  ],
+  "classification":{"pass":"LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_MAPPED","fail":"LORENTZIAN_TRIVIAL_EXTENSION_NORMALIZATION_SOURCE_UNRESOLVED"},
+  "claim_lock":"Source mapping only. PASS does not establish a numerical refinement identity, cylindrical consistency for the DVD realization, convergence or BRIDGE_DERIVED."
+}
