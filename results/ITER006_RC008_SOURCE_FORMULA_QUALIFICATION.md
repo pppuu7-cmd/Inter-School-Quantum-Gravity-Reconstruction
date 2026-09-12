@@ -4,9 +4,9 @@ Date: 2026-09-12
 
 ## Classification
 
-`PASS_SOURCE_FORMULA_QUALIFICATION + PASS_DEPENDENCY_CLOSURE + PASS_STRUCTURAL_AST + PASS_SOURCE_DERIVED_HESSIAN_KERNEL / AMPLITUDE_REPRODUCTION_OPEN`
+`PASS_SOURCE_FORMULA_QUALIFICATION + PASS_DEPENDENCY_CLOSURE + PASS_STRUCTURAL_AST + PASS_SOURCE_DERIVED_HESSIAN_KERNEL + PASS_EQ4VOLUME_REFINEMENT_PREREQUISITE / AMPLITUDE_REPRODUCTION_OPEN`
 
-These gates qualify official-source implementation inputs and the source-derived stationary-phase Hessian kernel for quantum-cuboid/hypercuboid reconstruction. They do not themselves reproduce the full vertex amplitude, volume variance, RG flow, fixed point, or held-out transport result.
+These gates qualify official-source implementation inputs, the source-derived stationary-phase Hessian kernel, and the source-native hypercuboid 4-volume/refinement observable prerequisite. They do not themselves reproduce the full vertex amplitude, volume-variance RG flow, fixed point, or held-out transport result.
 
 ## Initial technical failure and source qualification
 
@@ -65,13 +65,29 @@ Classification: `PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY
 
 This qualifies the pinned `Eq:OffDiagonalHessian` kernel and the `det H ~ lambda^21` stationary-phase scaling prerequisite. It is explicitly not a full vertex-amplitude reproduction and gives no bridge credit by itself.
 
+## Eq:4Volume hypercuboid refinement prerequisite — SCIENTIFIC PASS prerequisite
+
+Prospective computation commit `f2f80d0b5130c4c9aa39842b9e5fab09fa75c8ae`; workflow/head `7a8390780e84a4513c5bc82d1a01ed28264b170a`; authoritative run `34699223422`.
+
+All 24 independently seeded anisotropic hypercuboid lanes and aggregate job `103567987044` passed the frozen gate. Aggregate artifact `10300335297`, digest `sha256:ef13f1cfc8ef579dcd84d2ef9410b97a4a1f3c1f2dae50eb0034ae0bca19aeb6`, records:
+
+- `lane_count = 24`, `passes = 24`, `frozen_gate_pass = true`;
+- worst `Eq:4Volume` geometric consistency error `2.045697690782737e-16` versus frozen `1e-12`;
+- worst uniform 4-volume homogeneity error `5.875395533044386e-16` versus frozen `1e-12`;
+- worst non-retuned axis-slicing/refinement conservation error `5.203796573403926e-16` versus frozen `1e-12`;
+- minimum independent-face-area negative-control shift `0.01639635681485324` versus frozen minimum `1e-3`.
+
+Classification: `PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY`.
+
+This closes the geometric observable/refinement prerequisite for the pinned `Eq:4Volume`; it is not the published volume-variance calculation and does not reproduce the restricted EPRL-FK vertex amplitude or the `alpha' -> alpha` RG map.
+
 ## Scientific implication
 
-RC008 source discovery and Hessian-kernel qualification are no longer the bottleneck. The next decisive layer is executable: implement the restricted hypercuboid amplitude and coarse/refined volume observable from the pinned source equations, reproduce at least two boundary-state calculations without fitting published `alpha_*`, freeze the inferred `alpha' -> alpha` map, and only then apply it to a held-out boundary state without retuning.
+RC008 source discovery, Hessian-kernel qualification, and the source-native hypercuboid volume/refinement prerequisite are no longer the bottleneck. The next decisive layer is the actual restricted hypercuboid amplitude: implement it from the pinned source equations without fitting published `alpha_*`, reproduce at least two coarse/refined boundary-state calculations, freeze the inferred `alpha' -> alpha` map, and only then apply it to a held-out boundary state without retuning.
 
 ## Claim locks
 
-- source qualification/dependency/AST/snapshots/Hessian qualification are not full amplitude reproduction;
+- source qualification/dependency/AST/snapshots/Hessian/volume prerequisite are not full amplitude reproduction;
 - the quantum-cuboid sector is a severe EPRL-FK truncation and not full quantum gravity;
 - published fixed-point values are not to be used as fit targets for executable reproduction;
 - no `BRIDGE_DERIVED`, `NEW_PHYSICS_FOUND`, candidate theory, or continuum-limit claim follows.
