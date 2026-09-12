@@ -1,0 +1,69 @@
+name: ISQGR Lorentzian EPRL Two Vertex Equation Selection Robustness
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/lorentzian_eprl_two_vertex_equation_selection_robustness.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-two-vertex-equation-selection-robustness.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  robust:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        target: [two_vertex_amplitude, internal_face_sum, full_amplitude, simplified_amplitude, correlation_observable, large_spin_scaling, immirzi, cutoff_or_truncation]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1801.03771 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1801.03771 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Run frozen source-selection robustness lane
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_two_vertex_equation_selection_robustness.py --source-dir external/two_vertex_src --target '${{ matrix.target }}' --output 'compute_out/${{ matrix.target }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'two-vertex-robust-${{ matrix.target }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: robust
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'two-vertex-robust-*'
+          path: all
+          merge-multiple: true
+      - name: Apply frozen source-lock rule
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          r=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          valid=len(r)==8 and all(x.get('valid') for x in r)
+          stable={x['target']:x['selection_stable'] for x in r}
+          gate=bool(valid and all(stable.values()))
+          o={'test':'LORENTZIAN_EPRL_TWO_VERTEX_EQUATION_SELECTION_ROBUSTNESS_AGGREGATE','valid':valid,'stable':stable,
+             'stable_count':sum(stable.values()),'target_count':len(stable),'source_lock_pass':gate,
+             'scientific_classification':'SOURCE_EQUATION_SELECTION_ROBUSTNESS_PASS' if gate else ('SOURCE_EQUATION_SELECTION_ROBUSTNESS_FAIL' if valid else 'INFRASTRUCTURE_OR_NUMERICAL_INVALID'),
+             'frozen_rule':'All 8 targets must select the identical nearest exact math object under every usable leave-one-anchor-pattern-out perturbation.',
+             'interpretation_lock':'Source lock only. PASS authorizes implementation; it is not numerical amplitude reproduction, refinement, bridge, or candidate theory.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: two-vertex-robust-summary
+          path: summary.json
+          if-no-files-found: error
