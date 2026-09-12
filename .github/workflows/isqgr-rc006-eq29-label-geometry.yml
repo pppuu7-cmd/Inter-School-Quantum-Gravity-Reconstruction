@@ -1,0 +1,81 @@
+name: ISQGR RC006 Eq29 Source Graphic Label Authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_eq29_label_geometry_authority.py'
+      - '.github/workflows/isqgr-rc006-eq29-label-geometry.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  label-authority:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        digits: [12, 9, 6, 4]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch official arXiv source archive
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || \
+           curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Apply frozen graphical-association lane
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_eq29_label_geometry_authority.py \
+            --source-dir external/arxiv_src --digits '${{ matrix.digits }}' \
+            --output 'compute_out/label_${{ matrix.digits }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-label-geometry-${{ matrix.digits }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: label-authority
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-label-geometry-*
+          path: all
+          merge-multiple: true
+      - name: Frozen precision-invariance gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib,sys
+          rows=[json.load(open(f)) for f in sorted(glob.glob('all/*.json'))]
+          sig=lambda r:[(x['label'],x['nearest_primitive'],x['nearest_kind']) for x in r['assignments']]
+          ok=(len(rows)==4 and all(r.get('lane_pass') for r in rows) and
+              len({r['tex_sha256'] for r in rows})==1 and
+              len({json.dumps(sig(r),sort_keys=True) for r in rows})==1)
+          out={'test':'RC006_EQ29_LABEL_GEOMETRY_AGGREGATE','lane_count':len(rows),
+               'all_lane_pass':all(r.get('lane_pass') for r in rows) if rows else False,
+               'assignment_precision_invariant':len({json.dumps(sig(r),sort_keys=True) for r in rows})==1 if rows else False,
+               'frozen_gate_pass':ok,
+               'claim_lock':'Source-graphic label association only; orientation/contraction amplitude still requires source authority.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True)); sys.exit(0 if ok else 2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-label-geometry-summary
+          path: summary.json
+          if-no-files-found: error
