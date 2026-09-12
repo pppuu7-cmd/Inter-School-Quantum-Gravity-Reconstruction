@@ -27,16 +27,7 @@
         "aggregate_job": 103610235012,
         "artifact": 10303748952,
         "artifact_digest": "sha256:5d55228c00ddf467147e928599ca11405c088fc0793605417e350d12afa46fe5",
-        "classification": "SCIENTIFIC_FAIL_RELATION_AWARE_CONTRACTION_SERIALIZATION_UNSTABLE",
-        "holdout_unique_count": 6,
-        "holdout_total": 8,
-        "min_pairwise_order_agreement": 0.8698752228163993
-      },
-      "appendix_b13_mapping": {
-        "run": 34716905247,
-        "classification": "RC006_B13_SOURCE_MAPPING_PASS",
-        "levels_k": [6, 10, 12],
-        "scope": "CONVENTION_SOURCE_FORMULA_ONLY"
+        "classification": "SCIENTIFIC_FAIL_RELATION_AWARE_CONTRACTION_SERIALIZATION_UNSTABLE"
       },
       "eq29_source_block": {
         "run": 34717945469,
@@ -48,34 +39,17 @@
         "aggregate_job": 103620177874,
         "artifact": 10305491683,
         "artifact_digest": "sha256:ca82d129681a540d7b0daa618b43b831957e2001a527e1556ea0852c8387ada8",
-        "classification": "EQ29_SOURCE_DEPENDENCIES_PARTIAL",
-        "geometry": "SOURCE_LABEL_GEOMETRY_QUALIFIED",
-        "incidence": "SOURCE_PATH_INCIDENCE_QUALIFIED",
-        "rplacement": "SOURCE_R_PLACEMENT_NOT_MACHINE_QUALIFIED"
-      },
-      "eq29_rplacement_reference_topology": {
-        "run": 34718784867,
-        "head_commit": "892c4b55f4099ced2743fbc0d34dc121e09fa070",
-        "aggregate_job": 103620738661,
-        "artifact": 10305042483,
-        "artifact_digest": "sha256:482bc4998d96fd11b0ad2b742038b626d76bc6eacf950efa358cb6333212fc96",
-        "classification": "EQ29_RPLACEMENT_APPLICABILITY_INCONCLUSIVE"
+        "classification": "EQ29_SOURCE_DEPENDENCIES_PARTIAL"
       },
       "eq29_arc_aware_source_geometry": {
         "prereg_commit": "9c8221a066369e51367b569f7a65169ba757aa8c",
         "implementation_commit": "286c67c9c7ab444a86bdbea12b9159b5aae36461",
         "run": 34721521848,
-        "jobs": [103628188426, 103628188654],
         "aggregate_job": 103628295264,
-        "artifacts": [10306676425, 10307075132],
         "summary_artifact": 10305789489,
         "summary_digest": "sha256:3b0347308b27f1c9f9bd0aa122505e2dc3dd8799feece6c52366c91c60402d68",
         "classification": "EQ29_ARC_AWARE_NO_PROPER_CROSSING",
-        "primitive_count": 18,
-        "line_count": 16,
-        "arc_count": 2,
         "proper_crossing_count": 0,
-        "r_reference_qualified": true,
         "eq29_amplitude_authorized": false,
         "bridge_credit": false
       },
@@ -87,9 +61,6 @@
         "aggregate_artifact": 10306412313,
         "aggregate_digest": "sha256:4aff93ac51382f5cfb9f010a3f6a111f0a75e2ad9f8151bde05bca8749ddd56e",
         "classification": "EQ29_APPENDIX_F_CHAIN_INCOMPLETE",
-        "eq29_literal": "EQ29_LITERAL_FACTOR_QUALIFIED",
-        "appendix_b_identities": "EQ29_APPENDIX_B_IDENTITY_CHAIN_QUALIFIED",
-        "appendix_f_chain": "EQ29_APPENDIX_F_CHAIN_INCOMPLETE",
         "eq29_amplitude_authorized": false,
         "bridge_credit": false
       },
@@ -101,15 +72,14 @@
         "aggregate_artifact": 10306119189,
         "aggregate_digest": "sha256:8d405e40922de55cf8886ddd824fbc8bac5fb81f5cc592978842d4f467122234",
         "classification": "EQ29_R_DEPENDENCY_AMBIGUOUS_MULTIPLE_PATHS",
-        "scientific_credit": 0,
-        "prior_literal_chain_blocked_preserved": true
+        "scientific_credit": 0
       },
       "eq29_amplitude_authorized": false,
       "next_gate": "BLOCKED_AT_UNIQUE_DERIVATION_COMPOSITION; REQUIRE_GENUINELY_NEW_INDEPENDENT_MATHEMATICAL_OR_SOURCE_OBJECT"
     },
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "DED_DLD_RASTER_SOURCE_PROSE_AND_STRICT_VECTOR_ROUTES_BLOCKED",
-      "source": "arXiv:1801.03771",
+      "status": "DED_DLD_RASTER_SOURCE_PROSE_STRICT_VECTOR_AND_SOURCE_ALGEBRAIC_COLLAPSE_ROUTES_BLOCKED",
+      "source": "arXiv:1801.03771v2",
       "source_tar_sha256": "9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303",
       "dvd23_direct_structural_audit": {
         "run": 34710895347,
@@ -128,13 +98,6 @@
         "classification": "TOPOLOGY_EXTRACTION_UNSTABLE",
         "retuning_authorized": false
       },
-      "ded_component_birth_localization": {
-        "run": 34717249322,
-        "aggregate_job": 103616862737,
-        "artifact": 10305175813,
-        "artifact_digest": "sha256:ddcdf805d87dbe6ab9a1c61bc5a67d44372b84e1773ad7742b8bab50723da92d",
-        "classification": "DED_EXTRA_600DPI_COMPONENTS_LOCALIZED"
-      },
       "source_semantic_relation": {
         "prereg_commit": "09baddbf3abb781c5e46d5f08b66b48803497446",
         "implementation_commit": "235589c3f6dc6eb01d1a5c4aa41968ef669935f3",
@@ -142,11 +105,7 @@
         "aggregate_job": 103629815502,
         "aggregate_artifact": 10306587389,
         "aggregate_digest": "sha256:05caa514ac34176fba8938c2394b5a408866ca56da4eaf7b01fa27121cb6d689",
-        "classification": "DED_DLD_SOURCE_CONTEXT_ONLY",
-        "ded_context": "DED_CONTEXT_QUALIFIED",
-        "dld_context": "DLD_CONTEXT_QUALIFIED",
-        "relation_prose": "BOTH_FIGURE_RELATION_PROSE_ABSENT",
-        "explicit_map_tokens": "EXPLICIT_MAP_TOKENS_ABSENT"
+        "classification": "DED_DLD_SOURCE_CONTEXT_ONLY"
       },
       "vector_canonicalization": {
         "prereg_commit": "c1384a675a53e3aaf3bde61808b280bcc6cdbb5b",
@@ -156,13 +115,30 @@
         "aggregate_artifact": 10306487662,
         "aggregate_digest": "sha256:7011e93d7c2bdb29f6860d197319875c14968429baf5532757f46e714f9f3975",
         "classification": "DED_DLD_VECTOR_CANONICALIZATION_UNSTABLE",
-        "asset_stability": {"DED": false, "DLD": false},
-        "valid_lane_count": 4,
         "posthoc_rounding_or_tolerance_authorized": false,
         "bridge_credit": false
       },
+      "source_algebraic_zero_face_collapse": {
+        "prereg_commit": "a10916e2a521b936c6a5ef704d5deb854b920efa",
+        "implementation_commit": "2d848d2fbffe569e2d337cfab00072c6979fca3c",
+        "workflow_commit": "2db572fd484e0d6ee2238d1215f40a389170c375",
+        "authoritative_head": "b52f4fea78c392ee5724b956a1aa89c55e690dd1",
+        "diagnostic_non_authoritative_run": 34724096955,
+        "run": 34724124735,
+        "aggregate_job": 103635174759,
+        "aggregate_artifact": 10307401066,
+        "aggregate_digest": "sha256:5765ce15be5b6923eb9a16f0e06db6eb00d531448c887e92efac660ae7682dc5",
+        "classification": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS",
+        "source_hash_verified": true,
+        "ded_formula_candidate_count": 2,
+        "dld6_formula_candidate_count": 4,
+        "jf0_source_identity_qualified": false,
+        "mapping_unique": false,
+        "bridge_credit": false,
+        "posthoc_selector_or_normalization_fit_authorized": false
+      },
       "refinement_map_derived": false,
-      "next_gate": "BLOCKED_UNTIL_GENUINELY_NEW_PROSPECTIVE_SOURCE_OR_VECTOR_OBJECT; NO_RASTER_RETUNE_OR_POSTHOC_VECTOR_TOLERANCE"
+      "next_gate": "BLOCKED_UNTIL_GENUINELY_NEW_INDEPENDENT_MATHEMATICAL_OR_SOURCE_AUTHORITY; NO_POSTHOC_FORMULA_SELECTOR_PERMUTATION_NORMALIZATION_RASTER_OR_VECTOR_RETUNE"
     },
     "RC008": {"status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
     "RC009": {"status": "SCOPED_BLOCKED"},
@@ -173,11 +149,12 @@
     "scientifically_useful_jobs_queued": 0,
     "scientifically_useful_jobs_in_progress": 0,
     "avoidable_idle": false,
-    "reason": "All currently preregistrable Phase-1 routes are terminally blocked/saturated under frozen authority; new compute requires a genuinely new independent mathematical/source object."
+    "reason": "The new source-algebraic DED/DLD collapse object terminally BLOCKED without a unique formula/map. All currently formulated Phase-1 routes are blocked or saturated; another compute launch would require a genuinely new independent source/mathematical object rather than post-hoc selector/normalization retuning."
   },
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_DED_DLD_SOURCE_ALGEBRAIC_ZERO_FACE_BLOCKED_2026-09-13.md",
     "results/ITER006_DED_DLD_VECTOR_CANONICALIZATION_UNSTABLE_2026-09-13.md",
     "results/ITER006_DED_DLD_SOURCE_CONTEXT_ONLY_2026-09-13.md",
     "results/ITER006_EQ29_CROSS_SECTION_R_DEPENDENCY_AMBIGUOUS_2026-09-13.md",
