@@ -1,0 +1,27 @@
+{
+  "gate": "ITER006_DED_DLD1_VECTOR_STROKE_CONTRACTION",
+  "date": "2026-09-12",
+  "source": "arXiv:1801.03771 source archive sha256 9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303",
+  "motivation": "Prior raster topology gate is frozen as TOPOLOGY_EXTRACTION_UNSTABLE because DED component count changes 121->123 from 300 to 600 dpi. Post-failure localization showed the same two extra tiny components in both EPS representations, motivating an independent vector-stroke extractor rather than threshold retuning. Raw Cairo EPS retains graph geometry as m/l/c/S path primitives.",
+  "frozen_source_assets": {
+    "DED": "_images/DEDconplex_plus_vg.eps",
+    "DLD": "_images/DLDandVertex.eps"
+  },
+  "frozen_regions_source_coordinates": {
+    "DED_admissible_vertex_graph": [130.0, 255.0, -10.0, 135.0],
+    "DLD_graph_1": [130.0, 225.0, 190.0, 350.0]
+  },
+  "path_filter": "stroked subpaths with exactly one moveto plus one lineto-or-curveto command and both endpoints inside the frozen ROI",
+  "endpoint_cluster_tolerance_source_units": 3.0,
+  "expected_abstract_multigraphs": {
+    "DED": "three endpoint clusters; edge multiplicities 4 from upper boundary cluster to central cluster and 4 from lower boundary cluster to central cluster",
+    "DLD1": "four endpoint clusters; multiplicities 4 upper-to-central1, 1 central1-to-central2, 4 lower-to-central2"
+  },
+  "frozen_gate": "After identifying the unique DLD1 degree-5 central pair joined by the single non-bundle edge, contracting that edge must yield a multigraph isomorphic to the extracted DED graph, preserving the two multiplicity-4 boundary bundles.",
+  "promotion_if_pass": "Classify only as DED_DLD1_VERTEX_GRAPH_CONTRACTION_SOURCE_VERIFIED. It permits a separate source-semantic audit asking whether the contracted stroke is the DLD internal-face strand and whether j_f=0 implements the strict trivial extension. It does not itself prove a V/E/F subfoam embedding or authorize an amplitude identity.",
+  "claim_locks": [
+    "The old raster TOPOLOGY_EXTRACTION_UNSTABLE result remains preserved.",
+    "No ROI, clustering tolerance, path filter, or multiplicity expectation may be changed after seeing the GitHub result.",
+    "No bridge/refinement/amplitude credit from this gate alone."
+  ]
+}
