@@ -1,0 +1,70 @@
+name: ISQGR Lorentzian EPRL Two Vertex Equation Extraction
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/lorentzian_eprl_two_vertex_equation_extraction.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-two-vertex-equation-extraction.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  extract:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        target: [two_vertex_amplitude, internal_face_sum, full_amplitude, simplified_amplitude, correlation_observable, large_spin_scaling, immirzi, cutoff_or_truncation]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1801.03771 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1801.03771 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Extract frozen target
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_two_vertex_equation_extraction.py --source-dir external/two_vertex_src --target '${{ matrix.target }}' --output 'compute_out/${{ matrix.target }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'two-vertex-eq-${{ matrix.target }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: extract
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'two-vertex-eq-*'
+          path: all
+          merge-multiple: true
+      - name: Apply frozen extraction gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          r=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          d={x['target']:x['equation_available'] for x in r}; valid=len(r)==8 and all(x.get('valid') for x in r)
+          hard=all(d.get(k,False) for k in ['two_vertex_amplitude','internal_face_sum','full_amplitude','simplified_amplitude','correlation_observable'])
+          diag=all(d.get(k,False) for k in ['large_spin_scaling','immirzi','cutoff_or_truncation'])
+          gate=bool(valid and hard and diag)
+          o={'test':'LORENTZIAN_EPRL_TWO_VERTEX_EQUATION_EXTRACTION_AGGREGATE','valid':valid,'equation_available':d,
+             'hard_equations_complete':hard,'diagnostic_equations_complete':diag,'extraction_gate_pass':gate,
+             'scientific_classification':'SOURCE_EQUATION_EXTRACTION_PASS_PREREQUISITE' if gate else ('SOURCE_EQUATION_EXTRACTION_INCOMPLETE' if valid else 'INFRASTRUCTURE_OR_NUMERICAL_INVALID'),
+             'frozen_rule':'All eight qualified objects must have nearby exact source math environments before numerical implementation is authorized.',
+             'interpretation_lock':'Source equation extraction only; no numerical reproduction, refinement map, bridge, or candidate theory.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: two-vertex-eq-summary
+          path: summary.json
+          if-no-files-found: error
