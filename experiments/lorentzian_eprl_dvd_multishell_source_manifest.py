@@ -62,16 +62,24 @@ def main():
       {'j':["j'_1","j'_2","j'_3","j'_4"],'l':["j'_1","j'_2",'l_2','l_1'],'i':"i'",'k':"t'"}
     ]
     c2=compact(raws['DVD2']); c3=compact(raws['DVD3']); cg=compact(raws['giorgio'])
-    token2=all(x in c2 for x in [r"\sum_{k',l_a}","d_{k'}",r"(-1)^{2(k'+t')}",r"\frac{\delta_{j'_3,l_4}}{d_{j'_3}}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}",r"\delta_{j_3,j'_3}"])
-    token3=all(x in c3 for x in [r"\sum_{l_a}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}"])
-    shell_pattern=(r'C_{\Delta l}' in cg and r'\sum_{l=j}^{j+\Delta l}' in cg and r"\sum_{l'=j'}^{j'+\Delta l}" in cg)
+    dvd2_tokens=[r"\sum_{k',l_a}","d_{k'}",r"(-1)^{2(k'+t')}",r"\frac{\delta_{j'_3,l_4}}{d_{j'_3}}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}",r"\delta_{j_3,j'_3}"]
+    dvd3_tokens=[r"\sum_{l_a}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}"]
+    dvd2_token_status={x:(x in c2) for x in dvd2_tokens}
+    dvd3_token_status={x:(x in c3) for x in dvd3_tokens}
+    shell_tokens=[r'C_{\Delta l}',r'\sum_{l=j}^{j+\Delta l}',r"\sum_{l'=j'}^{j'+\Delta l}"]
+    shell_token_status={x:(x in cg) for x in shell_tokens}
+    token2=all(dvd2_token_status.values()); token3=all(dvd3_token_status.values()); shell_pattern=all(shell_token_status.values())
     ok=bool(rsha==ROOT_SHA and hashes==EQ_HASH and fs2==expected2 and fs3==expected3 and token2 and token3 and shell_pattern)
     out={
       'test':'LORENTZIAN_EPRL_DVD_MULTISHELL_SOURCE_MANIFEST',
       'root_path':str(f) if f else None,'root_title':title,'root_sha256':rsha,
-      'equation_hashes':hashes,'dvd2_factor_mapping':fs2,'dvd3_factor_mapping':fs3,
+      'equation_hashes':hashes,'expected_equation_hashes':EQ_HASH,
+      'dvd2_factor_mapping':fs2,'dvd3_factor_mapping':fs3,
       'dvd2_source_tokens_pass':token2,'dvd3_source_tokens_pass':token3,
-      'same_paper_shell_pattern_pass':shell_pattern,
+      'dvd2_token_status':dvd2_token_status,'dvd3_token_status':dvd3_token_status,
+      'same_paper_shell_pattern_pass':shell_pattern,'shell_token_status':shell_token_status,
+      'diagnostic_dvd2_compact_prefix':c2[:1800],
+      'diagnostic_giorgio_compact':cg[:1800],
       'regulator_statement':"Finite DVD shell cutoff is a numerical regulator modeled on the same paper's C_Delta_l shell convention; it is not asserted to be the source definition of a finite DVD sum.",
       'gate_pass':ok,'classification':'DVD_MULTISHELL_SOURCE_MANIFEST_PASS' if ok else 'DVD_MULTISHELL_SOURCE_MANIFEST_FAIL',
       'claim_lock':'Source authority and regulator provenance only. No numerical amplitude, refinement, continuum, bridge, or novelty claim.'
