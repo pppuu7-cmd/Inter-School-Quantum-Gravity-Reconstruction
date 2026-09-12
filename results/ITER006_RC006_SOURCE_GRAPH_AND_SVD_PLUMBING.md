@@ -4,7 +4,7 @@ Date: 2026-09-12
 
 ## Classification
 
-`SOURCE_MAPPING_PREREQUISITES_PASS + RESPONSE_BLIND_NUMERICAL_PLUMBING_PASS / FULL_EQ29_AMPLITUDE_STILL_OPEN`
+`SOURCE_MAPPING_PREREQUISITES_PARTIAL_PASS + GRAPHIC_GEOMETRY_AUTHORITY_FAIL + RESPONSE_BLIND_NUMERICAL_PLUMBING_PASS / FULL_EQ29_AMPLITUDE_STILL_OPEN`
 
 These results qualify implementation and source provenance only. They do not constitute an Eq.(29) amplitude, a physical TNR result, `BRIDGE_DERIVED`, or candidate-theory authorization.
 
@@ -14,78 +14,63 @@ Initial run `34696095267` at commit `41db3d1fe1ddf6f44b5ab9d14deb5d0d70f5b4b5` f
 
 Only that numerical branch was repaired; no physical model, threshold or scientific interpretation rule was changed. Fix commit: `c5076c360a9c8f70b223da76c582563a564111be`.
 
-Authoritative rerun: `34696313147`.
+Authoritative rerun: `34696313147`; aggregate job `103560627060`; aggregate artifact `10299121187`, digest `sha256:4447351ee441964e50afa9c49ef714f8fccc5c454c23dfaa046add1625637663`; all six seeds passed.
 
-- six seed jobs: `103560293437` (101), `103560293409` (202), `103560293339` (303), `103560293471` (404), `103560293448` (505), `103560293454` (606);
-- aggregate job: `103560627060`;
-- aggregate artifact: `10299121187` (`rc006-c-reg-summary`);
-- artifact digest: `sha256:4447351ee441964e50afa9c49ef714f8fccc5c454c23dfaa046add1625637663`;
-- aggregate result: `all_pass=true`, `all_six_present=true`.
+Scientific classification: `PASS_IMPLEMENTATION_REGRESSION_ONLY`.
 
-Scientific classification: `PASS_IMPLEMENTATION_REGRESSION_ONLY`. The regression is deliberately response-blind and contains no Eq.(29) physical amplitudes.
+## Official-source TikZ graph AST and token stream
 
-## Official-source TikZ graph AST
+AST run `34696214389`, commit `a58f79332bdbf116115574ac225cbbe917261660`, job `103560037655`, artifact `10297799415`, digest `sha256:4d914893f24d4cc9c2d9eb14331e32e24e0327c6471fbb4f8b5eacd40c541dd3`.
 
-Authoritative run: `34696214389` at commit `a58f79332bdbf116115574ac225cbbe917261660`.
+Token-stream run `34696413575`, commit `3f984706536a24d4c8a948f4ced8724889f6a6e6`, job `103560557294`, artifact `10299235394`, digest `sha256:4554cd9168a9f99b0d8ea6672bbd47d8cf506074a9b503bbeb5a7f17ded5cfe9`.
 
-- job: `103560037655`;
-- artifact: `10297799415` (`rc006-eq29-tikz-graph-ast`);
-- digest: `sha256:4d914893f24d4cc9c2d9eb14331e32e24e0327c6471fbb4f8b5eacd40c541dd3`.
+The official arXiv `1609.02429` source identifies `bc-spin-nets.tex`; exact nearest TikZ environment lines `1094–1116`, environment SHA256 `47f99ddbbef16bdadaa6951933b0203bc4d671efebec67685441af67f03e6604`. The derived stream contains 68 structural tokens, 37 coordinate tokens, the required source labels and 18 path operators including two arcs.
 
-The source-faithful extractor found the Eq.(29) region in official arXiv `1609.02429` source file `bc-spin-nets.tex`, records the exact source SHA256, candidate TikZ environments and compact labels, and passed its frozen provenance/mapping-prerequisite gate.
-
-Scientific classification: `PASS_SOURCE_PROVENANCE_MAPPING_PREREQUISITE_ONLY`. No graph contraction or amplitude follows from AST extraction alone.
-
-## Exact Eq.(29)-region token stream
-
-Authoritative run: `34696413575` at commit `3f984706536a24d4c8a948f4ced8724889f6a6e6`.
-
-- job: `103560557294`;
-- artifact: `10299235394` (`rc006-eq29-tikz-token-stream`);
-- digest: `sha256:4554cd9168a9f99b0d8ea6672bbd47d8cf506074a9b503bbeb5a7f17ded5cfe9`.
-
-The exact nearest TikZ environment is source lines `1094–1116` in `bc-spin-nets.tex`; environment SHA256 `47f99ddbbef16bdadaa6951933b0203bc4d671efebec67685441af67f03e6604`. The derived stream contains 68 structural tokens, 37 coordinate tokens, the required source labels and an ordered path-operator stream.
-
-Scientific classification: `PASS_EXACT_SOURCE_TOKENIZATION_PREREQUISITE_ONLY`.
+Classification: `PASS_SOURCE_PROVENANCE_AND_TOKENIZATION_PREREQUISITE_ONLY`.
 
 ## Eq.(29) path/incidence parser-invariance subgate — PASS
 
-Prospective implementation commits: `82f8e5869d77327dca00ddb958d4ff36bc44921f` (computation) and `d914090ce98100d01aeaa9fe92ed6b94932f6701` (workflow).
+Computation commit `82f8e5869d77327dca00ddb958d4ff36bc44921f`; workflow/head `d914090ce98100d01aeaa9fe92ed6b94932f6701`; run `34697961643`.
 
-Authoritative run: `34697961643`.
+Four lanes succeeded: `103564616715`, `103564616779`, `103564616696`, `103564616649`; aggregate `103564711935`; artifact `10298684340`, digest `sha256:ca8afc4093abb580b704666084ee1209851fdadf661a280affa09adee4a056ae`.
 
-- `103564616715` — `raw_comments_removed` — success;
-- `103564616779` — `trim_lines` — success;
-- `103564616696` — `collapse_spaces` — success;
-- `103564616649` — `compact_linebreaks` — success;
-- aggregate job `103564711935` — success;
-- aggregate artifact `10298684340` (`rc006-eq29-path-incidence-summary`);
-- digest `sha256:ca8afc4093abb580b704666084ee1209851fdadf661a280affa09adee4a056ae`.
+Frozen aggregate: `lane_count=4`, `all_lane_pass=true`, `source_hash_invariant=true`, `environment_hash_invariant=true`, `structural_signature_invariant=true`, `frozen_gate_pass=true`.
 
-The frozen aggregate artifact records:
+Classification: `PASS_DETERMINISTIC_SOURCE_PATH_RECONSTRUCTION_SUBGATE`.
 
-- `lane_count=4`;
-- `all_lane_pass=true`;
-- `source_hash_invariant=true`;
-- `environment_hash_invariant=true`;
-- `structural_signature_invariant=true`;
-- `frozen_gate_pass=true`.
+## Eq.(29) source-graphic label authority — SCIENTIFIC/DIAGNOSTIC FAIL
 
-The raw lane reconstructs one source `draw` object with 18 path operators, including two arcs, and the full source label set. Scientific classification: `PASS_DETERMINISTIC_SOURCE_PATH_RECONSTRUCTION_SUBGATE`.
+Prospective computation commit `86ca9806e3934fade69817518091325849f8359e`; workflow/head `d37a4f2abdacfaa9de6d5b38f239f57e44188a4a`; run `34698228895`.
 
-This is stronger than tokenization, but it is deliberately **not** promoted to the full `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE`: the contraction-ready quantum graph still requires explicit source-faithful association of path segments/crossings with representation labels and orientation/braiding semantics. No nearest-line/proximity inference may be silently treated as source authority.
+Frozen gate: every source label had to have a uniquely dominant nearest graph primitive with both absolute nearest/second-nearest distance gap `>=0.05` and distance ratio `>=1.20`, invariant over coordinate rounding at 12, 9, 6 and 4 digits.
+
+All four lanes reached the scientific comparison and failed: jobs `103565301058` (12), `103565301029` (9), `103565301033` (6), `103565301142` (4); aggregate `103565420131` failed. Aggregate artifact `10299149029`, digest `sha256:907e1781389a719bc75985a012895e85b80e9d340aa81ac1c3a2f4204a1e618f`, records `lane_count=4`, `all_lane_pass=false`, `assignment_precision_invariant=true`, `frozen_gate_pass=false`.
+
+The 12-digit raw artifact `10299068962`, digest `sha256:93adec18a829976f21f4ea6c0e9688244b590055ee576080066a2f661b7e9e87`, shows why the gate fails rather than an infrastructure problem:
+
+- `J^-`: absolute gap `0.0500776` passes but ratio `1.11803 < 1.20`;
+- `J^+`: same ratio `1.11803 < 1.20`;
+- `j^-_1`: exact nearest/second-nearest tie, gap `0`, ratio `1`;
+- `l_1`: gap `0.00440229`, ratio `1.00778`;
+- `l_2`: gap `0.00440229`, ratio `1.00778`.
+
+The assignments are precision-invariant, so this is not coordinate-roundoff instability. Scientific classification: `FAIL_GRAPHIC_GEOMETRY_ALONE_DOES_NOT_AUTHORIZE_CONTRACTION_LABEL_ASSIGNMENT`.
+
+No threshold is relaxed and no nearest-line heuristic may be promoted after this result. The full `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` therefore remains open and must be closed from explicit source equations/text/macros and orientation/braiding conventions, not geometric proximity in the rendered/source TikZ diagram.
 
 ## Independent RC008 source-formula qualification
 
-Initial run `34697983144` found all frozen role keywords in the official source archives, but the amplitude (`1508.07961`) and renormalization (`1701.02311`) lanes reported zero candidate equations because the first extractor recognized only a narrow subset of TeX display environments. The phase lane passed. Because the failure occurs in source parsing before any physical quantity is calculated, classification is `INFRASTRUCTURE/IMPLEMENTATION FAIL`, not scientific FAIL.
+Initial run `34697983144` failed because the first extractor recognized only a narrow subset of TeX display environments; role keywords were present. Classification: `INFRASTRUCTURE/IMPLEMENTATION FAIL`.
 
-The minimal repair broadens only the TeX display-syntax recognizer (`equation/align/alignat/multline/gather/eqnarray/split/IEEEeqnarray`, `\\[...\\]`, `$$...$$`) while preserving the frozen requirement that every role have all source keywords and at least one equation-bearing source region. Fix commit: `8ce783247216f600195b0a4cfd6c179ac7506e55`; rerun `34698110637` is the authoritative RC008 source-qualification run until terminal classification.
+Minimal source-syntax-only repair commit `8ce783247216f600195b0a4cfd6c179ac7506e55` preserved the frozen gate. Authoritative rerun `34698110637` passed all three official-source roles and aggregate `103565184050`; aggregate artifact `10298993915`, digest `sha256:8a74186a001f7b5730af162033043704975ad0b3d6deed842992127741594c0f`.
+
+Classification: `PASS_SOURCE_FORMULA_QUALIFICATION_ONLY`; amplitude/refinement reproduction remains open. Detailed note: `results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md`.
 
 ## Current implication
 
-RC006 source discovery and deterministic path reconstruction are now qualified. The next RC006 subgate is a contraction-ready, source-authorized oriented/braided graph object; only after that passes may the minimal `k=12, gamma=1/3` Eq.(29) amplitude run.
+RC006 source discovery, exact tokenization and deterministic path reconstruction are qualified, but geometry-only label authority is rejected. The next RC006 route must derive a contraction-ready graph from source semantics/conventions before any minimal `k=12, gamma=1/3` Eq.(29) amplitude run.
 
-In parallel, RC008 remains an independent permitted route toward a second true QG amplitude/refinement realization; its amplitude-level reproduction remains open.
+RC008 now has an independent, source-authorized formula inventory and can proceed to formula dependency closure followed by executable restricted hypercuboid amplitude/variance reconstruction.
 
 ## Claim locks
 
@@ -95,4 +80,5 @@ In parallel, RC008 remains an independent permitted route toward a second true Q
 - `BRIDGE_DERIVED`: forbidden;
 - candidate theory: `0% / UNFORMED`;
 - synthetic SVD plumbing is not physical TNR evidence;
-- source graph extraction/path reconstruction is not an Eq.(29) amplitude.
+- source graph extraction/path reconstruction is not an Eq.(29) amplitude;
+- failed graphic proximity authority cannot be repaired by weakening its frozen thresholds.
