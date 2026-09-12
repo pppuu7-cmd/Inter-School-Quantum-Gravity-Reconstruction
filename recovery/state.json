@@ -21,7 +21,7 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ29_SOURCE_DEPENDENCIES_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
+      "status": "EQ29_EXACT_SOURCE_BLOCK_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
       "source_authority": {
         "run": 34712998699,
         "artifact": 10304191011,
@@ -63,8 +63,27 @@
         "machine_graph_incidence_qualified": false,
         "classification": "NEW_SOURCE_AUTHORITY_SEMANTICS_ONLY"
       },
+      "eq29_primary_source_extraction": {
+        "run": 34717474214,
+        "source_bundle_sha256": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
+        "source_file": "bc-spin-nets.tex",
+        "source_evidence_artifact": 10305950487,
+        "pdf_evidence_artifact": 10305950488,
+        "summary_artifact": 10305496099,
+        "classification": "EQ29_PRIMARY_SOURCE_EXTRACTION_READY",
+        "scope": "SOURCE_DISCOVERY_ONLY",
+        "eq29_amplitude_authorized": false
+      },
+      "eq29_exact_source_block": {
+        "run": 34717600962,
+        "prereg_commit": "27b9c44e81c9befccebad9448b7da4d5d61f5967",
+        "launch_commit": "699bdb138d42990393e01fe0393045e35c8ffb57",
+        "status": "QUEUED_OR_RUNNING",
+        "purpose": "HASH_PINNED_EQ29_TEX_TIKZ_SOURCE_BLOCK_EXTRACTION_AND_INDEPENDENT_ANCHOR_VERIFY",
+        "eq29_amplitude_authorized": false
+      },
       "eq29_amplitude_authorized": false,
-      "next_gate": "PROSPECTIVELY_QUALIFY_EQ29_SEMANTICS_LABEL_GEOMETRY_RMATRIX_PLACEMENT_AND_PATH_INCIDENCE"
+      "next_gate": "CONSUME_34717600962; IF SOURCE_BLOCK_PASS, PREREGISTER SOURCE_FAITHFUL_LABEL_GEOMETRY_PATH_INCIDENCE_AND_RMATRIX_PLACEMENT_AUDIT"
     },
     "RC008": {
       "status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"
@@ -77,7 +96,7 @@
       "bridge_credit": false
     },
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "DED_DPI_COMPONENT_BIRTH_LOCALIZATION_ACTIVE_TOPOLOGY_PREREQUISITE_FAILED",
+      "status": "DED_COMPONENT_BIRTHS_LOCALIZED_TOPOLOGY_PREREQUISITE_FAILED",
       "source": "arXiv:1801.03771",
       "kernel": "qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f",
       "dvd23_direct_structural_audit": {
@@ -151,25 +170,37 @@
       },
       "ded_component_birth_localization": {
         "run": 34717249322,
-        "status": "QUEUED_OR_RUNNING",
-        "purpose": "LOCALIZE_TWO_600DPI_DED_COMPONENT_BIRTHS_WITH_FROZEN_EXTRACTION_RULE",
+        "aggregate_job": 103616862737,
+        "artifact": 10305175813,
+        "artifact_digest": "sha256:ddcdf805d87dbe6ab9a1c61bc5a67d44372b84e1773ad7742b8bab50723da92d",
+        "status": "TERMINAL_SUCCESS_DIAGNOSTIC_ONLY",
+        "classification": "DED_EXTRA_600DPI_COMPONENTS_LOCALIZED",
+        "counts_300_600": [121, 123],
+        "extra_components": [
+          {"pixels":44,"area_fraction":1.966336322164543e-5,"centroid_x":0.189866082925573,"centroid_y":0.5180094786729857},
+          {"pixels":39,"area_fraction":1.7428890128276632e-5,"centroid_x":0.7200188857412654,"centroid_y":0.8872037914691943}
+        ],
+        "representation_independent": true,
+        "threshold_retuning_authorized": false,
         "bridge_credit": false
       },
       "refinement_map_derived": false,
-      "next_gate": "CONSUME_34717249322; DO_NOT_RETUNE_FROZEN_TOPOLOGY_GATE; REQUIRE_SOURCE_DERIVED_INCIDENCE_FOR_ANY_REFINEMENT_CLAIM"
+      "next_gate": "SOURCE_SEMANTIC_OR_VECTOR_LEVEL_IDENTIFICATION_OF_THE_TWO_DED_FEATURES_ONLY_IF_PROSPECTIVELY_DEFINED; DO_NOT_RETUNE_FROZEN_TOPOLOGY_GATE"
     }
   },
   "active_compute": [
     {
-      "workflow_run": 34717249322,
-      "purpose": "DED 300/600 dpi component birth localization under frozen threshold and area rule",
+      "workflow_run": 34717600962,
+      "purpose": "Exact hash-pinned Eq29 TeX/TikZ source block extraction plus independent source-anchor verification",
       "status": "QUEUED_OR_RUNNING",
-      "lane_count": 4
+      "lane_count": 2
     }
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
+    "results/ITER006_PARALLEL_PROGRESS_2026-09-12_2037Z.md",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_DED_COMPONENT_BIRTH_LOCALIZATION_2026-09-12.md",
     "results/ITER006_TERMINAL_TOPOLOGY_B13_EQ29_UPDATE_2026-09-12.md",
     "results/ITER006_TERMINAL_INCIDENCE_AND_RC006_SERIALIZATION_2026-09-12.md",
     "docs/CONSTITUTION.md"
