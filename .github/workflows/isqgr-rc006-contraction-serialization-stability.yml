@@ -1,0 +1,79 @@
+name: ISQGR RC006 Contraction Serialization Stability
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_contraction_serialization_stability.py'
+      - '.github/workflows/isqgr-rc006-contraction-serialization-stability.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  serialization:
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        role: [full, 'drop:app:EPRL-diagram', 'drop:app:EPRL-norm', 'drop:app:graph', 'drop:eq:BC-3-int', 'drop:eq:BC-3-valent', 'drop:eq:eprl-3-valent', 'drop:eq:eprl-map', 'drop:eq:recoupling-basis', null_unordered]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch official arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Run frozen serialization lane
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_contraction_serialization_stability.py --source-dir external/arxiv_src --role '${{ matrix.role }}' --output 'compute_out/${{ strategy.job-index }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'rc006-serialization-${{ strategy.job-index }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: serialization
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'rc006-serialization-*'
+          path: all
+          merge-multiple: true
+      - name: Apply frozen scientific gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          r=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          full=[x for x in r if x['role']=='full']
+          null=[x for x in r if x['role']=='null_unordered']
+          hs=[x for x in r if x['role'].startswith('drop:')]
+          valid=len(r)==10 and len(full)==1 and len(null)==1 and len(hs)==8 and all(x['valid_computation'] for x in r)
+          f=full[0] if full else {}
+          agreements=[]
+          if full:
+            fp=f['pair_sign']
+            for x in hs:
+              shared=set(fp)&set(x['pair_sign']); agreements.append(sum(fp[k]==x['pair_sign'][k] for k in shared)/max(1,len(shared)))
+          gate=bool(valid and f.get('ambiguous_group_count')==0 and all(x.get('ambiguous_group_count')==0 for x in hs) and agreements and min(agreements)==1.0 and null[0].get('ambiguous_group_count',0)>0)
+          o={'test':'RC006_CONTRACTION_SERIALIZATION_STABILITY_AGGREGATE','lane_count':len(r),'valid':valid,
+             'full_unique':f.get('ambiguous_group_count')==0 if full else False,'holdout_unique_count':sum(x.get('ambiguous_group_count')==0 for x in hs),
+             'min_pairwise_order_agreement':min(agreements) if agreements else None,'null_ambiguous':bool(null and null[0].get('ambiguous_group_count',0)>0),
+             'serialization_gate_pass':gate,
+             'scientific_classification':'SCIENTIFIC_PASS_CONTRACTION_SERIALIZATION_STABLE' if gate else ('SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE' if valid else 'INFRASTRUCTURE_OR_NUMERICAL_INVALID'),
+             'interpretation':'PASS authorizes only a frozen source-derived contraction serialization; minimal k=12 Eq29 amplitude remains a separate dependent gate.',
+             'claim_lock':'No Eq29 amplitude, TNR bridge, BRIDGE_DERIVED or candidate-theory claim.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-serialization-summary
+          path: summary.json
+          if-no-files-found: error
