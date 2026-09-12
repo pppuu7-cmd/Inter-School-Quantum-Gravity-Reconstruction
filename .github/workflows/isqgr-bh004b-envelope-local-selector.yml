@@ -1,0 +1,123 @@
+name: ISQGR BH-004B Envelope Local Selector
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-bh004b-envelope-local-selector.yml'
+      - 'experiments/bh004b_envelope_local_selector.py'
+
+permissions:
+  contents: read
+
+jobs:
+  selector:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        n_full: [640, 896, 1152]
+        seed: [601, 602, 603, 604]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --upgrade numpy scipy
+      - name: Run envelope plus local selector prediction
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          PYTHONPATH=experiments python experiments/bh004b_envelope_local_selector.py \
+            --n-full ${{ matrix.n_full }} --p-parent 0.5625 --p-child 0.421875 \
+            --seed ${{ matrix.seed }} --n-random 24 \
+            --output compute_out/bh004b_n${{ matrix.n_full }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bh004b-n${{ matrix.n_full }}-s${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [selector]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bh004b-n*
+          path: campaign
+          merge-multiple: true
+      - name: Aggregate preregistered BH-004B gate
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,statistics
+          fs=sorted(pathlib.Path('campaign').glob('*.json'))
+          if len(fs)!=12: raise SystemExit(f'expected 12 results, got {len(fs)}')
+          ds=[json.loads(p.read_text()) for p in fs]
+          rows=[]
+          for d in ds:
+              p=d['prediction']; c=d['closure']; a=p['alignment_to_source']
+              rows.append({
+                  'n_full':d['n_full'],'seed':d['seed'],
+                  'rank_error':p['rank_relative_error'],
+                  'mean_cosine':a['mean_principal_cosine'],
+                  'min_cosine':a['min_principal_cosine'],
+                  'distance_ratio':p['predicted_over_envelope_projector_distance'],
+                  'source_capture':p['source_norm_capture_by_envelope'],
+                  'leak_gain':c['random_median_over_predicted_leakage'],
+                  'seq_gain':c['random_median_over_predicted_seq_defect'],
+                  'frac_random_worse_leak':c['fraction_random_worse_leakage'],
+                  'frac_random_worse_seq':c['fraction_random_worse_seq_defect'],
+              })
+          med=lambda k:statistics.median(r[k] for r in rows)
+          frac_both=sum(r['leak_gain']>1 and r['seq_gain']>1 for r in rows)/len(rows)
+          summary={
+              'n_jobs':len(rows),
+              'median_rank_relative_error':med('rank_error'),
+              'median_mean_principal_cosine':med('mean_cosine'),
+              'median_min_principal_cosine':med('min_cosine'),
+              'median_predicted_over_envelope_projector_distance':med('distance_ratio'),
+              'median_source_norm_capture_by_envelope':med('source_capture'),
+              'median_random_over_predicted_leakage':med('leak_gain'),
+              'median_random_over_predicted_seq_defect':med('seq_gain'),
+              'fraction_jobs_both_closure_gains_gt_1':frac_both,
+          }
+          natural=(summary['median_rank_relative_error']<=0.15 and
+                   summary['median_mean_principal_cosine']>0.95 and
+                   summary['median_min_principal_cosine']>0.50 and
+                   summary['median_predicted_over_envelope_projector_distance']<0.80 and
+                   summary['median_random_over_predicted_leakage']>1.0 and
+                   summary['median_random_over_predicted_seq_defect']>1.0 and
+                   frac_both>=2/3)
+          strong=(summary['median_rank_relative_error']<=0.08 and
+                  summary['median_mean_principal_cosine']>0.98 and
+                  summary['median_min_principal_cosine']>0.80 and
+                  summary['median_predicted_over_envelope_projector_distance']<0.60 and
+                  summary['median_random_over_predicted_leakage']>1.5 and
+                  summary['median_random_over_predicted_seq_defect']>1.5 and
+                  frac_both>=0.80)
+          out={
+              'test':'BH004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR_AGGREGATE',
+              'status':'PASS_EXECUTION',
+              'preregistered_gate':{
+                  'natural':'rank error<=.15; mean cosine>.95; min cosine>.50; predicted/envelope projector-distance<.80; med closure gains>1; >=2/3 jobs both gain',
+                  'strong':'rank error<=.08; mean cosine>.98; min cosine>.80; predicted/envelope distance<.60; med closure gains>1.5; >=.80 jobs both gain'
+              },
+              'natural_support':natural,
+              'strong_support':strong,
+              'summary':summary,
+              'by_job':rows,
+              'claim_lock':'No child source projector/rank or closure target enters prediction. The child Pauli-Jordan operator and frozen source cutoff are used only inside the parent-derived envelope.'
+          }
+          pathlib.Path('bh004b_envelope_local_selector_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-bh004b-envelope-local-selector-summary
+          path: bh004b_envelope_local_selector_summary.json
+          if-no-files-found: error
