@@ -1,0 +1,67 @@
+name: ISQGR RC006 Ordered Context Identifiability
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_ordered_context_identifiability.py'
+      - '.github/workflows/isqgr-rc006-ordered-context-identifiability.yml'
+  workflow_dispatch:
+
+permissions: {contents: read}
+
+jobs:
+  context:
+    strategy:
+      fail-fast: false
+      max-parallel: 7
+      matrix:
+        role: [app:EPRL-diagram, app:EPRL-norm, app:graph, eq:BC-3-int, eq:BC-3-valent, eq:eprl-3-valent, global_ordered_context]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch official arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Run frozen ordered-context audit
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_ordered_context_identifiability.py --source-dir external/arxiv_src --role '${{ matrix.role }}' --output 'compute_out/${{ strategy.job-index }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'rc006-ordered-context-${{ strategy.job-index }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: context
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'rc006-ordered-context-*'
+          path: all
+          merge-multiple: true
+      - name: Preserve computation and scientific classifications
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(f)) for f in sorted(glob.glob('all/*.json'))]
+          g=[r for r in rows if r.get('role')=='global_ordered_context']
+          out={'test':'RC006_ORDERED_CONTEXT_IDENTIFIABILITY_AGGREGATE','lane_count':len(rows),'valid_lanes':sum(bool(r.get('valid_computation')) for r in rows),'scientific_classifications':{r['role']:r.get('scientific_classification') for r in rows},'global_scientific_classification':g[0].get('scientific_classification') if len(g)==1 else 'MISSING','all_computations_valid':len(rows)==7 and all(r.get('valid_computation') for r in rows),'claim_lock':'Green CI is not science PASS; surviving ambiguity keeps Eq29 amplitude blocked.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n');print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-ordered-context-summary
+          path: summary.json
+          if-no-files-found: error
