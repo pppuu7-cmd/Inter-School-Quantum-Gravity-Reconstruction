@@ -1,0 +1,72 @@
+name: ISQGR RC008 Refinement Source Closure
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc008_refinement_source_closure.py'
+      - '.github/workflows/isqgr-rc008-refinement-source-closure.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  source_object:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        requirement: [vertex_amplitude, face_weight, edge_norm, state_sum, quantum_cuboid, volume_simplicity, coarse_graining_map, explicit_multi_vertex_gluing]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned RC008 source
+        run: |
+          set -euo pipefail
+          mkdir -p external/rc008_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1508.07961 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1508.07961 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/rc008_src
+      - name: Audit frozen source object
+        run: |
+          mkdir -p compute_out
+          python experiments/rc008_refinement_source_closure.py --source-dir external/rc008_src --requirement '${{ matrix.requirement }}' --output 'compute_out/${{ matrix.requirement }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'rc008-source-${{ matrix.requirement }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: source_object
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'rc008-source-*'
+          path: all
+          merge-multiple: true
+      - name: Apply frozen source-closure rule
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          r=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          valid=len(r)==8 and all(x.get('valid') for x in r)
+          d={x['requirement']:x['present'] for x in r}
+          core=all(d.get(k,False) for k in ['vertex_amplitude','face_weight','edge_norm','state_sum','quantum_cuboid','volume_simplicity'])
+          refinement=bool(d.get('coarse_graining_map'))
+          gluing=bool(d.get('explicit_multi_vertex_gluing'))
+          closure=bool(valid and core and refinement and gluing)
+          o={'test':'RC008_REFINEMENT_SOURCE_CLOSURE_AGGREGATE','valid':valid,'presence':d,'core_amplitude_objects_present':core,
+             'refinement_language_present':refinement,'explicit_multi_vertex_gluing_present':gluing,'source_closure_pass':closure,
+             'scientific_classification':'SOURCE_CLOSURE_PREREQUISITE_PASS' if closure else ('SOURCE_CLOSURE_BLOCKED_MISSING_EXPLICIT_OBJECT' if valid else 'INFRASTRUCTURE_OR_NUMERICAL_INVALID'),
+             'frozen_rule':'All six core amplitude objects plus coarse/refinement map and explicit multi-vertex gluing must be located in the pinned source before source-only coarse/refined reconstruction is authorized.',
+             'interpretation_lock':'Text/source closure only; no amplitude, RG flow, refinement bridge, or candidate-theory claim.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc008-source-closure-summary
+          path: summary.json
+          if-no-files-found: error
