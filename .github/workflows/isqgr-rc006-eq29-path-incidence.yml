@@ -1,0 +1,88 @@
+name: ISQGR RC006 Eq29 Path Incidence Reconstruction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_eq29_path_incidence_reconstruction.py'
+      - '.github/workflows/isqgr-rc006-eq29-path-incidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reconstruct:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        mode: [raw_comments_removed, trim_lines, collapse_spaces, compact_linebreaks]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch official arXiv source archive
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || \
+           curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Reconstruct frozen structural lane
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_eq29_path_incidence_reconstruction.py \
+            --source-dir external/arxiv_src \
+            --mode '${{ matrix.mode }}' \
+            --output 'compute_out/path_${{ matrix.mode }}.json'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-eq29-path-${{ matrix.mode }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: reconstruct
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-eq29-path-*
+          path: all
+          merge-multiple: true
+      - name: Apply prospectively frozen parser-invariance gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib,sys
+          fs=sorted(glob.glob('all/*.json'))
+          rows=[json.load(open(f)) for f in fs]
+          ok=(len(rows)==4 and all(r.get('lane_pass') for r in rows)
+              and len({r['tex_sha256'] for r in rows})==1
+              and len({r['environment_sha256'] for r in rows})==1
+              and len({r['structural_signature'] for r in rows})==1)
+          out={
+            'test':'RC006_EQ29_PATH_INCIDENCE_AGGREGATE',
+            'lane_count':len(rows),
+            'all_lane_pass':all(r.get('lane_pass') for r in rows) if rows else False,
+            'source_hash_invariant':len({r['tex_sha256'] for r in rows})==1 if rows else False,
+            'environment_hash_invariant':len({r['environment_sha256'] for r in rows})==1 if rows else False,
+            'structural_signature_invariant':len({r['structural_signature'] for r in rows})==1 if rows else False,
+            'frozen_gate_pass':ok,
+            'claim_lock':'Parser/source mapping gate only; no Eq.(29) amplitude or BRIDGE_DERIVED claim.'
+          }
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          sys.exit(0 if ok else 2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-eq29-path-incidence-summary
+          path: summary.json
+          if-no-files-found: error
