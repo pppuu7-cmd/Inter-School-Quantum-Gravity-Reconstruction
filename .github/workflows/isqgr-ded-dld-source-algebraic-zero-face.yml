@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  PINNED_SOURCE_SHA256: 9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303
+
 jobs:
   source_lane:
     runs-on: ubuntu-latest
@@ -19,12 +22,14 @@ jobs:
         lane: [ded_formula_ast, dld6_formula_ast, jf0_reduction, independent_context_control]
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch immutable arXiv v2 source
+      - name: Fetch and verify pinned arXiv source
         run: |
           set -euo pipefail
           mkdir -p work/src out
           curl -fL --retry 4 --retry-delay 3 'https://export.arxiv.org/e-print/1801.03771v2' -o work/source.tar
-          sha256sum work/source.tar | tee out/source.sha256
+          ACTUAL="$(sha256sum work/source.tar | awk '{print $1}')"
+          printf '%s  %s\n' "$ACTUAL" work/source.tar | tee out/source.sha256
+          test "$ACTUAL" = "$PINNED_SOURCE_SHA256"
           tar -xf work/source.tar -C work/src
       - name: Run frozen lane
         run: |
