@@ -1,0 +1,40 @@
+name: ISQGR Lorentzian EPRL Delta4 Multi-Vertex Profile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_multivertex_profile_convergence.py'
+      - '.github/workflows/isqgr-delta4-multivertex-profile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clone and pin public Delta4 source data
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Run preregistered multi-vertex profile convergence audit
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/delta4_multivertex_profile_convergence.py \
+            --source-root external/HowToSpinFoamAmplitude \
+            --output compute_out/delta4_multivertex_profile_convergence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-delta4-multivertex-profile
+          path: compute_out/*.json
+          if-no-files-found: error
