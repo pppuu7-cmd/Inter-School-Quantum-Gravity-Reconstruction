@@ -1,0 +1,40 @@
+{
+  "id": "ITER006_DVD_DL0_HELDOUT_GAMMA_TRANSPORT",
+  "date": "2026-09-12",
+  "status": "FROZEN_BEFORE_HELDOUT_OUTPUT",
+  "purpose": "Independent non-retuned transport test of the already source-labelled genuine two-vertex Lorentzian EPRL Dl0 contraction across gamma values not used in the pilot.",
+  "source_authority": {
+    "paper": "arXiv:1801.03771",
+    "root_sha256": "27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1",
+    "symbolic_guard_run": 34703574873,
+    "symbolic_guard_artifact": 10301042008,
+    "pilot_run": 34703528413,
+    "pilot_artifact": 10301595889
+  },
+  "kernel": {
+    "repository": "qg-cpt-marseille/sl2cfoam-next",
+    "commit": "052e4346028870bd76f69a3034e6cae8defb8f7f",
+    "api": "sl2cfoam_b4"
+  },
+  "frozen_boundary": {
+    "gamma_heldout": [0.3, 0.8, 1.6, 2.5, 3.0],
+    "j1_j2_j3_j4": [1,1,1,1],
+    "l1_l2_l3_l4": [1,1,1,1],
+    "i": 1,
+    "delta_l": 0,
+    "retuning": false
+  },
+  "acceptance": {
+    "lane_count": 5,
+    "all_kernel_values_finite": true,
+    "dvd2_and_dvd3_finite": true,
+    "repeat_relative_difference_max": 1e-12,
+    "no_fit_to_pilot_outputs": true,
+    "no_monotonicity_or_scaling_assumption": true
+  },
+  "interpretation": {
+    "pass_means": "held-out numerical transport/reproducibility of the same frozen source-labelled Dl0 contraction to five non-retuned gamma values",
+    "fail_means": "held-out transport/numerical robustness failure for this frozen Dl0 realization only",
+    "pass_does_not_mean": ["full spin-sum reproduction","multi-shell convergence","refinement map","continuum limit","bridge derivation","new physics","candidate theory"]
+  }
+}
