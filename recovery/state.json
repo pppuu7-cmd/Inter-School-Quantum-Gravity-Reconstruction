@@ -4,7 +4,7 @@
   "date": "2026-09-12",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 12,
+  "iteration_completion_percent": 34,
   "last_completed_iteration": "ITERATION_005",
   "constitution": "docs/CONSTITUTION.md",
   "active_bridge_hypotheses": [
@@ -29,19 +29,26 @@
     "new_theory_required": false,
     "new_physics_found": false,
     "bridge_derived": false,
+    "generic_orientation_beyond_spectrum_is_novel": false,
     "rqir_promotion_authorized": false,
     "kmqgb_promotion_authorized": false
   },
+  "novelty_audit": {
+    "generic_orientation_beyond_spectrum": "ABSORBED_BY_STANDARD_AMPLITUDE_LEVEL_TNR",
+    "remaining_possible_isqgr_novelty_domain": "SOURCE_NATIVE_PHYSICAL_SELECTOR_PLUS_NONRETUNED_QG_REFINEMENT_TRANSPORT",
+    "nearest_framework_control_run": 34666545108,
+    "nearest_framework_strong_absorption_support": true
+  },
   "readiness_percent": {
     "repository_recovery_bootstrap": 99,
-    "source_grounded_interface_atlas": 49,
-    "recurrent_motif_search": 68,
+    "source_grounded_interface_atlas": 52,
+    "recurrent_motif_search": 70,
     "accepted_recurrent_motifs": 30,
-    "bridge_principle_validation": 76,
-    "executable_cross_school_obstructions": 84,
-    "amplitude_refinement_cross_realization_validation": 18,
+    "bridge_principle_validation": 78,
+    "executable_cross_school_obstructions": 86,
+    "amplitude_refinement_cross_realization_validation": 24,
     "candidate_theory_construction": 0,
-    "overall_scientific_programme": 42
+    "overall_scientific_programme": 44
   },
   "realization_cards": [
     "RC-001_EPRL_LORENTZIAN_VERTEX",
@@ -50,7 +57,8 @@
     "RC-004_CAUSAL_SET_BDG_ACTION",
     "RC-005_HAPPY_HOLOGRAPHIC_QEC",
     "RC-006_EPRL_FK_TENSOR_COARSE_GRAINING",
-    "RC-007_CAUSAL_SET_SPACETIME_ENTANGLEMENT"
+    "RC-007_CAUSAL_SET_SPACETIME_ENTANGLEMENT",
+    "RC-008_QUANTUM_CUBOID_HYPERCUBOID_RENORMALIZATION"
   ],
   "derived_results": [
     "ITER002_CEMR_LOCAL_CONFORMAL_CONSISTENCY",
@@ -84,7 +92,10 @@
     "ITER005_RC006_MULTI_STEP_SUPPORT_ENVELOPE_GROWTH",
     "ITER005_BH004B_LONGJUMP_HELDOUT",
     "ITER005_EPRL_SHELL_DISTANCE_ORIENTATION",
-    "ITER005_FRG_EH_SCHEME_COVARIANCE"
+    "ITER005_FRG_EH_SCHEME_COVARIANCE",
+    "ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION",
+    "ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL",
+    "ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS"
   ],
   "compute_campaigns": {
     "campaign_001": {"workflow_run": 34652279466, "reproduction_run": 34652499160, "status": "REPRODUCED_EXECUTABLE"},
@@ -105,7 +116,9 @@
     "iter005_eprl_shell_distance": {"workflow_run": 34665851619, "status": "SUCCESS_STRONG_SUPPORT_ALL_GAMMA"},
     "iter005_frg_eh_scheme_covariance": {"workflow_run": 34665907393, "status": "SUCCESS_COVARIANCE_STRESS"},
     "iter005_rc006_support_growth": {"workflow_run": 34665997309, "status": "SUCCESS_MULTI_STEP_ENVELOPE_GROWTH"},
-    "iter006_fusion_basis_amplitude_control": {"head_sha": "2917fce29f9dca8c4741be4f6aee2eaccca75dda", "status": "LAUNCHED"}
+    "iter006_fusion_basis_amplitude_reproduction": {"workflow_run": 34666262016, "status": "SUCCESS_CLEAN_THREE_STEP_ALL_COUPLINGS"},
+    "iter006_fusion_basis_embedding_orientation_null": {"workflow_run": 34666545108, "status": "SUCCESS_STRONG_NEAREST_FRAMEWORK_ABSORPTION"},
+    "iter006_rc008_published_boundary_audit": {"workflow_run": 34666680657, "status": "SUCCESS_SOURCE_DATA_AUDIT"}
   },
   "iteration_005_preregistered_promotion": {
     "required_positive_lines": 2,
@@ -116,23 +129,27 @@
     "decision": "BH004_BH004B_STRENGTHENED_NOT_BRIDGE_DERIVED"
   },
   "active_gates": [
-    "BH004B_INDEPENDENT_AMPLITUDE_REFINEMENT_GATE",
-    "RC006_QDEFORMED_AMPLITUDE_TNR_REPRODUCTION_GATE",
-    "NEAREST_FRAMEWORK_ABSORPTION_CONTROL",
+    "BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE",
+    "RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE",
+    "RC006_QDEFORMED_EPRL_FK_AMPLITUDE_TNR_RECONSTRUCTION_GATE",
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE",
     "CEMR_SOURCE_DEFINED_CAUSAL_RESCUE_GATE"
   ],
   "iteration_006_targets": [
-    "reproduce_independent_qdeformed_amplitude_coarse_graining_code_and_extract_embedding_map_svd_invariants",
+    "reconstruct_RC008_quantum_cuboid_coarse_refined_amplitudes_and_volume_variance_for_at_least_two_boundary_states",
+    "freeze_RC008_alpha_flow_on_training_boundary_and_test_heldout_boundary_without_retuning",
     "reconstruct_or_reproduce_RC006_amplitude_level_TNR_for_at_least_one_BC_control_and_one_EPRL_FK_case",
-    "define_amplitude_level_envelope_selector_metric_before_inspecting_target_results",
     "seek_multivertex_Lorentzian_EPRL_or_true_spinfoam_refinement_realization",
-    "test_whether_BH004B_is_absorbed_by_standard_embedding_map_TNR_structure",
-    "keep_candidate_theory_equations_locked_until_independent_amplitude_refinement_gate"
+    "test_QG_specific_source_native_selector_structure_beyond_standard_TNR_embedding_maps",
+    "keep_candidate_theory_equations_locked_until_independent_QG_amplitude_refinement_gate"
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL.md",
+    "results/ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION.md",
+    "results/ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS.md",
+    "realizations/RC-008_QUANTUM_CUBOID_HYPERCUBOID_RENORMALIZATION.md",
     "results/ITER005_BH004B_LONGJUMP_HELDOUT.md",
     "results/ITER005_RC006_EPRL_FUSION_SUPPORT_CLOSURE.md",
     "results/ITER005_RC006_MULTI_STEP_SUPPORT_ENVELOPE_GROWTH.md",
@@ -142,8 +159,6 @@
     "hypotheses/BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR.md",
     "hypotheses/BH-004_PROJECTOR_MEASURE_COVARIANT_SCALE_TRANSPORT.md",
     "results/RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA_2026-09-12.md",
-    "results/ITER004_RM001_SPECTRAL_INSUFFICIENCY_THEOREM.md",
-    "results/ITER004_EPRL_SHARED_UNITARY_ORIENTATION_NULL.md",
     "docs/CONSTITUTION.md",
     "protocol/INTERFACE_FAILURE_TAXONOMY.md"
   ]
