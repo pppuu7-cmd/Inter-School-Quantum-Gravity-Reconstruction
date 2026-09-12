@@ -64,3 +64,7 @@ Green CI alone is never scientific PASS.
 Even `EQ29_SOURCE_DEPENDENCIES_COMPLETE` authorizes only a separately preregistered literal Eq.(29) tensor reconstruction gate. It does **not** authorize Eq.(29) amplitude correctness, RC006 bridge credit, BRIDGE_DERIVED, candidate theory construction, or any claim that known schools fail.
 
 No thresholds, labels, source scope, or interpretation rule may be changed after production results are inspected.
+
+## Administrative launch annotation
+
+Implementation workflow was registered at commit `be3615fb36f4c1863b221b86fcf80d7cf4f11125`. This annotation exists only to trigger the already-frozen workflow after registration and changes no scientific object, parameter, threshold, source scope, control, or interpretation rule above.
