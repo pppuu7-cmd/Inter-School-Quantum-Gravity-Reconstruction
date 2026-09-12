@@ -1,0 +1,84 @@
+name: ISQGR RC-006 Support Envelope Growth
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-rc006-envelope-growth.yml'
+      - 'experiments/rc006_support_envelope_growth.py'
+
+permissions:
+  contents: read
+
+jobs:
+  growth:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        case:
+          - {name: k6_g1_3, k: 6, gn: 1, gd: 3}
+          - {name: k10_g3_5, k: 10, gn: 3, gd: 5}
+          - {name: k12_g1_3, k: 12, gn: 1, gd: 3}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Run three raw support recoupling steps
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          PYTHONPATH=experiments python experiments/rc006_support_envelope_growth.py \
+            --k ${{ matrix.case.k }} --gamma-num ${{ matrix.case.gn }} --gamma-den ${{ matrix.case.gd }} --steps 3 \
+            --output compute_out/${{ matrix.case.name }}_growth.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-growth-${{ matrix.case.name }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [growth]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-growth-*
+          path: campaign
+          merge-multiple: true
+      - name: Aggregate support-envelope growth
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib
+          ds=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          if len(ds)!=3: raise SystemExit(f'expected 3 results, got {len(ds)}')
+          rows=[]
+          for d in sorted(ds,key=lambda x:x['k']):
+              rows.append({
+                  'k':d['k'],'gamma':d['gamma'],
+                  'sizes':[r['raw_envelope_size'] for r in d['steps']],
+                  'simple_fractions':[r['raw_simple_fraction'] for r in d['steps']],
+                  'extras':[r['raw_extra_state_count'] for r in d['steps']],
+                  'targets_captured_all_steps':d['source_targets_captured_all_steps'],
+                  'selector_exact_all_steps':d['selector_restores_exact_source_all_steps'],
+              })
+          out={
+              'test':'RC006_EPRL_MULTI_STEP_SUPPORT_ENVELOPE_GROWTH_AGGREGATE',
+              'status':'PASS_EXECUTION',
+              'all_cases_generate_extra_support_after_first_step':all(r['extras'][1]>0 for r in rows),
+              'all_cases_source_targets_captured_all_steps':all(r['targets_captured_all_steps'] for r in rows),
+              'all_cases_selector_exact_all_steps':all(r['selector_exact_all_steps'] for r in rows),
+              'by_case':rows,
+              'claim_lock':'Finite SU(2)_k support combinatorics only. No q-deformed amplitudes/TNR singular spectra.'
+          }
+          pathlib.Path('rc006_support_envelope_growth_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-rc006-support-envelope-growth-summary
+          path: rc006_support_envelope_growth_summary.json
+          if-no-files-found: error
