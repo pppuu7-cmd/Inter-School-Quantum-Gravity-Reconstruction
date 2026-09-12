@@ -1,0 +1,15 @@
+{
+  "gate":"ITER006_DED_DLD_REFINEMENT_TOPOLOGY_AUDIT",
+  "date":"2026-09-12",
+  "sources":{"dvd":"arXiv:1801.03771","refinement":"arXiv:1010.5437"},
+  "purpose":"Determine source-first whether a DED foam can be embedded as a strict subfoam of a specific DLD foam with an added face eligible for j=0 trivial extension.",
+  "frozen_requirements":[
+    "Extract exact DED and DLD source contexts and any source graph/figure environment defining their vertices, edges and faces.",
+    "Verify the refinement source defines subfoam/embedding and trivial extension using injective vertex, edge and face maps.",
+    "Counts or name similarity alone cannot establish an incidence-preserving embedding.",
+    "PASS to strict-refinement identification requires an explicit machine-reconstructible incidence map whose complement contains at least one face; otherwise classify source topology unresolved.",
+    "If source material only establishes the weaker two-vertex/edge/face count relation, classify candidate-qualified but embedding-unresolved."
+  ],
+  "classifications":{"identified":"DED_TO_DLD_STRICT_REFINEMENT_IDENTIFIED","candidate_only":"DED_DLD_STRICT_EXTENSION_CANDIDATE_SOURCE_QUALIFIED","unresolved":"DED_DLD_SOURCE_TOPOLOGY_UNRESOLVED"},
+  "claim_lock":"No amplitude identity, cylindrical consistency, convergence or BRIDGE_DERIVED follows from source-topology qualification. No post-hoc incidence map may be invented from visual resemblance."
+}
