@@ -1,0 +1,17 @@
+{
+  "gate":"ITER006_LORENTZIAN_ZERO_SPIN_ASYMMETRIC_HELDOUT",
+  "date":"2026-09-12",
+  "prerequisite":{"run":34711008648,"classification":"B4_ZERO_SPIN_PRIMITIVE_AGGREGATE_PASS"},
+  "kernel":"qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f",
+  "purpose":"Test whether the one-zero-spin B4 numerical capability survives held-out gamma values and asymmetric nonzero spins rather than only the symmetric j=1 case.",
+  "gamma":[0.3,0.8,1.6,2.5,3.0],
+  "frozen_b4_configs_two_spin_units":[
+    [0,2,4,2,0,2,4,2],
+    [2,0,2,4,2,0,2,4],
+    [4,2,0,2,4,2,0,2],
+    [2,4,2,0,2,4,2,0]
+  ],
+  "thresholds":{"minimum_nonzero_fast_vs_accurate_comparisons_per_gamma":4,"max_relative_error":1e-5,"all_reported_values_finite":true},
+  "classification":{"pass":"B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_PASS","fail":"B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_NUMERICAL_VALIDITY_FAIL"},
+  "claim_lock":"Primitive numerical robustness only. PASS does not establish a refined 2-complex, trivial-extension amplitude invariance, cylindrical consistency, convergence, or BRIDGE_DERIVED. Thresholds and spin/gamma panel are frozen before production values are inspected."
+}
