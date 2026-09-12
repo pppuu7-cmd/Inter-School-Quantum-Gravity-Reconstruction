@@ -1,0 +1,68 @@
+name: ISQGR Lorentzian EPRL Two Vertex Root Target Provenance
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/lorentzian_eprl_two_vertex_root_target_provenance.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-two-vertex-root-target-provenance.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+env:
+  ARXIV_ID: '1801.03771'
+jobs:
+  provenance:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        target: [two_vertex_amplitude, internal_face_sum, full_amplitude, simplified_amplitude, correlation_observable, large_spin_scaling, immirzi, cutoff_or_truncation]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Audit target provenance inside paper root only
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_two_vertex_root_target_provenance.py --source-dir external/two_vertex_src --target '${{ matrix.target }}' --output 'compute_out/root_target_${{ matrix.target }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'root-target-${{ matrix.target }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: provenance
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'root-target-*'
+          path: all
+          merge-multiple: true
+      - name: Aggregate provenance only
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[]
+          for f in glob.glob('all/*.json'):
+            x=json.load(open(f)); rows.append({'target':x.get('target'),'valid':x.get('valid'),'nearest_hash':x.get('nearest_hash'),'nearest_labels':x.get('nearest_labels'),'nearest_section':x.get('nearest_section'),'nearest_signature':x.get('nearest_signature'),'classification':x.get('classification')})
+          valid=len(rows)==8 and all(r.get('valid') for r in rows)
+          o={'test':'LORENTZIAN_EPRL_TWO_VERTEX_ROOT_TARGET_PROVENANCE_AGGREGATE','valid':valid,'record_count':len(rows),'records':rows,'classification':'ROOT_TARGET_PROVENANCE_BATCH_COMPLETE' if valid else 'ROOT_TARGET_PROVENANCE_BATCH_INCOMPLETE','promotion_authorized':False,'interpretation_lock':'Diagnostic only; no source lock or numerical implementation is authorized.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: root-target-provenance-summary
+          path: summary.json
+          if-no-files-found: error
