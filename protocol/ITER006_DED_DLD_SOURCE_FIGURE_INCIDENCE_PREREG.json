@@ -1,0 +1,17 @@
+{
+  "gate":"ITER006_DED_DLD_SOURCE_FIGURE_INCIDENCE_AUDIT",
+  "date":"2026-09-12",
+  "prerequisite":{"run":34712970339,"classification":"DED_DLD_STRICT_EXTENSION_CANDIDATE_SOURCE_QUALIFIED"},
+  "source":"arXiv:1801.03771",
+  "frozen_source_figures":{"DED":"_images/DEDconplex_plus_vg.eps","DLD":"_images/DLDandVertex.eps"},
+  "purpose":"Determine whether the primary-source vector figures contain machine-recoverable incidence information sufficient to test a DED subfoam embedding into one of the seven DLD routings, without relying on visual resemblance alone.",
+  "frozen_requirements":[
+    "Verify both exact EPS figure files exist in the pinned source archive and record hashes/bounding boxes.",
+    "Preserve raw vector/PostScript text, raster previews, and all source captions/figure labels.",
+    "Inventory explicit text labels and vector subobjects/paths if machine separable.",
+    "STRICT_MAP_READY only if the source figure representation exposes enough distinct machine-readable primitives to identify the DED complex, each DLD routing, and the candidate added internal edge/face without guessing from raster appearance.",
+    "Otherwise classify FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT; no refinement PASS is allowed."
+  ],
+  "classification":{"ready":"DED_DLD_SOURCE_VECTOR_INCIDENCE_MAP_READY","manual":"DED_DLD_FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT","invalid":"DED_DLD_SOURCE_FIGURE_ASSET_INVALID"},
+  "claim_lock":"Figure extraction does not itself prove a subfoam embedding or any amplitude identity."
+}
