@@ -1,0 +1,142 @@
+name: ISQGR Iter006 RC006 Eq29 EPRL Section Block
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_eprl_section_block.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch hash-pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+          test -s src/bc-spin-nets.tex
+      - name: Extract unique EPRL-section block under frozen rule
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          active_lines=[]
+          for line in raw.splitlines(True):
+              cut=None
+              for i,ch in enumerate(line):
+                  if ch!='%': continue
+                  bs=0; j=i-1
+                  while j>=0 and line[j]=='\\': bs+=1; j-=1
+                  if bs%2==0: cut=i; break
+              active_lines.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+          active=''.join(active_lines)
+          sub_rx=re.compile(r'\\subsection\s*\{EPRL intertwiner model\}')
+          subs=list(sub_rx.finditer(active))
+          out={'gate':'ITER006_RC006_EQ29_EPRL_SECTION_BLOCK','eprl_subsection_count':len(subs)}
+          if len(subs)!=1:
+              out.update({'classification':'EQ29_EPRL_SOURCE_BLOCK_AMBIGUOUS','reason':'eprl_subsection_count_not_one'})
+          else:
+              s=subs[0]
+              boundary_rx=re.compile(r'\\(?:subsection|section)\s*\{')
+              nb=boundary_rx.search(active,s.end())
+              end=nb.start() if nb else len(active)
+              body=active[s.start():end]
+              target_rx=re.compile(r'[^\n]*initial\s+3-valent\s+tensor[^\n]*\\eqref\{eq:eprl-3-valent\}[^\n]*',re.I)
+              targets=list(target_rx.finditer(body))
+              out['target_anchor_count']=len(targets)
+              if len(targets)!=1:
+                  out.update({'classification':'EQ29_EPRL_SOURCE_BLOCK_AMBIGUOUS','reason':'target_anchor_count_not_one'})
+              else:
+                  t=targets[0]
+                  after=body[t.end():]
+                  bm=re.search(r'\\begin\{(align\*?)\}',after)
+                  if not bm:
+                      out.update({'classification':'EQ29_EPRL_SOURCE_BLOCK_AMBIGUOUS','reason':'no_following_align'})
+                  else:
+                      env=bm.group(1); abs_b=t.end()+bm.start(); token='\\end{'+env+'}'; rel_e=body.find(token,abs_b)
+                      if rel_e<0:
+                          out.update({'classification':'EQ29_EPRL_SOURCE_BLOCK_AMBIGUOUS','reason':'unclosed_align'})
+                      else:
+                          rel_e += len(token)
+                          block=body[abs_b:rel_e]
+                          tail=body[rel_e:]
+                          tikz=re.findall(r'\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}',block,re.S)
+                          draws=re.findall(r'\\draw\b.*?;',block,re.S)
+                          node_labels=[]
+                          for d in draws:
+                              node_labels.extend(re.findall(r'node\s*(?:\[[^\]]*\])?\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}',d,re.S))
+                          anchor_abs=s.start()+t.start(); line=active.count('\n',0,anchor_abs)+1
+                          pathlib.Path('out/eprl_subsection_active.tex').write_text(body)
+                          pathlib.Path('out/eq29_candidate_align.tex').write_text(block)
+                          pathlib.Path('out/eq29_candidate_tikz.tex').write_text('\n\n% --- TIKZ ---\n\n'.join(tikz))
+                          pathlib.Path('out/eq29_following_prose.tex').write_text(tail)
+                          ok=bool(tikz and draws)
+                          out.update({
+                            'anchor_line':line,'anchor_offset_active':anchor_abs,'anchor_text':t.group(0).strip(),
+                            'eprl_subsection_sha256':hashlib.sha256(body.encode()).hexdigest(),
+                            'align_environment':env,'align_block_sha256':hashlib.sha256(block.encode()).hexdigest(),
+                            'tikz_picture_count':len(tikz),'draw_command_count':len(draws),'node_label_count':len(node_labels),
+                            'node_labels':node_labels,'following_prose_chars':len(tail),
+                            'classification':'EQ29_EPRL_SOURCE_BLOCK_EXTRACTED' if ok else 'EQ29_EPRL_SOURCE_BLOCK_AMBIGUOUS',
+                            'reason':None if ok else 'no_tikz_or_draw',
+                            'authorization':'RAW_SOURCE_BLOCK_ONLY; later separately preregistered geometry/incidence/R-placement audit required.',
+                            'eq29_amplitude_authorized':False,'bridge_credit':False
+                          })
+          pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-eprl-section-block
+          path: out/
+          if-no-files-found: error
+
+  independent-verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch and independently verify structural uniqueness
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          mkdir src
+          tar -xf source.bundle -C src
+          python - <<'PY'
+          import json,pathlib,re
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          # Independent verifier uses linewise comment removal and subsection slicing by exact title.
+          lines=[]
+          for line in raw.splitlines():
+              keep=''; i=0
+              while i<len(line):
+                  if line[i]=='%':
+                      bs=0; j=i-1
+                      while j>=0 and line[j]=='\\': bs+=1; j-=1
+                      if bs%2==0: break
+                  keep+=line[i]; i+=1
+              lines.append(keep)
+          starts=[i for i,l in enumerate(lines) if re.search(r'\\subsection\s*\{EPRL intertwiner model\}',l)]
+          good=False; anchors=[]
+          if len(starts)==1:
+              a=starts[0]; b=len(lines)
+              for i in range(a+1,len(lines)):
+                  if re.search(r'\\(?:subsection|section)\s*\{',lines[i]): b=i; break
+              anchors=[i+1 for i in range(a,b) if re.search(r'initial\s+3-valent\s+tensor',lines[i],re.I) and '\\eqref{eq:eprl-3-valent}' in lines[i]]
+              good=len(anchors)==1
+          out={'gate':'ITER006_RC006_EQ29_EPRL_SECTION_BLOCK_INDEPENDENT_VERIFY','eprl_subsection_count':len(starts),'qualified_anchor_lines':anchors,
+               'classification':'EPRL_SECTION_TARGET_UNIQUE' if good else 'EPRL_SECTION_TARGET_NOT_UNIQUE','scientific_credit':'+0 verification only'}
+          pathlib.Path('verify.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not good: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-eprl-section-block-independent-verify
+          path: verify.json
+          if-no-files-found: error
