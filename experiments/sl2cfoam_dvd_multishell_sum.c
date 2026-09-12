@@ -70,7 +70,8 @@ int main(int argc, char **argv) {
     struct sl2cfoam_config conf;
     conf.verbosity=SL2CFOAM_VERBOSE_OFF;
     conf.accuracy=SL2CFOAM_ACCURACY_NORMAL;
-    conf.max_two_spin=32;
+    /* Maximum auxiliary doubled spin is 6; follow pinned b4_test rule max_l+20. */
+    conf.max_two_spin=26;
     conf.max_MB_mem_per_thread=0;
     sl2cfoam_init_conf("test/test_data/",gamma,&conf);
 
