@@ -1,0 +1,26 @@
+{
+  "gate": "ITER006_DVD_B4_UNIFORM_MULTISHELL_KERNEL_VALIDITY",
+  "date": "2026-09-12",
+  "object": "Pinned sl2cfoam-next Lorentzian EPRL B4 primitive on the source-relevant uniform shell slice j1=j2=j3=j4=1, l1=l2=l3=l4=1+Delta_l",
+  "pinned_sl2cfoam_commit": "052e4346028870bd76f69a3034e6cae8defb8f7f",
+  "parameters": {
+    "gamma": [0.5, 1.2, 2.0],
+    "delta_l": [0, 1, 2, 3],
+    "two_j": [2, 2, 2, 2]
+  },
+  "controls": {
+    "implementation_comparison": "upstream b4_test fast versus adaptive/accurate mode",
+    "delta_l_0": "same shell as the already validated B4/Dl0 primitive",
+    "fail_fast": false
+  },
+  "thresholds": {
+    "minimum_nonzero_comparisons": 1,
+    "all_relative_errors_finite": true,
+    "max_relative_error": 1e-5
+  },
+  "interpretation_rule": {
+    "pass": "All 12 frozen gamma x Delta_l lanes satisfy the pre-existing numerical-kernel self-consistency threshold. This authorizes a separately preregistered labelled DVD2/DVD3 multi-shell contraction implementation.",
+    "fail": "At least one lane violates the frozen kernel criterion. Classify as NUMERICAL/INFRASTRUCTURE validity failure for that multi-shell primitive until causal failure is localized; do not interpret it as physical amplitude failure.",
+    "claim_lock": "This is only a uniform-shell B4 numerical validity diagnostic. It is not a full DVD2/DVD3 shell sum, convergence result, refinement map, continuum limit, bridge derivation, or new physics. No monotonic shell decay criterion is imposed or fitted."
+  }
+}
