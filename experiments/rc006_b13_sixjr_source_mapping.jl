@@ -53,7 +53,7 @@ end
 
 # Eq. B13 graphical coefficient = (-1)^(j1+j2+j3+j4)*sqrt(d_e d_f)*[6j].
 function graph_b13(a,b,e,d,c,f)
-    return (-1)^(a+b+c+d)*sqrt(qsrc(2e+1)*qsrc(2f+1))*bracket6j(a,b,e,d,c,f)
+    return (-1)^(a+b+c+d)*sqrt(qsrc(2*e+1)*qsrc(2*f+1))*bracket6j(a,b,e,d,c,f)
 end
 
 count=0; bad=0; max_abs=0.0; max_rel=0.0; worst=Dict{String,Any}()
