@@ -1,0 +1,63 @@
+name: ISQGR DED DLD Source Figure Incidence Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_DED_DLD_SOURCE_FIGURE_INCIDENCE_PREREG.json'
+      - '.github/workflows/isqgr-ded-dld-source-figure-incidence.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  figure-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install EPS renderer
+        run: sudo apt-get update && sudo apt-get install -y ghostscript
+      - name: Fetch pinned DVD primary source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          tar -xf source.tar -C src
+          sha256sum source.tar | tee out/source.sha256
+      - name: Inspect vector assets and render previews
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import pathlib,re,json,hashlib,subprocess
+          src=pathlib.Path('src'); out=pathlib.Path('out')
+          assets={'DED':'_images/DEDconplex_plus_vg.eps','DLD':'_images/DLDandVertex.eps'}
+          rep={}
+          for name,rel in assets.items():
+              p=src/rel
+              if not p.exists():
+                  rep[name]={'exists':False}; continue
+              b=p.read_bytes(); t=b.decode('latin1','ignore')
+              shows=re.findall(r'\(([^()]*)\)\s*(?:show|ashow|widthshow)',t)
+              nums=sorted(set(s.strip() for s in shows if s.strip() in set('1234567')))
+              rep[name]={'exists':True,'path':rel,'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b),
+                         'bounding_boxes':re.findall(r'^%%(?:HiRes)?BoundingBox:\s*(.*)$',t,re.M),
+                         'moveto_count':len(re.findall(r'(?<![A-Za-z])(?:m|moveto)(?![A-Za-z])',t)),
+                         'lineto_count':len(re.findall(r'(?<![A-Za-z])(?:l|lineto)(?![A-Za-z])',t)),
+                         'curveto_count':len(re.findall(r'(?<![A-Za-z])(?:c|curveto)(?![A-Za-z])',t)),
+                         'stroke_count':len(re.findall(r'(?<![A-Za-z])(?:S|stroke)(?![A-Za-z])',t)),
+                         'gsave_count':len(re.findall(r'(?<![A-Za-z])gsave(?![A-Za-z])',t)),
+                         'grestore_count':len(re.findall(r'(?<![A-Za-z])grestore(?![A-Za-z])',t)),
+                         'show_strings':shows[:200],'routing_numeric_labels':nums}
+              (out/f'{name.lower()}_vector_excerpt.txt').write_text(t[:200000],errors='ignore')
+              subprocess.run(['gs','-q','-dSAFER','-dBATCH','-dNOPAUSE','-sDEVICE=pngalpha','-r240',f'-sOutputFile=out/{name.lower()}_figure.png',str(p)],check=True)
+          valid=all(rep.get(k,{}).get('exists') for k in assets)
+          dld_labels=set(rep.get('DLD',{}).get('routing_numeric_labels',[]))
+          # Conservative machine-readiness: all seven routing labels must survive as text AND the file must expose vector path primitives and graphics-state grouping.
+          machine_ready=bool(valid and dld_labels==set('1234567') and rep['DLD']['lineto_count']>20 and rep['DLD']['gsave_count']>=7 and rep['DED']['lineto_count']>5)
+          cls='DED_DLD_SOURCE_VECTOR_INCIDENCE_MAP_READY' if machine_ready else ('DED_DLD_FIGURE_ONLY_REQUIRES_MANUAL_INCIDENCE_AUDIT' if valid else 'DED_DLD_SOURCE_FIGURE_ASSET_INVALID')
+          summary={'gate':'ITER006_DED_DLD_SOURCE_FIGURE_INCIDENCE_AUDIT','assets':rep,'machine_incidence_ready':machine_ready,'classification':cls,'claim_lock':'Asset/vector extraction only; no subfoam embedding or amplitude identity established.'}
+          (out/'figure_incidence_summary.json').write_text(json.dumps(summary,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(summary,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-source-figure-incidence
+          path: out/*
+          if-no-files-found: error
