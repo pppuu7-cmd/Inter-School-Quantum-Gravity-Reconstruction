@@ -4,28 +4,29 @@
   "date":"2026-09-12",
   "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration":"ITERATION_006",
-  "iteration_completion_percent":52,
+  "iteration_completion_percent":55,
   "candidate_theory_status":"UNFORMED",
   "lead_bridge_hypothesis":"BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
   "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"rqir_promotion_authorized":false,"kmqgb_promotion_authorized":false},
   "readiness_percent":{"amplitude_refinement_cross_realization_validation":30,"candidate_theory_construction":0,"overall_scientific_programme":44},
   "frontier":{
-    "RC006":{"status":"EQ29_AMPLITUDE_BLOCKED_SERIALIZATION_UNSTABLE","contraction_serialization":{"run":34700639086,"aggregate_job":103571679523,"artifact":10300052796,"classification":"SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE"},"failure_localization":{"run":34700891523,"aggregate_job":103572467066,"artifact":10300127995,"classification":"DIAGNOSTIC_SOURCE_AUTHORITY_LOCALIZED","critical_anchors":["app:EPRL-diagram","app:EPRL-norm","app:graph","eq:recoupling-basis"]}},
-    "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED","volume_simplicity_selector":{"run":34700870181,"aggregate_job":103572312400,"artifact":10300317494,"classification":"SCIENTIFIC_NEGATIVE_SELECTOR_NOT_SUPPORTED","lanes_passed":0,"lane_total":5},"source_closure":{"run":34700993029,"aggregate_job":103572635494,"artifact":10299993291,"classification":"SOURCE_CLOSURE_BLOCKED_MISSING_EXPLICIT_OBJECT"},"state_sum_gluing_structure":{"run":34701056222,"aggregate_job":103572802683,"artifact":10299753586,"classification":"SOURCE_STRUCTURAL_GLUING_AUTHORITY_BLOCKED"}},
+    "RC006":{"status":"EQ29_AMPLITUDE_BLOCKED_SERIALIZATION_UNSTABLE","classification":"SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE"},
+    "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
     "RC009":{"status":"SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{
-      "status":"SOURCE_SELECTION_ROBUSTNESS_FAIL_LABEL_OWNER_DIAGNOSTIC_ACTIVE",
+      "status":"DVD_DL0_PILOT_PASS_HELDOUT_GAMMA_ACTIVE",
       "source":"arXiv:1801.03771",
-      "source_qualification":{"run":34701137059,"head":"5a05b6cd918b55fdd30382c25899f8a158e1f5f9","aggregate_job":103573017187,"artifact":10300223107,"classification":"SOURCE_QUALIFIED_GENUINE_TWO_VERTEX_LORENTZIAN_EPRL_PREREQUISITE"},
-      "equation_extraction":{"run":34701253118,"head":"e00141f11bd355eb11a276ccda1eb3ba5daae7fc","aggregate_job":103573328781,"artifact":10300098480,"artifact_digest":"sha256:7a96d18276e52c8f65a859e19605b7e9c44842879fc20906cec903dd7a4cf9fd","classification":"SOURCE_EQUATION_EXTRACTION_PASS_PREREQUISITE","hard_equations_complete":true,"diagnostic_equations_complete":true},
-      "selection_robustness":{"run":34701317882,"head":"531d0a21de4d6b136c9f1ed789061b72112f41d1","aggregate_job":103573499012,"artifact":10299439561,"artifact_digest":"sha256:58eabfe9e017b421349b1100f05e16981e213905bdd82bc8e8bbd9cf368a48c8","classification":"SOURCE_EQUATION_SELECTION_ROBUSTNESS_FAIL","source_lock_pass":false,"stable_count":2,"target_count":8,"stable_targets":["full_amplitude","correlation_observable"]},
-      "source_ambiguity_diagnostics":{"run":34702507649,"head":"35f125829ca76f7c77fbf5297d4b7b635217b1e0","aggregate_job":103576700118,"artifact":10300551424,"artifact_digest":"sha256:34c46ba8aabb3b6b12127fcb6a845f58eaf9b5ce85aa8c9b2463af3aa26fa58d","classification":"DIAGNOSTIC_BATCH_COMPLETE","promotion_authorized":false,"distinct_math_object_counts":{"two_vertex_amplitude":13,"internal_face_sum":13,"simplified_amplitude":4,"large_spin_scaling":8,"immirzi":5,"cutoff_or_truncation":10},"unique_explicit_math_reference_targets":["two_vertex_amplitude","cutoff_or_truncation"],"unique_explicit_math_label":"decaffeinato","unique_explicit_math_hash":"b6cfed3b44137175935857587f1b577fdd843aa720ec1d01edeb7aa385f84c46"},
-      "active_label_owner_audit":{"run":34702654029,"head":"a208f433bc8902bd5bd8eaa76abdee71d851674e","classification":"RUNNING_6_LANE_REFERENCE_LABEL_OWNER_DIAGNOSTIC"},
-      "numerical_two_vertex_implementation_authorized":false,
-      "next_gate":"CONSUME_LABEL_OWNER_AUDIT; ONLY IF SOURCE_AUTHORITY IS UNAMBIGUOUS MAY A NEW PROSPECTIVE LABEL_FIRST SOURCE_LOCK BE PREREGISTERED; NUMERICAL IMPLEMENTATION REMAINS BLOCKED UNTIL THAT NEW LOCK PASSES"
+      "selection_robustness":{"run":34701317882,"aggregate_job":103573499012,"artifact":10299439561,"classification":"SOURCE_EQUATION_SELECTION_ROBUSTNESS_FAIL","stable_count":2,"target_count":8},
+      "label_owner_audit":{"run":34702654029,"head":"a208f433bc8902bd5bd8eaa76abdee71d851674e","aggregate_job":103577055870,"artifact":10300861302,"classification":"LABEL_OWNER_DIAGNOSTIC_COMPLETE","promotion_authorized":false},
+      "dvd_dl0_pilot":{"run":34703528413,"head":"cb21a8aaf938c8c893ec9ea58036522bfb382497","aggregate_job":103579476677,"artifact":10301595889,"artifact_digest":"sha256:ef6ed6fa672b79eb259d8d348fe4aebb4983b8aa71966809d408ce8b63abc1d9","classification":"SCIENTIFIC_PASS_SCOPED_DVD_DL0_TWO_VERTEX_PILOT","bridge_credit":false},
+      "dvd_dl0_symbolic_guard":{"run":34703574873,"head":"8d79350e35acc772b12c00e74db059993d262bce","job":103579481295,"artifact":10301042008,"artifact_digest":"sha256:9c7d1b5b1947d0c818de59029666f8406c2ac35276e5d59d1df5fd423c1ba276","classification":"DVD_DL0_SYMBOLIC_GUARD_PASS"},
+      "heldout_gamma_transport":{"run":34703682106,"head":"958514e1342b451511c40188b776e19e76d2a1d0","classification":"RUNNING_5_LANE_HELDOUT_NONRETUNED_GAMMA_TRANSPORT"},
+      "numerical_two_vertex_dl0_prerequisite_closed":true,
+      "refinement_map_derived":false,
+      "next_gate":"CONSUME_HELDOUT_GAMMA; THEN PROSPECTIVELY FREEZE SOURCE_FAITHFUL_MULTI_SHELL_DIAGNOSTIC_OR_REPRODUCTION WITHOUT CALLING IT REFINEMENT"
     }
   },
-  "active_compute":[{"workflow_run":34702654029,"purpose":"6 independent source reference-label owner diagnostics for unstable genuine two-vertex Lorentzian EPRL targets","status":"IN_PROGRESS_OR_AGGREGATING"}],
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_LORENTZIAN_EPRL_TWO_VERTEX_SELECTION_ROBUSTNESS_FAIL.md","results/ITER006_LORENTZIAN_EPRL_TWO_VERTEX_EQUATION_EXTRACTION_PASS.md","results/ITER006_LORENTZIAN_EPRL_TWO_VERTEX_SOURCE_QUALIFICATION_PASS.md","results/ITER006_RC008_STATE_SUM_GLUING_STRUCTURE_BLOCKED.md","results/ITER006_RC006_CONTRACTION_SERIALIZATION_STABILITY_FAIL.md","docs/CONSTITUTION.md"]
+  "active_compute":[{"workflow_run":34703682106,"purpose":"5 held-out non-retuned gamma transport lanes for source-labelled genuine two-vertex Lorentzian EPRL Dl0 contraction","status":"QUEUED_OR_IN_PROGRESS"}],
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_DVD_DL0_TWO_VERTEX_PILOT_PASS.md","protocol/ITER006_DVD_DL0_HELDOUT_GAMMA_PREREG.json","results/ITER006_LORENTZIAN_EPRL_TWO_VERTEX_SELECTION_ROBUSTNESS_FAIL.md","docs/CONSTITUTION.md"]
 }
