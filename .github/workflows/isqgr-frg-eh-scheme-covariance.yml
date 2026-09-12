@@ -1,0 +1,40 @@
+name: ISQGR FRG EH Scheme Covariance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-frg-eh-scheme-covariance.yml'
+      - 'experiments/frg_eh_scheme_covariance_stress.py'
+
+permissions:
+  contents: read
+
+jobs:
+  frg:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --upgrade numpy scipy
+      - name: Compute NGFPs and local stability data
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/frg_eh_scheme_covariance_stress.py --output compute_out/frg_eh_scheme_covariance.json
+          python - <<'PY'
+          import json
+          d=json.load(open('compute_out/frg_eh_scheme_covariance.json'))
+          assert d['status']=='PASS_EXECUTION'
+          assert d['cross_scheme']['both_ngfp_positive_g_below_lambda_wall']
+          assert d['cross_scheme']['both_uv_relevant_real_parts_positive']
+          print(json.dumps(d['cross_scheme'],indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-frg-eh-scheme-covariance
+          path: compute_out/*.json
+          if-no-files-found: error
