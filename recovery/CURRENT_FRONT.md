@@ -2,7 +2,7 @@
 
 Date: 2026-09-12  
 Active iteration: `ITERATION_006`  
-Iteration completion: **49%**  
+Iteration completion: **52%**  
 Overall scientific programme readiness: **44%**  
 Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
@@ -10,30 +10,32 @@ Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
 `BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR` remains only structurally/stress-test supported. The independent true-QG amplitude/refinement bridge has not passed. Generic orientation/projector/envelope structure remains absorbed by standard amplitude-level TNR.
 
-## RC006
+## RC006 — q-deformed EPRL/FK source reconstruction
 
-`RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` remains **OPEN**, but the source-ordering front has materially advanced. Geometry-nearest assignment remains a scientific negative (`34698228895`); no picture-based fallback is authorized. The lexical Eq.(29)/Appendix-F audit remains mixed 6/8 (`34699432919`) and the TeX-structure audit mixed 5/6 (`34699578046`); those negatives are preserved.
+The ordered-context holdout prerequisite is terminal **SCIENTIFIC PASS**: run `34700277881`, head `219391c897159f4541cb629d553c373981ed8531`, aggregate job `103570712196`, artifact `10300002366`. All eight leave-one-qualified-anchor lanes retained uniqueness and the unordered null restored ambiguity. This was a source-identifiability prerequisite only.
 
-Internal source prerequisites passed: reference chain `34699660419` (6/6) and named-anchor dependency `34699750791` (7/7). The first MathEnv run `34699899382` remains `INFRASTRUCTURE/IMPLEMENTATION_MEASUREMENT_INVALID`; corrected run `34699987643`, aggregate `103570011082`, artifact `10299503360`, passed source math/symbol incidence but retained multiple ordered signatures.
+The subsequent stricter contraction-serialization gate is terminal **SCIENTIFIC FAIL**, despite green CI: run `34700639086`, head `8a358e5a710a618a8b92b689ee4470266787ef7b`, aggregate job `103571679523`, summary artifact `10300052796`. The computation was valid; the full-source serialization was unique, but only `6/8` single-anchor holdouts stayed unique, minimum pairwise-order agreement with the full serialization was `0.8698752228163993`, and the unordered null was ambiguous. Frozen gate result: `SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE`.
 
-The stricter incidence-only leg-order test `34700094892` was a valid **SCIENTIFIC FAIL**: global job `103570205823`, artifact `10299837254`; 34 decorated symbols, 11 interchangeable groups, and at least about `2.95e5` incidence-preserving relabelings. Durable note: `results/ITER006_RC006_LEG_ORDER_NONIDENTIFIABLE.md`.
+Therefore the dependent minimal `k=12, gamma=1/3` Eq.(29) amplitude is **BLOCKED**. The threshold/interpretation rule is not weakened and no favorable anchor subset is selected after the result. Durable note: `results/ITER006_RC006_CONTRACTION_SERIALIZATION_STABILITY_FAIL.md`.
 
-The prospectively frozen ordered-context follow-up is now terminal **SCIENTIFIC PASS as an identifiability prerequisite**: run `34700193212`, head `be962f33625dd9973c35d820bae10c9d91ef0a44`, global job `103570471926`, global artifact `10300411214`, aggregate job `103570499775`, aggregate artifact `10300266645`. All seven computations were valid. Using exact predecessor/successor decorated-index neighborhoods plus normalized occurrence-order bins, the same 34 symbols produce `interchangeable_group_count = 0`, `ordered_context_unique = true`. Classification: `SCIENTIFIC_PASS_ORDERED_CONTEXT_UNIQUE`. Durable note: `results/ITER006_RC006_ORDERED_CONTEXT_IDENTIFIABILITY_PASS.md`.
+### Active RC006 diagnostic
 
-This removes the specific relabeling ambiguity under the ordered-source representation, but it is not yet a numerical Eq.(29) amplitude. Robustness to source-anchor removal and null calibration are required before freezing a contraction serialization.
+Run `34700891523`, head `8cb26ab0fb631ff36c2d2b52773019e021b4b665`: eight independent single-anchor failure-localization lanes. They quantify pairwise-order flips, ambiguous groups and affected decorated symbols. This is diagnostic/source-authority work only; it cannot reverse the failed gate or authorize Eq.(29).
 
-### Active compute
+## RC008 — quantum hypercuboid amplitude/refinement
 
-Run `34700277881`, head `219391c897159f4541cb629d553c373981ed8531`: nine-lane held-out ordered-context robustness gate. Eight lanes each remove one qualified source anchor without retuning and must retain uniqueness; a ninth `null_unordered` control deliberately removes ordered-neighborhood information and must restore ambiguity. Frozen interpretation: only **8/8 held-out uniqueness + null ambiguity** may authorize a contraction-ready source serialization. Green CI alone is not scientific PASS.
+Two prior source-faithful prerequisites remain valid:
 
-## RC008
+- Hessian kernel: run `34698968902`, aggregate `103567272522`, artifact `10300145140`; `PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY`.
+- `Eq:4Volume` refinement: run `34699223422`, aggregate `103567987044`, artifact `10300335297`; `PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY`.
 
-`RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE` remains OPEN, with two terminal prerequisite PASS results:
+Neither is a full restricted EPRL/FK vertex-amplitude reproduction or a refinement bridge.
 
-- Hessian kernel: run `34698968902`, aggregate `103567272522`, artifact `10300145140`; 8/8 PASS, worst symmetry error `0`, worst log-det scaling error `1.0658141036401503e-14`.
-- Source-faithful `Eq:4Volume` refinement: run `34699223422`, aggregate `103567987044`, artifact `10300335297`; 24/24 PASS, worst geometry/scaling/refinement errors `2.0457e-16`, `5.8754e-16`, `5.2038e-16`, minimum negative-control shift `0.0163964`.
+### Active RC008 amplitude-level selector diagnostic
 
-Neither is a full restricted EPRL-FK vertex-amplitude reproduction, published RG flow, or held-out transport result.
+Run `34700870181`, head `f93326b4f5f45e36f2f955b367103c9f580caed1`: five independent frozen-alpha lanes (`0.45, 0.55, 0.63, 0.67, 0.75`) evaluate the source-asymptotic dressed hypercuboid amplitude under equal-scale departures from exact volume simplicity. No published `alpha_*` is fitted. Each lane retains the preregistered homogeneity/null/statistical criterion; aggregate natural support requires at least `3/5` lanes and strong support at least `4/5`.
+
+This is a local amplitude-level held-out selector diagnostic only. Even a PASS does not reproduce the full coarse/refined hypercuboid amplitude, establish a refinement map, or derive `BH-004B`.
 
 ## Saturated / blocked / open
 
@@ -41,11 +43,12 @@ Neither is a full restricted EPRL-FK vertex-amplitude reproduction, published RG
 - Lorentzian `Delta4`: finite-cutoff/profile/scaling diagnostics remain **SATURATED NEGATIVE/SCOPED**; no bridge credit without genuine refinement.
 - Genuine multi-vertex Lorentzian EPRL refinement: **OPEN**.
 - `BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE`: **OPEN**.
+- RC006 Eq.(29) minimal amplitude: **BLOCKED by failed robust serialization gate**.
 
 ## Exact next allowed route
 
-RC006: consume/classify run `34700277881`. Only if all eight leave-one-anchor-out lanes remain source-order unique **and** the unordered null restores ambiguity may a contraction-ready source serialization be frozen. Only after that serialization is independently validated may the minimal `k=12, gamma=1/3` Eq.(29) amplitude be launched. Any held-out failure preserves the blocker.
+RC006: consume/classify run `34700891523`; use it only to identify which exact source relations carry the unstable order. A new source-explicit contraction relation, if found, must be frozen in a new independent authority gate before any Eq.(29) amplitude can be launched. No post-hoc relaxation of the failed `34700639086` criterion is allowed.
 
-RC008: implement the restricted hypercuboid vertex amplitude from pinned source equations **without fitting published `alpha_*`**, reproduce at least two coarse/refined boundary calculations, freeze the inferred `alpha' -> alpha` transport map, then apply it to a held-out boundary state without retuning.
+RC008: consume/classify run `34700870181`; independently continue toward a restricted hypercuboid vertex-amplitude reproduction from the pinned source equations **without fitting published `alpha_*`**. A selector diagnostic alone cannot close amplitude/refinement bridge status. The decisive route remains at least two coarse/refined boundary calculations, a prospectively frozen transport map, then a held-out boundary state without retuning.
 
 Candidate theory remains `0% / UNFORMED`. `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate equations and RQIR/KMQGB promotion remain forbidden.
