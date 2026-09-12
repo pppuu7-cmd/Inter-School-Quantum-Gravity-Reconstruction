@@ -28,6 +28,11 @@ def equation(t,label):
     if not em: return None
     return t[s:lm.end()+em.end()]
 
+def label_context(t,label,radius=900):
+    lm=re.search(r'\\label\{'+re.escape(label)+r'\}',t or '')
+    if not lm: return ''
+    return (t or '')[max(0,lm.start()-radius):min(len(t or ''),lm.end()+radius)]
+
 def h(raw): return hashlib.sha256(re.sub(r'\s+','',raw).encode()).hexdigest() if raw else None
 
 def factors(raw):
@@ -61,15 +66,15 @@ def main():
       {'j':['j_1','j_2','j_3','j_4'],'l':['l_1','l_2','l_3','l_4'],'i':'i','k':"t'"},
       {'j':["j'_1","j'_2","j'_3","j'_4"],'l':["j'_1","j'_2",'l_2','l_1'],'i':"i'",'k':"t'"}
     ]
-    c2=compact(raws['DVD2']); c3=compact(raws['DVD3']); cg=compact(raws['giorgio'])
-    dvd2_tokens=[r"\sum_{k',l_a}","d_{k'}",r"(-1)^{2(k'+t')}",r"\frac{\delta_{j'_3,l_4}}{d_{j'_3}}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}",r"\delta_{j_3,j'_3}"]
+    c2=compact(raws['DVD2']); c3=compact(raws['DVD3']); cg=compact(raws['giorgio']); gctx=compact(label_context(t,'giorgio'))
+    dvd2_tokens=[r"\sum_{k',l_a}","dk'",r"(-1)^{2(k'+t')}",r"\frac{\delta_{j'_3,l_4}}{d_{j'_3}}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}",r"\delta_{j_3,j'_3}"]
     dvd3_tokens=[r"\sum_{l_a}",r"\delta_{j_1,j'_1}",r"\delta_{j_2,j'_2}"]
     dvd2_token_status={x:(x in c2) for x in dvd2_tokens}
     dvd3_token_status={x:(x in c3) for x in dvd3_tokens}
     shell_tokens=[r'C_{\Delta l}',r'\sum_{l=j}^{j+\Delta l}',r"\sum_{l'=j'}^{j'+\Delta l}"]
-    shell_token_status={x:(x in cg) for x in shell_tokens}
-    token2=all(dvd2_token_status.values()); token3=all(dvd3_token_status.values()); shell_pattern=all(shell_token_status.values())
-    ok=bool(rsha==ROOT_SHA and hashes==EQ_HASH and fs2==expected2 and fs3==expected3 and token2 and token3 and shell_pattern)
+    shell_token_status_context={x:(x in gctx) for x in shell_tokens}
+    token2=all(dvd2_token_status.values()); token3=all(dvd3_token_status.values()); shell_pattern=all(shell_token_status_context.values())
+    ok=bool(rsha==ROOT_SHA and hashes['DVD2']==EQ_HASH['DVD2'] and hashes['DVD3']==EQ_HASH['DVD3'] and fs2==expected2 and fs3==expected3 and token2 and token3 and shell_pattern)
     out={
       'test':'LORENTZIAN_EPRL_DVD_MULTISHELL_SOURCE_MANIFEST',
       'root_path':str(f) if f else None,'root_title':title,'root_sha256':rsha,
@@ -77,9 +82,10 @@ def main():
       'dvd2_factor_mapping':fs2,'dvd3_factor_mapping':fs3,
       'dvd2_source_tokens_pass':token2,'dvd3_source_tokens_pass':token3,
       'dvd2_token_status':dvd2_token_status,'dvd3_token_status':dvd3_token_status,
-      'same_paper_shell_pattern_pass':shell_pattern,'shell_token_status':shell_token_status,
+      'same_paper_shell_pattern_pass':shell_pattern,'shell_token_status_context':shell_token_status_context,
       'diagnostic_dvd2_compact_prefix':c2[:1800],
-      'diagnostic_giorgio_compact':cg[:1800],
+      'diagnostic_giorgio_equation_parser_compact':cg[:700],
+      'diagnostic_giorgio_label_context_compact':gctx[:1800],
       'regulator_statement':"Finite DVD shell cutoff is a numerical regulator modeled on the same paper's C_Delta_l shell convention; it is not asserted to be the source definition of a finite DVD sum.",
       'gate_pass':ok,'classification':'DVD_MULTISHELL_SOURCE_MANIFEST_PASS' if ok else 'DVD_MULTISHELL_SOURCE_MANIFEST_FAIL',
       'claim_lock':'Source authority and regulator provenance only. No numerical amplitude, refinement, continuum, bridge, or novelty claim.'
