@@ -1,0 +1,149 @@
+name: ISQGR Iter006 DED DLD Source Semantic Relation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr_iter006_dvd_ded_dld_source_semantic_relation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [DED_context, DLD_context, relation_prose, explicit_map_tokens]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          echo '9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303  source.tar' | sha256sum -c -
+          tar -xf source.tar -C src
+      - name: Run frozen source-semantic audit
+        env:
+          MODE: ${{ matrix.mode }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,pathlib,re
+          mode=os.environ['MODE']
+          files=sorted(pathlib.Path('src').rglob('*.tex'))
+          if not files: raise SystemExit('no tex files')
+          def active_tex(raw):
+              out=[]
+              for line in raw.splitlines(True):
+                  cut=None
+                  for i,ch in enumerate(line):
+                      if ch!='%': continue
+                      bs=0; j=i-1
+                      while j>=0 and line[j]=='\\': bs+=1; j-=1
+                      if bs%2==0: cut=i; break
+                  out.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+              return ''.join(out)
+          docs=[]
+          for p in files:
+              a=active_tex(p.read_text(errors='replace'))
+              docs.append((str(p.relative_to('src')),a))
+          def contexts(base):
+              hits=[]
+              rx=re.compile(r'\\includegraphics(?:\[[^\]]*\])?\s*\{([^}]*'+re.escape(base)+r'(?:\.eps)?)\}',re.I)
+              for fn,a in docs:
+                  for m in rx.finditer(a):
+                      b=a.rfind('\\begin{figure',0,m.start()); e=a.find('\\end{figure',m.end())
+                      if b<0 or e<0: continue
+                      ee=a.find('}',e); env=a[b:ee+1]
+                      caps=re.findall(r'\\caption(?:\[[^\]]*\])?\{([^}]*)\}',env,re.S)
+                      labs=re.findall(r'\\label\{([^}]+)\}',env)
+                      heads=list(re.finditer(r'\\(?:section|subsection|subsubsection)\*?\{([^}]+)\}',a[:b]))
+                      head=heads[-1].group(1) if heads else None
+                      hits.append({'file':fn,'path':m.group(1),'caption':caps[0].strip() if len(caps)==1 else None,'labels':labs,'heading':head,'figure_sha256':hashlib.sha256(env.encode()).hexdigest(),'start':b,'end':ee+1})
+              return hits
+          ded=contexts('DEDconplex_plus_vg'); dld=contexts('DLDandVertex')
+          valid_ctx=(len(ded)==1 and len(dld)==1 and len(ded[0]['labels'])==1 and len(dld[0]['labels'])==1)
+          if mode in ('DED_context','DLD_context'):
+              arr=ded if mode=='DED_context' else dld
+              ok=(len(arr)==1 and len(arr[0]['labels'])==1)
+              out={'mode':mode,'valid':ok,'classification':mode.upper()+'_QUALIFIED' if ok else 'INVALID_SOURCE_OR_IMPLEMENTATION','context_count':len(arr),'contexts':arr}
+          else:
+              if not valid_ctx:
+                  out={'mode':mode,'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'context_uniqueness','DED_count':len(ded),'DLD_count':len(dld)}
+              else:
+                  dl=ded[0]['labels'][0]; ll=dld[0]['labels'][0]
+                  spans=[]
+                  for fn,a in docs:
+                      # Frozen source span = paragraph delimited by blank lines.
+                      off=0
+                      for para in re.split(r'\n\s*\n',a):
+                          refs=set(re.findall(r'\\(?:ref|eqref)\{([^}]+)\}',para))
+                          if dl in refs and ll in refs:
+                              stems=sorted({s for s in ['refin','subdiv','split','gluing','glue','insert','embed','coarse','fine','obtained','replace'] if re.search(s,para,re.I)})
+                              spans.append({'file':fn,'offset':off,'sha256':hashlib.sha256(para.encode()).hexdigest(),'relation_stems':stems,'text':para[:4000]})
+                          off += len(para)+2
+                  if mode=='relation_prose':
+                      rel=[x for x in spans if x['relation_stems']]
+                      out={'mode':mode,'valid':True,'classification':'BOTH_FIGURE_RELATION_PROSE_PRESENT' if rel else 'BOTH_FIGURE_RELATION_PROSE_ABSENT','DED_label':dl,'DLD_label':ll,'both_reference_span_count':len(spans),'relation_span_count':len(rel),'spans':spans}
+                  else:
+                      evidence=[]
+                      for sp in spans:
+                          fn=sp['file']; a=dict(docs)[fn]; c=sp['offset']; window=a[max(0,c-6000):min(len(a),c+6000+len(sp['text']))]
+                          arrows=sorted(set(re.findall(r'\\mapsto|\\to|->|→',window)))
+                          vf=sorted(set(m.group(0) for m in re.finditer(r'\b(?:vertex|vertices|edge|edges|face|faces|V|E|F)\b',window,re.I)))
+                          evidence.append({'span_sha256':sp['sha256'],'arrow_tokens':arrows,'vef_tokens':vf,'passes':bool(arrows and vf),'window_sha256':hashlib.sha256(window.encode()).hexdigest()})
+                      out={'mode':mode,'valid':True,'classification':'EXPLICIT_MAP_TOKENS_PRESENT' if any(x['passes'] for x in evidence) else 'EXPLICIT_MAP_TOKENS_ABSENT','evidence':evidence}
+          pathlib.Path(f'out/{mode}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not out.get('valid'): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-source-semantic-${{ matrix.mode }}
+          path: out/${{ matrix.mode }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ded-dld-source-semantic-*
+          path: inputs
+          merge-multiple: true
+      - name: Apply frozen classifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json,pathlib
+          names=['DED_context','DLD_context','relation_prose','explicit_map_tokens']; rows={}
+          for n in names:
+              p=pathlib.Path('inputs')/f'{n}.json'
+              if not p.exists():
+                  out={'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':f'missing_{n}'}; pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2)+'\n'); raise SystemExit(2)
+              rows[n]=json.loads(p.read_text())
+          if not all(r.get('valid') for r in rows.values()): valid=False; cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          else:
+              valid=True
+              rel=rows['relation_prose']['classification']=='BOTH_FIGURE_RELATION_PROSE_PRESENT'
+              mp=rows['explicit_map_tokens']['classification']=='EXPLICIT_MAP_TOKENS_PRESENT'
+              if rel and mp: cl='DED_DLD_SOURCE_SEMANTIC_INCIDENCE_GATE_READY'
+              elif rel: cl='DED_DLD_SOURCE_RELATION_PROSE_ONLY'
+              else: cl='DED_DLD_SOURCE_CONTEXT_ONLY'
+          out={'gate':'ITER006_DVD_DED_DLD_SOURCE_SEMANTIC_RELATION','valid':valid,'classification':cl,'lane_classifications':{n:rows[n].get('classification') for n in names},'raster_gate_preserved_failed':True,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-source-semantic-summary
+          path: out/summary.json
+          if-no-files-found: error
