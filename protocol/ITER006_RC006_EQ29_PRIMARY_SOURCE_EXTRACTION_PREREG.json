@@ -1,0 +1,42 @@
+{
+  "gate_id": "ITER006_RC006_EQ29_PRIMARY_SOURCE_EXTRACTION",
+  "date": "2026-09-12",
+  "status": "PREREGISTERED_BEFORE_IMPLEMENTATION",
+  "source": {
+    "paper": "arXiv:1609.02429v2",
+    "version_locked": true,
+    "paper_role": "primary source for RC006 Sec. VII.B Eq. (29) EPRL intertwiner semantics and diagram"
+  },
+  "motivation": "RC006 Eq. (29) amplitude remains fail-closed because source-faithful semantics, label geometry, R-matrix-factor placement and path incidence are not all machine-qualified. Manual PDF inspection found genuinely new source authority for Eq. (29) semantics, but no machine extraction is yet authorized.",
+  "independent_streams": [
+    {
+      "id": "SOURCE_BUNDLE",
+      "object": "versioned arXiv source bundle",
+      "procedure": "download the v2 source bundle, record SHA256 and archive inventory, extract textual/TeX occurrences surrounding EPRL/intertwiner/Eq.29-related anchors, and report referenced graphics/include files without modifying source"
+    },
+    {
+      "id": "PDF_TEXT",
+      "object": "versioned primary PDF",
+      "procedure": "download the v2 PDF, record SHA256, run deterministic pdftotext, and extract bounded neighborhoods around Sec. VII.B / EPRL-intertwiner / simplicity-constraint / R-matrix anchors"
+    }
+  ],
+  "frozen_classification": {
+    "EQ29_PRIMARY_SOURCE_EXTRACTION_READY": "both independent source streams complete, produce nonempty provenance hashes, and recover source neighborhoods containing the EPRL-intertwiner semantics plus at least one R-matrix anchor; this authorizes only a later prospectively preregistered source-geometry audit",
+    "EQ29_PRIMARY_SOURCE_EXTRACTION_PARTIAL": "the primary source is acquired but one of the required source neighborhoods or archive inventories is incomplete",
+    "INVALID_INFRASTRUCTURE": "the versioned primary source cannot be acquired or deterministic extraction does not execute"
+  },
+  "nonpromotion_rule": "Even EQ29_PRIMARY_SOURCE_EXTRACTION_READY does not mark eq29_label_geometry, eq29_rmatrix_factor or eq29_path_incidence as PASS. It only creates immutable primary-source evidence for a later explicit source-faithful graph/geometry qualification.",
+  "forbidden_posthoc_actions": [
+    "infer missing incidence from desired contraction order",
+    "hardcode a graph and call self-consistency source reconstruction",
+    "treat a source-text phrase as R-matrix placement in Eq.29 without an explicit mapping object",
+    "launch Eq.29 amplitude before all required dependencies independently PASS"
+  ],
+  "claim_locks": [
+    "BRIDGE_DERIVED=false",
+    "NEW_PHYSICS_FOUND=false",
+    "NEW_QG_THEORY_REQUIRED=false",
+    "candidate_theory=UNFORMED",
+    "eq29_amplitude_authorized=false"
+  ]
+}
