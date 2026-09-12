@@ -1,0 +1,26 @@
+{
+  "gate":"ITER006_DVD_REFINEMENT_MAP_SOURCE_AUTHORITY_AUDIT",
+  "date":"2026-09-12",
+  "source":"arXiv:1801.03771",
+  "source_sha256":"27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1",
+  "objective":"Determine whether the pinned source itself supplies an explicit coarse/refined amplitude or boundary-state map that could support a genuine refinement bridge for the already validated DVD2/DVD3 amplitudes.",
+  "frozen_queries":[
+    "refinement|refine|refined",
+    "coarse|coarsening|fine|finer",
+    "cylindrical|embedding|injection|projection",
+    "resummation|sum over foams|sum over complexes",
+    "DVD2|DVD3|two-vertex|2-vertex",
+    "boundary graph|boundary state|transition amplitude"
+  ],
+  "classification_rule":{
+    "EXPLICIT_REFINEMENT_MAP_CANDIDATE_FOUND":"At least one source passage contains an explicit mathematical map/operator/relation connecting two discretization levels or boundary/amplitude spaces, not merely a comparison of different diagrams, an auxiliary cutoff, or a sum over labels.",
+    "SOURCE_REFINEMENT_AUTHORITY_NOT_FOUND":"No such explicit map is present after all frozen query classes and surrounding source contexts are audited.",
+    "SOURCE_AUDIT_INCONCLUSIVE":"Candidates exist but cannot be classified unambiguously from source text/context alone.",
+    "INFRASTRUCTURE_FAIL":"Pinned source cannot be fetched/verified/extracted or audit code fails before classification."
+  },
+  "claim_locks":[
+    "A positive candidate does not itself derive a bridge; it only authorizes implementing the exact source map in a later frozen numerical gate.",
+    "A negative result applies only to this pinned source and does not show that Lorentzian EPRL lacks refinement maps in the literature.",
+    "Finite shell cutoff D is not to be re-labelled as refinement."
+  ]
+}
