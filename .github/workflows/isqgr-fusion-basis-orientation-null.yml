@@ -82,18 +82,18 @@ jobs:
           parse=lambda x:[float(v) for v in re.findall(numpat,x)]
           marker=s.split('Expectation values of Ribbon operators',1)
           if len(marker)!=2: raise SystemExit('expectation marker missing')
-          rows=[]
-          for line in marker[1].splitlines():
-              vals=[float(v) for v in re.findall(numpat,line)]
-              if len(vals)>=4: rows.append(vals)
-          if len(rows)<4: raise SystemExit(f'expected >=4 expectation rows, got {len(rows)}')
+          # This source branch prints all (iterations+1) expectation rows on one
+          # physical line.  Parse the whole tail and take the final 3x3 row.
+          expvals=[float(v) for v in re.findall(numpat,marker[1])]
+          if len(expvals)<9: raise SystemExit(f'expected at least 9 expectation values, got {len(expvals)}')
+          final_ribbon=expvals[-9:]
           out={
             'test':'FUSION_BASIS_EMBEDDING_ORIENTATION_NULL_LANE',
             'mode':mode,'g':g,
             'source_commit':'bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4',
             'first_svd_maps_by_iteration':[parse(x) for x in first],
             'second_svd_maps_by_iteration':[parse(x) for x in second],
-            'final_ribbon_expectations':rows[-1],
+            'final_ribbon_expectations':final_ribbon,
             'iterations_seen':[int(x) for x in re.findall(r'Iteration\s+(\d+)',s)],
             'claim_lock':'Counterfactual nearest-framework TNR test. The orientation null is a post-SVD norm-preserving permutation of the first embedding vector; current-step singular values are untouched, but exact SVD reconstruction is intentionally broken to test information sufficiency.'
           }
