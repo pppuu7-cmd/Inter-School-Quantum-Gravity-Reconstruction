@@ -1,0 +1,77 @@
+name: ISQGR RC-009 Endpoint Power Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc009_endpoint_power_audit.py'
+      - '.github/workflows/isqgr-rc009-endpoint-power.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  endpoint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix:
+        include:
+          - {mode: coarse, anchor: '0.2', tag: coarse}
+          - {mode: fine_diag, anchor: '0.2', tag: fine-diag}
+          - {mode: fine_edge, anchor: '0.05', tag: edge-005}
+          - {mode: fine_edge, anchor: '0.10', tag: edge-010}
+          - {mode: fine_edge, anchor: '0.20', tag: edge-020}
+          - {mode: fine_edge, anchor: '0.50', tag: edge-050}
+          - {mode: fine_edge, anchor: '1.00', tag: edge-100}
+          - {mode: fine_edge, anchor: '2.00', tag: edge-200}
+          - {mode: fine_edge, anchor: '4.00', tag: edge-400}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fit lower-endpoint algebraic envelope power
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/rc009_endpoint_power_audit.py \
+            --mode '${{ matrix.mode }}' --anchor '${{ matrix.anchor }}' \
+            --output 'compute_out/${{ matrix.tag }}.json'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc009-endpoint-${{ matrix.tag }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [endpoint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc009-endpoint-*
+          path: campaign
+          merge-multiple: true
+      - name: Aggregate endpoint classifications
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          rows=[json.loads(p.read_text()) for p in sorted(pathlib.Path('campaign').glob('*.json'))]
+          out={'test':'RC009_ENDPOINT_POWER_AGGREGATE','lane_count':len(rows),
+               'all_nine_present':len(rows)==9,
+               'all_absolute_integrable':len(rows)==9 and all(r['passes_absolute_power_criterion'] for r in rows),
+               'rows':[{'mode':r['mode'],'anchor':r['anchor'],'p':r['envelope_power_p'],'threshold':r['absolute_integrability_threshold'],'r2':r['fit_r2'],'pass':r['passes_absolute_power_criterion']} for r in rows],
+               'claim_lock':'Reduced-coordinate algebraic endpoint audit only; no statement about conditional oscillatory convergence or full spin-foam cylindrical consistency.'}
+          pathlib.Path('rc009_endpoint_power_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if len(rows)!=9: raise SystemExit('missing lanes')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc009-endpoint-power-summary
+          path: rc009_endpoint_power_summary.json
+          if-no-files-found: error
