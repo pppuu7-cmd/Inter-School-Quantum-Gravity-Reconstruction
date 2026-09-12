@@ -12,9 +12,11 @@ Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
 ## RC006
 
-`RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` remains **OPEN**. Source-path reconstruction passed (`34697961643`), geometry-nearest assignment failed scientifically (`34698228895`), explicit source-semantic authority passed (`34698427276`), and the inline-node parser was stable but non-discriminating (`34698521612`). Minimal `k=12, gamma=1/3` amplitude remains blocked until a contraction-ready mapping is frozen from explicit source semantics/conventions.
+`RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` remains **OPEN/BLOCKED**. Source-path reconstruction passed (`34697961643`), geometry-nearest assignment failed scientifically (`34698228895`), explicit source-semantic authority passed (`34698427276`), and the inline-node parser was stable but non-discriminating (`34698521612`). Minimal `k=12, gamma=1/3` amplitude remains blocked until a contraction-ready mapping is frozen from explicit source semantics/conventions.
 
-Active independent source gate: run `34699432919`, head `bdcda53f683f9d684de90d29e2b956b57bfd75a2`, prospectively frozen 8-lane Eq.(29)/Appendix-F relation-context extraction. It uses the official arXiv `1609.02429` source and separately extracts Eq29 context, R-matrix, crossing/braiding, representation labels, internal `l` channels, recoupling identities, Appendix-F context and simplicity-map context. PASS can only mean source relation context is machine-readable; it does not authorize a unique graph contraction or amplitude.
+The prospectively frozen Eq.(29)/Appendix-F lexical relation audit is terminal **MIXED / NOT PASS**: run `34699432919`, head `bdcda53f683f9d684de90d29e2b956b57bfd75a2`, aggregate job `103568483952`, artifact `10300395360`, digest `sha256:7ddf84f729011d1f8b91bd13134c2884035fba85813526625e2b79f43f06df79`. Six of eight roles passed (`eq29_context`, `internal_l`, `recoupling`, `representations`, `rmatrix`, `simplicity`); two failed the frozen source qualification. `appendix_f` produced zero preregistered textual forms versus two required; `crossing` produced three matches but only one distinct preregistered lexical form versus two required. Both jobs executed normally, so these are source-qualification/scientific FAILs, not infrastructure/numerical failures. Green aggregate CI does not change that classification. Durable note: `results/ITER006_RC006_EQ29_SOURCE_RELATION_MIXED_RESULT.md`.
+
+The failed lexical thresholds are preserved and will not be relaxed. A **distinct** source object is now running: TeX include/section/label-reference/graphics/source-component topology, not a rerun with easier words. Authoritative run `34699578046`, head `2675d390fac61b305478eee79815daa1f02293a1`, six independent lanes. At the last check all six were `in_progress`.
 
 ## RC008
 
@@ -34,7 +36,7 @@ These two PASS results do not reproduce the restricted EPRL-FK vertex amplitude,
 
 ## Active gates
 
-1. `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` — OPEN; source relation extraction running.
+1. `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` — OPEN/BLOCKED; independent source-structure audit running.
 2. `RC006_EQ29_MINIMAL_K12_AMPLITUDE_GATE` — BLOCKED on 1.
 3. `RC006_APPENDIX_C_C1_C2_SVD_GATE` — BLOCKED on 2.
 4. `RC006_HELDOUT_NONRETUNED_SELECTOR_TRANSPORT_GATE` — BLOCKED on 3.
@@ -44,8 +46,8 @@ These two PASS results do not reproduce the restricted EPRL-FK vertex amplitude,
 
 ## Exact next allowed route
 
-RC008: implement the restricted hypercuboid vertex amplitude from the pinned source equations **without fitting published `alpha_*`**, reproduce at least two coarse/refined boundary calculations, freeze the inferred `alpha' -> alpha` transport map, then apply it to a held-out boundary state without retuning.
+RC006: consume/classify run `34699578046`. Only if the independent source-structure object supplies sufficient source-connected authority may a contraction-ready Eq.(29) mapping be frozen; then and only then run the minimal `k=12, gamma=1/3` amplitude. If source structure remains insufficient, preserve the blocker and do not fall back to picture geometry or relaxed lexical criteria.
 
-RC006: consume/classify run `34699432919`; only source-authorized relations may enter the contraction mapping. If relation contexts are sufficient, freeze a contraction-ready Eq.(29) graph and then run the minimal `k=12, gamma=1/3` amplitude. A failed/ambiguous relation lane is preserved as a blocker; no geometry fallback or relaxed threshold is allowed.
+RC008: implement the restricted hypercuboid vertex amplitude from the pinned source equations **without fitting published `alpha_*`**, reproduce at least two coarse/refined boundary calculations, freeze the inferred `alpha' -> alpha` transport map, then apply it to a held-out boundary state without retuning.
 
 Candidate theory stays `0% / UNFORMED`. `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate equations and RQIR/KMQGB promotion remain forbidden.
