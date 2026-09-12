@@ -1,0 +1,64 @@
+name: ISQGR RC006 Appendix-C Synthetic Regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_appendix_c_synthetic_regression.py'
+      - '.github/workflows/isqgr-rc006-appendix-c-synthetic-regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        seed: [101,202,303,404,505,606]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy
+      - name: Run response-blind SVD regression
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_appendix_c_synthetic_regression.py --seed ${{ matrix.seed }} --output compute_out/reg_${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-c-reg-${{ matrix.seed }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-c-reg-*
+          path: all
+          merge-multiple: true
+      - name: Aggregate frozen regression gate
+        run: |
+          python - <<'PY'
+          import glob,json,os
+          rows=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          out={'test':'RC006_APPENDIX_C_SYNTHETIC_REGRESSION_AGGREGATE','seed_count':len(rows),
+               'all_six_present':len(rows)==6,'all_pass':len(rows)==6 and all(r['all_pass'] for r in rows),
+               'claim_lock':'Response-blind implementation regression only; no Eq29 amplitude or physical TNR result.'}
+          os.makedirs('aggregate_out',exist_ok=True); json.dump(out,open('aggregate_out/summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not (out['all_six_present'] and out['all_pass']): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-c-reg-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
