@@ -1,0 +1,128 @@
+name: ISQGR RC-009 Isotemporal Coarse Fine Cuhre
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc009_isotemporal_coarse_fine_cuhre.jl'
+      - '.github/workflows/isqgr-rc009-isotemporal-coarse-fine.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reconstruct:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        include:
+          - lane: scan_center_j8
+            alpha: '0.677'
+            G: '0.0037'
+            Lambda: '0.008'
+            jmax: '8.0'
+            mode: full
+          - lane: scan_center_j10
+            alpha: '0.677'
+            G: '0.0037'
+            Lambda: '0.008'
+            jmax: '10.0'
+            mode: full
+          - lane: scan_center_j12
+            alpha: '0.677'
+            G: '0.0037'
+            Lambda: '0.008'
+            jmax: '12.0'
+            mode: full
+          - lane: scan_Glow
+            alpha: '0.677'
+            G: '0.0032'
+            Lambda: '0.008'
+            jmax: '10.0'
+            mode: full
+          - lane: scan_Ghigh
+            alpha: '0.677'
+            G: '0.0042'
+            Lambda: '0.008'
+            jmax: '10.0'
+            mode: full
+          - lane: eq64_literal
+            alpha: '0.677'
+            G: '0.037'
+            Lambda: '0.008'
+            jmax: '10.0'
+            mode: full
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Install pinned deterministic cubature wrapper
+        run: julia -e 'using Pkg; Pkg.add(PackageSpec(name="Cuba", version="2.3.0"))'
+      - name: Reconstruct source-defined 54-to-192 hyperfrustum observable integrals
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          julia experiments/rc009_isotemporal_coarse_fine_cuhre.jl \
+            '${{ matrix.alpha }}' '${{ matrix.G }}' '${{ matrix.Lambda }}' \
+            '0.01' '${{ matrix.jmax }}' '${{ matrix.mode }}' \
+            "compute_out/rc009_${{ matrix.lane }}.toml"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc009-coarse-fine-${{ matrix.lane }}
+          path: compute_out/*
+          if-no-files-found: warn
+
+  aggregate:
+    if: always()
+    needs: [reconstruct]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc009-coarse-fine-*
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate cutoff and source-G diagnostics
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,tomllib,math
+          files=sorted(pathlib.Path('campaign').glob('*.toml'))
+          ds=[]
+          for p in files:
+              with p.open('rb') as f: d=tomllib.load(f)
+              d['_file']=p.name; ds.append(d)
+          def find(G,jmax):
+              return next((d for d in ds if abs(d['G']-G)<1e-12 and abs(d['jmax']-jmax)<1e-12),None)
+          center=[find(0.0037,x) for x in (8.0,10.0,12.0)]
+          cutoff=None
+          if all(center):
+              keys=['V3','VarV3','V4']
+              rows=[]
+              for lat in ('coarse','fine'):
+                  for k in keys:
+                      vals=[d[lat][k] for d in center]
+                      scale=max(abs(vals[1]),1e-300)
+                      rows.append({'lattice':lat,'observable':k,'j8':vals[0],'j10':vals[1],'j12':vals[2],
+                                   'max_neighbor_relative_change':max(abs(vals[1]-vals[0]),abs(vals[2]-vals[1]))/scale})
+              cutoff={'rows':rows,'all_observable_neighbor_changes_le_5pct':all(r['max_neighbor_relative_change']<=0.05 for r in rows)}
+          out={'test':'RC009_ISOTEMPORAL_COARSE_FINE_CAMPAIGN_AGGREGATE','completed_lane_files':len(ds),
+               'lanes':ds,'cutoff_robustness':cutoff,
+               'interpretation_lock':'Aggregate only successful lane artifacts. Missing lanes must be inspected as numerical/technical failures, not silently counted as physics negatives.'}
+          pathlib.Path('rc009_coarse_fine_campaign_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc009-coarse-fine-campaign-summary
+          path: rc009_coarse_fine_campaign_summary.json
+          if-no-files-found: error
