@@ -1,0 +1,112 @@
+name: ISQGR Fusion-Basis Amplitude Control
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-fusion-basis-amplitude-control.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        g: ['0.0','0.5','1.0']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Clone and pin source implementation
+        run: |
+          set -euo pipefail
+          git clone https://github.com/ssteinhaus/Fusion-basis-coarse-graining.git external/Fusion-basis-coarse-graining
+          git -C external/Fusion-basis-coarse-graining checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
+          test "$(git -C external/Fusion-basis-coarse-graining rev-parse HEAD)" = "bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4"
+      - name: Reduce iteration count for reproducibility pilot
+        working-directory: external/Fusion-basis-coarse-graining/int/no_torsion
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('Fusion_vec.jl')
+          s=p.read_text()
+          if 'iterations = 15' not in s:
+              raise SystemExit('expected source iteration setting not found')
+          p.write_text(s.replace('iterations = 15','iterations = 3',1))
+          PY
+          grep -n 'iterations =' Fusion_vec.jl
+          cat constants.jl
+      - name: Execute pinned amplitude-level coarse-graining pilot
+        working-directory: external/Fusion-basis-coarse-graining/int/no_torsion
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/compute_out"
+          julia -L Fusion_vec.jl -e 'Fusion.main_vec(parse(Float64, ARGS[1]));' '${{ matrix.g }}' \
+            > "$GITHUB_WORKSPACE/compute_out/fusion_g_${{ matrix.g }}.log" 2>&1
+          tail -n 80 "$GITHUB_WORKSPACE/compute_out/fusion_g_${{ matrix.g }}.log"
+          test -s "$GITHUB_WORKSPACE/compute_out/fusion_g_${{ matrix.g }}.log"
+      - name: Extract coarse execution markers
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,re
+          f=next(pathlib.Path('compute_out').glob('*.log'))
+          s=f.read_text(errors='replace')
+          iters=[int(x) for x in re.findall(r'Iteration\s+(\d+)',s)]
+          out={
+            'test':'FUSION_BASIS_PINNED_AMPLITUDE_COARSE_GRAINING_PILOT',
+            'g':float('${{ matrix.g }}'),
+            'source_commit':'bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4',
+            'requested_iterations':3,
+            'observed_iterations':iters,
+            'completed_three_iterations':bool(1 in iters and 2 in iters and 3 in iters),
+            'log_bytes':len(s.encode()),
+            'claim_lock':'Independent q-deformed lattice-gauge coarse-graining control, not an EPRL/spinfoam gravity realization. Pilot tests source-code executability before extracting embedding-map/SVD invariants.'
+          }
+          pathlib.Path('compute_out/summary_${{ matrix.g }}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fusion-basis-g-${{ matrix.g }}
+          path: compute_out/
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [reproduce]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fusion-basis-g-*
+          path: campaign
+      - name: Aggregate reproduction pilot
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib
+          fs=sorted(pathlib.Path('campaign').glob('**/summary_*.json'))
+          ds=[json.loads(p.read_text()) for p in fs]
+          out={
+            'test':'FUSION_BASIS_PINNED_AMPLITUDE_CONTROL_AGGREGATE',
+            'status':'PASS_EXECUTION' if len(ds)==3 else 'INCOMPLETE',
+            'all_three_couplings_complete':bool(len(ds)==3 and all(d['completed_three_iterations'] for d in ds)),
+            'by_coupling':ds,
+            'claim_lock':'Source-code reproduction pilot for a nearest-framework q-deformed lattice-gauge control. No QG universality claim.'
+          }
+          pathlib.Path('fusion_basis_amplitude_control_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-fusion-basis-amplitude-control-summary
+          path: fusion_basis_amplitude_control_summary.json
+          if-no-files-found: error
