@@ -1,0 +1,25 @@
+name: ISQGR Lorentzian EPRL DVD Support Combinatorics
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/lorentzian_eprl_dvd_support_combinatorics.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-dvd-support-combinatorics.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Count exact frozen-boundary auxiliary support
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_dvd_support_combinatorics.py --output compute_out/support.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dvd-support-combinatorics
+          path: compute_out/support.json
+          if-no-files-found: error
