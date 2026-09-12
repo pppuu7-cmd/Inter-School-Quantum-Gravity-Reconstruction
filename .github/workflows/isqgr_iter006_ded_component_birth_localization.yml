@@ -1,0 +1,130 @@
+name: ISQGR Iter006 DED Component Birth Localization
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_ded_component_birth_localization.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        representation: [ORIGINAL_EPS, GS_EPS2WRITE_NORMALIZED]
+        dpi: [300, 600]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install frozen-render dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ghostscript
+          python -m pip install --disable-pip-version-check pillow scipy numpy
+      - name: Fetch pinned DED asset and extract kept components
+        env:
+          REPRESENTATION: ${{ matrix.representation }}
+          DPI: ${{ matrix.dpi }}
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          test "$(sha256sum source.tar | awk '{print $1}')" = "9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303"
+          tar -xf source.tar -C src
+          P=src/_images/DEDconplex_plus_vg.eps
+          test -s "$P"
+          if [ "$REPRESENTATION" = GS_EPS2WRITE_NORMALIZED ]; then
+            gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=eps2write -sOutputFile=out/input.eps "$P"
+            IN=out/input.eps
+          else
+            cp "$P" out/input.eps
+            IN=out/input.eps
+          fi
+          gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray -r"$DPI" -sOutputFile=out/render.png "$IN"
+          python - <<'PY'
+          import json,os,pathlib
+          import numpy as np
+          from PIL import Image
+          from scipy import ndimage
+          rep=os.environ['REPRESENTATION']; dpi=int(os.environ['DPI'])
+          a=np.array(Image.open('out/render.png').convert('L'))
+          mask=a<200
+          ys,xs=np.where(mask)
+          if not len(xs): raise SystemExit('empty foreground')
+          mask=mask[ys.min():ys.max()+1,xs.min():xs.max()+1]
+          labels,n=ndimage.label(mask,structure=np.ones((3,3),dtype=int))
+          sizes=np.bincount(labels.ravel())[1:]
+          min_area=max(1,int(mask.size*0.00001))
+          objs=ndimage.find_objects(labels)
+          comps=[]
+          h,w=mask.shape
+          for lab,size in enumerate(sizes,start=1):
+            if int(size)<min_area: continue
+            yy,xx=np.where(labels==lab)
+            comps.append({
+              'label':lab,'pixels':int(size),'area_fraction':float(size/mask.size),
+              'centroid_y':float(yy.mean()/max(h-1,1)),'centroid_x':float(xx.mean()/max(w-1,1)),
+              'bbox':[int(yy.min()),int(xx.min()),int(yy.max()+1),int(xx.max()+1)]
+            })
+          out={'gate':'ITER006_DED_COMPONENT_BIRTH_LOCALIZATION','representation':rep,'dpi':dpi,
+               'pixel_threshold':200,'minimum_component_area_fraction':0.00001,
+               'crop_shape':[h,w],'kept_component_count':len(comps),'components':comps,
+               'claim_lock':'Diagnostic localization only. Frozen threshold and minimum-area rule unchanged; no topology/embedding/bridge credit.'}
+          pathlib.Path('out/components.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'representation':rep,'dpi':dpi,'count':len(comps),'min_area':min_area,'crop_shape':[h,w]},sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-components-${{ matrix.representation }}-${{ matrix.dpi }}
+          path: out/components.json
+          if-no-files-found: error
+
+  match:
+    needs: lane
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install matching dependency
+        run: python -m pip install --disable-pip-version-check scipy numpy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ded-components-*
+          path: all
+      - name: Match 300dpi to 600dpi components without retuning
+        run: |
+          python - <<'PY'
+          import glob,json,math,pathlib
+          import numpy as np
+          from scipy.optimize import linear_sum_assignment
+          docs=[json.load(open(p)) for p in glob.glob('all/**/components.json',recursive=True)]
+          by={(d['representation'],d['dpi']):d for d in docs}
+          reports=[]
+          for rep in ['ORIGINAL_EPS','GS_EPS2WRITE_NORMALIZED']:
+            lo=by[(rep,300)]['components']; hi=by[(rep,600)]['components']
+            C=np.zeros((len(lo),len(hi)))
+            for i,a in enumerate(lo):
+              for j,b in enumerate(hi):
+                dist=math.hypot(a['centroid_x']-b['centroid_x'],a['centroid_y']-b['centroid_y'])
+                ar=abs(math.log(max(a['area_fraction'],1e-30)/max(b['area_fraction'],1e-30)))
+                C[i,j]=dist+0.15*ar
+            ri,cj=linear_sum_assignment(C)
+            matched_hi=set(map(int,cj)); unmatched=[hi[j] for j in range(len(hi)) if j not in matched_hi]
+            pairs=sorted([{'i300':int(i),'i600':int(j),'cost':float(C[i,j]),
+                           'centroid_distance':float(math.hypot(lo[i]['centroid_x']-hi[j]['centroid_x'],lo[i]['centroid_y']-hi[j]['centroid_y'])),
+                           'area_fraction_300':lo[i]['area_fraction'],'area_fraction_600':hi[j]['area_fraction']}
+                          for i,j in zip(ri,cj)],key=lambda x:x['cost'],reverse=True)[:12]
+            reports.append({'representation':rep,'count_300':len(lo),'count_600':len(hi),
+                            'unmatched_600_count':len(unmatched),'unmatched_600_components':unmatched,
+                            'largest_match_costs':pairs})
+          out={'gate':'ITER006_DED_COMPONENT_BIRTH_MATCH','source_run':34715789027,'reports':reports,
+               'classification':'DED_EXTRA_600DPI_COMPONENTS_LOCALIZED' if all(r['unmatched_600_count']==2 for r in reports) else 'DED_COMPONENT_MATCH_REQUIRES_REVIEW',
+               'claim_lock':'Post-failure localization only; matching does not alter the frozen topology gate and grants no incidence/embedding/bridge permission.'}
+          pathlib.Path('ded_component_birth_match.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-component-birth-match
+          path: ded_component_birth_match.json
+          if-no-files-found: error
