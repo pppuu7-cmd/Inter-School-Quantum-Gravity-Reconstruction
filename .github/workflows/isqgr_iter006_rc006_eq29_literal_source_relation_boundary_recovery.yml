@@ -1,0 +1,82 @@
+name: ISQGR Iter006 RC006 Eq29 Literal Source Relation Boundary Recovery
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_literal_source_relation_boundary_recovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-line-recovery:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source independently
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+      - name: Recompute smallest-environment hash from independently discovered lines
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          lines=[]
+          for line in raw.splitlines(True):
+              cut=None
+              for i,c in enumerate(line):
+                  if c!='%': continue
+                  n=0;j=i-1
+                  while j>=0 and line[j]=='\\': n+=1; j-=1
+                  if n%2==0: cut=i; break
+              lines.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+          labs=[i for i,l in enumerate(lines) if '\\label{eq:eprl-3-valent}' in l]
+          allowed={'equation','equation*','align','align*','gather','gather*','multline'}
+          out={'gate':'ITER006_RC006_EQ29_LITERAL_SOURCE_RELATION_BOUNDARY_RECOVERY','label_lines':[i+1 for i in labs]}
+          if len(labs)!=1:
+              out.update({'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'label_count'})
+          else:
+              li=labs[0]; stack=[]; enclosing=[]
+              for i,l in enumerate(lines):
+                  for m in re.finditer(r'\\(begin|end)\{([^}]+)\}',l):
+                      typ,env=m.group(1),m.group(2)
+                      if typ=='begin': stack.append((env,i,m.start(),m.end()))
+                      else:
+                          k=next((k for k in range(len(stack)-1,-1,-1) if stack[k][0]==env),None)
+                          if k is None: continue
+                          b=stack.pop(k)
+                          if b[1]<=li<=i and env in allowed:
+                              # Canonicalize to exact begin-token -> exact end-token, not whole source lines.
+                              start_line=b[1]; end_line=i
+                              if start_line==end_line:
+                                  local=lines[start_line][b[2]:m.end()]
+                              else:
+                                  local=lines[start_line][b[2]:] + ''.join(lines[start_line+1:end_line]) + lines[end_line][:m.end()]
+                              enclosing.append((len(local),env,local,start_line+1,end_line+1))
+              if not enclosing:
+                  out.update({'valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'no_allowed_environment'})
+              else:
+                  enclosing.sort(key=lambda x:x[0]); size,env,block,sl,el=enclosing[0]; sha=hashlib.sha256(block.encode()).hexdigest()
+                  active=''.join(lines); ss=[i for i,l in enumerate(lines) if re.search(r'\\subsection\s*\{EPRL intertwiner model\}',l)]
+                  refs=-1
+                  if len(ss)==1:
+                      stop=len(lines)
+                      for i in range(ss[0]+1,len(lines)):
+                          if re.search(r'\\(?:subsection|section)\s*\{',lines[i]): stop=i; break
+                      refs=sum(len(re.findall(r'\\eqref\{eq:eprl-3-valent\}',l)) for l in lines[ss[0]:stop])
+                  frozen='88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d'
+                  ok=(env=='align' and sha==frozen and refs==1)
+                  pathlib.Path('out/recovered_environment.tex').write_text(block)
+                  out.update({'valid':True,'environment_type':env,'canonical_environment_chars':len(block),'canonical_environment_sha256':sha,'frozen_exact_character_sha256':frozen,'environment_start_line':sl,'environment_end_line':el,'eq29_direct_eqref_count':refs,'hash_agreement':sha==frozen,'classification':'EQ29_LITERAL_SOURCE_RELATION_EXTRACTED' if ok else 'EQ29_LITERAL_SOURCE_RELATION_AMBIGUOUS','scientific_change':False,'recovery_scope':'Canonical boundary implementation only; scientific predicate unchanged.','source_to_algebra_evaluator_preregistration_authorized':ok,'numerical_eq29_amplitude_authorized':False,'bridge_credit':False})
+          pathlib.Path('out/recovery.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not out.get('valid'): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-literal-source-relation-boundary-recovery
+          path: out/
+          if-no-files-found: error
