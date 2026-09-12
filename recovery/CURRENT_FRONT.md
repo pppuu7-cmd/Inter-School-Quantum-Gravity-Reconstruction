@@ -11,91 +11,73 @@ Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
 `BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR`
 
-The lead remains structurally and stress-test supported, but a second independent **true QG amplitude/refinement** realization has not yet passed. Generic projector/orientation/overcomplete-envelope structure is absorbed by standard amplitude-level TNR and is not counted as ISQGR novelty. The remaining possible novelty domain is a **source-native physical selector plus non-retuned QG refinement transport**.
+The lead remains structurally/stress-test supported, but the independent true-QG amplitude/refinement gate has not passed. Generic projector/orientation/envelope structure remains absorbed by standard amplitude-level TNR; the possible ISQGR novelty domain stays restricted to a source-native physical selector plus non-retuned QG refinement transport.
 
-## RC-006 q-deformed EPRL/FK front
+## Newly closed prerequisites
 
-The earlier source/implementation prerequisites remain valid: B13 source-to-kernel mapping passed `8009/8009`; Eq.(29) channel topology, Appendix-C feasibility and explicit Eq.(26) R-factor checks passed only in their scoped prerequisite senses. None is a full Eq.(29) amplitude.
+### RC006 Eq.(29) deterministic source path reconstruction — PASS subgate
 
-Authoritative newest durable note:
+Authoritative run `34697961643`, head `d914090ce98100d01aeaa9fe92ed6b94932f6701`.
 
-`results/ITER006_RC006_SOURCE_GRAPH_AND_SVD_PLUMBING.md`
+All four TeX-preserving parser lanes succeeded and aggregate job `103564711935` passed. Aggregate artifact `10298684340`, digest `sha256:ca8afc4093abb580b704666084ee1209851fdadf661a280affa09adee4a056ae`, records `frozen_gate_pass=true`, source/environment hash invariance and canonical structural-signature invariance.
 
-### Appendix-C response-blind synthetic regression — IMPLEMENTATION PASS ONLY
+Classification: `PASS_DETERMINISTIC_SOURCE_PATH_RECONSTRUCTION_SUBGATE`. It does **not** yet close the full oriented/braided contraction mapping: explicit source-authorized association of representation labels and braiding/orientation semantics is still required.
 
-Initial run `34696095267` failed in the synthetic rank-1 Eckart–Young checker while reconstruction/order/phase controls passed. The first causal issue was a zero-tail numerical branch; classification: `NUMERICAL/IMPLEMENTATION FAIL`, not scientific failure. Frozen science was not changed.
+Durable note: `results/ITER006_RC006_SOURCE_GRAPH_AND_SVD_PLUMBING.md`.
 
-Minimal fix commit: `c5076c360a9c8f70b223da76c582563a564111be`.
+### RC008 official-source formula qualification — PASS prerequisite
 
-Authoritative rerun `34696313147`: all six seeds passed; aggregate job `103560627060`; artifact `10299121187`; digest `sha256:4447351ee441964e50afa9c49ef714f8fccc5c454c23dfaa046add1625637663`.
+Initial run `34697983144` failed technically because the first parser recognized too narrow a set of TeX equation syntaxes. Required keywords were present; failure occurred before physics. Classification: `INFRASTRUCTURE/IMPLEMENTATION FAIL`.
 
-Classification: `PASS_IMPLEMENTATION_REGRESSION_ONLY`. It contains no Eq.(29) physical amplitude and does not raise bridge readiness.
+Minimal syntax-only fix commit `8ce783247216f600195b0a4cfd6c179ac7506e55` preserved the frozen source gate. Authoritative rerun `34698110637` passed all three source lanes and aggregate job `103565184050`; aggregate artifact `10298993915`, digest `sha256:8a74186a001f7b5730af162033043704975ad0b3d6deed842992127741594c0f`.
 
-### Official-source Eq.(29) graph extraction — SOURCE PREREQUISITES PASS
+The amplitude source `1508.07961` yields 30 candidate equation regions including `Eq:VertexDefinition`, `Eq:AmplitudeIntegral`, `Eq:ComplexAction`, `Eq:AsymptoticStateSum`, `Eq:4Volume`. The renormalization source `1701.02311` yields 27 candidate regions including `Eq:EmbeddingMaps`, `Eq:Observable`, `Eq:RenormalizedAmplitude`, `Eq:FixedPoint01/02`, and `Eq:ExpectationValueCoarseGraining`.
 
-Graph-AST run `34696214389`, commit `a58f79332bdbf116115574ac225cbbe917261660`, job `103560037655`, artifact `10297799415`, digest `sha256:4d914893f24d4cc9c2d9eb14331e32e24e0327c6471fbb4f8b5eacd40c541dd3`.
+Classification: `PASS_SOURCE_FORMULA_QUALIFICATION_ONLY`. No amplitude, variance curve, RG flow or held-out transport has yet been reproduced.
 
-Exact token-stream run `34696413575`, commit `3f984706536a24d4c8a948f4ced8724889f6a6e6`, job `103560557294`, artifact `10299235394`, digest `sha256:4554cd9168a9f99b0d8ea6672bbd47d8cf506074a9b503bbeb5a7f17ded5cfe9`.
+Durable note: `results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md`.
 
-The official arXiv `1609.02429` source identifies `bc-spin-nets.tex`; the exact nearest TikZ environment is lines `1094–1116`, environment SHA256 `47f99ddbbef16bdadaa6951933b0203bc4d671efebec67685441af67f03e6604`. The derived token stream has 68 structural tokens, 37 coordinate tokens and the required `J+`, `J-`, `j`, `l_1`, `l_2` labels.
+## Active computation
 
-Classification: `PASS_SOURCE_PROVENANCE/TOKENIZATION_PREREQUISITE_ONLY`. The oriented/braided incidence mapping gate is not yet closed and no contraction/amplitude is implied.
+### RC006 source-graphic label authority audit
 
-## Active parallel computation
+Run `34698228895`, head `d37a4f2abdacfaa9de6d5b38f239f57e44188a4a`.
 
-### RC006 exact path/incidence reconstruction
-
-Run `34697961643`, head `d914090ce98100d01aeaa9fe92ed6b94932f6701`.
-
-Four independent TeX-preserving parser lanes (`fail-fast:false`) reconstruct the exact source environment under comment removal / line trimming / whitespace collapse / linebreak compaction. Frozen aggregate gate requires all lanes valid and one identical source hash, environment hash and canonical structural signature. This tests deterministic source mapping only.
-
-### RC008 official-source formula qualification
-
-Run `34697983144`, head `efb61448a401a9661f57798f5054d9fc7a2e919c`.
-
-Three independent lanes inspect the official source archives of arXiv `1508.07961`, `1605.07649`, `1701.02311` for the amplitude, phase and renormalization formula regions respectively. This is a source-provenance prerequisite for the independent RC008 amplitude/refinement reproduction; it does not reuse the previously audited published fixed-point numbers as a fit target.
+Four independent precision lanes are queued/running. Frozen gate asks whether source graphic label positions map uniquely to graph primitives with absolute nearest/second-nearest distance gap `>=0.05` and ratio `>=1.20`, invariant across numerical precision. Even a PASS only qualifies the graphic label-association layer; missing source orientation/contraction authority remains separately locked.
 
 ## Saturated / blocked fronts
 
-- `RC009_REDUCED_ISOTEMPORAL_POSITIVE_BRANCH`: **SCOPED BLOCKED** after endpoint/source-phase audits; no denser quadrature without a new justified measure/contour/regularization object.
-- Lorentzian `Delta4` finite-cutoff scaling/classification diagnostics: **SATURATED NEGATIVE/SCOPED**; no bridge promotion without a genuine multi-vertex refinement map.
-- Generic TNR orientation/envelope novelty: **ABSORBED**; do not spend compute rediscovering it.
+- `RC009_REDUCED_ISOTEMPORAL_POSITIVE_BRANCH`: **SCOPED BLOCKED**; no denser quadrature without a justified measure/contour/regularization object.
+- Lorentzian `Delta4` finite-cutoff/profile/scaling diagnostics: **SATURATED NEGATIVE/SCOPED**; no bridge promotion without a genuine refinement map.
+- Generic TNR orientation/envelope novelty: **ABSORBED**.
 
-## Active scientific gates
+## Active gates
 
-1. `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` — ACTIVE; path/incidence reconstruction running.
+1. `RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE` — ACTIVE; path reconstruction passed, graphic label authority running, full contraction-ready mapping still open.
 2. `RC006_EQ29_MINIMAL_K12_AMPLITUDE_GATE` — BLOCKED on gate 1.
 3. `RC006_APPENDIX_C_C1_C2_SVD_GATE` — BLOCKED on gate 2.
 4. `RC006_HELDOUT_NONRETUNED_SELECTOR_TRANSPORT_GATE` — BLOCKED on gate 3.
 5. `BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE` — OPEN.
-6. `RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE` — OPEN; source-formula qualification running.
-7. `MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE` — OPEN; Delta4 finite-cutoff data are not a refinement map.
-
-## Claim locks
-
-Still forbidden: `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate action/Hamiltonian/field equations, and RQIR/KMQGB candidate promotion from ISQGR structural evidence alone.
-
-Current correct status:
-
-`RM-001 ACCEPTED + BH-004B STRUCTURALLY/STRESS-TEST SUPPORTED + GENERIC TNR ENVELOPE ABSORBED + RC009 SCOPED BLOCKED + DELTA4 SCALING FRONT SATURATED + RC006 OFFICIAL-SOURCE GRAPH TOKENIZATION PASS + ORIENTED/BRAIDED INCIDENCE MAPPING RUNNING + FULL Eq29 AMPLITUDE OPEN + RC008 AMPLITUDE REPRODUCTION OPEN`.
+6. `RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE` — OPEN; source formula inventory now qualified.
+7. `MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE` — OPEN.
 
 ## Exact next allowed route
 
-If RC006 path/incidence parser-invariance passes: freeze the explicit oriented/braided graph object and implement the minimal `k=12, gamma=1/3` Eq.(29) amplitude. Only after physical amplitude PASS may Appendix-C C1/C2 SVD run on it, followed by held-out no-retune selector transport.
+RC006: consume the source-graphic label-authority run. If it passes, combine it only with explicit source braiding/orientation conventions to freeze a contraction-ready Eq.(29) graph; then implement the minimal `k=12, gamma=1/3` amplitude. Do not run physical Appendix-C SVD before that amplitude gate passes.
 
-In parallel, if all three RC008 source-formula lanes qualify, extract/reconstruct the published restricted hypercuboid amplitude and coarse/refined volume-variance computation prospectively, reproduce at least two boundaries, then freeze the inferred flow and test a held-out boundary without retuning.
+RC008: use the qualified labelled formulas to build the dependency closure for the restricted hypercuboid amplitude, embedding, volume observable and expectation-value/coarse-graining formulas. Then reproduce at least two coarse/refined source boundary states, freeze the inferred `alpha' -> alpha` map, and test a held-out source boundary without retuning.
 
-Candidate theory remains `0% / UNFORMED` until the constitution gate authorizes otherwise.
+Candidate theory remains `0% / UNFORMED`. `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate equations and RQIR/KMQGB promotion remain forbidden.
 
 ## Recovery order
 
 1. `recovery/state.json`
 2. `recovery/CURRENT_FRONT.md`
 3. `results/ITER006_RC006_SOURCE_GRAPH_AND_SVD_PLUMBING.md`
-4. `results/ITER006_RC006_EQ29_PREAMPLITUDE_PREREQUISITES.md`
-5. `results/ITER006_RC006_APPENDIX_B13_MAPPING.md`
-6. `results/ITER006_RC006_QGROUP_KERNEL_QUALIFICATION.md`
-7. `results/ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL.md`
-8. `results/ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION.md`
-9. `results/ITER006_RC008_PUBLISHED_BOUNDARY_ROBUSTNESS.md`
+4. `results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md`
+5. `results/ITER006_RC006_EQ29_PREAMPLITUDE_PREREQUISITES.md`
+6. `results/ITER006_RC006_APPENDIX_B13_MAPPING.md`
+7. `results/ITER006_RC006_QGROUP_KERNEL_QUALIFICATION.md`
+8. `results/ITER006_FUSION_BASIS_EMBEDDING_ORIENTATION_NULL.md`
+9. `results/ITER006_FUSION_BASIS_AMPLITUDE_REPRODUCTION.md`
 10. `docs/CONSTITUTION.md`
