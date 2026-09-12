@@ -1,0 +1,66 @@
+name: ISQGR RC006 Eq29 Internal Reference Chain
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_eq29_reference_chain_audit.py'
+      - '.github/workflows/isqgr-rc006-eq29-reference-chain.yml'
+  workflow_dispatch:
+
+permissions: {contents: read}
+
+jobs:
+  reference:
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        role: [eq29_local_refs, recoupling_local_labels, eq29_figure_links, eq29_equation_links, recoupling_equation_links, shared_reference_component]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch official arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Audit frozen internal reference-chain object
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_eq29_reference_chain_audit.py --source-dir external/arxiv_src --role '${{ matrix.role }}' --output 'compute_out/${{ matrix.role }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'rc006-eq29-refchain-${{ matrix.role }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: reference
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'rc006-eq29-refchain-*'
+          path: all
+          merge-multiple: true
+      - name: Preserve frozen classifications
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(f)) for f in sorted(glob.glob('all/*.json'))]
+          out={'test':'RC006_EQ29_INTERNAL_REFERENCE_CHAIN_AGGREGATE','lane_count':len(rows),'passes':sum(bool(r.get('frozen_gate_pass')) for r in rows),'fails':sum(not bool(r.get('frozen_gate_pass')) for r in rows),'by_role':{r['role']:r.get('frozen_gate_pass') for r in rows},'all_pass':len(rows)==6 and all(r.get('frozen_gate_pass') for r in rows),'claim_lock':'Reference-chain source structure only; failures preserved; no unique Eq29 contraction or amplitude authorization.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n');print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-eq29-refchain-summary
+          path: summary.json
+          if-no-files-found: error
