@@ -25,7 +25,7 @@ jobs:
           git checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
       - name: Run B13 source mapping
         run: |
-          julia experiments/rc006_b13_sixjr_source_mapping.jl ${{ matrix.k }} ext/fusion/qgroup_def.jl rc006_b13_k${{ matrix.k }}.toml
+          julia experiments/rc006_b13_sixjr_source_mapping.jl ${{ matrix.k }} ext/fusion/half_int/no_torsion/qgroup_def.jl rc006_b13_k${{ matrix.k }}.toml
       - uses: actions/upload-artifact@v4
         with:
           name: rc006-b13-k${{ matrix.k }}
