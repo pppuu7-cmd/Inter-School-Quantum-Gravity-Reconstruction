@@ -1,0 +1,175 @@
+name: ISQGR Iter006 DED Exact Raster Device Calibration
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_ded_exact_raster_device_calibration.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  calibrate:
+    strategy:
+      fail-fast: false
+      matrix:
+        representation: [ORIGINAL_EPS, GS_EPS2WRITE_NORMALIZED]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install frozen dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ghostscript
+          python -m pip install --disable-pip-version-check pillow scipy numpy
+      - name: Fetch source and prepare representation
+        env:
+          REPRESENTATION: ${{ matrix.representation }}
+        run: |
+          set -euo pipefail
+          mkdir -p src work out
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          echo '9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303  source.tar' | sha256sum -c -
+          tar -xf source.tar -C src
+          cp src/_images/DEDconplex_plus_vg.eps work/source.eps
+          if [ "$REPRESENTATION" = GS_EPS2WRITE_NORMALIZED ]; then
+            gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=eps2write -sOutputFile=work/input.eps work/source.eps
+          else
+            cp work/source.eps work/input.eps
+          fi
+      - name: Reproduce frozen 600-dpi render
+        run: |
+          gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray -r600 -sOutputFile=work/baseline.png work/input.eps
+      - name: Trace marks under identical pnggray page device
+        run: |
+          cat > work/trace.ps <<'PS'
+          /traceout (work/marks.txt) (w) file def
+          /opcount 0 def
+          /putstr { traceout exch writestring } bind def /putnum { 60 string cvs traceout exch writestring } bind def /sp { ( ) putstr } bind def /nl { (\n) putstr } bind def
+          /emit {
+            /cls exch def /op exch def /idx exch def
+            pathbbox /ury exch def /urx exch def /lly exch def /llx exch def
+            llx lly transform /y1 exch def /x1 exch def
+            llx ury transform /y2 exch def /x2 exch def
+            urx lly transform /y3 exch def /x3 exch def
+            urx ury transform /y4 exch def /x4 exch def
+            (MARK) putstr sp idx putnum sp cls putstr sp op putstr sp
+            x1 putnum sp y1 putnum sp x2 putnum sp y2 putnum sp x3 putnum sp y3 putnum sp x4 putnum sp y4 putnum nl
+          } bind def
+          /origstroke /stroke load def /origfill /fill load def /origeofill /eofill load def
+          /stroke {
+            /opcount opcount 1 add def
+            gsave opcount (stroke) (PATH_CENTERLINE) emit grestore
+            gsave strokepath opcount (stroke) (STROKE_ENVELOPE) emit grestore
+            origstroke
+          } bind def
+          /fill {
+            /opcount opcount 1 add def
+            gsave opcount (fill) (FILL_PATH) emit grestore
+            origfill
+          } bind def
+          /eofill {
+            /opcount opcount 1 add def
+            gsave opcount (eofill) (FILL_PATH) emit grestore
+            origeofill
+          } bind def
+          (work/input.eps) run
+          traceout flushfile
+          PS
+          gs -q -dNOSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray -r600 -sOutputFile=work/traced.png work/trace.ps
+          sha256sum work/baseline.png work/traced.png
+          test "$(sha256sum work/baseline.png | awk '{print $1}')" = "$(sha256sum work/traced.png | awk '{print $1}')"
+      - name: Apply exact frozen raster-device calibration
+        env:
+          REPRESENTATION: ${{ matrix.representation }}
+        run: |
+          python - <<'PY'
+          import json,math,os,pathlib
+          import numpy as np
+          from PIL import Image
+          from scipy import ndimage
+          rep=os.environ['REPRESENTATION']
+          a=np.array(Image.open('work/baseline.png').convert('L')); H,W=a.shape
+          mask=a<200; ys,xs=np.where(mask)
+          if not len(xs): raise SystemExit('empty foreground')
+          cy0,cx0=int(ys.min()),int(xs.min()); crop=mask[cy0:int(ys.max())+1,cx0:int(xs.max())+1]
+          labels,n=ndimage.label(crop,structure=np.ones((3,3),dtype=int)); sizes=np.bincount(labels.ravel())[1:]; min_area=max(1,int(crop.size*0.00001))
+          kept=[]
+          for lab,size in enumerate(sizes,start=1):
+              if int(size)<min_area: continue
+              yy,xx=np.where(labels==lab)
+              kept.append({'label':lab,'pixels':int(size),'bbox':[int(yy.min()),int(xx.min()),int(yy.max()+1),int(xx.max()+1)],'cy':float(yy.mean()),'cx':float(xx.mean()),'nx':float(xx.mean()/max(crop.shape[1]-1,1)),'ny':float(yy.mean()/max(crop.shape[0]-1,1))})
+          frozen={'A':{'pixels':44,'bbox':[542,400,552,406],'nx':0.189866082925573,'ny':0.5180094786729857},'B':{'pixels':39,'bbox':[934,1521,939,1530],'nx':0.7200188857412654,'ny':0.8872037914691943}}
+          targets={}
+          for name,f in frozen.items():
+              ms=[c for c in kept if c['pixels']==f['pixels'] and c['bbox']==f['bbox']]
+              if len(ms)!=1:
+                  targets[name]={'reproduced':False,'candidate_count':len(ms)}; continue
+              c=ms[0]
+              # Require printed frozen centroid agreement to 1e-12 only as reproduction guard, not a selection tolerance.
+              centroid_ok=abs(c['nx']-f['nx'])<=1e-12 and abs(c['ny']-f['ny'])<=1e-12
+              dx=cx0+c['cx']+0.5; dy=H-(cy0+c['cy']+0.5)
+              targets[name]={'reproduced':bool(centroid_ok),'component':c,'device_point':[dx,dy]}
+          rows=[]
+          for line in pathlib.Path('work/marks.txt').read_text().splitlines():
+              p=line.split()
+              if len(p)!=12 or p[0]!='MARK': continue
+              idx=int(p[1]); cls=p[2]; op=p[3]; z=list(map(float,p[4:])); xs2=z[0::2]; ys2=z[1::2]
+              if all(math.isfinite(v) for v in z): rows.append({'index':idx,'class':cls,'operator':op,'bbox':[min(xs2),min(ys2),max(xs2),max(ys2)]})
+          groups={}
+          for r in rows: groups.setdefault((r['index'],r['operator']),[]).append(r)
+          for name,t in targets.items():
+              if not t.get('reproduced'): continue
+              x,y=t['device_point']; hits=[]; near=[]
+              for (idx,op),rr in groups.items():
+                  contained=False; best=1e300; variants=[]
+                  for r in rr:
+                      x0,y0,x1,y1=r['bbox']; inside=x0<=x<=x1 and y0<=y<=y1; contained|=inside
+                      dd=math.hypot(max(x0-x,0,x-x1),max(y0-y,0,y-y1)); best=min(best,dd); variants.append({'class':r['class'],'bbox':r['bbox'],'contains':inside})
+                  rec={'index':idx,'operator':op,'distance':best,'variants':variants}
+                  near.append(rec)
+                  if contained: hits.append(rec)
+              t['containing_source_marks']=hits; t['nearest_source_marks']=sorted(near,key=lambda z:(z['distance'],z['index']))[:8]
+          valid=(len(kept)==123 and all(targets.get(k,{}).get('reproduced') for k in ['A','B']) and bool(rows))
+          if not valid: cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          else:
+              ah=len(targets['A']['containing_source_marks']); bh=len(targets['B']['containing_source_marks'])
+              if ah!=1: cl='DED_RASTER_DEVICE_CALIBRATION_INVALID'
+              elif bh==1: cl='DED_TARGET_B_EXACT_DEVICE_LOCALIZED'
+              elif bh>1: cl='DED_TARGET_B_EXACT_DEVICE_AMBIGUOUS'
+              else: cl='DED_TARGET_B_EXACT_DEVICE_UNRESOLVED'
+          out={'gate':'ITER006_DED_EXACT_RASTER_DEVICE_CALIBRATION','representation':rep,'valid':valid,'full_render_shape':[H,W],'foreground_crop_origin':[cy0,cx0],'crop_shape':[int(crop.shape[0]),int(crop.shape[1])],'kept_component_count':len(kept),'mark_record_count':len(rows),'source_mark_count':len(groups),'targets':targets,'classification':cl,'raster_topology_verdict_preserved':'TOPOLOGY_EXTRACTION_UNSTABLE','threshold_retuning_authorized':False,'bridge_credit':False}
+          pathlib.Path('out/result.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps({'representation':rep,'valid':valid,'shape':[H,W],'crop_origin':[cy0,cx0],'crop_shape':list(crop.shape),'kept':len(kept),'A_hits':len(targets.get('A',{}).get('containing_source_marks',[])),'B_hits':len(targets.get('B',{}).get('containing_source_marks',[])),'classification':cl},indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-exact-raster-device-${{ matrix.representation }}
+          path: out/result.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: calibrate
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ded-exact-raster-device-*
+          path: inputs
+      - name: Apply frozen representation-aware classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          ds=[json.loads(pathlib.Path(p).read_text()) for p in glob.glob('inputs/**/result.json',recursive=True)]; by={d['representation']:d for d in ds}; O=by.get('ORIGINAL_EPS'); G=by.get('GS_EPS2WRITE_NORMALIZED')
+          valid=bool(O and G and O.get('valid') is True and G.get('valid') is True)
+          if not valid: cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          else: cl=O['classification']
+          out={'gate':'ITER006_DED_EXACT_RASTER_DEVICE_CALIBRATION','valid':valid,'original_classification':O.get('classification') if O else None,'normalized_classification':G.get('classification') if G else None,'classification':cl,'cross_representation_same_classification':bool(valid and O.get('classification')==G.get('classification')),'raster_topology_verdict_preserved':'TOPOLOGY_EXTRACTION_UNSTABLE','refinement_map_derived':False,'bridge_credit':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-exact-raster-device-summary
+          path: summary.json
+          if-no-files-found: error
