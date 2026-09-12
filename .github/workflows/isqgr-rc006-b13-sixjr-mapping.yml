@@ -1,0 +1,86 @@
+name: ISQGR RC006 Appendix-B13 SixJR Mapping
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_b13_sixjr_source_mapping.jl'
+      - '.github/workflows/isqgr-rc006-b13-sixjr-mapping.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  map-source:
+    strategy:
+      fail-fast: false
+      matrix:
+        level: [6,10,12]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Clone and pin q-deformed kernel
+        run: |
+          set -euo pipefail
+          git clone https://github.com/ssteinhaus/Fusion-basis-coarse-graining.git external/Fusion-basis-coarse-graining
+          git -C external/Fusion-basis-coarse-graining checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
+          test "$(git -C external/Fusion-basis-coarse-graining rev-parse HEAD)" = "bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4"
+      - name: Audit source Eq B13 against pinned sixjr
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          julia experiments/rc006_b13_sixjr_source_mapping.jl \
+            '${{ matrix.level }}' external/Fusion-basis-coarse-graining/half_int/no_torsion/qgroup_def.jl \
+            compute_out/b13_mapping_k${{ matrix.level }}.toml
+          cat compute_out/b13_mapping_k${{ matrix.level }}.toml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-b13-k${{ matrix.level }}
+          path: compute_out/*.toml
+          if-no-files-found: error
+
+  aggregate:
+    needs: map-source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-b13-*
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate source mapping audit
+        run: |
+          python - <<'PY'
+          import glob,tomllib,json,os
+          rows=[]
+          for p in sorted(glob.glob('campaign/*.toml')):
+              with open(p,'rb') as f: rows.append(tomllib.load(f))
+          passed=len(rows)==3 and all(x['appendix_b13_mapping_pass'] for x in rows)
+          out={
+            'test':'RC006_APPENDIX_B13_SIXJR_SOURCE_MAPPING_AGGREGATE',
+            'lanes':rows,
+            'all_three_levels_pass':passed,
+            'decision_if_pass':'Authorize use of the pinned sixjr only for source graph factors explicitly reduced through Appendix-B Eq. B13/B16 identities; Eq.29 as a whole remains unimplemented until the full graph is mapped.',
+            'decision_if_fail':'Do not use the pinned sixjr as a source-faithful Eq.B13 bridge until the convention mismatch is isolated without changing the frozen gate.',
+            'claim_lock':'Convention/source-formula qualification only; not EPRL amplitude, TNR flow, refinement, continuum, bridge, or new-physics evidence.'
+          }
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/rc006_b13_mapping_summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not passed:
+              raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-b13-mapping-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
