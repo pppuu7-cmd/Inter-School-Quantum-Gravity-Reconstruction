@@ -86,3 +86,5 @@ jobs:
           name: isqgr-causal-set-closure-boundary-refine-125-150-summary
           path: causal_set_closure_boundary_refine_125_150_summary.json
           if-no-files-found: error
+
+# research retrigger 2026-09-12T03:41+03:00
