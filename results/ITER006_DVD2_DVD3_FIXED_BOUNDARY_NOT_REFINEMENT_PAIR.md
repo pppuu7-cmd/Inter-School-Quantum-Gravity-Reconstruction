@@ -1,24 +1,31 @@
-# ITER006 — DVD2/DVD3 are fixed-boundary foams, not a coarse/fine refinement pair
+# ITER006 — DVD2/DVD3 direct refinement relation is unestablished
 
 Date: 2026-09-12
 
 Pinned DVD source: arXiv:1801.03771.
+Refinement authority added later: arXiv:1010.5437.
 
-## Source evidence
+## Correction to the earlier fixed-boundary argument
 
-The source states that it chooses a simple boundary consisting of **two 4-link dipoles** and studies a collection of different spin-foam amplitudes with up to two vertices and one internal face. It then formulates one of its guiding questions explicitly **at fixed boundary graph**: how do the different foams scale and which foams dominate.
+The DVD source chooses the same external boundary — two 4-link dipoles — and studies several different internal foams at that fixed boundary graph. This fact **does not by itself rule out foam refinement**.
 
-Thus the DVD diagrams are different internal spin-foam histories/combinatorics associated with the same external boundary graph/data class. They are not introduced as a partially ordered pair of boundary discretizations `b < b'`, nor does the source provide an embedding `H_b -> H_b'` relating DVD2 and DVD3.
+arXiv:1010.5437 defines a refinement order precisely among proper foams with the same boundary: `C1 <= C2` when there is an incidence-preserving embedding of vertices, edges and faces of `C1` into `C2`. A colored refinement can be a trivial extension when any added faces carry `j=0`.
 
-This agrees with the earlier semantic source-authority audit `34709790323`, which found no explicit refinement map in the pinned DVD source.
+Therefore the earlier inference “same boundary => not a refinement pair” is withdrawn.
 
-## Terminal compatibility statement
+## What remains locked
 
-`DVD2_DVD3_FIXED_BOUNDARY_FOAMS_NOT_DIRECT_REFINEMENT_PAIR`
+The pinned DVD paper itself does not state an incidence embedding `DVD2 -> DVD3` or `DVD3 -> DVD2`. Appendix C instead presents DVD1–DVD4 as four **topologically distinct** integrable one-vertex vertex graphs for the DVD foam, each with eight faces. DVD2 and DVD3 have different face-rigidity/routing structure and different explicit amplitudes.
+
+Hence the currently valid statement is:
+
+`DVD2_DVD3_DIRECT_REFINEMENT_RELATION_UNESTABLISHED_PENDING_INCIDENCE_AUDIT`
 
 Consequences:
 
-- `DVD2 = coarse` and `DVD3 = fine` is forbidden.
-- Differences or stabilization across DVD2/DVD3, internal-face content, booster-shell depth `D`, or diagram complexity cannot by themselves receive refinement/cylindrical-consistency credit.
-- A genuine Lorentzian DVD refinement test must introduce a source-authorized refinement of the **boundary graph/state space** or an explicitly equivalent foam-refinement operation with a proven amplitude-consistency relation.
+- `DVD2 = coarse` and `DVD3 = fine` remains forbidden unless the structural incidence-embedding audit passes.
+- Same boundary is compatible with refinement, but same boundary plus a different foam is not sufficient evidence of refinement.
+- Numerical stabilization across DVD2/DVD3, internal-face structure, diagram complexity, or booster-shell depth `D` cannot independently receive refinement/cylindrical-consistency credit.
+- If the direct DVD2/DVD3 embedding fails, the correct next object is a **new explicit trivial extension of one DVD foam**, not a semantic relabelling of another topologically distinct DVD graph.
+- Raw Lorentzian `Z_C` invariance under a `j=0` face extension and multiplicity-corrected cylindrical consistency `A_C=|sigma|_C Z_C` must be kept distinct.
 - `BRIDGE_DERIVED = false`; candidate theory remains `UNFORMED / 0%`.
