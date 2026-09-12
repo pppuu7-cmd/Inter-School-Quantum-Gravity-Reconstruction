@@ -8,117 +8,30 @@
   "last_completed_iteration": "ITERATION_005",
   "candidate_theory_status": "UNFORMED",
   "lead_bridge_hypothesis": "BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
-  "claim_locks": {
-    "known_schools_fail": false,
-    "new_theory_required": false,
-    "new_physics_found": false,
-    "bridge_derived": false,
-    "generic_orientation_beyond_spectrum_is_novel": false,
-    "rqir_promotion_authorized": false,
-    "kmqgb_promotion_authorized": false
-  },
-  "readiness_percent": {
-    "repository_recovery_bootstrap": 99,
-    "source_grounded_interface_atlas": 52,
-    "recurrent_motif_search": 70,
-    "accepted_recurrent_motifs": 30,
-    "bridge_principle_validation": 78,
-    "executable_cross_school_obstructions": 86,
-    "amplitude_refinement_cross_realization_validation": 30,
-    "candidate_theory_construction": 0,
-    "overall_scientific_programme": 44
-  },
+  "claim_locks": {"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"generic_orientation_beyond_spectrum_is_novel":false,"rqir_promotion_authorized":false,"kmqgb_promotion_authorized":false},
+  "readiness_percent": {"repository_recovery_bootstrap":99,"source_grounded_interface_atlas":52,"recurrent_motif_search":70,"accepted_recurrent_motifs":30,"bridge_principle_validation":78,"executable_cross_school_obstructions":86,"amplitude_refinement_cross_realization_validation":30,"candidate_theory_construction":0,"overall_scientific_programme":44},
   "frontier": {
     "RC006": {
-      "status": "EQ29_AMPLITUDE_BLOCKED_SERIALIZATION_UNSTABLE_DIAGNOSTIC_RUNNING",
-      "ordered_context_holdout": {
-        "run": 34700277881,
-        "head": "219391c897159f4541cb629d553c373981ed8531",
-        "aggregate_job": 103570712196,
-        "artifact": 10300002366,
-        "classification": "SCIENTIFIC_PASS_ORDERED_CONTEXT_HOLDOUT_ROBUSTNESS_PREREQUISITE_ONLY",
-        "holdout_passes": 8,
-        "null_restores_ambiguity": true
-      },
-      "contraction_serialization_stability": {
-        "run": 34700639086,
-        "head": "8a358e5a710a618a8b92b689ee4470266787ef7b",
-        "aggregate_job": 103571679523,
-        "artifact": 10300052796,
-        "classification": "SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE",
-        "valid": true,
-        "full_unique": true,
-        "holdout_unique_count": 6,
-        "holdout_total": 8,
-        "min_pairwise_order_agreement": 0.8698752228163993,
-        "null_ambiguous": true,
-        "eq29_minimal_k12_authorized": false
-      },
-      "active_failure_localization": {
-        "run": 34700891523,
-        "head": "8cb26ab0fb631ff36c2d2b52773019e021b4b665",
-        "classification": "QUEUED_OR_RUNNING_DIAGNOSTIC_ONLY"
-      },
-      "next_gate": "CONSUME_FAILURE_LOCALIZATION; SEEK_ADDITIONAL_EXACT_SOURCE_CONTRACTION_AUTHORITY_WITHOUT_RETUNING; EQ29_K12_REMAINS_BLOCKED_UNLESS_A_NEW_PROSPECTIVELY_FROZEN_SOURCE_AUTHORITY_GATE_PASSES"
+      "status":"EQ29_AMPLITUDE_BLOCKED_SERIALIZATION_UNSTABLE",
+      "ordered_context_holdout":{"run":34700277881,"head":"219391c897159f4541cb629d553c373981ed8531","aggregate_job":103570712196,"artifact":10300002366,"classification":"SCIENTIFIC_PASS_ORDERED_CONTEXT_HOLDOUT_ROBUSTNESS_PREREQUISITE_ONLY","holdout_passes":8,"null_restores_ambiguity":true},
+      "contraction_serialization_stability":{"run":34700639086,"head":"8a358e5a710a618a8b92b689ee4470266787ef7b","aggregate_job":103571679523,"artifact":10300052796,"classification":"SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE","valid":true,"full_unique":true,"holdout_unique_count":6,"holdout_total":8,"min_pairwise_order_agreement":0.8698752228163993,"null_ambiguous":true,"eq29_minimal_k12_authorized":false},
+      "failure_localization":{"run":34700891523,"head":"8cb26ab0fb631ff36c2d2b52773019e021b4b665","aggregate_job":103572467066,"artifact":10300127995,"classification":"DIAGNOSTIC_SOURCE_AUTHORITY_LOCALIZED","critical_anchors":["app:EPRL-diagram","app:EPRL-norm","app:graph","eq:recoupling-basis"],"max_pairwise_flip_count":73,"min_pairwise_order_agreement":0.8698752228163993},
+      "next_gate":"FIND_AND_FREEZE_ANY_EXPLICIT_SOURCE_RELATION_TYING_THE_FOUR_CRITICAL_ANCHORS; WITHOUT_NEW_SOURCE_AUTHORITY_EQ29_K12_REMAINS_BLOCKED"
     },
     "RC008": {
-      "status": "AMPLITUDE_REPRODUCTION_OPEN_SELECTOR_DIAGNOSTIC_RUNNING",
-      "hessian_kernel": {
-        "run": 34698968902,
-        "aggregate_job": 103567272522,
-        "artifact": 10300145140,
-        "classification": "PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY"
-      },
-      "volume_refinement": {
-        "run": 34699223422,
-        "aggregate_job": 103567987044,
-        "artifact": 10300335297,
-        "classification": "PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY"
-      },
-      "active_volume_simplicity_selector": {
-        "run": 34700870181,
-        "head": "f93326b4f5f45e36f2f955b367103c9f580caed1",
-        "classification": "QUEUED_OR_RUNNING_5_LANE_SOURCE_ASYMPTOTIC_AMPLITUDE_DIAGNOSTIC"
-      },
-      "next_gate": "CONSUME_SELECTOR_ARTIFACTS; INDEPENDENTLY_CONTINUE_RESTRICTED_HYPERCUBOID_VERTEX_AMPLITUDE_REPRODUCTION_WITHOUT_FITTING_ALPHA_STAR; SELECTOR_RESULT_ALONE_CANNOT_DERIVE_BRIDGE"
+      "status":"FULL_COARSE_REFINED_REPRODUCTION_OPEN_SOURCE_GLUE_AUTHORITY_UNDER_TEST",
+      "hessian_kernel":{"run":34698968902,"aggregate_job":103567272522,"artifact":10300145140,"classification":"PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY"},
+      "volume_refinement":{"run":34699223422,"aggregate_job":103567987044,"artifact":10300335297,"classification":"PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY"},
+      "volume_simplicity_selector":{"run":34700870181,"head":"f93326b4f5f45e36f2f955b367103c9f580caed1","aggregate_job":103572312400,"artifact":10300317494,"classification":"SCIENTIFIC_NEGATIVE_SELECTOR_NOT_SUPPORTED","valid":true,"lanes_passed":0,"lane_total":5,"natural_support":false,"strong_support":false},
+      "refinement_source_closure":{"run":34700993029,"head":"63a76cce48f0218b58a2fc6a9edeef7631098e9e","aggregate_job":103572635494,"artifact":10299993291,"classification":"SOURCE_CLOSURE_BLOCKED_MISSING_EXPLICIT_OBJECT","core_amplitude_objects_present":true,"refinement_language_present":true,"explicit_multi_vertex_gluing_present":false,"source_closure_pass":false},
+      "active_state_sum_gluing_structure":{"run":34701056222,"head":"3347db298d229014e7c7378c405083d6c529ff1f","classification":"QUEUED_OR_RUNNING_INDEPENDENT_EXACT_TEX_STRUCTURAL_AUTHORITY_GATE"},
+      "next_gate":"CONSUME_STATE_SUM_GLUING_STRUCTURE; ONLY NEW_EXACT_SOURCE_STRUCTURAL_AUTHORITY_CAN_REOPEN_SOURCE_ONLY_COARSE_REFINED_IMPLEMENTATION; SELECTOR_NEGATIVE_DOES_NOT_CLOSE_MODEL"
     },
-    "RC009": {
-      "status": "SCOPED_BLOCKED",
-      "rule": "NO_DENSER_QUADRATURE_WITHOUT_NEW_JUSTIFIED_MEASURE_CONTOUR_REGULARIZATION"
-    },
-    "LORENTZIAN_DELTA4": {
-      "status": "FINITE_CUTOFF_SCALING_FRONT_SATURATED_NEGATIVE_SCOPED",
-      "bridge_credit": false
-    },
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "OPEN"
-    }
+    "RC009":{"status":"SCOPED_BLOCKED","rule":"NO_DENSER_QUADRATURE_WITHOUT_NEW_JUSTIFIED_MEASURE_CONTOUR_REGULARIZATION"},
+    "LORENTZIAN_DELTA4":{"status":"FINITE_CUTOFF_SCALING_FRONT_SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"OPEN"}
   },
-  "active_gates": [
-    "BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE",
-    "RC006_SOURCE_AUTHORITY_FAILURE_LOCALIZATION",
-    "RC008_SOURCE_ASYMPTOTIC_VOLUME_SIMPLICITY_SELECTOR_DIAGNOSTIC",
-    "RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE",
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE"
-  ],
-  "active_compute": [
-    {
-      "workflow_run": 34700870181,
-      "purpose": "five independent frozen-alpha source-asymptotic dressed-amplitude volume-simplicity selector lanes",
-      "status": "QUEUED_OR_IN_PROGRESS"
-    },
-    {
-      "workflow_run": 34700891523,
-      "purpose": "eight independent single-anchor RC006 serialization failure-localization lanes",
-      "status": "QUEUED_OR_IN_PROGRESS"
-    }
-  ],
-  "authoritative_recovery_order": [
-    "recovery/state.json",
-    "recovery/CURRENT_FRONT.md",
-    "results/ITER006_RC006_CONTRACTION_SERIALIZATION_STABILITY_FAIL.md",
-    "results/ITER006_RC006_ORDERED_CONTEXT_HOLDOUT_ROBUSTNESS_PASS.md",
-    "results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md",
-    "docs/CONSTITUTION.md"
-  ]
+  "active_gates":["BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE","RC006_EXPLICIT_SOURCE_RELATION_AUTHORITY_GATE","RC008_STATE_SUM_GLUING_STRUCTURE_GATE","RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE","MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE"],
+  "active_compute":[{"workflow_run":34701056222,"purpose":"eight independent exact-TeX RC008 state-sum gluing/refinement structure lanes","status":"QUEUED_OR_IN_PROGRESS"}],
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC008_REFINEMENT_SOURCE_CLOSURE_BLOCKED.md","results/ITER006_RC008_ASYMPTOTIC_VOLUME_SIMPLICITY_SELECTOR_NEGATIVE.md","results/ITER006_RC006_SERIALIZATION_FAILURE_LOCALIZATION.md","results/ITER006_RC006_CONTRACTION_SERIALIZATION_STABILITY_FAIL.md","results/ITER006_RC006_ORDERED_CONTEXT_HOLDOUT_ROBUSTNESS_PASS.md","results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md","docs/CONSTITUTION.md"]
 }
