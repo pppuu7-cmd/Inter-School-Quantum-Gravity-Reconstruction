@@ -1,10 +1,10 @@
 {
   "project": "Inter-School Quantum Gravity Reconstruction",
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
-  "date": "2026-09-12",
+  "date": "2026-09-13",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 80,
+  "iteration_completion_percent": 81,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -21,7 +21,7 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ29_DEPENDENCIES_PARTIAL_RPLACEMENT_STRUCTURAL_TOPOLOGY_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
+      "status": "EQ29_RPLACEMENT_ARC_AWARE_SOURCE_GEOMETRY_ACTIVE_RELATION_AWARE_SERIALIZATION_SCIENTIFIC_FAIL",
       "relation_aware_retry": {
         "run": 34713459961,
         "aggregate_job": 103610235012,
@@ -119,15 +119,48 @@
         "implementation_commit": "745ecd2f3c999dbf130d4e7ed4520a3f0f28f13a",
         "trigger_commit": "892c4b55f4099ced2743fbc0d34dc121e09fa070",
         "run": 34718784867,
-        "status": "QUEUED_OR_RUNNING",
-        "lane_count": 3,
-        "lanes": ["crossing_geometry", "reference_graph", "appendix_graph_chain"],
+        "aggregate_job": 103620738661,
+        "summary_artifact": 10305042483,
+        "summary_digest": "sha256:482bc4998d96fd11b0ad2b742038b626d76bc6eacf950efa358cb6333212fc96",
+        "classification": "EQ29_RPLACEMENT_APPLICABILITY_INCONCLUSIVE",
+        "reference_graph": {
+          "job": 103620663803,
+          "artifact": 10305992257,
+          "artifact_digest": "sha256:e77cb1acca0d6983fd0abaefc496872e7e54e98932085b76d321b5cf910ea98d",
+          "classification": "EQ29_R_EXPLICIT_REFERENCE_PATH_PRESENT"
+        },
+        "crossing_geometry": {
+          "job": 103620663910,
+          "artifact": 10304927980,
+          "artifact_digest": "sha256:36dee43fb0e6d774a59dcce71292050ba818f69c85dbad78c94b46cf186ab698",
+          "classification": "EQ29_NO_STRAIGHT_CROSSING_ARCS_UNRESOLVED",
+          "straight_segment_count": 15,
+          "arc_count": 2,
+          "proper_crossing_count": 0
+        },
+        "appendix_graph_chain": {
+          "job": 103620663950,
+          "artifact": 10305123431,
+          "artifact_digest": "sha256:d52ddf3612fc5dd03fee37d56f730b5b558d4c0bd67906c7c659063724fc7366",
+          "classification": "EQ29_APPENDIX_GRAPH_REFERENCE_CHAIN_ABSENT"
+        },
         "prior_partial_verdict_preserved": true,
         "eq29_amplitude_authorized": false,
         "bridge_credit": false
       },
+      "eq29_arc_aware_source_geometry": {
+        "prereg_commit": "9c8221a066369e51367b569f7a65169ba757aa8c",
+        "implementation_commit": "286c67c9c7ab444a86bdbea12b9159b5aae36461",
+        "run": 34721521848,
+        "status": "QUEUED_OR_RUNNING",
+        "precision_lanes": [80, 120],
+        "endpoint_margin": "1e-25",
+        "residual_threshold": "1e-40",
+        "eq29_amplitude_authorized": false,
+        "bridge_credit": false
+      },
       "eq29_amplitude_authorized": false,
-      "next_gate": "CONSUME_34718784867; PRESERVE_PARTIAL_VERDICT; NO_POSTHOC_CROSSING_SELECTOR_OR_LEXICAL_RETUNING"
+      "next_gate": "CONSUME_34721521848_AGAINST_FROZEN_ARC_AWARE_CLASSIFIER; NO_POSTHOC_CROSSING_SELECTOR_OR_TOLERANCE_RETUNING"
     },
     "RC008": {
       "status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"
@@ -187,17 +220,18 @@
   },
   "active_compute": [
     {
-      "workflow_run": 34718784867,
-      "purpose": "Eq29 R-placement structural reference topology and exact straight-crossing applicability diagnostic",
+      "workflow_run": 34721521848,
+      "purpose": "Exact arc-aware immutable Eq29 source geometry at 80/120 dps",
       "status": "QUEUED_OR_RUNNING",
-      "lane_count": 3,
+      "lane_count": 2,
       "scientific_credit": 0
     }
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
-    "results/ITER006_EQ29_SOURCE_DEPENDENCIES_PARTIAL_2026-09-12.md",
+    "results/ITER006_EQ29_RPLACEMENT_TOPOLOGY_INCONCLUSIVE_2026-09-13.md",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_EQ29_SOURCE_DEPENDENCIES_PARTIAL_2026-09-12.md",
     "results/ITER006_EQ29_EPRL_SOURCE_BLOCK_AND_DEPENDENCY_LAUNCH_2026-09-12.md",
     "results/ITER006_RC006_EQ29_SOURCE_RELATION_MIXED_RESULT.md",
     "results/ITER006_DED_COMPONENT_BIRTH_LOCALIZATION_2026-09-12.md",
