@@ -4,7 +4,7 @@
   "date":"2026-09-12",
   "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration":"ITERATION_006",
-  "iteration_completion_percent":55,
+  "iteration_completion_percent":57,
   "candidate_theory_status":"UNFORMED",
   "lead_bridge_hypothesis":"BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
   "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"rqir_promotion_authorized":false,"kmqgb_promotion_authorized":false},
@@ -15,18 +15,20 @@
     "RC009":{"status":"SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{
-      "status":"DVD_DL0_PILOT_PASS_HELDOUT_GAMMA_ACTIVE",
+      "status":"DVD_DL0_HELDOUT_PASS_B4_MULTISHELL_VALIDITY_ACTIVE",
       "source":"arXiv:1801.03771",
       "selection_robustness":{"run":34701317882,"aggregate_job":103573499012,"artifact":10299439561,"classification":"SOURCE_EQUATION_SELECTION_ROBUSTNESS_FAIL","stable_count":2,"target_count":8},
       "label_owner_audit":{"run":34702654029,"head":"a208f433bc8902bd5bd8eaa76abdee71d851674e","aggregate_job":103577055870,"artifact":10300861302,"classification":"LABEL_OWNER_DIAGNOSTIC_COMPLETE","promotion_authorized":false},
       "dvd_dl0_pilot":{"run":34703528413,"head":"cb21a8aaf938c8c893ec9ea58036522bfb382497","aggregate_job":103579476677,"artifact":10301595889,"artifact_digest":"sha256:ef6ed6fa672b79eb259d8d348fe4aebb4983b8aa71966809d408ce8b63abc1d9","classification":"SCIENTIFIC_PASS_SCOPED_DVD_DL0_TWO_VERTEX_PILOT","bridge_credit":false},
       "dvd_dl0_symbolic_guard":{"run":34703574873,"head":"8d79350e35acc772b12c00e74db059993d262bce","job":103579481295,"artifact":10301042008,"artifact_digest":"sha256:9c7d1b5b1947d0c818de59029666f8406c2ac35276e5d59d1df5fd423c1ba276","classification":"DVD_DL0_SYMBOLIC_GUARD_PASS"},
-      "heldout_gamma_transport":{"run":34703682106,"head":"958514e1342b451511c40188b776e19e76d2a1d0","classification":"RUNNING_5_LANE_HELDOUT_NONRETUNED_GAMMA_TRANSPORT"},
+      "heldout_gamma_transport":{"run":34703682106,"head":"958514e1342b451511c40188b776e19e76d2a1d0","aggregate_job":103579890972,"artifact":10301416544,"artifact_digest":"sha256:590b11ec27f3d41ae5265b0c41091eb77303fd6e4a28db3914a838e59b38a425","classification":"DVD_DL0_HELDOUT_GAMMA_PASS","lane_count":5,"repeat_max_relative_difference":0.0,"bridge_credit":false},
+      "b4_multishell_validity":{"run":34706661403,"head":"40cfcff8932a19a2be8086f9bffaa863d26efdab","prereg_commit":"513dc6f2f59d0e1af21eb5fa2918ade052af5907","classification":"RUNNING_OR_QUEUED_12_LANE_B4_MULTISHELL_NUMERICAL_VALIDITY","gamma":[0.5,1.2,2.0],"delta_l":[0,1,2,3],"threshold_max_relative_error":1e-5,"bridge_credit":false},
       "numerical_two_vertex_dl0_prerequisite_closed":true,
+      "heldout_dl0_transport_closed":true,
       "refinement_map_derived":false,
-      "next_gate":"CONSUME_HELDOUT_GAMMA; THEN PROSPECTIVELY FREEZE SOURCE_FAITHFUL_MULTI_SHELL_DIAGNOSTIC_OR_REPRODUCTION WITHOUT CALLING IT REFINEMENT"
+      "next_gate":"CONSUME_B4_MULTISHELL_VALIDITY; IF PASS, PREREGISTER SOURCE_LABELLED_DVD2_DVD3_MULTI_SHELL_CONTRACTION/SHELL_SUM; DO NOT CALL IT REFINEMENT"
     }
   },
-  "active_compute":[{"workflow_run":34703682106,"purpose":"5 held-out non-retuned gamma transport lanes for source-labelled genuine two-vertex Lorentzian EPRL Dl0 contraction","status":"QUEUED_OR_IN_PROGRESS"}],
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_DVD_DL0_TWO_VERTEX_PILOT_PASS.md","protocol/ITER006_DVD_DL0_HELDOUT_GAMMA_PREREG.json","results/ITER006_LORENTZIAN_EPRL_TWO_VERTEX_SELECTION_ROBUSTNESS_FAIL.md","docs/CONSTITUTION.md"]
+  "active_compute":[{"workflow_run":34706661403,"purpose":"12 frozen gamma x Delta_l lanes validating the pinned source-relevant Lorentzian EPRL B4 uniform multi-shell numerical primitive","status":"QUEUED_OR_IN_PROGRESS"}],
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_DVD_DL0_HELDOUT_GAMMA_PASS.md","protocol/ITER006_DVD_B4_MULTISHELL_PREREG.json","results/ITER006_DVD_DL0_TWO_VERTEX_PILOT_PASS.md","results/ITER006_LORENTZIAN_EPRL_TWO_VERTEX_SELECTION_ROBUSTNESS_FAIL.md","docs/CONSTITUTION.md"]
 }
