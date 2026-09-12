@@ -1,0 +1,109 @@
+name: ISQGR Fusion Dynamic Predictivity Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/fusion_ribbon_amplitude_predictivity.py'
+      - 'experiments/fusion_ribbon_crosslag_predictivity.py'
+      - '.github/workflows/isqgr-fusion-dynamic-predictivity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        test: ['amplitude','crosslag']
+        g: ['0.0','0.25','0.5','0.75','1.0','1.15']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Clone pinned source
+        run: |
+          set -euo pipefail
+          git clone https://github.com/ssteinhaus/Fusion-basis-coarse-graining.git external/Fusion-basis-coarse-graining
+          git -C external/Fusion-basis-coarse-graining checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
+          test "$(git -C external/Fusion-basis-coarse-graining rev-parse HEAD)" = "bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4"
+      - name: Freeze five RG iterations and disable autorun
+        working-directory: external/Fusion-basis-coarse-graining/half_int/no_torsion
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('Fusion_vec.jl'); s=p.read_text()
+          s,n=re.subn(r'iterations\s*=\s*\d+\s*;', 'iterations = 5;', s, count=1)
+          if n!=1: raise SystemExit(f'iteration patch count={n}')
+          s=s.replace('@time main_vec(1.15)','',1)
+          p.write_text(s)
+          PY
+      - name: Execute amplitude-level RG flow
+        working-directory: external/Fusion-basis-coarse-graining/half_int/no_torsion
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/compute_out"
+          julia -L Fusion_vec.jl -e 'Fusion.main_vec(parse(Float64, ARGS[1]));' '${{ matrix.g }}' > "$GITHUB_WORKSPACE/compute_out/fusion_${{ matrix.g }}.log" 2>&1
+          grep -q 'Iteration 5' "$GITHUB_WORKSPACE/compute_out/fusion_${{ matrix.g }}.log"
+      - name: Continuous amplitude predictivity
+        if: matrix.test == 'amplitude'
+        run: |
+          python experiments/fusion_ribbon_amplitude_predictivity.py --log 'compute_out/fusion_${{ matrix.g }}.log' --g '${{ matrix.g }}' --iterations 5 --reps 2048 --output 'compute_out/amplitude_${{ matrix.g }}.json'
+      - name: Cross-lag incremental predictivity
+        if: matrix.test == 'crosslag'
+        run: |
+          python experiments/fusion_ribbon_crosslag_predictivity.py --log 'compute_out/fusion_${{ matrix.g }}.log' --g '${{ matrix.g }}' --iterations 5 --reps 4096 --output 'compute_out/crosslag_${{ matrix.g }}.json'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dynamic-${{ matrix.test }}-g-${{ matrix.g }}
+          path: compute_out/
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [audit]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dynamic-*
+          path: campaign
+      - name: Aggregate frozen gates
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,statistics
+          amp=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('**/amplitude_*.json')]
+          cross=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('**/crosslag_*.json')]
+          if len(amp)!=6 or len(cross)!=6: raise SystemExit(f'expected 6+6 lanes, got {len(amp)}+{len(cross)}')
+          af=[d['summary']['fraction_steps_all_metrics_above_permutation_p95'] for d in amp]
+          cf=[d['summary']['fraction_steps_above_permutation_p95'] for d in cross]
+          ci=[d['summary']['mean_improvement_l1'] for d in cross]
+          out={
+            'test':'FUSION_DYNAMIC_PREDICTIVITY_AGGREGATE',
+            'amplitude_lane_count':len(amp),'crosslag_lane_count':len(cross),
+            'median_amplitude_fraction_steps_all_metrics_above_p95':statistics.median(af),
+            'fraction_amplitude_couplings_majority_steps_significant':sum(x>=0.6 for x in af)/len(af),
+            'median_crosslag_fraction_steps_above_p95':statistics.median(cf),
+            'fraction_crosslag_couplings_majority_steps_significant':sum(x>=0.6 for x in cf)/len(cf),
+            'median_crosslag_mean_l1_improvement':statistics.median(ci),
+            'continuous_amplitude_support':statistics.median(af)>=0.6 and sum(x>=0.6 for x in af)>=4,
+            'crosslag_incremental_support':statistics.median(cf)>=0.6 and statistics.median(ci)>0 and sum(x>=0.6 for x in cf)>=4,
+            'by_amplitude_coupling':[{'g':d['g'],**d['summary']} for d in sorted(amp,key=lambda x:x['g'])],
+            'by_crosslag_coupling':[{'g':d['g'],**d['summary']} for d in sorted(cross,key=lambda x:x['g'])],
+            'claim_lock':'Nearest-framework q-deformed lattice-gauge/TNR controls only. Positive gates would support label-specific or dynamical selector information beyond permutation/persistence nulls; they do not establish a gravity selector, continuum quantum gravity, or new physics.'
+          }
+          pathlib.Path('fusion_dynamic_predictivity_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fusion-dynamic-predictivity-summary
+          path: fusion_dynamic_predictivity_summary.json
+          if-no-files-found: error
