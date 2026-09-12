@@ -1,0 +1,212 @@
+name: ISQGR Iter006 RC006 Eq29 Arc Aware Source Geometry
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_eq29_arc_aware_source_geometry.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  geometry:
+    strategy:
+      fail-fast: false
+      matrix:
+        dps: [80, 120]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429v2 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429v2 -o source.bundle
+          echo '3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+          test -s src/bc-spin-nets.tex
+      - name: Install deterministic high precision dependency
+        run: python -m pip install --disable-pip-version-check mpmath==1.3.0
+      - name: Reconstruct full line and arc geometry
+        env:
+          DPS: ${{ matrix.dps }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,pathlib,re
+          import mpmath as mp
+          dps=int(os.environ['DPS']); mp.mp.dps=dps
+          raw=pathlib.Path('src/bc-spin-nets.tex').read_text()
+          active_lines=[]
+          for line in raw.splitlines(True):
+              cut=None
+              for i,ch in enumerate(line):
+                  if ch!='%': continue
+                  bs=0; j=i-1
+                  while j>=0 and line[j]=='\\': bs+=1; j-=1
+                  if bs%2==0: cut=i; break
+              active_lines.append(line if cut is None else line[:cut]+('\n' if line.endswith('\n') else ''))
+          active=''.join(active_lines)
+          subm=list(re.finditer(r'\\subsection\s*\{EPRL intertwiner model\}',active))
+          if len(subm)!=1: raise SystemExit('invalid eprl subsection count')
+          s=subm[0]; nb=re.compile(r'\\(?:subsection|section)\s*\{').search(active,s.end()); end=nb.start() if nb else len(active); body=active[s.start():end]
+          targets=list(re.finditer(r'[^\n]*initial\s+3-valent\s+tensor[^\n]*\\eqref\{eq:eprl-3-valent\}[^\n]*',body,re.I))
+          if len(targets)!=1: raise SystemExit('invalid target count')
+          t=targets[0]; after=body[t.end():]; bm=re.search(r'\\begin\{(align\*?)\}',after)
+          if not bm: raise SystemExit('no align')
+          env=bm.group(1); rb=t.end()+bm.start(); tok='\\end{'+env+'}'; re_=body.find(tok,rb)
+          if re_<0: raise SystemExit('unclosed align')
+          re_ += len(tok); block=body[rb:re_]
+          observed=hashlib.sha256(block.encode()).hexdigest(); expected='4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083'
+          if observed!=expected: raise SystemExit('block hash mismatch')
+          draws=re.findall(r'\\draw\b.*?;',block,re.S)
+          if len(draws)!=1: raise SystemExit('draw count != 1')
+          geom=draws[0].split('node',1)[0]
+          num=r'-?\d+(?:\.\d+)?'
+          token_rx=re.compile(rf'\(({num}),\s*({num})\)|--|arc\s*\(\s*({num})\s*:\s*({num})\s*:\s*({num})\s*\)')
+          toks=[]
+          for m in token_rx.finditer(geom):
+              if m.group(1) is not None: toks.append(('p',(mp.mpf(m.group(1)),mp.mpf(m.group(2)))))
+              elif m.group(0)=='--': toks.append(('lineop',None))
+              else: toks.append(('arc',(mp.mpf(m.group(3)),mp.mpf(m.group(4)),mp.mpf(m.group(5)))))
+          prim=[]; cur=None; pending=False
+          rad=mp.pi/180
+          for typ,val in toks:
+              if typ=='p':
+                  if pending and cur is not None:
+                      prim.append({'kind':'line','a':cur,'b':val})
+                  cur=val; pending=False
+              elif typ=='lineop': pending=True
+              else:
+                  if cur is None: raise SystemExit('arc without current point')
+                  a0,a1,r=val
+                  c=(cur[0]-r*mp.cos(a0*rad),cur[1]-r*mp.sin(a0*rad))
+                  endp=(c[0]+r*mp.cos(a1*rad),c[1]+r*mp.sin(a1*rad))
+                  prim.append({'kind':'arc','a':cur,'b':endp,'c':c,'r':abs(r),'ang0':a0,'ang1':a1})
+                  cur=endp; pending=False
+          margin=mp.mpf('1e-25'); residual_tol=mp.mpf('1e-40')
+          def norm2(v): return v[0]*v[0]+v[1]*v[1]
+          def sub(a,b): return (a[0]-b[0],a[1]-b[1])
+          def add(a,b): return (a[0]+b[0],a[1]+b[1])
+          def mul(a,t): return (a[0]*t,a[1]*t)
+          def cross(a,b): return a[0]*b[1]-a[1]*b[0]
+          def arc_param(P,A):
+              ang=mp.atan2(P[1]-A['c'][1],P[0]-A['c'][0])/rad
+              delta=A['ang1']-A['ang0']
+              if delta==0: return None
+              vals=[]
+              for k in range(-3,4):
+                  tt=(ang+360*k-A['ang0'])/delta
+                  if -margin <= tt <= 1+margin: vals.append(tt)
+              if not vals: return None
+              return min(vals,key=lambda x: abs(x-mp.mpf('0.5')))
+          def valid_arc(P,A):
+              tt=arc_param(P,A)
+              if tt is None or not (margin < tt < 1-margin): return False,None
+              rr=abs(mp.sqrt(norm2(sub(P,A['c'])))-A['r'])
+              return rr<=residual_tol,tt
+          def line_line(A,B):
+              p=A['a']; r=sub(A['b'],A['a']); q=B['a']; s=sub(B['b'],B['a']); den=cross(r,s)
+              if abs(den)<=residual_tol: return []
+              qp=sub(q,p); t=cross(qp,s)/den; u=cross(qp,r)/den
+              if margin<t<1-margin and margin<u<1-margin:
+                  return [(add(p,mul(r,t)),t,u)]
+              return []
+          def line_arc(L,A):
+              p=L['a']; d=sub(L['b'],L['a']); f=sub(p,A['c'])
+              aa=norm2(d); bb=2*(f[0]*d[0]+f[1]*d[1]); cc=norm2(f)-A['r']*A['r']; disc=bb*bb-4*aa*cc
+              if disc < -residual_tol: return []
+              disc=max(mp.mpf('0'),disc); sd=mp.sqrt(disc); out=[]
+              for t in [(-bb-sd)/(2*aa),(-bb+sd)/(2*aa)]:
+                  if not (margin<t<1-margin): continue
+                  P=add(p,mul(d,t)); ok,u=valid_arc(P,A)
+                  if ok and not any(mp.sqrt(norm2(sub(P,Q[0])))<=residual_tol for Q in out): out.append((P,t,u))
+              return out
+          def arc_arc(A,B):
+              c0,c1=A['c'],B['c']; dv=sub(c1,c0); d=mp.sqrt(norm2(dv)); r0,r1=A['r'],B['r']
+              if d<=residual_tol and abs(r0-r1)<=residual_tol: raise RuntimeError('coincident arc circles')
+              if d>r0+r1+residual_tol or d<abs(r0-r1)-residual_tol or d<=residual_tol: return []
+              x=(r0*r0-r1*r1+d*d)/(2*d); h2=r0*r0-x*x
+              if h2 < -residual_tol: return []
+              h=mp.sqrt(max(mp.mpf('0'),h2)); ux=(dv[0]/d,dv[1]/d); base=add(c0,mul(ux,x)); perp=(-ux[1],ux[0]); out=[]
+              for sg in [-1,1]:
+                  P=add(base,mul(perp,sg*h)); ok0,t0=valid_arc(P,A); ok1,t1=valid_arc(P,B)
+                  if ok0 and ok1 and not any(mp.sqrt(norm2(sub(P,Q[0])))<=residual_tol for Q in out): out.append((P,t0,t1))
+              return out
+          crossings=[]
+          for i,A in enumerate(prim):
+              for j in range(i+1,len(prim)):
+                  if j==i+1: continue
+                  B=prim[j]
+                  try:
+                      if A['kind']=='line' and B['kind']=='line': xs=line_line(A,B)
+                      elif A['kind']=='line' and B['kind']=='arc': xs=line_arc(A,B)
+                      elif A['kind']=='arc' and B['kind']=='line': xs=[(x[0],x[2],x[1]) for x in line_arc(B,A)]
+                      else: xs=arc_arc(A,B)
+                  except RuntimeError as e:
+                      out={'valid':False,'classification':'EQ29_ARC_GEOMETRY_INVALID','reason':str(e),'dps':dps}; pathlib.Path(f'out/geometry_{dps}.json').write_text(json.dumps(out,indent=2)+'\n'); raise SystemExit(2)
+                  for P,u,v in xs:
+                      crossings.append({'primitive_pair':[i,j],'kinds':[A['kind'],B['kind']],'point':[mp.nstr(P[0],50),mp.nstr(P[1],50)],'params':[mp.nstr(u,50),mp.nstr(v,50)]})
+          labels={m.group(1):m.start() for m in re.finditer(r'\\label\{([^}]+)\}',active)}
+          refs_body=[m.group(2) for m in re.finditer(r'\\(eqref|ref)\{([^}]+)\}',body)]
+          rpos=[m.start() for m in re.finditer(r'\\mathcal\{R\}\s*(?:\^\{-1\})?\s*=',active)]
+          r_labels=[lab for lab,pos in labels.items() if any(abs(pos-rp)<=2500 for rp in rpos)]
+          direct=sorted(set(refs_body)&set(r_labels))
+          out={'valid':True,'dps':dps,'candidate_block_sha256':observed,'primitive_count':len(prim),'line_count':sum(p['kind']=='line' for p in prim),'arc_count':sum(p['kind']=='arc' for p in prim),'proper_crossing_count':len(crossings),'proper_crossings':crossings,'r_reference_qualified':bool(direct),'direct_r_near_refs':direct}
+          pathlib.Path(f'out/geometry_{dps}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-arc-geometry-${{ matrix.dps }}
+          path: out/geometry_${{ matrix.dps }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: geometry
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: eq29-arc-geometry-*
+          path: inputs
+          merge-multiple: true
+      - name: Apply frozen classifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json,pathlib
+          rows=[]
+          for d in (80,120):
+              p=pathlib.Path('inputs')/f'geometry_{d}.json'
+              if not p.exists():
+                  out={'valid':False,'classification':'EQ29_ARC_GEOMETRY_INVALID','reason':f'missing_{d}'}; pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2)+'\n'); raise SystemExit(2)
+              rows.append(json.loads(p.read_text()))
+          if not all(x.get('valid') for x in rows):
+              valid=False; cl='EQ29_ARC_GEOMETRY_INVALID'
+          else:
+              sig=lambda x: sorted((tuple(c['primitive_pair']),tuple(c['kinds'])) for c in x['proper_crossings'])
+              same=(sig(rows[0])==sig(rows[1]) and rows[0]['proper_crossing_count']==rows[1]['proper_crossing_count'])
+              if not same:
+                  valid=True; cl='EQ29_ARC_AWARE_PRECISION_DISAGREEMENT'
+              else:
+                  valid=True; n=rows[1]['proper_crossing_count']; rq=rows[1]['r_reference_qualified']
+                  if n==0: cl='EQ29_ARC_AWARE_NO_PROPER_CROSSING'
+                  elif n==1 and rq: cl='EQ29_ARC_AWARE_UNIQUE_PROPER_CROSSING_R_REF_QUALIFIED'
+                  elif n>1: cl='EQ29_ARC_AWARE_MULTIPLE_CROSSINGS_AMBIGUOUS'
+                  else: cl='EQ29_ARC_AWARE_CROSSING_PRESENT_R_REF_BLOCKED'
+          out={'gate':'ITER006_RC006_EQ29_ARC_AWARE_SOURCE_GEOMETRY','valid':valid,'classification':cl,'dps_results':[{k:r.get(k) for k in ['dps','primitive_count','line_count','arc_count','proper_crossing_count','r_reference_qualified']} for r in rows],'eq29_amplitude_authorized':False,'bridge_credit':False,'prior_partial_verdict_preserved':True}
+          pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eq29-arc-aware-source-geometry-summary
+          path: out/summary.json
+          if-no-files-found: error
