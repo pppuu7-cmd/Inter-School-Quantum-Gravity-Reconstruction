@@ -1,0 +1,183 @@
+name: ISQGR Iter006 DED Target-B Mark Class
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_ded_target_b_mark_class.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  dynamic-trace:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install Ghostscript
+        run: sudo apt-get update && sudo apt-get install -y ghostscript
+      - name: Fetch pinned DED EPS
+        run: |
+          set -euo pipefail
+          mkdir -p src work out
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1801.03771 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          echo '9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303  source.tar' | sha256sum -c -
+          tar -xf source.tar -C src
+          cp src/_images/DEDconplex_plus_vg.eps work/input.eps
+          test -s work/input.eps
+      - name: Trace reference-path, stroke-envelope and text marks
+        run: |
+          cat > work/trace.ps <<'PS'
+          /traceout (%stdout) (w) file def
+          /markcount 0 def
+          /putstr { traceout exch writestring } bind def
+          /putnum { 50 string cvs traceout exch writestring } bind def
+          /sp { ( ) putstr } bind def /nl { (\n) putstr } bind def
+          /emitbbox {
+            /cls exch def /op exch def
+            pathbbox /ury exch def /urx exch def /lly exch def /llx exch def
+            llx lly transform /dy1 exch def /dx1 exch def
+            llx ury transform /dy2 exch def /dx2 exch def
+            urx lly transform /dy3 exch def /dx3 exch def
+            urx ury transform /dy4 exch def /dx4 exch def
+            /markcount markcount 1 add def
+            (MARK) putstr sp markcount putnum sp cls putstr sp op putstr sp
+            dx1 putnum sp dy1 putnum sp dx2 putnum sp dy2 putnum sp
+            dx3 putnum sp dy3 putnum sp dx4 putnum sp dy4 putnum nl
+          } bind def
+          /origstroke /stroke load def /origfill /fill load def /origeofill /eofill load def
+          /origshow /show load def
+          /hasglyphshow systemdict /glyphshow known def
+          hasglyphshow { /origglyphshow /glyphshow load def } if
+          /stroke {
+            gsave (stroke) (REFERENCE_PATH) emitbbox grestore
+            gsave strokepath (stroke) (STROKE_ENVELOPE) emitbbox grestore
+            origstroke
+          } bind def
+          /fill { gsave (fill) (REFERENCE_PATH) emitbbox grestore gsave (fill) (FILL_PATH) emitbbox grestore origfill } bind def
+          /eofill { gsave (eofill) (REFERENCE_PATH) emitbbox grestore gsave (eofill) (FILL_PATH) emitbbox grestore origeofill } bind def
+          /show {
+            /s exch def
+            gsave
+              currentpoint /cy exch def /cx exch def
+              newpath cx cy moveto
+              { s false charpath (show) (TEXT_CHARPATH) emitbbox } stopped
+              { (UNSUPPORTED show) putstr nl } if
+            grestore
+            s origshow
+          } bind def
+          hasglyphshow {
+            /glyphshow {
+              /g exch def
+              (UNSUPPORTED glyphshow) putstr nl
+              g origglyphshow
+            } bind def
+          } if
+          (work/input.eps) run
+          traceout flushfile quit
+          PS
+          set -o pipefail
+          gs -q -dNOSAFER -dNODISPLAY work/trace.ps > work/trace.txt
+          grep '^MARK ' work/trace.txt > work/marks.txt || true
+          grep '^UNSUPPORTED ' work/trace.txt > work/unsupported.txt || true
+          python - <<'PY'
+          import json,math,pathlib
+          rows=[]
+          for line in pathlib.Path('work/marks.txt').read_text().splitlines():
+              p=line.split()
+              if len(p)!=12 or p[0]!='MARK': continue
+              idx=int(p[1]); cls=p[2]; op=p[3]; z=list(map(float,p[4:])); xs=z[0::2]; ys=z[1::2]
+              if all(math.isfinite(v) for v in z): rows.append({'index':idx,'class':cls,'operator':op,'device_bbox':[min(xs),min(ys),max(xs),max(ys)]})
+          refs=[r for r in rows if r['class']=='REFERENCE_PATH']
+          if not refs:
+              out={'gate':'ITER006_DED_TARGET_B_MARK_CLASS','lane':'DYNAMIC_TRACE','valid':False,'classification':'INVALID_SOURCE_OR_IMPLEMENTATION','reason':'no_reference_paths'}
+              pathlib.Path('out/dynamic.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out)); raise SystemExit(2)
+          ux0=min(r['device_bbox'][0] for r in refs); uy0=min(r['device_bbox'][1] for r in refs); ux1=max(r['device_bbox'][2] for r in refs); uy1=max(r['device_bbox'][3] for r in refs); W=ux1-ux0; H=uy1-uy0
+          tx,ty=0.7200188857412654,0.8872037914691943
+          hits=[]; nearest=[]
+          for r in rows:
+              if r['class']=='REFERENCE_PATH': continue
+              x0,y0,x1,y1=r['device_bbox']; box=[(x0-ux0)/W,1-(y1-uy0)/H,(x1-ux0)/W,1-(y0-uy0)/H]
+              a,b,c,d=box; dx=max(a-tx,0,tx-c); dy=max(b-ty,0,ty-d); dist=math.hypot(dx,dy)
+              rec={'index':r['index'],'class':r['class'],'operator':r['operator'],'normalized_bbox':box,'distance':dist}
+              nearest.append(rec)
+              if a<=tx<=c and b<=ty<=d: hits.append(rec)
+          unsupported=pathlib.Path('work/unsupported.txt').read_text().splitlines() if pathlib.Path('work/unsupported.txt').exists() else []
+          out={'gate':'ITER006_DED_TARGET_B_MARK_CLASS','lane':'DYNAMIC_TRACE','valid':True,'reference_path_count':len(refs),'dynamic_mark_count':len(rows)-len(refs),'reference_union_bbox':[ux0,uy0,ux1,uy1],'target_b':[tx,ty],'containing_marks':hits,'containing_classes':sorted(set(h['class'] for h in hits)),'nearest_diagnostic':sorted(nearest,key=lambda x:(x['distance'],x['index']))[:8],'unsupported_events':unsupported,'classification':'DYNAMIC_TRACE_COMPLETE'}
+          pathlib.Path('out/dynamic.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps({'reference_path_count':len(refs),'containing_marks':hits,'unsupported_events':unsupported},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-target-b-dynamic-mark-class
+          path: out/dynamic.json
+          if-no-files-found: error
+
+  static-census:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://arxiv.org/e-print/1801.03771 -o source.tar
+          echo '9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303  source.tar' | sha256sum -c -
+          tar -xf source.tar -C src
+      - name: Independent active PostScript operator census
+        run: |
+          python - <<'PY'
+          import json,pathlib,re
+          p=pathlib.Path('src/_images/DEDconplex_plus_vg.eps'); raw=p.read_text(errors='ignore')
+          active=[]
+          for line in raw.splitlines(True):
+              # PostScript comments start at unescaped %, except DSC lines are comments too and are removed here.
+              cut=line.find('%'); active.append(line if cut<0 else line[:cut]+('\n' if line.endswith('\n') else ''))
+          text=''.join(active)
+          ops=['show','ashow','widthshow','awidthshow','glyphshow','image','imagemask','colorimage','stroke','fill','eofill']
+          counts={}; contexts={}
+          for op in ops:
+              rx=re.compile(r'(?<![A-Za-z0-9_])'+re.escape(op)+r'(?![A-Za-z0-9_])')
+              ms=list(rx.finditer(text)); counts[op]=len(ms); contexts[op]=[text[max(0,m.start()-100):min(len(text),m.end()+120)].replace('\n',' ') for m in ms[:8]]
+          image_count=sum(counts[x] for x in ['image','imagemask','colorimage']); text_count=sum(counts[x] for x in ['show','ashow','widthshow','awidthshow','glyphshow'])
+          out={'gate':'ITER006_DED_TARGET_B_MARK_CLASS','lane':'STATIC_CENSUS','valid':True,'operator_counts':counts,'contexts':contexts,'image_operator_count':image_count,'text_operator_count':text_count,'classification':'STATIC_CENSUS_COMPLETE'}
+          pathlib.Path('out/static.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps({'operator_counts':counts,'image_operator_count':image_count,'text_operator_count':text_count},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-target-b-static-census
+          path: out/static.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: [dynamic-trace, static-census]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ded-target-b-*
+          path: inputs
+      - name: Apply frozen marking-class classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          docs=[]
+          for p in glob.glob('inputs/**/*.json',recursive=True):
+              d=json.loads(pathlib.Path(p).read_text()); docs.append(d)
+          by={d.get('lane'):d for d in docs}; D=by.get('DYNAMIC_TRACE'); S=by.get('STATIC_CENSUS')
+          valid=bool(D and S and D.get('valid') is True and S.get('valid') is True)
+          if not valid: cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          else:
+              hits=D.get('containing_marks',[]); classes=set(h.get('class') for h in hits)
+              stroke=[h for h in hits if h.get('class')=='STROKE_ENVELOPE']; text=[h for h in hits if h.get('class')=='TEXT_CHARPATH']
+              if len(hits)==1 and len(stroke)==1 and not text: cl='DED_TARGET_B_STROKE_ENVELOPE_LOCALIZED'
+              elif len(hits)==1 and len(text)==1 and not stroke: cl='DED_TARGET_B_TEXT_LOCALIZED'
+              elif hits: cl='DED_TARGET_B_MARK_CLASS_AMBIGUOUS'
+              elif S.get('image_operator_count',0)>0: cl='DED_TARGET_B_IMAGE_CLASS_UNRESOLVED'
+              else: cl='DED_TARGET_B_SOURCE_MARK_CLASS_UNRESOLVED'
+          out={'gate':'ITER006_DED_TARGET_B_MARK_CLASS','valid':valid,'dynamic_containing_count':len(D.get('containing_marks',[])) if D else None,'dynamic_containing_classes':D.get('containing_classes') if D else None,'unsupported_dynamic_events':D.get('unsupported_events') if D else None,'image_operator_count':S.get('image_operator_count') if S else None,'text_operator_count':S.get('text_operator_count') if S else None,'classification':cl,'raster_topology_verdict_preserved':'TOPOLOGY_EXTRACTION_UNSTABLE','refinement_map_derived':False,'bridge_credit':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-target-b-mark-class-summary
+          path: summary.json
+          if-no-files-found: error
