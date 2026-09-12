@@ -1,0 +1,126 @@
+name: ISQGR Lorentzian EPRL DVD Asymmetric Heldout Gamma
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_DVD_ASYMMETRIC_HELDOUT_GAMMA_PREREG.json'
+      - 'experiments/sl2cfoam_dvd_asymmetric_heldout_gate.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-dvd-asymmetric-heldout-gamma.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+env:
+  ARXIV_ID: '1801.03771'
+  SL2CFOAM_SHA: '052e4346028870bd76f69a3034e6cae8defb8f7f'
+
+jobs:
+  source-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Re-verify source authority
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_dvd_multishell_source_manifest.py --source-dir external/two_vertex_src --output compute_out/source_manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dvd-asymmetric-heldout-source-manifest
+          path: compute_out/source_manifest.json
+
+  gamma:
+    needs: source-manifest
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        gamma: ['0.3','0.8','1.6','2.5','3.0']
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc-12 g++-12 m4 lzip wget ca-certificates libgmp-dev libmpfr-dev libmpc-dev libgsl-dev libopenblas-dev libblas-dev libomp-dev
+      - name: Checkout pinned sl2cfoam-next
+        run: |
+          git clone https://github.com/qg-cpt-marseille/sl2cfoam-next.git external/sl2cfoam-next
+          git -C external/sl2cfoam-next checkout ${SL2CFOAM_SHA}
+          test "$(git -C external/sl2cfoam-next rev-parse HEAD)" = "${SL2CFOAM_SHA}"
+      - name: Build Wigner dependencies
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          mkdir -p ext test/test_data
+          cd ext
+          wget -q https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -O wigxjpf.tar.gz
+          tar -xzf wigxjpf.tar.gz && mv wigxjpf-1.13 wigxjpf
+          make -C wigxjpf CC=gcc-12 -j2
+          wget -q https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz -O fastwigxj.tar.gz
+          tar -xzf fastwigxj.tar.gz && mv fastwigxj-1.4.1 fastwigxj
+          make -C fastwigxj CC=gcc-12 CXX=g++-12 -j2
+          cd ..
+          ./ext/fastwigxj/bin/hash_js --max-E-3j=24 /dev/null ./test/test_data/table_24.3j
+          ./ext/fastwigxj/bin/hash_js --max-E-6j=24 /dev/null ./test/test_data/table_24.6j
+      - name: Build library and frozen asymmetric evaluator
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          make CC=gcc-12 BLAS=system OMP=0 lib -j2
+          cp "$GITHUB_WORKSPACE/experiments/sl2cfoam_dvd_asymmetric_sum.c" test/dvd_asymmetric_sum.c
+          make CC=gcc-12 BLAS=system OMP=0 bin/dvd_asymmetric_sum -j1
+          test -x bin/dvd_asymmetric_sum
+      - name: Evaluate untouched asymmetric heldout gamma twice
+        env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/external/sl2cfoam-next/lib
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          cd external/sl2cfoam-next
+          ./bin/dvd_asymmetric_sum '${{ matrix.gamma }}' 2 | tee '../../compute_out/asym_heldout_${{ matrix.gamma }}_r1.log'
+          ./bin/dvd_asymmetric_sum '${{ matrix.gamma }}' 2 | tee '../../compute_out/asym_heldout_${{ matrix.gamma }}_r2.log'
+          cd ../..
+          python experiments/sl2cfoam_dvd_asymmetric_heldout_gate.py --run1 'compute_out/asym_heldout_${{ matrix.gamma }}_r1.log' --run2 'compute_out/asym_heldout_${{ matrix.gamma }}_r2.log' --gamma '${{ matrix.gamma }}' --output 'compute_out/asym_heldout_${{ matrix.gamma }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'dvd-asymmetric-heldout-gamma-${{ matrix.gamma }}'
+          path: compute_out/*
+          if-no-files-found: warn
+
+  aggregate:
+    needs: gamma
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'dvd-asymmetric-heldout-gamma-*'
+          path: all
+          merge-multiple: true
+      - name: Aggregate preregistered asymmetric heldout pattern
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          rows=sorted(rows,key=lambda x:x.get('gamma',0))
+          numerical=len(rows)==5 and all(x.get('numerical_gate_pass') for x in rows)
+          n=sum(bool(x.get('heldout_stabilization_pattern_pass')) for x in rows)
+          strong=numerical and n==5
+          natural=numerical and n>=4
+          out={'test':'LORENTZIAN_EPRL_DVD_ASYMMETRIC_HELDOUT_GAMMA_AGGREGATE','lane_count':len(rows),'numerical_all_pass':numerical,'pattern_pass_count':n,'strong_support':strong,'natural_support':natural,'classification':'DVD_ASYMMETRIC_HELDOUT_STRONG_SUPPORT' if strong else ('DVD_ASYMMETRIC_HELDOUT_NATURAL_SUPPORT' if natural else ('DVD_ASYMMETRIC_HELDOUT_PATTERN_FAIL' if numerical else 'DVD_ASYMMETRIC_HELDOUT_NUMERICAL_FAIL')),'by_gamma':[{'gamma':x.get('gamma'),'pattern_pass':x.get('heldout_stabilization_pattern_pass'),'repeat_max_relative_difference':x.get('repeat_max_relative_difference'),'diagnostics':x.get('diagnostics')} for x in rows],'claim_lock':'Heldout asymmetric support is finite-cutoff robustness across gamma and boundary data only; not convergence, refinement, continuum, bridge, novelty or new physics.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n');print(json.dumps(out,indent=2,sort_keys=True))
+          if not numerical:raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dvd-asymmetric-heldout-summary
+          path: summary.json
+          if-no-files-found: error
