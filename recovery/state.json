@@ -4,18 +4,18 @@
   "date":"2026-09-12",
   "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration":"ITERATION_006",
-  "iteration_completion_percent":70,
+  "iteration_completion_percent":72,
   "candidate_theory_status":"UNFORMED",
   "lead_bridge_hypothesis":"BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
   "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"rqir_promotion_authorized":false,"kmqgb_promotion_authorized":false},
-  "readiness_percent":{"amplitude_refinement_cross_realization_validation":42,"candidate_theory_construction":0,"overall_scientific_programme":49},
+  "readiness_percent":{"amplitude_refinement_cross_realization_validation":43,"candidate_theory_construction":0,"overall_scientific_programme":49},
   "frontier":{
     "RC006":{"status":"EQ29_AMPLITUDE_BLOCKED_SERIALIZATION_UNSTABLE","classification":"SCIENTIFIC_FAIL_CONTRACTION_SERIALIZATION_UNSTABLE"},
     "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
     "RC009":{"status":"SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{
-      "status":"DVD_FINITE_SHELL_ROBUSTNESS_CLOSED_REFINEMENT_MAP_SOURCE_AUTHORITY_ACTIVE",
+      "status":"DVD_FINITE_SHELL_ROBUSTNESS_CLOSED_LORENTZIAN_GRAPH_REFINEMENT_SOURCE_GATE_ACTIVE",
       "source":"arXiv:1801.03771",
       "source_sha256":"27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1",
       "kernel":"qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f",
@@ -28,13 +28,17 @@
       "dvd_asymmetric_mixed_b4":{"run":34708641965,"aggregate_job":103593486884,"artifact":10302557098,"classification":"B4_ASYMMETRIC_MIXED_AGGREGATE_PASS","lane_count":3,"worst_relative_error":2.49464e-8,"threshold":1e-5},
       "dvd_asymmetric_finite_shell":{"run":34708800382,"aggregate_job":103593818869,"artifact":10301904355,"artifact_digest":"sha256:80ef723faff1fde9a7e6865a53cb316306166aa7076ac68aaa113c5c8f0081f6","classification":"DVD_ASYMMETRIC_FINITE_SHELL_SUM_AGGREGATE_PASS","bridge_credit":false},
       "dvd_asymmetric_heldout_gamma":{"run":34709003568,"head":"e4c63f51acc538c734284110331ae4c4991641af","aggregate_job":103594420826,"artifact":10302597203,"artifact_digest":"sha256:755d1da35be78fa50f4a24e64a88d49590576ccf67d54956d20d76fe3568da52","classification":"DVD_ASYMMETRIC_HELDOUT_STRONG_SUPPORT","pattern_pass_count":5,"lane_count":5,"repeat_max_relative_difference":0.0,"bridge_credit":false},
-      "refinement_map_source_authority":{"protocol_commit":"8b780bb82fe03670389e1b70ad24c54bb8ced536","launch_commit":"5cab51746b6d8cc25a31c1f8b56638ae047f29b5","run":34709790323,"status":"QUEUED_OR_IN_PROGRESS","query_lane_count":6,"terminal_classification_pending":true},
+      "dvd_d3_extension":{"run":34708941068,"aggregate_job":103594246242,"artifact":10302319200,"artifact_digest":"sha256:8672e8509a11d5f61d0cc5ed37c49b41b341bcb0afe1bb3bd762d67ac764e949","classification":"DVD_D3_EXTENSION_STRONG_SUPPORT","pattern_pass_count":8,"lane_count":8,"D012_regression_max_relative_error":0.0,"repeat_max_relative_difference":0.0,"bridge_credit":false},
+      "dvd_refinement_source_authority":{"run":34709790323,"classification":"SOURCE_REFINEMENT_AUTHORITY_NOT_FOUND","scope":"PINNED_DVD_SOURCE_ONLY","bridge_credit":false},
+      "dvd_pair_semantics":{"classification":"DVD2_DVD3_FIXED_BOUNDARY_FOAMS_NOT_DIRECT_REFINEMENT_PAIR","bridge_credit":false},
+      "refinement_source_ladder":{"run":34710188640,"classification":"REFINEMENT_SEMANTIC_COMPONENTS_FOUND_BUT_LORENTZIAN_DVD_COMPATIBILITY_NOT_YET_ESTABLISHED","sources":["1205.6127","1407.7746","1609.02429","2012.11536","2211.09578"],"bridge_credit":false},
+      "lorentzian_graph_refinement_source_gate":{"protocol_commit":"a12020b1274d0596b2accb8909624e200632d3d7","launch_commit":"8a1f41b76a3323156a76540a4b1603da80328c06","run":34710443728,"sources":["0909.0939","1010.5227","1010.5437"],"status":"IN_PROGRESS","terminal_classification_pending":true},
       "refinement_map_derived":false,
-      "next_gate":"CONSUME_34709790323_RAW_CONTEXTS_AND_CLASSIFY_SOURCE_AUTHORITY; IF EXPLICIT MAP EXISTS FREEZE EXACT MAP AND RUN HELDOUT NON_RETUNED COARSE_REFINED AMPLITUDE TRANSPORT; OTHERWISE DO NOT RELABEL SHELL CUTOFF AS REFINEMENT"
+      "next_gate":"CONSUME_34710443728_AND_TEST_FOR_EXPLICIT_LORENTZIAN_EPRL_GRAPH_OR_FOAM_REFINEMENT_OPERATION_PLUS_AMPLITUDE_CONSISTENCY; ONLY IF COMPATIBLE_WITH_TWO_4_LINK_DIPOLE_BOUNDARY_FREEZE_A_NUMERICAL_REFINEMENT_GATE"
     }
   },
   "active_compute":[
-    {"workflow_run":34709790323,"purpose":"six-lane pinned-source audit for explicit mathematical coarse/refined amplitude or boundary-state map","status":"QUEUED_OR_IN_PROGRESS"}
+    {"workflow_run":34710443728,"purpose":"three-source Lorentzian/EPRL graph-refinement and cylindrical-consistency authority gate","status":"IN_PROGRESS"}
   ],
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_DVD_ASYMMETRIC_HELDOUT_GAMMA_STRONG_SUPPORT.md","results/ITER006_DVD_ASYMMETRIC_FINITE_SHELL_SUM_PASS.md","results/ITER006_DVD_MULTISHELL_HELDOUT_GAMMA_STRONG_SUPPORT.md","protocol/ITER006_DVD_REFINEMENT_MAP_SOURCE_AUTHORITY_PREREG.json","docs/CONSTITUTION.md"]
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_REFINEMENT_SOURCE_LADDER_SEMANTIC_CLASSIFICATION.md","results/ITER006_DVD_REFINEMENT_SOURCE_AUTHORITY_NOT_FOUND.md","results/ITER006_DVD2_DVD3_FIXED_BOUNDARY_NOT_REFINEMENT_PAIR.md","results/ITER006_DVD_D3_EXTENSION_STRONG_SUPPORT.md","protocol/ITER006_LORENTZIAN_GRAPH_REFINEMENT_SOURCE_GATE.json","docs/CONSTITUTION.md"]
 }
