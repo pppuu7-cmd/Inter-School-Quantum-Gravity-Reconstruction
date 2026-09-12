@@ -1,0 +1,65 @@
+name: ISQGR Iter006 Topology Instability Localization
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_topology_instability_localization.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  localize:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download immutable topology lane artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 34715789027
+          pattern: ded-dld-topology-*
+          path: all
+      - name: Localize frozen component-count instability
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[]
+          for p in glob.glob('all/**/result.json',recursive=True):
+              r=json.load(open(p)); rows.append(r)
+          by={(r['asset'],r['representation'],r['dpi']):r for r in rows}
+          pairs=[]
+          for asset in ['DED','DLD']:
+              for rep in ['ORIGINAL_EPS','GS_EPS2WRITE_NORMALIZED']:
+                  a=by[(asset,rep,300)]; b=by[(asset,rep,600)]
+                  c300=a['filtered_component_count']; c600=b['filtered_component_count']
+                  pairs.append({
+                    'asset':asset,'representation':rep,
+                    'component_count_300':c300,'component_count_600':c600,
+                    'component_count_delta_600_minus_300':c600-c300,
+                    'stable':c300==c600,
+                    'crop_shape_300':a['crop_shape'],'crop_shape_600':b['crop_shape'],
+                    'foreground_fraction_300':a['foreground_fraction'],
+                    'foreground_fraction_600':b['foreground_fraction']
+                  })
+          out={
+            'gate':'ITER006_TOPOLOGY_DPI_INSTABILITY_LOCALIZATION',
+            'source_run':34715789027,
+            'lane_count':len(rows),
+            'pairs':pairs,
+            'all_component_counts_stable':all(x['stable'] for x in pairs),
+            'unstable_pairs':[{'asset':x['asset'],'representation':x['representation'],'delta':x['component_count_delta_600_minus_300']} for x in pairs if not x['stable']],
+            'classification':'DPI_COMPONENT_COUNT_STABLE' if all(x['stable'] for x in pairs) else 'DPI_COMPONENT_COUNT_INSTABILITY_LOCALIZED',
+            'claim_lock':'Post-failure localization only. No threshold retuning, no representation promotion, no incidence/embedding permission, no bridge credit.'
+          }
+          pathlib.Path('topology_instability_localization.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - name: Upload localization report
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter006-topology-instability-localization
+          path: topology_instability_localization.json
+          if-no-files-found: error
