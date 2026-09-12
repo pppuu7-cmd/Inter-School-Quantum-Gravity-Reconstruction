@@ -1,0 +1,64 @@
+name: ISQGR RC006 Four Anchor Explicit Relation Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'protocol/ITER006_RC006_FOUR_ANCHOR_RELATION_PREREG.json'
+      - '.github/workflows/isqgr-rc006-four-anchor-relation.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  source-relations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch RC006 primary source
+        run: |
+          set -euo pipefail
+          mkdir -p src
+          curl -fL --retry 3 https://export.arxiv.org/e-print/1609.02429 -o source.tar || curl -fL --retry 3 https://arxiv.org/e-print/1609.02429 -o source.tar
+          sha256sum source.tar | tee source.sha256
+          tar -xf source.tar -C src
+      - name: Build explicit-reference graph on frozen unstable anchors
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,hashlib
+          anchors=['app:EPRL-diagram','app:EPRL-norm','app:graph','eq:recoupling-basis']
+          files=[]
+          for p in sorted(pathlib.Path('src').rglob('*.tex')):
+              try: files.append((str(p),p.read_text(errors='ignore')))
+              except: pass
+          corpus='\n'.join(t for _,t in files)
+          label_pos={a:[m.start() for m in re.finditer(r'\\label\{'+re.escape(a)+r'\}',corpus)] for a in anchors}
+          contexts={}; edges=[]
+          for a in anchors:
+              rows=[]
+              for pos in label_pos[a]:
+                  lo=max(0,pos-4500); hi=min(len(corpus),pos+6500); c=corpus[lo:hi]
+                  refs=re.findall(r'\\(?:eqref|ref|autoref)\{([^}]+)\}',c)
+                  direct=sorted(set(r for r in refs if r in anchors and r!=a))
+                  for b in direct: edges.append((a,b))
+                  rows.append({'position':pos,'direct_anchor_refs':direct,'all_refs':sorted(set(refs)),'context':c})
+              contexts[a]=rows
+          und={a:set() for a in anchors}
+          for a,b in set(edges): und[a].add(b);und[b].add(a)
+          seen=set(); stack=[anchors[0]]
+          while stack:
+              x=stack.pop()
+              if x in seen: continue
+              seen.add(x);stack.extend(und[x]-seen)
+          edge_count=len(set(edges)); connected=(len(seen)==4)
+          passed=all(label_pos[a] for a in anchors) and connected and edge_count>=3
+          out={'gate':'ITER006_RC006_FOUR_ANCHOR_EXPLICIT_RELATION_AUDIT','anchor_occurrence_counts':{a:len(label_pos[a]) for a in anchors},'explicit_directed_edges':[list(x) for x in sorted(set(edges))],'explicit_edge_count':edge_count,'all_four_connected_undirected':connected,'gate_pass':passed,'classification':'RC006_FOUR_ANCHOR_EXPLICIT_RELATION_SOURCE_PASS' if passed else 'RC006_FOUR_ANCHOR_EXPLICIT_RELATION_SOURCE_INSUFFICIENT','claim_lock':'This audit cannot reverse the prior serialization FAIL by itself; PASS only supplies new source authority for a separately preregistered retry.','source_sha256':hashlib.sha256(pathlib.Path('source.tar').read_bytes()).hexdigest()}
+          pathlib.Path('four_anchor_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          pathlib.Path('four_anchor_contexts.json').write_text(json.dumps(contexts,indent=2)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-four-anchor-explicit-relation-audit
+          path: |
+            four_anchor_summary.json
+            four_anchor_contexts.json
+            source.sha256
+          if-no-files-found: error
