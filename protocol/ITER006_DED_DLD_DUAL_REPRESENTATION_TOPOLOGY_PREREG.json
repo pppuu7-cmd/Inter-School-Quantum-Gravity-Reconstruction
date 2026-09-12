@@ -1,0 +1,15 @@
+{
+  "gate":"ITER006_DED_DLD_DUAL_REPRESENTATION_TOPOLOGY_DIAGNOSTIC",
+  "frozen_before_implementation":true,
+  "date":"2026-09-12",
+  "source":{"arxiv":"1801.03771","source_sha256_expected":"9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303","assets":{"DED":"_images/DEDconplex_plus_vg.eps","DLD":"_images/DLDandVertex.eps"}},
+  "purpose":"Test whether the exact source EPS geometry survives an independent PostScript normalization path reproducibly enough to support a later machine topology reconstruction. This is a prerequisite diagnostic only, not an incidence embedding test or amplitude/refinement bridge.",
+  "matrix":{"asset":["DED","DLD"],"representation":["ORIGINAL_EPS","GS_EPS2WRITE_NORMALIZED"],"dpi":[300,600]},
+  "lane_count":8,
+  "implementation_frozen_rules":{"render_device":"pnggray","pixel_threshold":200,"crop_to_nonwhite":true,"normalization":"resize each cropped binary mask to 1024x1024 nearest-neighbor before cross-representation comparison","component_connectivity":8,"minimum_component_area_fraction":0.00001},
+  "controls":{"source_sha256_exact":true,"asset_sha256_recorded":true,"both_representations_renderable":true,"two_dpi_required":true},
+  "thresholds":{"cross_representation_binary_disagreement_fraction_max":0.002,"cross_representation_foreground_fraction_relative_difference_max":0.005,"within_representation_dpi_component_count_exact":true},
+  "classification_rule":{"REPRESENTATION_STABLE":"all 8 lanes valid; for each asset and dpi cross-representation normalized binary disagreement <=0.002 and foreground relative difference <=0.005; for each asset+representation filtered component count identical across 300/600 dpi","REPRESENTATION_DEPENDENT":"all lanes valid but cross-representation threshold fails while each representation is internally dpi-stable","TOPOLOGY_EXTRACTION_UNSTABLE":"all lanes valid but dpi component stability fails","INVALID":"any source/hash/render/computation control invalid"},
+  "interpretation_lock":"Even REPRESENTATION_STABLE gives zero bridge credit and does not prove DED→DLD embedding. It only authorizes a separately preregistered incidence-graph extraction/embedding gate. No threshold retuning after outputs.",
+  "claim_locks":["NO_BRIDGE_DERIVED","NO_NEW_QG_THEORY","NO_CANDIDATE_ACTION","NO_DED_DLD_AMPLITUDE_IDENTITY_FROM_THIS_GATE"]
+}
