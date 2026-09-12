@@ -1,0 +1,501 @@
+{
+  "all_registered_expectations_met": true,
+  "claim_lock": [
+    "No full RT/QES inversion claim.",
+    "No causal-order + entanglement sufficiency claim.",
+    "No uniqueness or new-quantum-gravity claim.",
+    "BLOCKED_NONIDENTIFIABLE is not physical failure."
+  ],
+  "epsilon": 0.05,
+  "expected_classifications": {
+    "channel_anisotropy": "INCOMPATIBLE_SCALAR_CONFORMAL_SCOPED",
+    "channel_profiled": "PASS_SCOPED",
+    "clean_calibrated": "PASS_SCOPED",
+    "global_scale_nuisance": "BLOCKED_NONIDENTIFIABLE"
+  },
+  "failures": [],
+  "protocol": "ITER002_CEMR_FINITE_SURFACE_INVERSION_PROTOCOL",
+  "results": [
+    {
+      "chi2": 20.46581966656635,
+      "classification": "PASS_SCOPED",
+      "condition_number": 5.303539495502216,
+      "dof": 20,
+      "epsilon": 0.05,
+      "jacobian_rank": 4,
+      "max_abs_theta_error": 0.0015108513820867725,
+      "n_parameters": 4,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08."
+      ],
+      "nuisance_fit": null,
+      "reduced_chi2": 1.0232909833283175,
+      "scenario": "clean_calibrated",
+      "seed": 101,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3268.563524733299,
+        1511.0146332354498,
+        1375.8273146562265,
+        616.2985167745571
+      ],
+      "theta_fit": [
+        0.17997512265462656,
+        0.11103115314623808,
+        -0.07003776959089464,
+        0.03848914861791323
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 20.175833947666725,
+      "classification": "PASS_SCOPED",
+      "condition_number": 5.303846961139673,
+      "dof": 20,
+      "epsilon": 0.05,
+      "jacobian_rank": 4,
+      "max_abs_theta_error": 0.0013985092714527622,
+      "n_parameters": 4,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08."
+      ],
+      "nuisance_fit": null,
+      "reduced_chi2": 1.0087916973833362,
+      "scenario": "clean_calibrated",
+      "seed": 211,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3268.5553504784725,
+        1512.3268559242524,
+        1374.5122932785673,
+        616.2612485666699
+      ],
+      "theta_fit": [
+        0.18009658341925344,
+        0.11016172959135218,
+        -0.0692173119207322,
+        0.04139850927145276
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 25.666942223985885,
+      "classification": "PASS_SCOPED",
+      "condition_number": 5.303953008439362,
+      "dof": 20,
+      "epsilon": 0.05,
+      "jacobian_rank": 4,
+      "max_abs_theta_error": 0.003081847889099751,
+      "n_parameters": 4,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08."
+      ],
+      "nuisance_fit": null,
+      "reduced_chi2": 1.2833471111992942,
+      "scenario": "clean_calibrated",
+      "seed": 307,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3268.597166590715,
+        1513.1177486116098,
+        1373.7844981376431,
+        616.2568109841661
+      ],
+      "theta_fit": [
+        0.18027916167751568,
+        0.11087753081093381,
+        -0.07021877183185816,
+        0.04308184788909975
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 20.465819666564606,
+      "classification": "BLOCKED_NONIDENTIFIABLE",
+      "condition_number": null,
+      "dof": 20,
+      "epsilon": 0.05,
+      "jacobian_rank": 4,
+      "max_abs_theta_error": 2.4973717946104106,
+      "n_parameters": 5,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08.",
+        "Jacobian is rank deficient; no physical rejection is authorized.",
+        "Expected exact degeneracy: log-area response to theta0 is 2*theta0, so an unknown global log-area calibration cannot be separated from theta0."
+      ],
+      "nuisance_fit": -4.994793343920302,
+      "reduced_chi2": 1.0232909833282302,
+      "scenario": "global_scale_nuisance",
+      "seed": 101,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3653.711705043898,
+        1511.0408376533417,
+        1375.9924038057516,
+        616.3240756013818,
+        4.7340396554808575e-06
+      ],
+      "theta_fit": [
+        2.6773717946104107,
+        0.11103115315334555,
+        -0.07003776959271821,
+        0.0384891487627579
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 20.175833947666302,
+      "classification": "BLOCKED_NONIDENTIFIABLE",
+      "condition_number": null,
+      "dof": 20,
+      "epsilon": 0.05,
+      "jacobian_rank": 4,
+      "max_abs_theta_error": 0.1368763236815143,
+      "n_parameters": 5,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08.",
+        "Jacobian is rank deficient; no physical rejection is authorized.",
+        "Expected exact degeneracy: log-area response to theta0 is 2*theta0, so an unknown global log-area calibration cannot be separated from theta0."
+      ],
+      "nuisance_fit": 0.27394581416422326,
+      "reduced_chi2": 1.008791697383315,
+      "scenario": "global_scale_nuisance",
+      "seed": 211,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3653.705549251348,
+        1512.3532297084166,
+        1374.6738362483884,
+        616.2877875663771,
+        2.9386085246561894e-06
+      ],
+      "theta_fit": [
+        0.04312367631848568,
+        0.11016172958458958,
+        -0.06921731192410756,
+        0.04139850920149732
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 25.666942223984382,
+      "classification": "BLOCKED_NONIDENTIFIABLE",
+      "condition_number": null,
+      "dof": 20,
+      "epsilon": 0.05,
+      "jacobian_rank": 4,
+      "max_abs_theta_error": 1.7160613856871438,
+      "n_parameters": 5,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08.",
+        "Jacobian is rank deficient; no physical rejection is authorized.",
+        "Expected exact degeneracy: log-area response to theta0 is 2*theta0, so an unknown global log-area calibration cannot be separated from theta0."
+      ],
+      "nuisance_fit": 3.4326810947442654,
+      "reduced_chi2": 1.2833471111992192,
+      "scenario": "global_scale_nuisance",
+      "seed": 307,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3653.7419999065064,
+        1513.1439830406216,
+        1373.948461319597,
+        616.2839871000972,
+        5.602610406905422e-06
+      ],
+      "theta_fit": [
+        -1.536061385687144,
+        0.11087753077835762,
+        -0.0702187718038551,
+        0.043081847847318055
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 6766.87196558328,
+      "classification": "INCOMPATIBLE_SCALAR_CONFORMAL_SCOPED",
+      "condition_number": 5.303539484031111,
+      "dof": 20,
+      "epsilon": 0.05,
+      "jacobian_rank": 4,
+      "max_abs_theta_error": 0.0015108519175343407,
+      "n_parameters": 4,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08.",
+        "Duplicated surfaces disagree beyond the scalar conformal model."
+      ],
+      "nuisance_fit": null,
+      "reduced_chi2": 338.343598279164,
+      "scenario": "channel_anisotropy",
+      "seed": 101,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3268.563528141726,
+        1511.0146362213727,
+        1375.8273141065956,
+        616.2985187502287
+      ],
+      "theta_fit": [
+        0.17997512266315527,
+        0.11103115332415046,
+        -0.07003776938002435,
+        0.03848914808246566
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 6757.618618826959,
+      "classification": "INCOMPATIBLE_SCALAR_CONFORMAL_SCOPED",
+      "condition_number": 5.303846975312881,
+      "dof": 20,
+      "epsilon": 0.05,
+      "jacobian_rank": 4,
+      "max_abs_theta_error": 0.0013985092348509642,
+      "n_parameters": 4,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08.",
+        "Duplicated surfaces disagree beyond the scalar conformal model."
+      ],
+      "nuisance_fit": null,
+      "reduced_chi2": 337.88093094134797,
+      "scenario": "channel_anisotropy",
+      "seed": 211,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3268.555355260286,
+        1512.3268570336122,
+        1374.5122811808048,
+        616.26124782144
+      ],
+      "theta_fit": [
+        0.1800965834179097,
+        0.11016172958427627,
+        -0.06921731190615375,
+        0.041398509234850965
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 6769.328178857333,
+      "classification": "INCOMPATIBLE_SCALAR_CONFORMAL_SCOPED",
+      "condition_number": 5.303953110520493,
+      "dof": 20,
+      "epsilon": 0.05,
+      "jacobian_rank": 4,
+      "max_abs_theta_error": 0.003081847906290326,
+      "n_parameters": 4,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08.",
+        "Duplicated surfaces disagree beyond the scalar conformal model."
+      ],
+      "nuisance_fit": null,
+      "reduced_chi2": 338.4664089428667,
+      "scenario": "channel_anisotropy",
+      "seed": 307,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3268.5971751200414,
+        1513.1177558976995,
+        1373.784487835401,
+        616.2568007316497
+      ],
+      "theta_fit": [
+        0.18027916167319355,
+        0.11087753080140887,
+        -0.07021877181910509,
+        0.04308184790629033
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 20.227380245901166,
+      "classification": "PASS_SCOPED",
+      "condition_number": 5.303539516371518,
+      "dof": 19,
+      "epsilon": 0.05,
+      "jacobian_rank": 5,
+      "max_abs_theta_error": 0.001510851332349919,
+      "n_parameters": 5,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08.",
+        "Channel nuisance is explicitly profiled rather than attributed to geometry."
+      ],
+      "nuisance_fit": 0.05029902304721885,
+      "reduced_chi2": 1.0645989603105876,
+      "scenario": "channel_profiled",
+      "seed": 101,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3268.5635298886946,
+        1632.9931618540027,
+        1511.0146332241961,
+        1375.8273211801786,
+        616.2985153215042
+      ],
+      "theta_fit": [
+        0.17997512265407584,
+        0.11103115316458569,
+        -0.07003776960436085,
+        0.03848914866765008
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 19.9879867385699,
+      "classification": "PASS_SCOPED",
+      "condition_number": 5.303846963872267,
+      "dof": 19,
+      "epsilon": 0.05,
+      "jacobian_rank": 5,
+      "max_abs_theta_error": 0.0013985091080029044,
+      "n_parameters": 5,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08.",
+        "Channel nuisance is explicitly profiled rather than attributed to geometry."
+      ],
+      "nuisance_fit": 0.050265410443275885,
+      "reduced_chi2": 1.051999302029995,
+      "scenario": "channel_profiled",
+      "seed": 211,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3268.5553488216015,
+        1632.9931618501287,
+        1512.3268528016717,
+        1374.5122876055439,
+        616.2612479367755
+      ],
+      "theta_fit": [
+        0.1800965834221214,
+        0.11016172957993363,
+        -0.06921731190151655,
+        0.041398509108002905
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    },
+    {
+      "chi2": 25.444636081321306,
+      "classification": "PASS_SCOPED",
+      "condition_number": 5.303953021096292,
+      "dof": 19,
+      "epsilon": 0.05,
+      "jacobian_rank": 5,
+      "max_abs_theta_error": 0.003081847834787446,
+      "n_parameters": 5,
+      "notes": [
+        "Stage-I fixed-surface calculation; no extremal-surface backreaction.",
+        "Absolute scale is interpretable only in the calibrated scenario.",
+        "Numerical Jacobian rank uses relative singular-value tolerance 1.0e-08.",
+        "Channel nuisance is explicitly profiled rather than attributed to geometry."
+      ],
+      "nuisance_fit": 0.05028872963733563,
+      "reduced_chi2": 1.3391913727011213,
+      "scenario": "channel_profiled",
+      "seed": 307,
+      "sigma_log_area": 0.003,
+      "singular_values": [
+        3268.5971666635683,
+        1632.9931618586302,
+        1513.1177506368824,
+        1373.7844906741138,
+        616.2568095273157
+      ],
+      "theta_fit": [
+        0.1802791616771693,
+        0.11087753080536199,
+        -0.07021877181459514,
+        0.04308184783478745
+      ],
+      "theta_true": [
+        0.18,
+        0.11,
+        -0.07,
+        0.04
+      ]
+    }
+  ],
+  "seeds": [
+    101,
+    211,
+    307
+  ],
+  "sigma_log_area": 0.003,
+  "stage": "Stage-I fixed-surface conformal inverse"
+}
