@@ -1,0 +1,80 @@
+name: ISQGR RC006 Recoupling Orthogonality
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_qgroup_recoupling_orthogonality.jl'
+      - '.github/workflows/isqgr-rc006-recoupling-orthogonality.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    strategy:
+      fail-fast: false
+      matrix:
+        level: [6,10,12]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Clone and pin q-deformed kernel
+        run: |
+          set -euo pipefail
+          git clone https://github.com/ssteinhaus/Fusion-basis-coarse-graining.git external/Fusion-basis-coarse-graining
+          git -C external/Fusion-basis-coarse-graining checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
+          test "$(git -C external/Fusion-basis-coarse-graining rev-parse HEAD)" = "bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4"
+      - name: Test actual recoupling-matrix orthogonality
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          julia experiments/rc006_qgroup_recoupling_orthogonality.jl \
+            '${{ matrix.level }}' external/Fusion-basis-coarse-graining/half_int/no_torsion/qgroup_def.jl \
+            compute_out/recoupling_k${{ matrix.level }}.toml
+          cat compute_out/recoupling_k${{ matrix.level }}.toml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-recoupling-k${{ matrix.level }}
+          path: compute_out/*.toml
+          if-no-files-found: error
+
+  aggregate:
+    needs: diagnose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-recoupling-*
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate diagnostic
+        run: |
+          python - <<'PY'
+          import glob,tomllib,json,os
+          rows=[]
+          for p in sorted(glob.glob('campaign/*.toml')):
+              with open(p,'rb') as f: rows.append(tomllib.load(f))
+          passed=len(rows)==3 and all(x['recoupling_orthogonality_pass'] for x in rows)
+          out={'test':'RC006_QGROUP_RECOUPLING_ORTHOGONALITY_AGGREGATE','lanes':rows,
+               'all_three_levels_pass':passed,
+               'decision_if_pass':'Treat the earlier k12 bare-tetrahedral-symmetry failure as a convention-test mismatch and permit the kernel only for identities/functions directly validated by recoupling orthogonality plus fusion/admissibility checks.',
+               'decision_if_fail':'Do not use the kernel for RC006 k12 EPRL implementation; isolate precision/normalization cause first.',
+               'claim_lock':'Numerical convention diagnostic only, not EPRL/RG/refinement evidence.'}
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/rc006_recoupling_orthogonality.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-recoupling-orthogonality-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
