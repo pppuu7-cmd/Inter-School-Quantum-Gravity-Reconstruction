@@ -1,0 +1,132 @@
+name: ISQGR EPRL Shared-Unitary Orientation Null
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-eprl-shared-unitary-orientation-null.yml'
+      - 'experiments/eprl_shared_unitary_orientation_null.py'
+      - 'experiments/eprl_crossshell_exhaustive.py'
+
+permissions:
+  contents: read
+
+jobs:
+  gamma:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        gamma: ['0.5','1.2','2.0']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native and Python dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc-12 g++-12 m4 lzip wget ca-certificates libgmp-dev libmpfr-dev libmpc-dev libgsl-dev libopenblas-dev libblas-dev libomp-dev python3-numpy
+      - name: Checkout pinned sl2cfoam-next
+        run: |
+          git clone https://github.com/qg-cpt-marseille/sl2cfoam-next.git external/sl2cfoam-next
+          git -C external/sl2cfoam-next checkout 052e4346028870bd76f69a3034e6cae8defb8f7f
+          test "$(git -C external/sl2cfoam-next rev-parse HEAD)" = "052e4346028870bd76f69a3034e6cae8defb8f7f"
+      - name: Build Wigner dependencies
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          mkdir -p ext
+          cd ext
+          wget -q https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -O wigxjpf.tar.gz
+          tar -xzf wigxjpf.tar.gz && mv wigxjpf-1.13 wigxjpf
+          make -C wigxjpf CC=gcc-12 -j2
+          wget -q https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz -O fastwigxj.tar.gz
+          tar -xzf fastwigxj.tar.gz && mv fastwigxj-1.4.1 fastwigxj
+          make -C fastwigxj CC=gcc-12 CXX=g++-12 -j2
+      - name: Build sl2cfoam-next tools
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          mkdir -p data_sl2cfoam
+          ./ext/fastwigxj/bin/hash_js --max-E-3j=20 /dev/null ./data_sl2cfoam/table_20.3j
+          ./ext/fastwigxj/bin/hash_js --max-E-6j=20 /dev/null ./data_sl2cfoam/table_20.6j
+          make CC=gcc-12 BLAS=system OMP=0 lib -j2
+          make CC=gcc-12 BLAS=system OMP=0 tools -j2
+          test -x bin/vertex-fulltensor
+      - name: Compute pinned Lorentzian EPRL tensors
+        working-directory: external/sl2cfoam-next
+        env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/external/sl2cfoam-next/lib
+        run: |
+          set -euo pipefail
+          ./bin/vertex-fulltensor -v data_sl2cfoam ${{ matrix.gamma }} 1,1,1,1,1,1,1,1,1,1 0
+          ./bin/vertex-fulltensor -v data_sl2cfoam ${{ matrix.gamma }} 1,1,1,1,1,1,1,1,1,1 1
+          mapfile -t P0S < <(find data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-0.sl2t')
+          mapfile -t P1S < <(find data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-1.sl2t')
+          test "${#P0S[@]}" -eq 1; test "${#P1S[@]}" -eq 1
+          test -s "${P0S[0]}"; test -s "${P1S[0]}"
+      - name: Run shared-unitary orientation null
+        run: |
+          set -euo pipefail
+          mapfile -t P0S < <(find external/sl2cfoam-next/data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-0.sl2t')
+          mapfile -t P1S < <(find external/sl2cfoam-next/data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-1.sl2t')
+          test "${#P0S[@]}" -eq 1; test "${#P1S[@]}" -eq 1
+          mkdir -p compute_out
+          PYTHONPATH=experiments python3 experiments/eprl_shared_unitary_orientation_null.py \
+            --dl0 "${P0S[0]}" --dl1 "${P1S[0]}" --gamma ${{ matrix.gamma }} \
+            --n-null 256 --seed 20260919 \
+            --output "compute_out/eprl_orientation_gamma_${{ matrix.gamma }}.json"
+          python3 - <<'PY'
+          import glob,json,math
+          fs=glob.glob('compute_out/*.json'); assert len(fs)==1
+          d=json.load(open(fs[0])); assert d['status']=='PASS_EXECUTION'; assert d['n_cases']==640
+          s=d['summary']; assert math.isfinite(s['median_case_median_return_improvement'])
+          print(json.dumps(s,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eprl-orientation-null-gamma-${{ matrix.gamma }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [gamma]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: campaign
+          merge-multiple: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Aggregate orientation-null campaign
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib
+          ds=[json.loads(p.read_text()) for p in pathlib.Path('campaign').glob('*.json')]
+          if len(ds)!=3: raise SystemExit(f'expected 3 gamma artifacts, got {len(ds)}')
+          ds=sorted(ds,key=lambda d:d['gamma'])
+          all_natural=all(d['summary']['natural_support'] for d in ds)
+          all_strong=all(d['summary']['strong_support'] for d in ds)
+          all_refute=all(d['summary']['median_case_median_return_improvement']<=1 and d['summary']['fraction_cases_majority_null_worse']<=0.5 for d in ds)
+          out={
+            'test':'LORENTZIAN_EPRL_SHARED_UNITARY_ORIENTATION_NULL_AGGREGATE',
+            'n_gamma':len(ds),
+            'by_gamma':{str(d['gamma']):{'summary':d['summary'],'prior_slice_no_postselection':d['prior_slice_no_postselection']} for d in ds},
+            'all_gamma_natural_support':all_natural,
+            'all_gamma_strong_support':all_strong,
+            'all_gamma_refute_gravity_side_generalization':all_refute,
+            'claim_lock':'Shared-unitary orientation audit in one pinned Lorentzian EPRL 4-simplex realization across three Immirzi parameters. It isolates orientation relative to a frozen train-derived projector while preserving each holdout spectrum. No full gluing/refinement/GR/QG claim.'
+          }
+          pathlib.Path('eprl_shared_unitary_orientation_null_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-eprl-shared-unitary-orientation-null-summary
+          path: eprl_shared_unitary_orientation_null_summary.json
+          if-no-files-found: error
