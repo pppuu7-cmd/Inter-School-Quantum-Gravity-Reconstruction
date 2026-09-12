@@ -1,0 +1,52 @@
+name: ISQGR RC008 Hessian Kernel Scaling
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc008_hessian_kernel_scaling.py'
+      - '.github/workflows/isqgr-rc008-hessian-kernel-scaling.yml'
+  workflow_dispatch:
+
+permissions: {contents: read}
+
+jobs:
+  hessian:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        seed: [101, 211, 307, 401, 503, 601, 701, 809]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install numpy
+      - name: Run frozen source-derived Hessian kernel audit
+        run: |
+          mkdir -p compute_out
+          python experiments/rc008_hessian_kernel_scaling.py --seed '${{ matrix.seed }}' --output 'compute_out/hessian_${{ matrix.seed }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: 'rc008-hessian-kernel-${{ matrix.seed }}', path: 'compute_out/*.json', if-no-files-found: error}
+  aggregate:
+    needs: hessian
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {pattern: 'rc008-hessian-kernel-*', path: all, merge-multiple: true}
+      - name: Apply frozen multi-fixture gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib,sys
+          rows=[json.load(open(f)) for f in sorted(glob.glob('all/*.json'))]
+          ok=len(rows)==8 and all(r.get('frozen_gate_pass') for r in rows)
+          out={'test':'RC008_HESSIAN_KERNEL_SCALING_AGGREGATE','lane_count':len(rows),'passes':sum(bool(r.get('frozen_gate_pass')) for r in rows),'frozen_gate_pass':ok,'worst_symmetry_error':max((r['symmetry_error'] for r in rows),default=None),'worst_logdet_scaling_error':max((r['max_logdet_scaling_error'] for r in rows),default=None),'claim_lock':'Source-derived stationary-phase kernel qualification only; no full amplitude/refinement or bridge claim.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n');print(json.dumps(out,indent=2,sort_keys=True));sys.exit(0 if ok else 2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: rc008-hessian-kernel-summary, path: summary.json, if-no-files-found: error}
