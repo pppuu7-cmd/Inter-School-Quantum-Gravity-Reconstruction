@@ -1,0 +1,42 @@
+name: ISQGR Lorentzian EPRL Delta4 Direct Reproduction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_direct_reproduction.jl'
+      - '.github/workflows/isqgr-delta4-direct-reproduction.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Install pinned minimal Julia dependency
+        run: julia -e 'using Pkg; Pkg.add(name="JLD2", version="0.4.53")'
+      - name: Clone and pin four-vertex EPRL tensor source
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Recontract stored EPRL vertices and compare with published Delta4 table
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          julia experiments/delta4_direct_reproduction.jl \
+            external/HowToSpinFoamAmplitude \
+            compute_out/delta4_direct_reproduction.tsv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-delta4-direct-reproduction
+          path: compute_out/*.tsv
+          if-no-files-found: error
