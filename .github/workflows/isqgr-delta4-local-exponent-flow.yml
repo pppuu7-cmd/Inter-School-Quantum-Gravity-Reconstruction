@@ -1,0 +1,125 @@
+name: ISQGR Delta4 Local Exponent Flow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_local_exponent_flow.py'
+      - '.github/workflows/isqgr-delta4-local-exponent-flow.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  local-exponent:
+    strategy:
+      fail-fast: false
+      max-parallel: 24
+      matrix:
+        lane: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clone and pin public Delta4 source data
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Run local-exponent lane
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/delta4_local_exponent_flow.py \
+            --source-root external/HowToSpinFoamAmplitude \
+            --lane ${{ matrix.lane }} --lanes 24 \
+            --output compute_out/local_exponent_lane_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-local-exponent-lane-${{ matrix.lane }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: local-exponent
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: delta4-local-exponent-lane-*
+          path: all_lanes
+          merge-multiple: true
+      - name: Aggregate local-exponent flow
+        run: |
+          python - <<'PY'
+          import glob,json,os,statistics
+          rows=[]
+          for f in glob.glob('all_lanes/*.json'):
+              rows.extend(json.load(open(f))['results'])
+          good=[r for r in rows if r.get('identifiable')]
+          by_dataset={}
+          for r in good:
+              key=f"g={r['gamma']},j={r['j_boundary']}"
+              by_dataset.setdefault(key,[]).append(r)
+          dataset_summary={}
+          for key,rr in sorted(by_dataset.items()):
+              ai=[r['alpha_inf_extrapolated'] for r in rr]
+              med=statistics.median(ai)
+              spread=(max(ai)-min(ai))/max(abs(med),1e-12)
+              dataset_summary[key]={
+                'n_windows':len(rr),
+                'median_alpha_inf':med,
+                'relative_alpha_inf_window_spread':spread,
+                'median_terminal_alpha':statistics.median(r['alpha_terminal'] for r in rr),
+                'median_flow_delta':statistics.median(r['flow_delta_terminal_minus_first'] for r in rr)
+              }
+          by_j={}
+          for r in good:
+              by_j.setdefault(r['j_boundary'],{}).setdefault(r['window'],[]).append(r)
+          j_summary={}
+          for j,wm in sorted(by_j.items()):
+              perw=[]
+              for w,rr in sorted(wm.items()):
+                  if len(rr)!=3: continue
+                  inf=[r['alpha_inf_extrapolated'] for r in rr]
+                  term=[r['alpha_terminal'] for r in rr]
+                  mi=statistics.median(inf); mt=statistics.median(term)
+                  si=(max(inf)-min(inf))/max(abs(mi),1e-12)
+                  st=(max(term)-min(term))/max(abs(mt),1e-12)
+                  reduction=(st-si)/max(st,1e-12)
+                  perw.append({'window':w,'cross_gamma_alpha_inf_spread':si,
+                               'cross_gamma_terminal_spread':st,
+                               'spread_reduction_fraction':reduction})
+              j_summary[str(j)]={
+                'windows':perw,
+                'median_alpha_inf_spread':statistics.median(x['cross_gamma_alpha_inf_spread'] for x in perw) if perw else None,
+                'median_terminal_spread':statistics.median(x['cross_gamma_terminal_spread'] for x in perw) if perw else None,
+                'median_spread_reduction':statistics.median(x['spread_reduction_fraction'] for x in perw) if perw else None
+              }
+          all_identifiable=(len(good)==24)
+          window_stable=bool(all_identifiable and all(d['relative_alpha_inf_window_spread']<=0.35 for d in dataset_summary.values()))
+          cross_gamma_stable=bool(j_summary and all(all(x['cross_gamma_alpha_inf_spread']<=0.35 for x in d['windows']) for d in j_summary.values()))
+          contraction=bool(j_summary and all(all(x['spread_reduction_fraction']>=0.25 for x in d['windows']) for d in j_summary.values()))
+          out={'test':'LORENTZIAN_EPRL_DELTA4_LOCAL_EXPONENT_FLOW_AGGREGATE',
+               'n_tasks':len(rows),'all_tasks_identifiable':all_identifiable,
+               'by_dataset':dataset_summary,'by_j':j_summary,
+               'window_stable_alpha_inf':window_stable,
+               'cross_gamma_alpha_inf_stable':cross_gamma_stable,
+               'asymptotic_spread_contraction':contraction,
+               'common_asymptotic_exponent_support':bool(window_stable and cross_gamma_stable and contraction),
+               'preregistered_thresholds':{'relative_alpha_inf_window_spread':0.35,'cross_gamma_alpha_inf_spread':0.35,'minimum_spread_reduction_fraction':0.25},
+               'claim_lock':'Positive support would only preserve the plausibility of a common empirical asymptotic exponent under a 1/D correction ansatz. It would not prove RG flow, a continuum limit, or new physics.'}
+          os.makedirs('aggregate_out',exist_ok=True)
+          json.dump(out,open('aggregate_out/delta4_local_exponent_flow_summary.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-local-exponent-flow-summary
+          path: aggregate_out/*.json
+          if-no-files-found: error
