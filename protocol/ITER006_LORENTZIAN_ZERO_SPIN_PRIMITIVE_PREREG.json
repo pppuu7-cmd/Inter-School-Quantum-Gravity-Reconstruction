@@ -1,0 +1,24 @@
+{
+  "gate": "ITER006_LORENTZIAN_ZERO_SPIN_PRIMITIVE_CAPABILITY",
+  "date": "2026-09-12",
+  "source_motivation": "arXiv:1010.5437 authorizes Lorentzian trivial face extensions by assigning j=0 to added faces; before constructing a refined DVD foam, qualify the pinned numerical B4 primitive in sectors containing one zero representation.",
+  "kernel": "qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f",
+  "gamma": [0.5,1.2,2.0],
+  "frozen_b4_configs_two_spin_units": [
+    [0,2,2,2,0,2,2,2],
+    [2,0,2,2,2,0,2,2],
+    [2,2,0,2,2,2,0,2],
+    [2,2,2,0,2,2,2,0]
+  ],
+  "thresholds": {
+    "minimum_nonzero_fast_vs_accurate_comparisons_per_gamma": 4,
+    "max_relative_error": 1e-5,
+    "all_reported_values_finite": true
+  },
+  "promotion_rule": "PASS only qualifies numerical primitive support for one-zero-spin B4 sectors. It does not establish a refined 2-complex, trivial-extension amplitude invariance, automorphism multiplicity correction, cylindrical consistency, continuum convergence, or a bridge.",
+  "claim_locks": [
+    "No threshold retuning after seeing values.",
+    "No zero output may be silently interpreted as trivial-face invariance.",
+    "A full refined foam must still be constructed and source-mapped before an amplitude identity test."
+  ]
+}
