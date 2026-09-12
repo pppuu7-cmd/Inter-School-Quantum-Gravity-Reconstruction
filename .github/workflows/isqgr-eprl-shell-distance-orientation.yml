@@ -1,0 +1,137 @@
+name: ISQGR EPRL Shell-Distance Orientation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-eprl-shell-distance-orientation.yml'
+      - 'experiments/eprl_shell_distance_orientation_null.py'
+
+permissions:
+  contents: read
+
+jobs:
+  gamma:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        gamma: ['0.5','1.2','2.0']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native and Python dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc-12 g++-12 m4 lzip wget ca-certificates libgmp-dev libmpfr-dev libmpc-dev libgsl-dev libopenblas-dev libblas-dev libomp-dev python3-numpy
+      - name: Checkout pinned sl2cfoam-next
+        run: |
+          git clone https://github.com/qg-cpt-marseille/sl2cfoam-next.git external/sl2cfoam-next
+          git -C external/sl2cfoam-next checkout 052e4346028870bd76f69a3034e6cae8defb8f7f
+          test "$(git -C external/sl2cfoam-next rev-parse HEAD)" = "052e4346028870bd76f69a3034e6cae8defb8f7f"
+      - name: Build Wigner dependencies
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          mkdir -p ext
+          cd ext
+          wget -q https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -O wigxjpf.tar.gz
+          tar -xzf wigxjpf.tar.gz && mv wigxjpf-1.13 wigxjpf
+          make -C wigxjpf CC=gcc-12 -j2
+          wget -q https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz -O fastwigxj.tar.gz
+          tar -xzf fastwigxj.tar.gz && mv fastwigxj-1.4.1 fastwigxj
+          make -C fastwigxj CC=gcc-12 CXX=g++-12 -j2
+      - name: Build pinned sl2cfoam-next tools
+        working-directory: external/sl2cfoam-next
+        run: |
+          set -euo pipefail
+          mkdir -p data_sl2cfoam
+          ./ext/fastwigxj/bin/hash_js --max-E-3j=24 /dev/null ./data_sl2cfoam/table_24.3j
+          ./ext/fastwigxj/bin/hash_js --max-E-6j=24 /dev/null ./data_sl2cfoam/table_24.6j
+          make CC=gcc-12 BLAS=system OMP=0 lib -j2
+          make CC=gcc-12 BLAS=system OMP=0 tools -j2
+          test -x bin/vertex-fulltensor
+      - name: Compute Dl0 Dl1 Dl2 pinned Lorentzian EPRL tensors
+        working-directory: external/sl2cfoam-next
+        env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/external/sl2cfoam-next/lib
+        run: |
+          set -euo pipefail
+          for DL in 0 1 2; do
+            echo "gamma=${{ matrix.gamma }} Dl=$DL"
+            ./bin/vertex-fulltensor -v data_sl2cfoam ${{ matrix.gamma }} 1,1,1,1,1,1,1,1,1,1 "$DL"
+          done
+          for DL in 0 1 2; do
+            mapfile -t PS < <(find data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name "*dl-$DL.sl2t")
+            printf 'Dl%s files=%s\n' "$DL" "${PS[*]:-NONE}"
+            test "${#PS[@]}" -eq 1
+            test -s "${PS[0]}"
+          done
+      - name: Run near-vs-far shared-unitary orientation audit
+        run: |
+          set -euo pipefail
+          mapfile -t P0 < <(find external/sl2cfoam-next/data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-0.sl2t')
+          mapfile -t P1 < <(find external/sl2cfoam-next/data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-1.sl2t')
+          mapfile -t P2 < <(find external/sl2cfoam-next/data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-2.sl2t')
+          test "${#P0[@]}" -eq 1; test "${#P1[@]}" -eq 1; test "${#P2[@]}" -eq 1
+          mkdir -p compute_out
+          PYTHONPATH=experiments python3 experiments/eprl_shell_distance_orientation_null.py \
+            --dl0 "${P0[0]}" --dl1 "${P1[0]}" --dl2 "${P2[0]}" \
+            --gamma ${{ matrix.gamma }} --n-null 128 --seed 20260920 \
+            --output "compute_out/eprl_shell_distance_gamma_${{ matrix.gamma }}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eprl-shell-distance-gamma-${{ matrix.gamma }}
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [gamma]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: eprl-shell-distance-gamma-*
+          path: campaign
+          merge-multiple: true
+      - name: Aggregate preregistered far-shell gate
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,statistics
+          fs=sorted(pathlib.Path('campaign').glob('*.json'))
+          if len(fs)!=3: raise SystemExit(f'expected 3 gamma results, got {len(fs)}')
+          ds=sorted([json.loads(p.read_text()) for p in fs],key=lambda d:d['gamma'])
+          rows=[]
+          for d in ds:
+              rows.append({
+                  'gamma':d['gamma'],
+                  'near_median_improvement':d['near']['summary']['median_case_median_return_improvement'],
+                  'near_majority_fraction':d['near']['summary']['fraction_cases_majority_null_worse'],
+                  'far_median_improvement':d['far']['summary']['median_case_median_return_improvement'],
+                  'far_majority_fraction':d['far']['summary']['fraction_cases_majority_null_worse'],
+                  'far_natural_support':d['far_natural_support'],
+                  'far_strong_support':d['far_strong_support'],
+                  'far_over_near_gain':d['far_over_near_median_orientation_gain'],
+              })
+          out={
+              'test':'LORENTZIAN_EPRL_SHELL_DISTANCE_ORIENTATION_AGGREGATE',
+              'status':'PASS_EXECUTION',
+              'all_gamma_far_natural_support':all(r['far_natural_support'] for r in rows),
+              'all_gamma_far_strong_support':all(r['far_strong_support'] for r in rows),
+              'median_far_orientation_improvement':statistics.median(r['far_median_improvement'] for r in rows),
+              'median_far_over_near_gain':statistics.median(r['far_over_near_gain'] for r in rows),
+              'by_gamma':rows,
+              'claim_lock':'One pinned Lorentzian EPRL 4-simplex vertex with Dl shell extension. Not a multi-vertex refinement, continuum limit, or GR recovery test.'
+          }
+          pathlib.Path('eprl_shell_distance_orientation_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isqgr-eprl-shell-distance-orientation-summary
+          path: eprl_shell_distance_orientation_summary.json
+          if-no-files-found: error
