@@ -1,0 +1,62 @@
+name: ISQGR RC008 Equation Structure AST
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc008_equation_structure_ast.py'
+      - '.github/workflows/isqgr-rc008-equation-structure-ast.yml'
+  workflow_dispatch:
+
+permissions: {contents: read}
+
+jobs:
+  ast:
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        include:
+          - {arxiv: '1508.07961', label: 'Eq:VertexDefinition', key: vertex}
+          - {arxiv: '1508.07961', label: 'Eq:AmplitudeIntegral', key: integral}
+          - {arxiv: '1508.07961', label: 'Eq:AsymptoticStateSum', key: asymptotic}
+          - {arxiv: '1508.07961', label: 'Eq:4Volume', key: volume}
+          - {arxiv: '1701.02311', label: 'Eq:EmbeddingMaps', key: embedding}
+          - {arxiv: '1701.02311', label: 'Eq:ExpectationValueCoarseGraining', key: matching}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch official arXiv source
+        run: |
+          set -euo pipefail; mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 'https://export.arxiv.org/e-print/${{ matrix.arxiv }}' -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 'https://arxiv.org/e-print/${{ matrix.arxiv }}' -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Build formula AST
+        run: |
+          mkdir -p compute_out
+          python experiments/rc008_equation_structure_ast.py --source-dir external/arxiv_src --label '${{ matrix.label }}' --output 'compute_out/${{ matrix.key }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: 'rc008-equation-ast-${{ matrix.key }}', path: 'compute_out/*.json', if-no-files-found: error}
+  aggregate:
+    needs: ast
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {pattern: 'rc008-equation-ast-*', path: all, merge-multiple: true}
+      - name: Frozen AST completeness gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib,sys
+          rows=[json.load(open(f)) for f in sorted(glob.glob('all/*.json'))]
+          ok=len(rows)==6 and all(r.get('frozen_gate_pass') for r in rows)
+          out={'test':'RC008_EQUATION_STRUCTURE_AST_AGGREGATE','lane_count':len(rows),'all_pass':all(r.get('frozen_gate_pass') for r in rows) if rows else False,'frozen_gate_pass':ok,'claim_lock':'Source structural AST only; executable amplitude/refinement remains open.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n');print(json.dumps(out,indent=2,sort_keys=True));sys.exit(0 if ok else 2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: rc008-equation-ast-summary, path: summary.json, if-no-files-found: error}
