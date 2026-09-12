@@ -4,15 +4,15 @@
   "date": "2026-09-12",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 49,
+  "iteration_completion_percent": 52,
   "last_completed_iteration": "ITERATION_005",
   "candidate_theory_status": "UNFORMED",
   "lead_bridge_hypothesis": "BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
   "claim_locks": {"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"generic_orientation_beyond_spectrum_is_novel":false,"rqir_promotion_authorized":false,"kmqgb_promotion_authorized":false},
-  "readiness_percent": {"repository_recovery_bootstrap":99,"source_grounded_interface_atlas":52,"recurrent_motif_search":70,"accepted_recurrent_motifs":30,"bridge_principle_validation":78,"executable_cross_school_obstructions":86,"amplitude_refinement_cross_realization_validation":29,"candidate_theory_construction":0,"overall_scientific_programme":44},
+  "readiness_percent": {"repository_recovery_bootstrap":99,"source_grounded_interface_atlas":52,"recurrent_motif_search":70,"accepted_recurrent_motifs":30,"bridge_principle_validation":78,"executable_cross_school_obstructions":86,"amplitude_refinement_cross_realization_validation":30,"candidate_theory_construction":0,"overall_scientific_programme":44},
   "frontier": {
     "RC006": {
-      "status":"CONTRACTION_MAPPING_ORDERED_CONTEXT_UNIQUE_ROBUSTNESS_OPEN",
+      "status":"CONTRACTION_SERIALIZATION_STABILITY_RUNNING",
       "graphic_geometry_authority":{"run":34698228895,"classification":"SCIENTIFIC_DIAGNOSTIC_FAIL_GEOMETRY_ALONE_AMBIGUOUS"},
       "appendixf_relation_extract":{"run":34699432919,"aggregate_job":103568483952,"artifact":10300395360,"classification":"MIXED_SOURCE_RELATION_QUALIFICATION_6_OF_8_APPENDIX_F_AND_CROSSING_FAIL"},
       "tex_structure_audit":{"run":34699578046,"aggregate_job":103568866019,"artifact":10299662547,"classification":"MIXED_MACHINE_READABLE_SOURCE_STRUCTURE_5_OF_6_MONOLITHIC_NO_INCLUDE_GRAPH"},
@@ -22,15 +22,16 @@
       "corrected_mathenv":{"run":34699987643,"aggregate_job":103570011082,"artifact":10299503360,"classification":"PASS_EXACT_SOURCE_MATHENV_SYMBOL_INCIDENCE_PREREQUISITE_ONLY_TENSOR_ORDERING_NOT_UNIQUE"},
       "leg_order_incidence":{"run":34700094892,"aggregate_job":103570231207,"artifact":10300465880,"global_job":103570205823,"global_artifact":10299837254,"classification":"VALID_COMPUTATION_SCIENTIFIC_FAIL_SOURCE_INCIDENCE_NONIDENTIFIABLE","decorated_symbol_count":34,"interchangeable_group_count":11,"log10_surviving_relabelings_lower_bound":5.469692444399043},
       "ordered_context_identifiability":{"run":34700193212,"head":"be962f33625dd9973c35d820bae10c9d91ef0a44","aggregate_job":103570499775,"artifact":10300266645,"global_job":103570471926,"global_artifact":10300411214,"classification":"SCIENTIFIC_PASS_ORDERED_CONTEXT_UNIQUE","decorated_symbol_count":34,"interchangeable_group_count":0},
-      "active_ordered_context_holdout":{"run":34700277881,"head":"219391c897159f4541cb629d553c373981ed8531","classification":"QUEUED_OR_RUNNING_FROZEN_8_HOLDOUT_PLUS_NULL_ROBUSTNESS_GATE"},
-      "next_gate":"CONSUME_HELDOUT_ROBUSTNESS; ONLY ROBUST_ALL_HOLDOUT_PASS_PLUS_NULL_AMBIGUITY MAY AUTHORIZE CONTRACTION_SERIALIZATION"
+      "ordered_context_holdout":{"run":34700277881,"head":"219391c897159f4541cb629d553c373981ed8531","aggregate_job":103570712196,"artifact":10300002366,"classification":"SCIENTIFIC_PASS_ORDERED_CONTEXT_HOLDOUT_ROBUSTNESS_PREREQUISITE_ONLY","holdout_passes":8,"null_restores_ambiguity":true},
+      "active_serialization_stability":{"run":34700639086,"head":"8a358e5a710a618a8b92b689ee4470266787ef7b","classification":"QUEUED_OR_RUNNING_FROZEN_10_LANE_CANONICAL_PAIRWISE_ORDER_STABILITY_GATE"},
+      "next_gate":"CONSUME_SERIALIZATION_STABILITY; ONLY FULL_UNIQUE + 8/8 HOLDOUT_UNIQUE + 100_PERCENT_PAIRWISE_ORDER_AGREEMENT + NULL_AMBIGUITY MAY AUTHORIZE MINIMAL_K12_EQ29_AMPLITUDE"
     },
     "RC008":{"status":"AMPLITUDE_REPRODUCTION_OPEN_PREREQUISITES_QUALIFIED","hessian_kernel":{"run":34698968902,"aggregate_job":103567272522,"artifact":10300145140,"classification":"PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY"},"volume_refinement":{"run":34699223422,"aggregate_job":103567987044,"artifact":10300335297,"classification":"PASS_SOURCE_FAITHFUL_HYPERCUBOID_VOLUME_REFINEMENT_PREREQUISITE_ONLY"},"next_gate":"IMPLEMENT_RESTRICTED_HYPERCUBOID_VERTEX_AMPLITUDE_WITHOUT_FITTING_PUBLISHED_ALPHA_STAR"},
     "RC009":{"status":"SCOPED_BLOCKED","rule":"NO_DENSER_QUADRATURE_WITHOUT_NEW_JUSTIFIED_MEASURE_CONTOUR_REGULARIZATION"},
     "LORENTZIAN_DELTA4":{"status":"FINITE_CUTOFF_SCALING_FRONT_SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"OPEN"}
   },
-  "active_gates":["BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE","RC006_EQ29_ORIENTED_BRAIDED_GRAPH_MAPPING_GATE","RC006_EQ29_MINIMAL_K12_AMPLITUDE_GATE","RC006_APPENDIX_C_C1_C2_SVD_GATE","RC006_HELDOUT_NONRETUNED_SELECTOR_TRANSPORT_GATE","RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE","MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE"],
-  "active_compute":[{"workflow_run":34700277881,"purpose":"9-lane ordered-context held-out-anchor robustness and unordered null calibration","status":"QUEUED_OR_IN_PROGRESS"}],
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC006_ORDERED_CONTEXT_IDENTIFIABILITY_PASS.md","results/ITER006_RC006_LEG_ORDER_NONIDENTIFIABLE.md","results/ITER006_RC006_MATHENV_CORRECTED_PASS_AMBIGUITY.md","results/ITER006_RC006_MATHENV_RUN1_IMPLEMENTATION_INVALID.md","results/ITER006_RC006_NAMED_ANCHOR_DEPENDENCY_PASS.md","results/ITER006_RC006_EQ29_INTERNAL_REFERENCE_CHAIN_PASS.md","results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md","docs/CONSTITUTION.md"]
+  "active_gates":["BH004B_INDEPENDENT_QG_AMPLITUDE_REFINEMENT_GATE","RC006_CONTRACTION_SERIALIZATION_STABILITY_GATE","RC006_EQ29_MINIMAL_K12_AMPLITUDE_GATE","RC006_APPENDIX_C_C1_C2_SVD_GATE","RC006_HELDOUT_NONRETUNED_SELECTOR_TRANSPORT_GATE","RC008_QUANTUM_CUBOID_AMPLITUDE_REPRODUCTION_GATE","MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_GATE"],
+  "active_compute":[{"workflow_run":34700639086,"purpose":"10-lane source-derived contraction serialization stability with eight anchor holdouts plus unordered null","status":"QUEUED_OR_IN_PROGRESS"}],
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC006_ORDERED_CONTEXT_HOLDOUT_ROBUSTNESS_PASS.md","results/ITER006_RC006_ORDERED_CONTEXT_IDENTIFIABILITY_PASS.md","results/ITER006_RC006_LEG_ORDER_NONIDENTIFIABLE.md","results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md","docs/CONSTITUTION.md"]
 }
