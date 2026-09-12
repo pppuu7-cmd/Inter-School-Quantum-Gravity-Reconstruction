@@ -1,0 +1,48 @@
+{
+  "gate": "ITER006_RC006_RELATION_AWARE_SERIALIZATION_RETRY",
+  "date": "2026-09-12",
+  "prerequisites": {
+    "failed_serialization_run": 34700639086,
+    "new_source_relation_run": 34712998699,
+    "new_source_relation_classification": "RC006_FOUR_ANCHOR_EXPLICIT_RELATION_SOURCE_PASS"
+  },
+  "source": "arXiv:1609.02429",
+  "frozen_relation_component": [
+    "app:EPRL-diagram",
+    "app:EPRL-norm",
+    "app:graph",
+    "eq:recoupling-basis"
+  ],
+  "frozen_explicit_edges": [
+    ["app:EPRL-diagram", "app:graph"],
+    ["app:EPRL-norm", "app:graph"],
+    ["eq:recoupling-basis", "app:graph"]
+  ],
+  "method": "Retain the original per-anchor ordered-context fingerprints unchanged. Append exactly one auxiliary relation-component fingerprint for each decorated symbol: the sorted multiset of the same (previous_symbol,next_symbol,position_bin) occurrence tuples pooled across the active members of the frozen explicit-reference component, with anchor identity removed. A dropped anchor contributes neither its individual payload nor its pooled payload. No weights, preferred anchors, fitted ordering or favorable-subset selection are allowed.",
+  "lanes": [
+    "full",
+    "drop:app:EPRL-diagram",
+    "drop:app:EPRL-norm",
+    "drop:app:graph",
+    "drop:eq:BC-3-int",
+    "drop:eq:BC-3-valent",
+    "drop:eq:eprl-3-valent",
+    "drop:eq:eprl-map",
+    "drop:eq:recoupling-basis",
+    "null_unordered"
+  ],
+  "frozen_gate": {
+    "valid_lane_count": 10,
+    "full_unique": true,
+    "all_eight_holdouts_unique": true,
+    "minimum_pairwise_order_agreement_with_full": 1.0,
+    "unordered_null_must_be_ambiguous": true
+  },
+  "classification": {
+    "pass": "SCIENTIFIC_PASS_RELATION_AWARE_CONTRACTION_SERIALIZATION_STABLE",
+    "fail": "SCIENTIFIC_FAIL_RELATION_AWARE_CONTRACTION_SERIALIZATION_UNSTABLE",
+    "invalid": "INFRASTRUCTURE_OR_NUMERICAL_INVALID"
+  },
+  "stop_rule": "If this exact retry fails, the RC006 Eq.(29) numerical amplitude remains blocked. Do not add another serialization heuristic without genuinely new independent source authority.",
+  "claim_lock": "PASS authorizes only a source-derived stable serialization for the next separately preregistered minimal Eq.(29) amplitude gate. It is not an Eq.(29) amplitude, TNR/refinement bridge, BRIDGE_DERIVED, NEW_PHYSICS_FOUND or candidate-theory result."
+}
