@@ -1,0 +1,74 @@
+name: ISQGR Lorentzian EPRL Two Vertex Label Owner Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/lorentzian_eprl_two_vertex_reference_label_owner_audit.py'
+      - '.github/workflows/isqgr-lorentzian-eprl-two-vertex-label-owner-audit.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+
+env:
+  ARXIV_ID: '1801.03771'
+
+jobs:
+  owner:
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        target: [two_vertex_amplitude, internal_face_sum, simplified_amplitude, large_spin_scaling, immirzi, cutoff_or_truncation]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch pinned source
+        run: |
+          set -euo pipefail
+          mkdir -p external/two_vertex_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/${ARXIV_ID} -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/two_vertex_src
+      - name: Classify source label owners
+        run: |
+          mkdir -p compute_out
+          python experiments/lorentzian_eprl_two_vertex_reference_label_owner_audit.py --source-dir external/two_vertex_src --target '${{ matrix.target }}' --output 'compute_out/owner_${{ matrix.target }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'two-vertex-label-owner-${{ matrix.target }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: owner
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'two-vertex-label-owner-*'
+          path: all
+          merge-multiple: true
+      - name: Aggregate owner diagnostic without promotion
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[]
+          for f in glob.glob('all/*.json'):
+              x=json.load(open(f)); rows.append({'target':x.get('target'),'valid':x.get('valid'),'math_owner_label_count':x.get('math_owner_label_count'),'math_owner_labels':x.get('math_owner_labels'),'eqref_labels':x.get('eqref_labels'),'math_owner_hash_count':x.get('math_owner_hash_count')})
+          valid=len(rows)==6 and all(r.get('valid') for r in rows)
+          o={'test':'LORENTZIAN_EPRL_TWO_VERTEX_LABEL_OWNER_AUDIT_AGGREGATE','valid':valid,'record_count':len(rows),'records':rows,
+             'classification':'LABEL_OWNER_DIAGNOSTIC_COMPLETE' if valid else 'LABEL_OWNER_DIAGNOSTIC_INCOMPLETE',
+             'promotion_authorized':False,
+             'interpretation_lock':'Diagnostic only. A later label-first source lock must be prospectively preregistered; numerical implementation remains blocked.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: two-vertex-label-owner-summary
+          path: summary.json
+          if-no-files-found: error
