@@ -17,6 +17,7 @@ within-j cross-gamma slope spread diagnostic.
 
 Scope lock: pinned public four-vertex Lorentzian EPRL Delta_4 amplitudes only.
 This remains a cutoff-convergence diagnostic, not a coarse/fine refinement map.
+All numerical gates are preregistered in the workflow before this campaign.
 """
 from __future__ import annotations
 import argparse, json, math, re
