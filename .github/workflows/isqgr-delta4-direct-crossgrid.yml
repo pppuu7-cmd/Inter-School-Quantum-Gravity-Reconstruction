@@ -1,0 +1,83 @@
+name: ISQGR Lorentzian EPRL Delta4 Direct Crossgrid
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_direct_crossgrid_reproduction.jl'
+      - '.github/workflows/isqgr-delta4-direct-crossgrid.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        gamma: ['0.1','1.0','1.2']
+        j: ['0.5','1.0']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Install pinned JLD2 reader
+        run: julia -e 'using Pkg; Pkg.add(name="JLD2", version="0.4.53")'
+      - name: Clone and pin public Lorentzian EPRL tensor source
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Recontract four EPRL vertices at three shell cutoffs
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          julia experiments/delta4_direct_crossgrid_reproduction.jl \
+            external/HowToSpinFoamAmplitude '${{ matrix.gamma }}' '${{ matrix.j }}' \
+            "compute_out/delta4_gamma_${{ matrix.gamma }}_j_${{ matrix.j }}.tsv"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-direct-g-${{ matrix.gamma }}-j-${{ matrix.j }}
+          path: compute_out/*.tsv
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [reproduce]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: delta4-direct-*
+          path: campaign
+          merge-multiple: true
+      - name: Require all six lane artifacts and exact frozen tolerance
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib,re,json
+          fs=sorted(pathlib.Path('campaign').glob('*.tsv'))
+          lanes=[]
+          for p in fs:
+              s=p.read_text()
+              m=re.search(r'MAX_RELERR\t(?:\t){5}([^\s]+)',s)
+              if not m: raise SystemExit(f'missing MAX_RELERR in {p}')
+              lanes.append({'file':p.name,'max_relative_error':float(m.group(1))})
+          out={'test':'DELTA4_DIRECT_CROSSGRID_AGGREGATE','lane_files':len(fs),'all_six_present':len(fs)==6,
+               'all_pass_1e_12':len(fs)==6 and all(x['max_relative_error']<=1e-12 for x in lanes),'lanes':lanes,
+               'claim_lock':'Direct reproduction of stored-tensor four-vertex Lorentzian EPRL contractions; not a coarse/fine refinement map.'}
+          pathlib.Path('delta4_direct_crossgrid_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not out['all_pass_1e_12']: raise SystemExit('cross-grid gate not met')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-direct-crossgrid-summary
+          path: delta4_direct_crossgrid_summary.json
+          if-no-files-found: error
