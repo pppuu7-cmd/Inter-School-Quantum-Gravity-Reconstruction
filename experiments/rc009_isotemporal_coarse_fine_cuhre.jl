@@ -17,7 +17,7 @@ using Statistics
 # This makes the source area-variable volume and Euclidean hyperfrustum
 # height/volume relations mutually consistent.
 #
-# This script evaluates SAME-COUPLING coarse/fine observables.  It is a fixed
+# This script evaluates SAME-COUPLING coarse/fine observables. It is a fixed
 # point / cylindrical-consistency audit, not a fit of coarse couplings.
 
 const GAMMA = 0.5
@@ -28,14 +28,12 @@ const HTOTAL = 6.0
 function k_from_height(j0::Float64, j1::Float64, H::Float64)
     s = sqrt(j0) + sqrt(j1)
     d = j1 - j0
-    # From H = 2k/(sqrt(j0)+sqrt(j1))*sqrt(1-d^2/(8k^2)).
     return 0.5 * sqrt(H^2*s^2 + 0.5*d^2)
 end
 
 function jacobian_k_to_H(j0::Float64, j1::Float64, H::Float64)
     s = sqrt(j0) + sqrt(j1)
     d = j1 - j0
-    # |dk/dH| from the exact inverse above; equivalent to the source Jacobian.
     return H*s^2 / sqrt(4.0*H^2*s^2 + 2.0*d^2)
 end
 
@@ -43,13 +41,12 @@ function frustum_geometry(j0::Float64, j1::Float64, H::Float64)
     (j0 > 0 && j1 > 0 && H > 0) || return nothing
     k = k_from_height(j0,j1,H)
     d = j1-j0
-    c = d/(4.0*k) # cos(phi)
+    c = d/(4.0*k)
     abs(c) < inv(sqrt(2.0)) || return nothing
     phi = acos(clamp(c,-1.0,1.0))
     K2 = -cos(2.0*phi)
     K2 > 0 || return nothing
     K = sqrt(K2)
-    # Exact height closure sanity.
     Hback = 2.0*k*K/(sqrt(j0)+sqrt(j1))
     abs(Hback-H) <= 5e-12*max(1.0,H) || error("height closure failed: H=$H Hback=$Hback")
     Q = 2.0 + (j0+j1)/(2.0*k)
@@ -91,8 +88,6 @@ function log_abs_dressed_amp(j0::Float64,j1::Float64,H::Float64,alpha::Float64,G
 end
 
 function coarse_logweight(j::Float64,alpha,G,Lambda; mode="full")
-    a=JI/27.0^(2/3) # each of 3^3 cubes has equal 3-volume; area scales n^{-2/3}=1/9
-    # Explicitly enforce the source value 1/9, avoiding roundoff in exponentiation.
     a=1.0/9.0
     H=HTOTAL/2.0
     J1=jacobian_k_to_H(a,j,H)
@@ -127,9 +122,6 @@ end
 
 function fine_obs(j1::Float64,j2::Float64)
     a=1.0/16.0; H=HTOTAL/3.0
-    # Middle height H_total/2 is halfway through the middle time step.  In the
-    # hyperfrustum geometry the cube edge length (scale factor) is sqrt(j), so
-    # linear edge interpolation gives the middle-slice area below.
     amid=0.5*(sqrt(j1)+sqrt(j2))
     V3=64.0*amid^3
     gs=(frustum_geometry(a,j1,H),frustum_geometry(j1,j2,H),frustum_geometry(j2,a,H))
@@ -170,7 +162,6 @@ function integrate_coarse(jmin,jmax,alpha,G,Lambda,mode; maxevals=800000)
         o=coarse_obs(j)
         out[1]=w; out[2]=w*o[1]; out[3]=w*o[2]; out[4]=w*o[3]
     end
-    # Cuhre requires ndim>=2; x[2] is an exact dummy dimension of unit length.
     r=cuhre(f,2,4;rtol=5e-4,atol=1e-12,maxevals=maxevals,key=13)
     I=r.integral
     I[1] > 0 || error("nonpositive coarse Z")
@@ -209,7 +200,6 @@ alpha=parse(Float64,ARGS[1]); G=parse(Float64,ARGS[2]); Lambda=parse(Float64,ARG
 jmin=parse(Float64,ARGS[4]); jmax=parse(Float64,ARGS[5]); mode=ARGS[6]; outfile=ARGS[7]
 
 @printf("RC009 parameters alpha=%.9g G=%.9g Lambda=%.9g j=[%.5g,%.5g] mode=%s\n",alpha,G,Lambda,jmin,jmax,mode)
-# Flat-geometry sanity: both discretizations represent V3=1 and V4=6 at constant intermediate area.
 cflat=coarse_obs(1/9); fflat=fine_obs(1/16,1/16)
 @printf("FLAT sanity coarse V3=%.12g V4=%.12g fine V3=%.12g V4=%.12g\n",cflat[1],cflat[3],fflat[1],fflat[3])
 abs(cflat[1]-1)<1e-12 && abs(cflat[3]-6)<1e-12 || error("coarse flat geometry sanity failed")
@@ -230,8 +220,8 @@ out=Dict(
  "alpha"=>alpha,"G"=>G,"Lambda"=>Lambda,"jmin"=>jmin,"jmax"=>jmax,"amplitude_mode"=>mode,
  "source_setup"=>Dict("coarse_hyperfrusta"=>54,"fine_hyperfrusta"=>192,"boundary_total_area_spin"=>1.0,"total_height"=>6.0,"gamma"=>GAMMA),
  "geometry_lock"=>Dict("K_convention"=>"sqrt(-cos(2phi))","height_inversion"=>"k=0.5*sqrt(H^2*(sqrt(j0)+sqrt(j1))^2+(j1-j0)^2/2)"),
- "coarse"=>Dict("V3"=>co.V3,"VarV3"=>co.VarV3,"V4"=>co.V4,"anchor"=>co.anchor,"fail"=>co.result.fail,"neval"=>co.result.neval,"nregions"=>co.result.nregions,"integral_error"=>co.result.error,"probability"=>co.result.prob),
- "fine"=>Dict("V3"=>fi.V3,"VarV3"=>fi.VarV3,"V4"=>fi.V4,"anchor"=>fi.anchor,"fail"=>fi.result.fail,"neval"=>fi.result.neval,"nregions"=>fi.result.nregions,"integral_error"=>fi.result.error,"probability"=>fi.result.prob),
+ "coarse"=>Dict("V3"=>co.V3,"VarV3"=>co.VarV3,"V4"=>co.V4,"anchor"=>co.anchor,"fail"=>co.result.fail,"neval"=>co.result.neval,"nregions"=>co.result.nregions,"integral_error"=>co.result.error,"probability"=>co.result.probability),
+ "fine"=>Dict("V3"=>fi.V3,"VarV3"=>fi.VarV3,"V4"=>fi.V4,"anchor"=>fi.anchor,"fail"=>fi.result.fail,"neval"=>fi.result.neval,"nregions"=>fi.result.nregions,"integral_error"=>fi.result.error,"probability"=>fi.result.probability),
  "relative_cylindrical_consistency_R"=>R,
  "preregistered_gate"=>Dict("natural"=>"both Cuhre fail codes 0 and R<=0.05","strong"=>"both Cuhre fail codes 0 and R<=0.01"),
  "natural_same_coupling_consistency_support"=>(co.result.fail==0 && fi.result.fail==0 && R<=0.05),
