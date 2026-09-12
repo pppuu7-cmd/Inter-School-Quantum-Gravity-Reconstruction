@@ -1,0 +1,68 @@
+name: ISQGR RC006 Serialization Failure Localization
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc006_serialization_failure_localization.py'
+      - '.github/workflows/isqgr-rc006-serialization-failure-localization.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  localize:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        drop: ['app:EPRL-diagram','app:EPRL-norm','app:graph','eq:BC-3-int','eq:BC-3-valent','eq:eprl-3-valent','eq:eprl-map','eq:recoupling-basis']
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Fetch official arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p external/arxiv_src
+          (curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1609.02429 -o /tmp/src.tar || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1609.02429 -o /tmp/src.tar)
+          tar -xf /tmp/src.tar -C external/arxiv_src
+      - name: Localize frozen-gate instability
+        run: |
+          mkdir -p compute_out
+          python experiments/rc006_serialization_failure_localization.py --source-dir external/arxiv_src --drop '${{ matrix.drop }}' --output 'compute_out/${{ strategy.job-index }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'rc006-localize-${{ strategy.job-index }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: localize
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'rc006-localize-*'
+          path: all
+          merge-multiple: true
+      - name: Summarize diagnostic without altering failed gate
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          r=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          valid=len(r)==8 and all(x.get('valid') for x in r)
+          critical=sorted([x['drop_anchor'] for x in r if x['diagnostic_classification']=='CRITICAL_SOURCE_ANCHOR'])
+          o={'test':'RC006_SERIALIZATION_FAILURE_LOCALIZATION_AGGREGATE','valid':valid,'lane_count':len(r),'critical_anchors':critical,
+             'critical_anchor_count':len(critical),'min_pairwise_agreement':min((x['pairwise_agreement'] for x in r),default=None),
+             'max_pairwise_flip_count':max((x['pairwise_flip_count'] for x in r),default=None),
+             'scientific_classification':'DIAGNOSTIC_SOURCE_AUTHORITY_LOCALIZED' if valid else 'INFRASTRUCTURE_OR_NUMERICAL_INVALID',
+             'interpretation_lock':'The prior contraction serialization gate remains SCIENTIFIC FAIL regardless of this diagnostic; no Eq29 amplitude authorization.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc006-localization-summary
+          path: summary.json
+          if-no-files-found: error
