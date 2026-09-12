@@ -1,0 +1,40 @@
+name: ISQGR Delta4 Gamma01 Crossover Diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/delta4_gamma01_crossover_diagnostic.py'
+      - '.github/workflows/isqgr-delta4-gamma01-crossover-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clone and pin Delta4 source data
+        run: |
+          set -euo pipefail
+          git clone https://github.com/PietropaoloFrisoni/HowToSpinFoamAmplitude.git external/HowToSpinFoamAmplitude
+          git -C external/HowToSpinFoamAmplitude checkout 4fa7e31ffc6553e56da94a443a53a4059a5d2035
+          test "$(git -C external/HowToSpinFoamAmplitude rev-parse HEAD)" = "4fa7e31ffc6553e56da94a443a53a4059a5d2035"
+      - name: Run frozen crossover diagnostic
+        run: |
+          set -euo pipefail
+          mkdir -p compute_out
+          python experiments/delta4_gamma01_crossover_diagnostic.py \
+            --source-root external/HowToSpinFoamAmplitude \
+            --output compute_out/delta4_gamma01_crossover_diagnostic.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delta4-gamma01-crossover-diagnostic
+          path: compute_out/*.json
+          if-no-files-found: error
