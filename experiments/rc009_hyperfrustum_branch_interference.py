@@ -2,15 +2,17 @@
 """RC-009 asymptotic hyperfrustum EPRL branch-interference audit.
 
 Implements the shape-dependent oscillatory part of Bahr-Rabuffo-Steinhaus
-arXiv:1804.00023v3 Eqs. (32),(35)-(39).  It tests whether the additional
-Riemannian EPRL asymptotic branch can materially interfere with the
-Regge/cosmological branch across source-admissible hyperfrustum shapes.
+arXiv:1804.00023v3 Eqs. (32),(35)-(39). The geometry convention is locked by
+requiring simultaneous agreement of the source relations
+V = k^2 K (Q-2) and the Euclidean hyperfrustum height/volume formula, hence
+K = sqrt(-cos(2 phi)) = sqrt(1-(j1-j0)^2/(8 k^2)), with cos(phi)=(j1-j0)/(4k).
+Theta is the distinct dihedral angle used in the Regge action.
 
 Source inconsistency lock
 -------------------------
 Eq. (64) literally prints G*=0.037, but the preceding 3D scan and Figure 12
 use G in [0.003,0.0045], so the literal number lies a factor ten outside the
-reported search box.  We therefore test BOTH the scan-consistent G=0.0037
+reported search box. We therefore test BOTH the scan-consistent G=0.0037
 and the Eq.-64-literal G=0.037 rather than silently choosing one.
 
 This is a local amplitude audit, NOT a reproduction of the coarse/fine RG
@@ -37,8 +39,8 @@ CANCEL_FRACTION_MIN=0.10
 
 
 def shape_quantities(j0,j1,k):
-    c=(j1-j0)/(4.0*k)
-    if not -1.0 < c < 1.0: return None
+    c=(j1-j0)/(4.0*k) # cos(phi)
+    if not -1/math.sqrt(2) < c < 1/math.sqrt(2): return None
     phi=math.acos(c)
     t=math.tan(phi)
     if abs(t)<1e-14: return None
@@ -46,9 +48,10 @@ def shape_quantities(j0,j1,k):
     if not -1.0 <= invt <= 1.0: return None
     theta=math.acos(invt)
     q=2.0+(j0+j1)/(2.0*k)
-    kc=-math.cos(2.0*theta)
-    if kc <= 0.0: return None
-    K=math.sqrt(kc)
+    # Geometry-consistent source convention: K = sqrt(-cos 2phi).
+    K2=-math.cos(2.0*phi)
+    if K2 <= 0.0: return None
+    K=math.sqrt(K2)
     x=1.0+K*K-2.0*q
     D=(j0**3*j1**3*k**15/16.0)*K*(K-1j*K*K+1j*q)**3*(x**3)*(K+1j)**6*(K-3j)**2*(1+3*K*K-2*q-2j*K*(q-1))**3
     if abs(D)==0 or not math.isfinite(abs(D)): return None
@@ -57,6 +60,9 @@ def shape_quantities(j0,j1,k):
     ths=math.acos(max(-1.0,min(1.0,math.cos(theta)**2)))
     SR=6*j0*(math.pi/2-th0)+6*j1*(math.pi/2-th1)+12*k*(math.pi/2-ths)
     V=k*k*K*(q-2.0)
+    # Cross-check direct Euclidean four-volume formula.
+    Vgeom=0.5*k*(j0+j1)*math.sqrt(max(0.0,1.0-(j1-j0)**2/(8.0*k*k)))
+    if abs(V-Vgeom) > 1e-10*max(1.0,abs(Vgeom)): return None
     return SR,V,cmath.phase(D),K,q
 
 
@@ -114,7 +120,8 @@ def main():
     scan_lanes=[l for l in lanes if l['name'].startswith('scan_consistent_')]
     npass=sum(l['material_branch_interference_lane_pass'] for l in scan_lanes)
     out={
-      'test':'RC009_HYPERFRUSTUM_BRANCH_INTERFERENCE_SOURCE_INCONSISTENCY_AUDIT','status':'PASS_EXECUTION',
+      'test':'RC009_HYPERFRUSTUM_BRANCH_INTERFERENCE_GEOMETRY_CORRECTED','status':'PASS_EXECUTION',
+      'geometry_convention':'K=sqrt(-cos(2phi)); cos(phi)=(j1-j0)/(4k); V=k^2*K*(Q-2)',
       'seed':SEED,'gamma':GAMMA,'accepted_shapes':len(shapes),'sampling_trials':trials,
       'source_G_inconsistency':{
         'equation_64_literal_G':0.037,
@@ -131,7 +138,7 @@ def main():
       'lanes':lanes,'scan_consistent_lanes_passed':npass,
       'natural_material_branch_interference_scan_consistent':npass>=3,
       'strong_material_branch_interference_scan_consistent':npass==len(scan_lanes),
-      'interpretation_lock':'Positive result means the second asymptotic Riemannian EPRL branch is numerically capable of substantial local interference with the Regge/cosmological branch. Both the scan-consistent and Eq64-literal G values are retained because the source is internally inconsistent. This does not reproduce the RG flow and does not imply failure of Lorentzian EPRL.',
+      'interpretation_lock':'Positive result means the second asymptotic Riemannian EPRL branch is numerically capable of substantial local interference with the Regge/cosmological branch. The geometry convention is cross-checked against the direct Euclidean hyperfrustum four-volume. Both the scan-consistent and Eq64-literal G values are retained because the source is internally inconsistent. This does not reproduce the RG flow and does not imply failure of Lorentzian EPRL.',
       'source_equations':'arXiv:1804.00023v3 Eqs. 32, 35-39, Figure 12, Eq.64'
     }
     Path(args.output).write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
