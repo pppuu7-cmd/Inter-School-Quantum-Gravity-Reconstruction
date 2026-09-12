@@ -35,14 +35,15 @@
   },
   "frontier": {
     "RC006": {
-      "status": "CONTRACTION_MAPPING_OPEN_BLOCKED_ON_SOURCE_STRUCTURE",
+      "status": "CONTRACTION_MAPPING_OPEN_BLOCKED_ON_INTERNAL_REFERENCE_CHAIN",
       "path_reconstruction": {"run": 34697961643, "aggregate_job": 103564711935, "artifact": 10298684340, "classification": "PASS_DETERMINISTIC_SOURCE_PATH_RECONSTRUCTION_SUBGATE"},
       "graphic_geometry_authority": {"run": 34698228895, "aggregate_job": 103565420131, "artifact": 10299149029, "classification": "SCIENTIFIC_DIAGNOSTIC_FAIL_GEOMETRY_ALONE_AMBIGUOUS"},
       "source_semantic_authority": {"run": 34698427276, "aggregate_job": 103565838907, "artifact": 10299273364, "classification": "PASS_EXPLICIT_SOURCE_AUTHORITY_EXISTS_MAPPING_STILL_OPEN"},
       "inline_node_grammar": {"run": 34698521612, "artifact": 10299119164, "classification": "PASS_PARSER_STABILITY_NONDISCRIMINATING_NO_EDGE_AUTHORITY_GAIN"},
       "appendixf_relation_extract": {"run": 34699432919, "head": "bdcda53f683f9d684de90d29e2b956b57bfd75a2", "aggregate_job": 103568483952, "artifact": 10300395360, "classification": "MIXED_SOURCE_RELATION_QUALIFICATION_6_OF_8_APPENDIX_F_AND_CROSSING_FAIL"},
-      "active_tex_structure_audit": {"run": 34699578046, "head": "2675d390fac61b305478eee79815daa1f02293a1", "classification": "RUNNING_INDEPENDENT_TEX_STRUCTURE_DIAGNOSTIC"},
-      "next_gate": "CONSUME_TEX_STRUCTURE_AUDIT_THEN_FREEZE_CONTRACTION_READY_EQ29_GRAPH_ONLY_IF_SOURCE_STRUCTURE_IS_SUFFICIENT"
+      "tex_structure_audit": {"run": 34699578046, "head": "2675d390fac61b305478eee79815daa1f02293a1", "aggregate_job": 103568866019, "artifact": 10299662547, "classification": "MIXED_MACHINE_READABLE_SOURCE_STRUCTURE_5_OF_6_MONOLITHIC_NO_INCLUDE_GRAPH"},
+      "active_reference_chain": {"run": 34699660419, "head": "40cd1ffbe8fce3a10e7e4481189a472e1b134cd3", "classification": "QUEUED_OR_RUNNING_PROSPECTIVE_INTERNAL_REFERENCE_CHAIN_GATE"},
+      "next_gate": "CONSUME_REFERENCE_CHAIN_THEN_FREEZE_CONTRACTION_READY_EQ29_GRAPH_ONLY_IF_INTERNAL_SOURCE_AUTHORITY_IS_SUFFICIENT"
     },
     "RC008": {
       "status": "AMPLITUDE_REPRODUCTION_OPEN_PREREQUISITES_QUALIFIED",
@@ -70,11 +71,12 @@
     "CEMR_SOURCE_DEFINED_CAUSAL_RESCUE_GATE"
   ],
   "active_compute": [
-    {"workflow_run": 34699578046, "purpose": "6-lane independent TeX include/heading/label-reference/graphics/Eq29/recoupling source-structure audit", "status": "IN_PROGRESS"}
+    {"workflow_run": 34699660419, "purpose": "6-lane monolithic-source Eq29 internal label/reference-chain audit using qualified structural object", "status": "QUEUED_OR_IN_PROGRESS"}
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_RC006_TEX_STRUCTURE_MIXED_RESULT.md",
     "results/ITER006_RC006_EQ29_SOURCE_RELATION_MIXED_RESULT.md",
     "results/ITER006_RC006_SOURCE_GRAPH_AND_SVD_PLUMBING.md",
     "results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md",
