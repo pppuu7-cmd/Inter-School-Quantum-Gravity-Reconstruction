@@ -4,7 +4,7 @@
   "date": "2026-09-12",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 40,
+  "iteration_completion_percent": 44,
   "last_completed_iteration": "ITERATION_005",
   "candidate_theory_status": "UNFORMED",
   "lead_bridge_hypothesis": "BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
@@ -29,7 +29,7 @@
     "accepted_recurrent_motifs": 30,
     "bridge_principle_validation": 78,
     "executable_cross_school_obstructions": 86,
-    "amplitude_refinement_cross_realization_validation": 26,
+    "amplitude_refinement_cross_realization_validation": 27,
     "candidate_theory_construction": 0,
     "overall_scientific_programme": 44
   },
@@ -49,8 +49,9 @@
       "equation_ast": {"run": 34698546988, "aggregate_job": 103566152634, "artifact": 10299224016, "classification": "PASS_MACHINE_READABLE_SOURCE_STRUCTURE_ONLY"},
       "primary_equation_snapshots": {"run": 34698656157, "aggregate_job": 103566457190, "artifact": 10300010002, "classification": "PASS_EXACT_SOURCE_IMPLEMENTATION_INPUTS_ONLY"},
       "dependency_equation_snapshots": {"run": 34698849889, "aggregate_job": 103566977773, "artifact": 10299144588, "classification": "PASS_EXACT_DEPENDENCY_IMPLEMENTATION_INPUTS_ONLY"},
-      "active_hessian_kernel": {"run": 34698968902, "head": "026838089ce084555c9d9b2e7d225a5c48ba72f2", "classification": "RUNNING_FROZEN_SOURCE_DERIVED_STATIONARY_PHASE_KERNEL_GATE"},
-      "next_gate": "IF_HESSIAN_KERNEL_PASS_IMPLEMENT_RESTRICTED_HYPERCUBOID_VERTEX_AND_VOLUME_OBSERVABLE_WITHOUT_FITTING_PUBLISHED_ALPHA_STAR"
+      "hessian_kernel": {"run": 34698968902, "head": "026838089ce084555c9d9b2e7d225a5c48ba72f2", "aggregate_job": 103567272522, "artifact": 10300145140, "classification": "PASS_SOURCE_DERIVED_STATIONARY_PHASE_HESSIAN_KERNEL_HOMOGENEITY_ONLY"},
+      "active_volume_refinement": {"run": 34699223422, "head": "7a8390780e84a4513c5bc82d1a01ed28264b170a", "classification": "RUNNING_FROZEN_EQ4VOLUME_REFINEMENT_PREREQUISITE"},
+      "next_gate": "AFTER_VOLUME_PREREQUISITE_IMPLEMENT_RESTRICTED_HYPERCUBOID_VERTEX_AMPLITUDE_WITHOUT_FITTING_PUBLISHED_ALPHA_STAR"
     },
     "RC009": {"status": "SCOPED_BLOCKED", "rule": "NO_DENSER_QUADRATURE_WITHOUT_NEW_JUSTIFIED_MEASURE_CONTOUR_REGULARIZATION"},
     "LORENTZIAN_DELTA4": {"status": "FINITE_CUTOFF_SCALING_FRONT_SATURATED_NEGATIVE_SCOPED", "bridge_credit": false},
@@ -67,7 +68,7 @@
     "CEMR_SOURCE_DEFINED_CAUSAL_RESCUE_GATE"
   ],
   "active_compute": [
-    {"workflow_run": 34698968902, "purpose": "8-lane RC008 source-derived gauge-fixed Hessian block symmetry, linear homogeneity and det(H)~lambda^21 scaling", "status": "IN_PROGRESS"}
+    {"workflow_run": 34699223422, "purpose": "24-lane source-faithful Eq:4Volume homogeneity and non-retuned hypercuboid slicing/refinement conservation pre-gate", "status": "IN_PROGRESS_OR_QUEUED"}
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
