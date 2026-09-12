@@ -16,9 +16,7 @@
     "BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR"
   ],
   "lead_bridge_hypothesis": "BH-004B_TRANSPORT_ENVELOPE_LOCAL_SELECTOR",
-  "accepted_recurrent_motifs": [
-    "RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA"
-  ],
+  "accepted_recurrent_motifs": ["RM-001_RETAINED_SECTOR_ORIENTATION_CLOSURE_DATA"],
   "motif_candidates": [
     "MC-001_PHYSICAL_CONSTRAINT_SECTOR_NOT_AUTOMATICALLY_CLOSED_UNDER_SCALE_FLOW",
     "MC-002_SCALE_EVOLUTION_REQUIRES_CLOSURE_DATA_BEYOND_REDUCED_DESCRIPTION"
@@ -101,7 +99,8 @@
     "ITER006_RC006_EQ29_SOURCE_TOPOLOGY_CHANNEL_AUDIT",
     "ITER006_RC006_APPENDIX_C_FIRST_STEP_FEASIBILITY",
     "ITER006_RC006_EQ29_RMATRIX_FACTOR_AUDIT",
-    "ITER006_RC006_ARXIV_SOURCE_GRAPH_DISCOVERY"
+    "ITER006_RC006_ARXIV_SOURCE_GRAPH_DISCOVERY",
+    "ITER006_RC006_SOURCE_GRAPH_AND_SVD_PLUMBING"
   ],
   "compute_campaigns": {
     "campaign_001": {"workflow_run": 34652279466, "reproduction_run": 34652499160, "status": "REPRODUCED_EXECUTABLE"},
@@ -131,8 +130,12 @@
     "iter006_rc006_appendix_c_feasibility": {"workflow_run": 34695720384, "job": 103558741014, "artifact": 10298825789, "status": "PASS_IMPLEMENTATION_FEASIBILITY_ONLY"},
     "iter006_rc006_eq26_rfactor": {"workflow_run": 34695809537, "aggregate_job": 103558996929, "aggregate_artifact": 10298790946, "status": "PASS_PARTIAL_AMPLITUDE_FACTOR_ONLY"},
     "iter006_rc006_source_graph_discovery": {"workflow_run": 34695891870, "job": 103559192504, "artifact": 10299011021, "status": "PASS_OFFICIAL_ARXIV_TEX_TIKZ_PROVENANCE_DISCOVERY"},
-    "iter006_rc006_appendix_c_synthetic_regression": {"workflow_run": 34696095267, "status": "QUEUED_RESPONSE_BLIND_NUMERICAL_REGRESSION"},
-    "iter006_rc006_tikz_graph_ast": {"workflow_run": 34696214389, "status": "QUEUED_SOURCE_GRAPH_MAPPING"}
+    "iter006_rc006_appendix_c_synthetic_regression_initial": {"workflow_run": 34696095267, "status": "NUMERICAL_IMPLEMENTATION_FAIL_ZERO_TAIL_BRANCH"},
+    "iter006_rc006_appendix_c_synthetic_regression": {"workflow_run": 34696313147, "aggregate_job": 103560627060, "aggregate_artifact": 10299121187, "status": "PASS_IMPLEMENTATION_REGRESSION_ONLY_6_OF_6"},
+    "iter006_rc006_tikz_graph_ast": {"workflow_run": 34696214389, "job": 103560037655, "artifact": 10297799415, "status": "PASS_SOURCE_PROVENANCE_MAPPING_PREREQUISITE_ONLY"},
+    "iter006_rc006_tikz_token_stream": {"workflow_run": 34696413575, "job": 103560557294, "artifact": 10299235394, "status": "PASS_EXACT_SOURCE_TOKENIZATION_PREREQUISITE_ONLY"},
+    "iter006_rc006_path_incidence_reconstruction": {"workflow_run": 34697961643, "status": "IN_PROGRESS_FROZEN_FOUR_LANE_SOURCE_MAPPING"},
+    "iter006_rc008_source_formula_inventory": {"workflow_run": 34697983144, "status": "QUEUED_THREE_LANE_SOURCE_QUALIFICATION"}
   },
   "iteration_005_preregistered_promotion": {
     "required_positive_lines": 2,
@@ -157,16 +160,18 @@
     "compute_source_faithful_minimal_k12_gamma_1_over_3_Eq29_amplitudes",
     "run_Appendix_C_C1_C2_blockwise_SVD_only_after_Eq29_amplitude_gate",
     "test_heldout_nonretuned_source_native_selector_transport_in_RC006",
+    "reconstruct_RC008_source_formulas_then_amplitude_and_refinement_flow_without_retuning",
     "continue_search_for_independent_true_QG_amplitude_refinement_realization",
     "keep_candidate_theory_equations_locked_until_independent_QG_amplitude_refinement_gate"
   ],
   "active_compute": [
-    {"workflow_run": 34696095267, "purpose": "Appendix-C response-blind synthetic SVD regression", "status": "QUEUED"},
-    {"workflow_run": 34696214389, "purpose": "official-arXiv TikZ graph AST mapping for Eq29", "status": "QUEUED"}
+    {"workflow_run": 34697961643, "purpose": "Eq29 deterministic path/incidence reconstruction across four TeX-preserving parser modes", "status": "IN_PROGRESS"},
+    {"workflow_run": 34697983144, "purpose": "RC008 three-paper official-source formula inventory before amplitude reproduction", "status": "QUEUED"}
   ],
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_RC006_SOURCE_GRAPH_AND_SVD_PLUMBING.md",
     "results/ITER006_RC006_EQ29_PREAMPLITUDE_PREREQUISITES.md",
     "results/ITER006_RC006_APPENDIX_B13_MAPPING.md",
     "results/ITER006_RC006_QGROUP_KERNEL_QUALIFICATION.md",
