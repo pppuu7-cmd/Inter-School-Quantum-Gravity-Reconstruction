@@ -1,0 +1,33 @@
+{
+  "amendment": "ITER006_DVD_MULTISHELL_SOURCE_GATE_AMENDMENT",
+  "date": "2026-09-12",
+  "timing": "BEFORE_ANY_MULTISHELL_NUMERICAL_GAMMA_LANE_EXECUTED",
+  "failed_source_gate_runs": [34708171148, 34708252113],
+  "numerical_jobs_in_failed_runs": "SKIPPED",
+  "scientific_grid_changed": false,
+  "numerical_thresholds_changed": false,
+  "corrections": [
+    {
+      "item": "DVD2 dimension token",
+      "old_parser_expectation": "d_{k'}",
+      "exact_source_spelling_after_whitespace_removal": "dk'",
+      "semantic_object": "dimension factor d_kprime = 2*kprime+1"
+    },
+    {
+      "item": "same-paper shell-cutoff provenance label giorgio",
+      "problem": "The source uses author macros \\be/\\ee around this displayed equation. A parser restricted to literal \\begin{equation}/\\end{equation} captured an unrelated early macro-definition boundary, making its derived equation hash non-authoritative.",
+      "correction": "Do not promote that literal-equation hash. Verify the shell-cutoff formula semantically in a bounded context around the exact source label giorgio, while keeping the root SHA256 locked.",
+      "regulator_status": "The DVD finite cutoff remains explicitly a numerical regulator modeled on a same-paper shell pattern, never asserted as the source definition of a finite DVD sum."
+    }
+  ],
+  "preserved_locks": {
+    "root_sha256": "27e781f9ae9b36056a57b7747dc3c58b5b9c944dd0214041149843d8434e16c1",
+    "DVD2_hash": "799f56dc22f55a09bf744d62c459ee95e38794e5be02c114a73d06c057d0e94c",
+    "DVD3_hash": "7d2fb958574c76f67e52d32ffea2cb22beb01c1e7d6583d383fce159b2eadfab",
+    "gammas": [0.5, 1.2, 2.0],
+    "delta_l_max": [0, 1, 2],
+    "repeat_relative_difference_max": 1e-12,
+    "dl0_regression_relative_error_max": 1e-12
+  },
+  "claim_lock": "This is a source-parser correction made before numerical response. It cannot be used to relax any numerical gate or promote refinement, continuum, bridge, novelty, or new-physics claims."
+}
