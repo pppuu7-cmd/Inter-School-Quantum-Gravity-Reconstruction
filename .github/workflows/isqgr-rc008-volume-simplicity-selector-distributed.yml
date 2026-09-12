@@ -1,0 +1,64 @@
+name: ISQGR RC008 Distributed Volume Simplicity Selector
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/rc008_volume_simplicity_selector_lane.py'
+      - '.github/workflows/isqgr-rc008-volume-simplicity-selector-distributed.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  selector:
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        alpha: [0.45, 0.55, 0.63, 0.67, 0.75]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Run frozen amplitude-level selector lane
+        run: |
+          mkdir -p compute_out
+          python experiments/rc008_volume_simplicity_selector_lane.py --alpha '${{ matrix.alpha }}' --output 'compute_out/a${{ matrix.alpha }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'rc008-selector-a${{ matrix.alpha }}'
+          path: compute_out/*.json
+          if-no-files-found: error
+  aggregate:
+    needs: selector
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'rc008-selector-*'
+          path: all
+          merge-multiple: true
+      - name: Apply prospectively frozen selector rule
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          r=[json.load(open(f)) for f in glob.glob('all/*.json')]
+          valid=len(r)==5 and all(x.get('valid') for x in r)
+          passes=sum(bool(x.get('lane_pass')) for x in r)
+          natural=bool(valid and passes>=3)
+          strong=bool(valid and passes>=4)
+          o={'test':'RC008_DISTRIBUTED_VOLUME_SIMPLICITY_SELECTOR_AGGREGATE','lane_count':len(r),'valid':valid,'lanes_passed':passes,
+             'natural_dynamic_selector_support':natural,'strong_dynamic_selector_support':strong,
+             'scientific_classification':('SCIENTIFIC_PASS_ASYMPTOTIC_AMPLITUDE_SELECTOR_SUPPORT' if natural else ('SCIENTIFIC_NEGATIVE_SELECTOR_NOT_SUPPORTED' if valid else 'INFRASTRUCTURE_OR_NUMERICAL_INVALID')),
+             'frozen_rule':'natural support requires >=3/5 independently executed frozen-alpha lanes; strong support >=4/5; thresholds unchanged after result',
+             'interpretation_lock':'This is a local source-asymptotic dressed-amplitude selector diagnostic. It neither reproduces the full coarse/refined hypercuboid amplitude nor derives a refinement bridge.'}
+          pathlib.Path('summary.json').write_text(json.dumps(o,indent=2,sort_keys=True)+'\n'); print(json.dumps(o,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rc008-selector-summary
+          path: summary.json
+          if-no-files-found: error
