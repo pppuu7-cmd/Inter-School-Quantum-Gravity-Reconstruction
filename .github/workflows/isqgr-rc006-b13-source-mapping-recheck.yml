@@ -1,0 +1,57 @@
+name: ISQGR RC006 B13 Source Mapping Recheck
+
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr-rc006-b13-source-mapping-recheck.yml'
+
+jobs:
+  map:
+    strategy:
+      fail-fast: false
+      matrix:
+        k: [6, 10, 12]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Checkout pinned fusion-basis kernel
+        run: |
+          git clone https://github.com/ssteinhaus/Fusion-basis-coarse-graining.git ext/fusion
+          cd ext/fusion
+          git checkout bb4d1adb1aa81e5090f3ef25a3b9fb8845f19ff4
+      - name: Run B13 source mapping
+        run: |
+          julia experiments/rc006_b13_sixjr_source_mapping.jl ${{ matrix.k }} ext/fusion/qgroup_def.jl rc006_b13_k${{ matrix.k }}.toml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-b13-k${{ matrix.k }}
+          path: rc006_b13_k${{ matrix.k }}.toml
+
+  aggregate:
+    needs: map
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rc006-b13-k*
+          path: all
+          merge-multiple: true
+      - name: Frozen aggregate gate
+        run: |
+          python - <<'PY'
+          import glob,re,pathlib
+          rows=[]
+          for f in sorted(glob.glob('all/*.toml')):
+              s=pathlib.Path(f).read_text()
+              k=int(re.search(r'level_k\s*=\s*(\d+)',s).group(1))
+              p=re.search(r'appendix_b13_mapping_pass\s*=\s*(true|false)',s).group(1)=='true'
+              bad=int(re.search(r'bad_cases\s*=\s*(\d+)',s).group(1))
+              rows.append((k,p,bad))
+          ok=len(rows)==3 and all(p and bad==0 for k,p,bad in rows)
+          print({'rows':rows,'all_pass':ok,'classification':'RC006_B13_SOURCE_MAPPING_PASS' if ok else 'RC006_B13_SOURCE_MAPPING_FAIL'})
+          if not ok: raise SystemExit(2)
+          PY
