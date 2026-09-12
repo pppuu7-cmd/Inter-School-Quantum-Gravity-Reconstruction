@@ -63,15 +63,15 @@ jobs:
           echo "GAMMA=${{ matrix.gamma }}"
           ./bin/vertex-fulltensor -v data_sl2cfoam ${{ matrix.gamma }} 1,1,1,1,1,1,1,1,1,1 0
           ./bin/vertex-fulltensor -v data_sl2cfoam ${{ matrix.gamma }} 1,1,1,1,1,1,1,1,1,1 1
-          mapfile -t P0S < <(find data_sl2cfoam/vertex -type f -name '*dl-0.sl2t')
-          mapfile -t P1S < <(find data_sl2cfoam/vertex -type f -name '*dl-1.sl2t')
+          mapfile -t P0S < <(find data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-0.sl2t')
+          mapfile -t P1S < <(find data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-1.sl2t')
           printf 'dl0=%s\ndl1=%s\n' "${P0S[*]:-NONE}" "${P1S[*]:-NONE}"
           test "${#P0S[@]}" -eq 1; test "${#P1S[@]}" -eq 1; test -s "${P0S[0]}"; test -s "${P1S[0]}"
       - name: Run exhaustive cross-shell partial-slice map
         run: |
           set -euo pipefail
-          mapfile -t P0S < <(find external/sl2cfoam-next/data_sl2cfoam/vertex -type f -name '*dl-0.sl2t')
-          mapfile -t P1S < <(find external/sl2cfoam-next/data_sl2cfoam/vertex -type f -name '*dl-1.sl2t')
+          mapfile -t P0S < <(find external/sl2cfoam-next/data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-0.sl2t')
+          mapfile -t P1S < <(find external/sl2cfoam-next/data_sl2cfoam/vertex -type f -path '*/amplitudes/*' -name '*dl-1.sl2t')
           test "${#P0S[@]}" -eq 1; test "${#P1S[@]}" -eq 1
           mkdir -p compute_out
           python3 experiments/eprl_crossshell_exhaustive.py --dl0 "${P0S[0]}" --dl1 "${P1S[0]}" \
@@ -121,5 +121,3 @@ jobs:
           name: isqgr-eprl-crossshell-gamma-robustness-summary
           path: eprl_crossshell_gamma_robustness_summary.json
           if-no-files-found: error
-
-# research retrigger 2026-09-12T03:41+03:00
