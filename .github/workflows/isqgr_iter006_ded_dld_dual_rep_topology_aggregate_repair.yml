@@ -1,0 +1,64 @@
+name: ISQGR DED DLD Dual Representation Topology Aggregate Repair
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_ded_dld_dual_rep_topology_aggregate_repair.yml'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  aggregate-repair:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download immutable lane artifacts from run 34715789027
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: 34715789027
+          pattern: ded-dld-topology-*
+          path: all
+          merge-multiple: false
+      - name: Apply unchanged frozen classifier without numpy
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          dirs=[pathlib.Path(p).parent for p in glob.glob('all/**/result.json',recursive=True)]
+          rows=[json.load(open(d/'result.json')) for d in dirs]
+          valid=len(rows)==8 and all(r.get('valid') for r in rows)
+          by={(r['asset'],r['representation'],r['dpi']):(r,d) for r,d in zip(rows,dirs)}
+          cross=[]; dpi_ok=True
+          if valid:
+            for asset in ['DED','DLD']:
+              for rep in ['ORIGINAL_EPS','GS_EPS2WRITE_NORMALIZED']:
+                c=[by[(asset,rep,d)][0]['filtered_component_count'] for d in [300,600]]
+                dpi_ok &= (c[0]==c[1])
+              for dpi in [300,600]:
+                r0,d0=by[(asset,'ORIGINAL_EPS',dpi)]; r1,d1=by[(asset,'GS_EPS2WRITE_NORMALIZED',dpi)]
+                b0=(d0/'mask.bin').read_bytes(); b1=(d1/'mask.bin').read_bytes()
+                if len(b0)!=len(b1):
+                  valid=False; dis=1.0
+                else:
+                  disagree=sum((x^y).bit_count() for x,y in zip(b0,b1))
+                  dis=disagree/(1024*1024)
+                f0=r0['foreground_fraction']; f1=r1['foreground_fraction']; rel=abs(f0-f1)/max(abs(f0),abs(f1),1e-30)
+                cross.append({'asset':asset,'dpi':dpi,'binary_disagreement_fraction':dis,'foreground_fraction_relative_difference':rel,'pass':dis<=0.002 and rel<=0.005})
+          cross_ok=bool(valid and cross and all(x['pass'] for x in cross))
+          if not valid: cls='INVALID'
+          elif cross_ok and dpi_ok: cls='REPRESENTATION_STABLE'
+          elif dpi_ok: cls='REPRESENTATION_DEPENDENT'
+          else: cls='TOPOLOGY_EXTRACTION_UNSTABLE'
+          out={'gate':'ITER006_DED_DLD_DUAL_REPRESENTATION_TOPOLOGY_DIAGNOSTIC','recovery_of_run':34715789027,'lane_count':len(rows),'valid':valid,'dpi_component_count_stable':bool(dpi_ok),'cross_representation':cross,'classification':cls,'thresholds':{'binary_disagreement_fraction_max':0.002,'foreground_fraction_relative_difference_max':0.005},'claim_lock':'Infrastructure-only aggregate recovery over immutable run-34715789027 lane artifacts. Prerequisite diagnostic only. No DED-DLD embedding, amplitude identity, cylindrical consistency or bridge credit from this gate.'}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ded-dld-dual-representation-topology-summary-recovered
+          path: summary.json
+          if-no-files-found: error
