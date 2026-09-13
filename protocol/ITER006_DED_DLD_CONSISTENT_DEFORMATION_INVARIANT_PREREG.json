@@ -1,0 +1,51 @@
+{
+  "gate": "ITER006_DED_DLD_CONSISTENT_DEFORMATION_CELL_SUPPORT_INVARIANT",
+  "date": "2026-09-13",
+  "purpose": "Use a genuinely independent EPRL consistent-deformation authority to test whether the published DED and DLD6 two-complexes can be related by the standard amplitude-invariant edge pulling/merging move or a trivial subdivision, without raster geometry, fitted permutations, label tolerances, or post-result equation selection.",
+  "authorities": {
+    "deformation": {
+      "arxiv": "1006.0700v1",
+      "title": "On knottings in the physical Hilbert space of LQG as given by the EPRL model",
+      "author": "Benjamin Bahr"
+    },
+    "ded_dld": {
+      "arxiv": "1801.03771v2",
+      "title": "2-vertex Lorentzian Spin Foam Amplitudes for Dipole Transitions",
+      "authors": ["Giorgio Sarno", "Simone Speziale", "Gabriele V. Stagno"],
+      "pinned_source_tar_sha256": "9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303"
+    }
+  },
+  "frozen_source_requirements": {
+    "BAHR": [
+      "trivial subdivision is topology preserving",
+      "pulling an edge apart changes one edge into two while the number of faces and vertices does not change",
+      "the inverse move merges two edges with the same beginning and ending vertices"
+    ],
+    "SARNO": [
+      "DED denotes the two-vertex one-edge class",
+      "DLD denotes the two-vertex two-edge class",
+      "the DLD admissible class has one internal face",
+      "DLD6 is an explicitly evaluated member of that internal-face class"
+    ]
+  },
+  "frozen_invariant_rule": "If both authorities are independently qualified, then a Bahr edge split/merge cannot map published DED to DLD because the move preserves the number of faces while the published DLD class contains an internal face absent from the DED one-edge class. Trivial subdivisions are topology/history preserving and are not licensed as deletion or creation of an independent internal-face support.",
+  "classification": {
+    "PASS_NEGATIVE": "DED_DLD_BAHR_TRIVIAL_REFINEMENT_EXCLUDED_BY_FACE_INVARIANT",
+    "BLOCKED": "DED_DLD_CONSISTENT_DEFORMATION_AUTHORITY_INCOMPLETE",
+    "INVALID": "INVALID_SOURCE_OR_IMPLEMENTATION"
+  },
+  "permissions_on_pass_negative": {
+    "exclude_bahr_edge_pull_merge_as_refinement_bridge": true,
+    "exclude_trivial_subdivision_as_face_deletion_bridge": true,
+    "claim_no_nontrivial_refinement_exists": false,
+    "bridge_credit": false,
+    "candidate_theory_authorized": false
+  },
+  "forbidden": [
+    "Inferring that no DED-DLD refinement map of any kind exists",
+    "Treating this as a failure of EPRL itself",
+    "Deleting the DLD internal face by setting j_f=0 post hoc",
+    "Using raster thresholds, vector tolerances, fitted permutations, or fitted normalizations",
+    "Weakening a source requirement after reading results"
+  ]
+}
