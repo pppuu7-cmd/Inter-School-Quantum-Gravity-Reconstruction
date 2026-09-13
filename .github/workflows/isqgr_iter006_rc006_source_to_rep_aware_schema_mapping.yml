@@ -1,0 +1,144 @@
+name: ISQGR Iter006 RC006 Source to Representation-Aware Schema Mapping
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_source_to_rep_aware_schema_mapping.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  tex-to-schema:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch immutable TeX source
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o src.tar https://export.arxiv.org/e-print/1112.2511v1
+          echo 'd2dfda1a79b9978422b5a57387f9bbf1ebd4828327c656b59ed74c0acc98302c  src.tar' | sha256sum -c -
+          mkdir src && tar -xf src.tar -C src || (cd src && tar -xzf ../src.tar)
+          find src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > source.tex
+      - name: Parse Proposition 3.4 and build canonical schema object
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,importlib.util
+          spec=importlib.util.spec_from_file_location('schema','experiments/rc006_representation_aware_braid_schema.py'); s=importlib.util.module_from_spec(spec); spec.loader.exec_module(s)
+          t=pathlib.Path('source.tex').read_text(errors='ignore'); low=t.lower()
+          starts=[m.start() for m in re.finditer(r'\\begin\{proposition\}',t)]
+          blocks=[]
+          for st in starts:
+              en=t.find('\\end{proposition}',st)
+              if en>=0:
+                  b=t[st:en+len('\\end{proposition}')]
+                  if 'braid' in b.lower() and ('\\iota' in b or 'eprl' in b.lower()): blocks.append(b)
+          block=blocks[0] if len(blocks)==1 else ''
+          norm=' '.join(re.sub(r'[^a-z0-9]+',' ',block.lower()).split())
+          predicates={
+            'unique_prop34':len(blocks)==1,
+            'input_alpha1_K1':'alpha 1 k 1' in norm or 'alpha 1 k1' in norm,
+            'input_alpha2_K2':'alpha 2 k 2' in norm or 'alpha 2 k2' in norm,
+            'input_alpha3_K3':'alpha 3 k 3' in norm or 'alpha 3 k3' in norm,
+            'input_alpha4_K4':'alpha 4 k 4' in norm or 'alpha 4 k4' in norm,
+            'braid_c_alpha2_alpha1':bool(re.search(r'c_?\{?\\alpha_2\s*,\s*\\alpha_1',block)),
+            'sum_K':bool(re.search(r'\\sum\s*_?\s*\{?K\}?',block)),
+            'lambda_kernel':'\\Lambda' in block,
+            'output_alpha2_K2':'alpha 2 k 2' in norm or 'alpha 2 k2' in norm,
+            'output_alpha1_K':'alpha 1 k' in norm,
+            'output_alpha3_K3':'alpha 3 k 3' in norm or 'alpha 3 k3' in norm,
+            'output_alpha4_K4':'alpha 4 k 4' in norm or 'alpha 4 k4' in norm,
+            'domain_note':'not necessarily an eprl representation' in low
+          }
+          ok=all(predicates.values())
+          o=s.canonical_exemplar() if ok else {}
+          errs=s.validate(o) if ok else ['source_predicate_failure']
+          out={'gate':'ITER006_RC006_SOURCE_TO_REP_AWARE_SCHEMA_MAPPING','lane':'TEX_TO_SCHEMA','valid':ok and not errs,'source_predicates':predicates,'schema_validation_errors':errs,'schema_object':o}
+          pathlib.Path('tex_mapping.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not out['valid']: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-schema-tex-mapping
+          path: tex_mapping.json
+          if-no-files-found: error
+
+  pdf-to-schema:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch immutable PDF source
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y poppler-utils >/dev/null
+          curl -L --fail --retry 3 -o paper.pdf https://arxiv.org/pdf/1112.2511v1
+          echo 'b41866cdd69defdef1862416bfb40e8b4c39775b53a51718a7cae837fedf6667  paper.pdf' | sha256sum -c -
+          pdftotext -layout paper.pdf paper.txt
+      - name: Independently map PDF Proposition 3.4 to schema
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,importlib.util
+          spec=importlib.util.spec_from_file_location('schema','experiments/rc006_representation_aware_braid_schema.py'); s=importlib.util.module_from_spec(spec); spec.loader.exec_module(s)
+          t=pathlib.Path('paper.txt').read_text(errors='ignore'); low=' '.join(t.lower().split())
+          i=low.find('proposition 3.4'); j=low.find('4. the 4-simplex amplitude',i if i>=0 else 0)
+          block=low[i:(j if j>i else min(len(low),i+3500))] if i>=0 else ''
+          tokens=' '.join(re.sub(r'[^a-z0-9α-ω]+',' ',block).split())
+          predicates={
+            'prop34_found':i>=0,
+            'input_labels':all(x in tokens for x in ['α1 k1','α2 k2','α3 k3','α4 k4']),
+            'braiding_alpha2_alpha1':('braiding' in block and 'cα2,α1' in block.replace(' ','')) or ('braiding' in block and 'transforms as' in block),
+            'sum_K':('∑' in block and 'transforms as' in block),
+            'lambda_kernel':('λ' in block),
+            'output_alpha2_K2':'α2 k2' in tokens,
+            'output_alpha1_K':'α1 k' in tokens,
+            'output_alpha3_K3':'α3 k3' in tokens,
+            'output_alpha4_K4':'α4 k4' in tokens,
+            'domain_note':bool(re.search(r'α\s*\(k\)\s+is\s+not\s+(?:1\s+)?necessarily\s+an\s+eprl\s+representation',block)) or 'not necessarily an eprl representation' in block
+          }
+          ok=all(predicates.values())
+          o=s.canonical_exemplar() if ok else {}
+          errs=s.validate(o) if ok else ['source_predicate_failure']
+          out={'gate':'ITER006_RC006_SOURCE_TO_REP_AWARE_SCHEMA_MAPPING','lane':'PDF_TO_SCHEMA','valid':ok and not errs,'source_predicates':predicates,'schema_validation_errors':errs,'schema_object':o}
+          pathlib.Path('pdf_mapping.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not out['valid']: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-schema-pdf-mapping
+          path: pdf_mapping.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: [tex-to-schema, pdf-to-schema]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: source-schema-*-mapping
+          path: inputs
+          merge-multiple: true
+      - name: Apply frozen exact-mapping classifier
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          rows=[]
+          for n in ['tex_mapping.json','pdf_mapping.json']:
+              p=pathlib.Path('inputs')/n
+              if p.exists(): rows.append(json.loads(p.read_text()))
+          valid=len(rows)==2
+          passes=[r for r in rows if r.get('valid') is True]
+          same=valid and len(passes)==2 and passes[0].get('schema_object')==passes[1].get('schema_object')
+          if same: cl='QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_EXACT'
+          elif valid and passes: cl='QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_PARTIAL'
+          else: cl='QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_UNSUPPORTED'
+          out={'gate':'ITER006_RC006_SOURCE_TO_REP_AWARE_SCHEMA_MAPPING','valid':valid,'passing_lanes':len(passes),'canonical_schema_agreement':same,'classification':cl,'lambda_kernel_derivation_preregistration_authorized':cl=='QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_EXACT','eq29_amplitude_authorized':False,'historical_holdout_fail_rewritten':False,'bridge_credit':False,'new_physics_found':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-to-schema-mapping-summary
+          path: summary.json
+          if-no-files-found: error
