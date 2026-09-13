@@ -1,0 +1,103 @@
+name: ISQGR Iter019 bounded q-CG validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter019-qcg-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: validate (${{ matrix.lane }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [algebra, projector-cap, recoupling, classical-limit]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pin numerical runtime
+        run: |
+          python -m pip install --disable-pip-version-check 'numpy==2.3.3' 'mpmath==1.3.0'
+          python - <<'PY'
+          import json, platform, numpy, mpmath, pathlib
+          pathlib.Path('runtime.json').write_text(json.dumps({
+            'python': platform.python_version(),
+            'numpy': numpy.__version__,
+            'mpmath': mpmath.__version__
+          }, indent=2) + '\n')
+          PY
+      - name: Run preregistered lane
+        run: |
+          rm -rf out
+          python code/iter019/qcg_solver_validation.py --lane '${{ matrix.lane }}'
+          cp runtime.json out/runtime.json
+          sha256sum code/iter019/qcg_solver_validation.py > out/CODE_SHA256.txt
+          cat out/evidence.json
+      - name: Upload lane evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter019-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: error
+          compression-level: 6
+
+  aggregate:
+    name: aggregate scientific classification
+    if: always()
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter019-*
+          path: lanes
+      - name: Frozen aggregate
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          rows=[]
+          for p in sorted(pathlib.Path('lanes').glob('*/evidence.json')):
+              try: rows.append(json.loads(p.read_text()))
+              except Exception as e: rows.append({'lane':str(p.parent),'aggregate_read_error':repr(e)})
+          by={r.get('lane'):r for r in rows}
+          expected=['algebra','projector-cap','recoupling','classical-limit']
+          infra=(len(rows)!=4 or any(r.get('infrastructure_failure') or r.get('aggregate_read_error') for r in rows))
+          passed={k:(by.get(k,{}).get('pass') is True) for k in expected}
+          if infra:
+              cls='RC006_QCG_IMPLEMENTATION_INFRASTRUCTURE_PARTIAL'
+          elif not passed['algebra']:
+              cls='RC006_QCG_SOLVER_ALGEBRA_RESIDUAL_FAIL'
+          elif not passed['projector-cap']:
+              cls='RC006_QCG_A8_A9_CAP_FAIL'
+          elif not passed['recoupling']:
+              cls='RC006_QCG_RECOUPLING_INVARIANT_FAIL'
+          elif not passed['classical-limit']:
+              cls='RC006_QCG_CLASSICAL_LIMIT_SANITY_FAIL'
+          else:
+              cls='RC006_QCG_SOLVER_VALIDATED_BOUNDED_K12'
+          out={
+            'classification':cls,
+            'lane_pass':passed,
+            'lanes':rows,
+            'implementation_validation_gate_authorized': cls=='RC006_QCG_SOLVER_VALIDATED_BOUNDED_K12',
+            'iter012_retry_authorized':False,
+            'eq29_amplitude_authorized':False,
+            'bridge_credit':False,
+            'candidate_theory_authorized':False,
+            'preferred_alpha_found':False
+          }
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter019-aggregate
+          path: aggregate.json
+          if-no-files-found: error
