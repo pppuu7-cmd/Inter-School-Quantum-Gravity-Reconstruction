@@ -1,0 +1,33 @@
+name: ISQGR Iter021 source extraction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter021-source-extraction.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-extraction:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Extract byte-pinned target source
+        run: |
+          rm -rf out
+          python code/iter021/extract_target_source.py
+          cat out/evidence.json
+      - name: Upload immutable extraction
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter021-source-extraction
+          path: out/
+          if-no-files-found: error
+          compression-level: 6
