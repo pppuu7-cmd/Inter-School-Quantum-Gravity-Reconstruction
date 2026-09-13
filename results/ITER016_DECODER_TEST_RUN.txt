@@ -1,0 +1,35 @@
+test_absolute_path (test_source_decoder.SourceTests.test_absolute_path) ... ok
+test_bad_gzip_checksum (test_source_decoder.SourceTests.test_bad_gzip_checksum) ... ok
+test_binary (test_source_decoder.SourceTests.test_binary) ... ok
+test_correct_size (test_source_decoder.SourceTests.test_correct_size) ... ok
+test_declared_truncation (test_source_decoder.SourceTests.test_declared_truncation) ... ok
+test_duplicate (test_source_decoder.SourceTests.test_duplicate) ... ok
+test_expansion_limit (test_source_decoder.SourceTests.test_expansion_limit) ... ok
+test_gzip (test_source_decoder.SourceTests.test_gzip) ... ok
+test_gzip_html (test_source_decoder.SourceTests.test_gzip_html) ... ok
+test_gzip_tar (test_source_decoder.SourceTests.test_gzip_tar) ... ok
+test_hashes (test_source_decoder.SourceTests.test_hashes) ... ok
+test_html (test_source_decoder.SourceTests.test_html) ... ok
+test_input_limit (test_source_decoder.SourceTests.test_input_limit) ... ok
+test_invalid_limits (test_source_decoder.SourceTests.test_invalid_limits) ... ok
+test_keep_members_separate (test_source_decoder.SourceTests.test_keep_members_separate) ... ok
+test_latin1_warning (test_source_decoder.SourceTests.test_latin1_warning) ... ok
+test_member_count (test_source_decoder.SourceTests.test_member_count) ... ok
+test_member_limit (test_source_decoder.SourceTests.test_member_limit) ... ok
+test_no_tex (test_source_decoder.SourceTests.test_no_tex) ... ok
+test_no_tex_in_tar (test_source_decoder.SourceTests.test_no_tex_in_tar) ... ok
+test_pax (test_source_decoder.SourceTests.test_pax) ... ok
+test_pdf (test_source_decoder.SourceTests.test_pdf) ... ok
+test_plain (test_source_decoder.SourceTests.test_plain) ... ok
+test_symlink (test_source_decoder.SourceTests.test_symlink) ... ok
+test_tar (test_source_decoder.SourceTests.test_tar) ... ok
+test_traversal (test_source_decoder.SourceTests.test_traversal) ... ok
+test_truncated_gzip (test_source_decoder.SourceTests.test_truncated_gzip) ... ok
+test_truncated_tar (test_source_decoder.SourceTests.test_truncated_tar) ... ok
+test_utf8_bom (test_source_decoder.SourceTests.test_utf8_bom) ... ok
+test_wrong_size (test_source_decoder.SourceTests.test_wrong_size) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.004s
+
+OK

@@ -1,0 +1,24 @@
+{
+  "date": "2026-09-14",
+  "execution": "local offline CPython",
+  "python": "3.13.5",
+  "command": "python -m unittest discover -s code/iter016 -p 'test_*.py' -v",
+  "tests_run": 30,
+  "failures": 0,
+  "errors": 0,
+  "physics_experiments_run": 0,
+  "network_source_runs": 0,
+  "code_sha256": {
+    "code/iter016/source_decoder.py": "e12a3d66cd2e1dc7c2568fa0c30fd54ea0673bbdf822648cea7c28b9cd011da6",
+    "code/iter016/test_source_decoder.py": "736b1caa0d6795cbbcd6d6eb0535d246181836fbca55fcb79f51c04beaa55ab0"
+  },
+  "test_log_sha256": "421d47dd7af2e4ce26c9dd38c515eaf9c16dffdddf1120be88a5e0509ca38f39",
+  "limitations": [
+    "Synthetic fixtures only; no live arXiv payload bytes acquired.",
+    "No formula qualification is performed by the decoder.",
+    "Plain-text truncation without external metadata is not generally detectable."
+  ],
+  "bridge_credit": false,
+  "iter012_retry_authorized": false,
+  "eq29_amplitude_authorized": false
+}
