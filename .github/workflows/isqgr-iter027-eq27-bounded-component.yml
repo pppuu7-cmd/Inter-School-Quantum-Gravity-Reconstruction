@@ -1,0 +1,71 @@
+name: ISQGR Iter027 Eq27 bounded component
+on:
+  push:
+    paths:
+      - 'code/iter027/**'
+      - 'prereg/ITER027_RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_2026-09-14.md'
+      - '.github/workflows/isqgr-iter027-eq27-bounded-component.yml'
+  workflow_dispatch:
+
+jobs:
+  science:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [authority-domain, component-translation, bounded-contraction, null-controls]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy scipy
+      - name: Run frozen lane
+        run: python code/iter027/eq27_bounded_component_contraction.py --lane '${{ matrix.lane }}'
+      - name: Upload raw evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter027-${{ matrix.lane }}
+          path: out/iter027/evidence.json
+
+  aggregate:
+    needs: science
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter027-*
+          path: evidence
+      - name: Frozen aggregate classification
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          rows=[]
+          for p in sorted(pathlib.Path('evidence').glob('**/evidence.json')):
+              rows.append(json.loads(p.read_text()))
+          expected={'authority-domain','component-translation','bounded-contraction','null-controls'}
+          got={r.get('lane') for r in rows}
+          infra=[r for r in rows if r.get('infrastructure_failure')]
+          passes={r.get('lane'):bool(r.get('pass')) for r in rows}
+          if got != expected or infra:
+              cls='NUMERICAL_OR_INFRASTRUCTURE_FAIL'
+          elif all(passes.get(x,False) for x in expected):
+              cls='RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_VALIDATED_SCOPED'
+          else:
+              # A failed authorized numerical equality is scientific FAIL; missing authority is BLOCKED.
+              auth=next((r for r in rows if r.get('lane')=='authority-domain'),{})
+              if auth.get('missing') or auth.get('forbidden_dependencies'):
+                  cls='RC006_EQ27_COMPONENT_CONTRACTION_BLOCKED_AUTHORITY'
+              else:
+                  cls='RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_FAIL'
+          out={'classification':cls,'lane_pass':passes,'evidence_count':len(rows),'green_ci_not_scientific_predicate':True,
+               'claim_locks':{'bridge_credit':False,'candidate_theory_authorized':False,'eq29_amplitude_authorized':False,'one_step_tnr_authorized':False}}
+          pathlib.Path('aggregate').mkdir()
+          pathlib.Path('aggregate/summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter027-aggregate
+          path: aggregate/summary.json
