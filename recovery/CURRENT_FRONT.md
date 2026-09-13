@@ -2,49 +2,37 @@
 
 Date: 2026-09-14.
 
-Candidate theory: **UNFORMED / 0%**. Administrative programme readiness remains **49%**. This is roadmap bookkeeping, not a correctness probability.
+Candidate theory: **UNFORMED / 0%**. Administrative programme readiness remains **49%**. This is roadmap readiness, not a correctness probability.
 
-## RC006 current authority
+## RC006 — current terminal frontier
 
-ITER018 closed the Eq.(27) graph/even-k source-convention prerequisite as `RC006_EQ27_GRAPH_AND_EVENK_CATEGORY_PINNED_IMPLEMENTATION_PREREG_ALLOWED`.
+ITER018 closed the exact Eq.(27) graph/even-k source-convention prerequisite. ITER019 then validated the source-derived q-CG solver at even `k=12` as `RC006_QCG_SOLVER_VALIDATED_BOUNDED_K12`.
 
-ITER019 is now terminal **SCIENTIFIC PASS** in its frozen bounded scope:
+ITER020 is now terminal **SCIENTIFIC PASS**:
 
-`RC006_QCG_SOLVER_VALIDATED_BOUNDED_K12`.
+`RC006_QCG_HELDOUT_TRANSPORT_PASS`.
 
 Authority:
 
-- prereg `4f497a0e6413d8f4bc0408f0050552fa80d2ba98`
-- implementation `4408ad9725aa1ac5bf0a80dd2619ac444c3bb91d`
-- production head `d5934a5f2251c01b2d8ec2315d1c36161b45f507`
-- run `34785058584`
-- jobs: algebra `103798900360`; recoupling `103798900429`; projector-cap `103798900448`; classical-limit `103798900462`; aggregate `103798931295`
-- aggregate artifact `10326466098`, digest `sha256:66208c6a95c1c2e7375edf21e8172680a42b36a697c7d5a6ecc921f96dc4f025`
-- durable result: `results/ITER019_RC006_QCG_SOLVER_VALIDATION_2026-09-14.md`
-
-Raw artifacts were consumed lane-by-lane. All frozen predicates pass. Maximum algebra intertwiner residual is `1.5625802476324566e-12`; maximum A9 residual `1.183923065063617e-12`; held frozen recoupling `F^T F-I` residual `1.2228665433368622e-15`; classical-projector continuity difference `8.883991123583906e-4 < 2e-3`.
-
-This sets `implementation_validation_gate_authorized=true` only for the bounded solver implementation. It does **not** authorize historical Iter012, Eq.(29)/Lambda, alpha selection, bridge credit or candidate theory.
-
-## Active ITER020
-
-Prospectively preregistered gate:
-
-`RC006_QCG_HELDOUT_NONRETUNED_TRANSPORT`.
-
-- prereg commit `35a003e743bfa47bc8577f0a19267367e149be55`
-- implementation commit `b0ce5650b111e60a8b7219a327e7129a5f72ccb8`
+- prereg `35a003e743bfa47bc8577f0a19267367e149be55`
+- implementation `b0ce5650b111e60a8b7219a327e7129a5f72ccb8`
 - production head `b2c3948e1463060ffa5a2da6230859278a24ccd7`
-- authoritative run `34785245738`
+- run `34785245738`
+- jobs: near-cutoff `103799413997`; heldout-recoupling `103799414066`; null-calibration `103799414145`; level-transport `103799414181`; aggregate `103799444617`
+- aggregate artifact `10326411477`, digest `sha256:b67462bfedb91ca2ecff5cba655ffce92b430292b76b109e9eb4e525189ca32c`
+- durable result `results/ITER020_RC006_QCG_HELDOUT_TRANSPORT_2026-09-14.md`
 
-Four independent lanes are frozen before result inspection:
+All raw lane artifacts and the aggregate were consumed. Results: held-out level-transport residual `2.905052937842534e-14`; near-cutoff maximum residual `2.139545123799759e-12` across 18 retained channels with no recurrence/nullspace failure; held-out recoupling max `F^T F-I` residual `1.352772180613162e-15`; false-positive calibration detected all 3/3 deliberately wrong constructions while the correct construction residual remained `2.482534153247273e-16`.
 
-1. held-out level transport at k=6 and k=10;
-2. adversarial near-cutoff channels at k=6,10,12;
-3. held-out non-retuned recoupling invariants at k=6 and k=10;
-4. false-positive/null calibration using deliberately wrong coproduct/q-number choices.
+Thus the bounded solver has now passed both the original k=12 gate and a non-retuned transport/adversarial/null-calibration gate.
 
-No threshold, panel or convention may be changed after production results are visible. Green CI is not a scientific PASS.
+## What this authorizes
+
+`implementation_validation_gate_authorized=true`.
+
+`eq27_component_reconstruction_prereg_allowed=true`.
+
+Historical Iter012 is **not** silently rerun or reclassified. The next computation must be a new prospectively frozen source-faithful Eq.(27)/Appendix-E component translation/reconstruction checkpoint using the validated solver as backend.
 
 ## Locks
 
@@ -59,8 +47,8 @@ Still false:
 - `ALL_KNOWN_SCHOOLS_FAIL`
 - `NEW_QG_THEORY_REQUIRED`
 
-BH004/BH004B remains scoped-negative; genuine multi-vertex Lorentzian refinement remains source-blocked; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
+BH004/BH004B remains scoped-negative. Genuine multi-vertex Lorentzian EPRL refinement remains source-blocked. RC008 and RC009 remain blocked. Lorentzian Delta4 remains saturated-negative in its tested scope.
 
 ## Exact next gate
 
-Consume every raw ITER020 artifact and the frozen aggregate from run `34785245738`. Only a full preregistered PASS may authorize a new source-faithful Eq.(27) component/reconstruction preregistration. A failed robustness lane is preserved as a negative result and must not be repaired by post-hoc retuning.
+Prospectively freeze a source-faithful Eq.(27) component-translation/reconstruction gate before implementation. It must preserve the exact target graphical/bilinear normalization, Appendix-B cup/cap/dual structure and Appendix-E normalization chain; use the validated q-CG solver without coefficient fitting; include held-out orientation/permutation and wrong-q/classical/normalization controls; and classify any missing unambiguous graph-to-component ingredient as BLOCKED rather than inventing a convention.
