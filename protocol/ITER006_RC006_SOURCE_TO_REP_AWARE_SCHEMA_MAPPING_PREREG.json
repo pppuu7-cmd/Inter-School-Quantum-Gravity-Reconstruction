@@ -1,0 +1,36 @@
+{
+  "gate": "ITER006_RC006_SOURCE_TO_REP_AWARE_SCHEMA_MAPPING",
+  "date": "2026-09-13",
+  "prerequisites": [
+    "34741553861 EXPLICIT_QEPRL_BRAIDING_REPRESENTATION_MIXING_QUALIFIED",
+    "34742148378 QEPRL_BRAIDING_REPRESENTATION_AWARE_STRUCTURE_EXTRACTED",
+    "34742381859 RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION_VALIDATED"
+  ],
+  "source": "Fairbairn-Meusburger arXiv:1112.2511v1 Proposition 3.4",
+  "target_schema": "RC006-QEPRL-BRAID-v1",
+  "purpose": "Map the exact source-qualified Proposition 3.4 symbolic index structure into the validated RC006 representation-aware namespace without using historical holdout signs or amplitude values.",
+  "independence_lock": "No S_CROSS, pair-sign selection, historical holdout outcome, Eq29 target amplitude, or desired contraction ordering may influence parsing or mapping.",
+  "lanes": ["TEX_TO_SCHEMA", "PDF_TO_SCHEMA"],
+  "frozen_required_mapping": {
+    "input_representations": [["alpha1","K1"],["alpha2","K2"],["alpha3","K3"],["alpha4","K4"]],
+    "braid_ordered_inputs": ["alpha2","alpha1"],
+    "braid_source_definition": "tau_compose_pi_tensor_pi_of_R",
+    "summation_index": "K",
+    "kernel": {"name":"Lambda","upper_indices":["K2","J"],"lower_indices":["K1","K"],"arguments":["alpha2"]},
+    "output_representations": [["alpha2","K2"],["alpha1","K"],["alpha3","K3"],["alpha4","K4"]],
+    "alpha1_K_necessarily_EPRL": false,
+    "legacy_pair_sign_authoritative": false
+  },
+  "acceptance": "Both independent source lanes must construct canonical target-schema objects whose scientifically relevant fields are identical and pass the validated RC006-QEPRL-BRAID-v1 validator. Any missing/free-vs-summed ambiguity or lane disagreement fails closed.",
+  "pass_classification": "QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_EXACT",
+  "partial_classification": "QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_PARTIAL",
+  "fail_classification": "QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_UNSUPPORTED",
+  "downstream_if_pass": "Authorize a separately preregistered source-faithful Lambda-kernel derivation/implementation gate. Do not authorize Eq29 numerical amplitude yet.",
+  "claim_locks": {
+    "eq29_amplitude_authorized": false,
+    "historical_holdout_fail_rewritten": false,
+    "bridge_derived": false,
+    "new_physics_found": false,
+    "candidate_theory_formed": false
+  }
+}
