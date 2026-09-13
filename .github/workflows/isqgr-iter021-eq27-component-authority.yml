@@ -1,0 +1,66 @@
+name: ISQGR Iter021 Eq27 component translation authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter021/**'
+      - '.github/workflows/isqgr-iter021-eq27-component-authority.yml'
+      - 'triggers/iter021.txt'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [topology, primitives, normalization, null]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pin numerical runtime
+        run: pip install 'numpy==2.3.3' 'mpmath==1.3.0'
+      - name: Run preregistered lane
+        run: python code/iter021/eq27_component_translation_authority.py --lane '${{ matrix.lane }}'
+      - name: Upload raw lane evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter021-${{ matrix.lane }}
+          path: out/
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter021-*
+          path: lanes
+      - name: Frozen aggregate
+        run: |
+          python - <<'PY'
+          import glob,json,os
+          ev=[]
+          for f in glob.glob('lanes/**/evidence.json',recursive=True):
+              try: ev.append(json.load(open(f)))
+              except Exception: pass
+          expected={'topology','primitives','normalization','null'}
+          by={x.get('lane'):x for x in ev}
+          infra=set(by)!=expected or any(x.get('infrastructure_failure') for x in ev)
+          if infra: cls='RC006_EQ27_TRANSLATION_INFRASTRUCTURE_PARTIAL'
+          elif not by['topology'].get('pass'): cls='RC006_EQ27_SOURCE_TOPOLOGY_AMBIGUOUS'
+          elif not by['primitives'].get('pass'): cls='RC006_EQ27_COMPONENT_TRANSLATION_BLOCKED_MISSING_PRIMITIVE'
+          elif not by['normalization'].get('pass'): cls='RC006_EQ27_APPENDIXE_NORMALIZATION_TRANSLATION_FAIL'
+          elif not by['null'].get('pass'): cls='RC006_EQ27_TRANSLATION_NULL_CALIBRATION_FAIL'
+          else: cls='RC006_EQ27_COMPONENT_TRANSLATION_AUTHORITY_COMPLETE'
+          out={'classification':cls,'lane_pass':{k:bool(by.get(k,{}).get('pass')) for k in expected},'bridge_credit':False,'candidate_theory_authorized':False,'new_physics_found':False,'eq29_amplitude_authorized':False,'preferred_alpha_found':False,'iter012_retry_authorized':False,'lanes':ev}
+          os.makedirs('aggregate',exist_ok=True); json.dump(out,open('aggregate/aggregate.json','w'),indent=2,sort_keys=True); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter021-aggregate
+          path: aggregate/aggregate.json
