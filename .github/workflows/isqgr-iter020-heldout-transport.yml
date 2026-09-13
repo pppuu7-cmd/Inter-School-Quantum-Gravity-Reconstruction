@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lane: [algebra, a9-cap, qbar, boundary, recoupling]
+        lane: [level-transport, near-cutoff, heldout-recoupling, null-calibration]
     steps:
       - uses: actions/checkout@v4
       - name: Pin numerical runtime
@@ -63,7 +63,7 @@ jobs:
         run: |
           python - <<'PY'
           import json, pathlib
-          expected=['algebra','a9-cap','qbar','boundary','recoupling']
+          expected=['level-transport','near-cutoff','heldout-recoupling','null-calibration']
           rows=[]
           for p in sorted(pathlib.Path('lanes').glob('*/evidence.json')):
               try:
@@ -71,23 +71,21 @@ jobs:
               except Exception as e:
                   rows.append({'lane':str(p.parent),'aggregate_read_error':repr(e)})
           by={r.get('lane'):r for r in rows}
-          infra=(len(rows)!=5 or any(r.get('infrastructure_failure') or r.get('aggregate_read_error') for r in rows))
+          infra=(len(rows)!=4 or any(r.get('infrastructure_failure') or r.get('aggregate_read_error') for r in rows))
           passed={k:(by.get(k,{}).get('pass') is True) for k in expected}
           if infra:
               cls='RC006_QCG_HELDOUT_INFRASTRUCTURE_PARTIAL'
-          elif not passed['algebra']:
-              cls='RC006_QCG_HELDOUT_ALGEBRA_FAIL'
-          elif not passed['a9-cap']:
-              cls='RC006_QCG_HELDOUT_A9_CAP_FAIL'
-          elif not passed['qbar']:
-              cls='RC006_QCG_QBAR_DUALITY_FAIL'
-          elif not passed['boundary']:
-              cls='RC006_QCG_BOUNDARY_STRESS_FAIL'
-          elif not passed['recoupling']:
+          elif not passed['level-transport']:
+              cls='RC006_QCG_LEVEL_TRANSPORT_FAIL'
+          elif not passed['near-cutoff']:
+              cls='RC006_QCG_NEAR_CUTOFF_FAIL'
+          elif not passed['heldout-recoupling']:
               cls='RC006_QCG_HELDOUT_RECOUPLING_FAIL'
+          elif not passed['null-calibration']:
+              cls='RC006_QCG_NULL_CALIBRATION_FAIL'
           else:
-              cls='RC006_QCG_HELDOUT_TRANSPORT_VALIDATED'
-          full=(cls=='RC006_QCG_HELDOUT_TRANSPORT_VALIDATED')
+              cls='RC006_QCG_HELDOUT_TRANSPORT_PASS'
+          full=(cls=='RC006_QCG_HELDOUT_TRANSPORT_PASS')
           out={
             'classification':cls,
             'lane_pass':passed,
@@ -110,4 +108,4 @@ jobs:
           path: aggregate.json
           if-no-files-found: error
 
-# ITER020 trigger marker 2; frozen prereg already exists on main.
+# ITER020 workflow aligned exactly to the current frozen prereg and worker lanes.
