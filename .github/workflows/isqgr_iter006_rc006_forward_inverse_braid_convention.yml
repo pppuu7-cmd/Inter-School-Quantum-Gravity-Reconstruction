@@ -54,10 +54,15 @@ jobs:
           t=pathlib.Path('paper.txt').read_text(errors='ignore')
           flat=' '.join(t.lower().split())
           plus=('r(+) = r' in flat)
-          minus=bool(re.search(r'r\(−\)\s*=\s*r\s*−1\s*21',flat)) or bool(re.search(r'r\(-\)\s*=\s*r\s*-1\s*21',flat))
+          # pdftotext may serialize sub/superscripts as either R −1 21 or R 21 −1.
+          m=re.search(r'r\([−-]\)\s*=\s*r',flat)
+          window=flat[m.start():m.start()+80] if m else ''
+          has_inverse=('−1' in window or '-1' in window)
+          has_21=('21' in window)
+          minus=bool(m and has_inverse and has_21)
           ribbon=('ribbon quasi-triangular hopf algebra' in flat or ('ribbon' in flat and 'quasi-triangular' in flat))
           braiding=('braiding matrices' in flat)
-          out={'gate':'ITER006_RC006_FORWARD_INVERSE_BRAID_CONVENTION','lane':'RMATRIX_PLUS_MINUS_CONVENTION','valid':bool(plus and minus and ribbon and braiding),'R_plus_equals_R':plus,'R_minus_inverse_21':minus,'ribbon_quasitriangular_context':ribbon,'braiding_matrix_context':braiding,'rc006_sign_selected':False,'implementation_note':'Uses immutable PDF text because arXiv e-print is a legacy monolithic TeX serialization; frozen convention predicate unchanged.'}
+          out={'gate':'ITER006_RC006_FORWARD_INVERSE_BRAID_CONVENTION','lane':'RMATRIX_PLUS_MINUS_CONVENTION','valid':bool(plus and minus and ribbon and braiding),'R_plus_equals_R':plus,'R_minus_inverse_21':minus,'ribbon_quasitriangular_context':ribbon,'braiding_matrix_context':braiding,'inverse_window':window,'rc006_sign_selected':False,'implementation_note':'Canonicalizes only pdftotext order of inverse and 21 indices; frozen convention predicate R(-)=R^{-1}_{21} unchanged.'}
           pathlib.Path('rmatrix.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
           PY
       - uses: actions/upload-artifact@v4
