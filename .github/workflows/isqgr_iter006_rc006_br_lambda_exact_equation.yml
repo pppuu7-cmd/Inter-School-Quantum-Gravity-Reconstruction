@@ -1,0 +1,103 @@
+name: ISQGR Iter006 RC006 BR Lambda Exact Equation Extraction
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_br_lambda_exact_equation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [macro-grammar, definition-equalities, analytic-6j, normalization-domain]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch frozen source
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o source.archive 'https://export.arxiv.org/e-print/math/9910147v1'
+          echo '316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc  source.archive' | sha256sum -c -
+          mkdir src
+          tar -xf source.archive -C src
+          find src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > source.tex
+          test -s source.tex
+      - name: Extract frozen evidence lane
+        env:
+          MODE: ${{ matrix.mode }}
+        run: |
+          python - <<'PY'
+          import json,os,pathlib,re
+          mode=os.environ['MODE']; text=pathlib.Path('source.tex').read_text(errors='ignore'); lines=text.splitlines()
+          patterns={
+            'macro-grammar':[r'\\def\\coef[a-z]*lambda',r'\\Lambda\^'],
+            'definition-equalities':[r'coef[a-z]*lambda',r'\\Lambda\^'],
+            'analytic-6j':[r'6j',r'Racah',r'Askey[- ]Wilson',r'analytic continuation',r'analytic continuation'],
+            'normalization-domain':[r'normalization',r'normalisation',r'orthogonality',r'principal unitary',r'Plancherel',r'lambda=\(',r'\\lambda=']
+          }[mode]
+          hits=[]
+          for i,line in enumerate(lines,1):
+            if any(re.search(p,line,re.I) for p in patterns):
+              if mode=='definition-equalities' and ('\\def\\coef' in line or '\\newcommand' in line):
+                continue
+              a=max(1,i-3); b=min(len(lines),i+3)
+              excerpt='\n'.join(f'{j}: {lines[j-1]}' for j in range(a,b+1))
+              hits.append({'line':i,'excerpt':excerpt})
+          # De-duplicate strongly overlapping hit windows while preserving source order.
+          kept=[]; last=-100
+          for h in hits:
+            if h['line']-last<3: continue
+            kept.append(h); last=h['line']
+            if len(kept)>=40: break
+          # Lane-specific structural signals; these are evidence only, not scientific PASS.
+          if mode=='macro-grammar':
+            signal=bool(re.search(r'\\def\\coefalambda.*\\Lambda',text,re.I|re.S) and re.search(r'\\def\\coefblambda.*\\Lambda',text,re.I|re.S))
+          elif mode=='definition-equalities':
+            signal=any('=' in h['excerpt'] and ('Lambda' in h['excerpt'] or 'lambda' in h['excerpt']) for h in kept)
+          elif mode=='analytic-6j':
+            signal=bool(re.search(r'(6j|Racah|Askey[- ]Wilson)',text,re.I))
+          else:
+            signal=bool(re.search(r'(normalization|normalisation|orthogonality)',text,re.I) and re.search(r'principal unitary',text,re.I))
+          out={'gate':'ITER006_RC006_BR_LAMBDA_EXACT_EQUATION_EXTRACTION','mode':mode,'source_sha256':'316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc','evidence_signal':signal,'hit_count_total':len(hits),'anchors':kept}
+          pathlib.Path('evidence.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'mode':mode,'evidence_signal':signal,'hit_count_total':len(hits),'anchors_kept':len(kept)},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: br-lambda-${{ matrix.mode }}
+          path: evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: evidence-lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: br-lambda-*
+          path: inputs
+          merge-multiple: false
+      - name: Prepare evidence summary
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          rows=[json.loads(p.read_text()) for p in sorted(pathlib.Path('inputs').glob('**/evidence.json'))]
+          expected={'macro-grammar','definition-equalities','analytic-6j','normalization-domain'}
+          modes={r['mode'] for r in rows}
+          out={'gate':'ITER006_RC006_BR_LAMBDA_EXACT_EQUATION_EXTRACTION','lane_count':len(rows),'all_modes_present':modes==expected,'all_evidence_signals':len(rows)==4 and all(r['evidence_signal'] for r in rows),'manual_raw_equation_audit_required':True,'automatic_scientific_pass':False,'low_spin_implementation_authorized':False,'eq29_amplitude_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if modes!=expected: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: br-lambda-exact-equation-summary
+          path: summary.json
+          if-no-files-found: warn
