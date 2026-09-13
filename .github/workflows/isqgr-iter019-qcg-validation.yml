@@ -101,3 +101,5 @@ jobs:
           name: iter019-aggregate
           path: aggregate.json
           if-no-files-found: error
+
+# ITER019 trigger; preregistration 4f497a0e6413d8f4bc0408f0050552fa80d2ba98
