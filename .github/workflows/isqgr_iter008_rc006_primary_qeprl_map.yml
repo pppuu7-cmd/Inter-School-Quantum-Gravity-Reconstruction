@@ -1,0 +1,71 @@
+name: ISQGR Iter008 RC006 primary q-EPRL map gate
+
+on:
+  push:
+    paths:
+      - 'code/iter008_rc006_primary_qeprl_map_gate.py'
+      - '.github/workflows/isqgr_iter008_rc006_primary_qeprl_map.yml'
+  workflow_dispatch:
+
+jobs:
+  gate:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        stream: [A, B, C, D]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check mpmath==1.3.0
+      - name: Run frozen stream
+        run: |
+          mkdir -p out
+          python code/iter008_rc006_primary_qeprl_map_gate.py --stream '${{ matrix.stream }}' --out "out/stream_${{ matrix.stream }}.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter008-rc006-primary-qeprl-${{ matrix.stream }}
+          path: out/
+          if-no-files-found: warn
+
+  aggregate:
+    if: always()
+    needs: gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter008-rc006-primary-qeprl-*
+          path: collected
+          merge-multiple: true
+      - name: Frozen aggregate classification
+        run: |
+          python - <<'PY'
+          import glob,json,sys,os
+          files=sorted(glob.glob('collected/stream_*.json'))
+          rows=[]
+          for p in files:
+              with open(p) as f: rows.append(json.load(f))
+          names=sorted(r.get('stream') for r in rows)
+          valid=(names==list('ABCD'))
+          passed=valid and all(r.get('pass') is True for r in rows)
+          classifier=('RC006_PRIMARY_QEPRL_MAP_SOURCE_RECONSTRUCTED_SCOPED' if passed else
+                      'SCIENTIFIC_FAIL_SOURCE_RECONSTRUCTION_MISMATCH' if valid else
+                      'INFRASTRUCTURE_OR_NUMERICAL_FAIL')
+          out={'gate':'ITER008_RC006_PRIMARY_QEPRL_MAP_AUTHORITY_GATE','streams':rows,'valid_streams':valid,'pass':passed,'classification':classifier,
+               'scope':'Reduced Euclidean SU(2)_k x SU(2)_k source reconstruction only; zero bridge credit; does not resolve Lambda/q-binomial blocker.'}
+          os.makedirs('summary',exist_ok=True)
+          with open('summary/summary.json','w') as f: json.dump(out,f,indent=2,sort_keys=True)
+          print(json.dumps(out,sort_keys=True))
+          sys.exit(0 if passed else 2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter008-rc006-primary-qeprl-summary
+          path: summary/
+          if-no-files-found: warn
