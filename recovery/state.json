@@ -1,16 +1,106 @@
 {
-  "project":"Inter-School Quantum Gravity Reconstruction",
-  "repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
-  "date":"2026-09-14",
-  "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration":"ITERATION_024",
-  "iteration_completion_percent":20,
-  "iteration_completion_scope":"Iter023 terminal authority BLOCKED consumed; Iter024 cited-source authority-chain gate launched",
-  "candidate_theory_status":"UNFORMED",
-  "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"rqir_promotion_authorized":false,"kmqgb_promotion_authorized":false},
-  "readiness_percent":{"amplitude_refinement_cross_realization_validation":49,"candidate_theory_construction":0,"overall_scientific_programme":49},
-  "frontier":{"RC006":{"status":"CITED_AUTHORITY_CHAIN_RUNNING","iter023":{"prereg_commit":"f236741ce6b76050b40ed9fc5ef52998048a8c35","implementation_commit":"b3ac56b8dec57873d2e59c72c57c30b64f1f46b3","production_head":"86366a7abd003c166ea5ef277b1a3d1048e92e0a","run":34785936567,"jobs":{"qbar_inventory":103801306450,"r_authority":103801306540,"qbar_orientation":103801306566,"provenance_null":103801306710,"aggregate":103801340359},"artifacts":{"qbar_inventory":10326980301,"r_authority":10326551766,"qbar_orientation":10326239080,"provenance_null":10326184126,"aggregate":10326268909},"aggregate_digest":"sha256:626ed7f8fc035b845783828f8121d0da40698804d2cd44369a47af5c4f32d642","classification":"RC006_QBAR_INDEX_ORDER_BLOCKED","report":"results/ITER023_RC006_QBAR_R_AUTHORITY_SPLIT_2026-09-14.md"},"iter024":{"prereg_commit":"6d007bf342997425d5eee88d0f354062e9f8bb95","implementation_commit":"c223a73f0c66c950da98f478cfe4b7d2d3be8ca0","production_head":"2511ad18bf53d7159b935df306419dad709a210c","run":34788335930,"classification":"RUNNING"},"eq27_component_reconstruction_prereg_allowed":false,"iter012_retry_authorized":false,"eq29_amplitude_authorized":false,"bridge_credit":false,"next_gate":"CONSUME_ITER024_RAW_ARTIFACTS_AND_FROZEN_AGGREGATE"},"BH004_BH004B":{"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},"MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","refinement_map_derived":false},"RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},"RC009":{"status":"SCOPED_BLOCKED"},"LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}},
-  "active_compute":[{"run":34788335930,"workflow":"ISQGR Iter024 cited authority chain","scientifically_useful_jobs":4}],
-  "idle_capacity":{"scientifically_useful_jobs_queued":4,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"Four independent prospectively frozen source-authority lanes queued; duplicate batch prohibited."},
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER024_RC006_CITED_AUTHORITY_CHAIN_2026-09-14.md","results/ITER023_RC006_QBAR_R_AUTHORITY_SPLIT_2026-09-14.md","docs/CONSTITUTION.md"]
+  "project": "Inter-School Quantum Gravity Reconstruction",
+  "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
+  "date": "2026-09-14",
+  "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
+  "active_iteration": "ITERATION_024",
+  "iteration_completion_percent": 100,
+  "iteration_completion_scope": "Iter024 raw artifacts consumed and terminalized INVALID_IMPLEMENTATION because the implementation did not execute the prospectively frozen cited-source inspection requirements",
+  "candidate_theory_status": "UNFORMED",
+  "claim_locks": {
+    "known_schools_fail": false,
+    "new_theory_required": false,
+    "new_physics_found": false,
+    "bridge_derived": false,
+    "rqir_promotion_authorized": false,
+    "kmqgb_promotion_authorized": false
+  },
+  "readiness_percent": {
+    "amplitude_refinement_cross_realization_validation": 49,
+    "candidate_theory_construction": 0,
+    "overall_scientific_programme": 49
+  },
+  "frontier": {
+    "RC006": {
+      "status": "CITED_AUTHORITY_CHAIN_INVALID_IMPLEMENTATION",
+      "iter023": {
+        "prereg_commit": "f236741ce6b76050b40ed9fc5ef52998048a8c35",
+        "implementation_commit": "b3ac56b8dec57873d2e59c72c57c30b64f1f46b3",
+        "production_head": "86366a7abd003c166ea5ef277b1a3d1048e92e0a",
+        "run": 34785936567,
+        "jobs": {
+          "qbar_inventory": 103801306450,
+          "r_authority": 103801306540,
+          "qbar_orientation": 103801306566,
+          "provenance_null": 103801306710,
+          "aggregate": 103801340359
+        },
+        "artifacts": {
+          "qbar_inventory": 10326980301,
+          "r_authority": 10326551766,
+          "qbar_orientation": 10326239080,
+          "provenance_null": 10326184126,
+          "aggregate": 10326268909
+        },
+        "aggregate_digest": "sha256:626ed7f8fc035b845783828f8121d0da40698804d2cd44369a47af5c4f32d642",
+        "classification": "RC006_QBAR_INDEX_ORDER_BLOCKED",
+        "report": "results/ITER023_RC006_QBAR_R_AUTHORITY_SPLIT_2026-09-14.md"
+      },
+      "iter024": {
+        "prereg_commit": "6d007bf342997425d5eee88d0f354062e9f8bb95",
+        "implementation_commit": "c223a73f0c66c950da98f478cfe4b7d2d3be8ca0",
+        "production_head": "2511ad18bf53d7159b935df306419dad709a210c",
+        "run": 34788335930,
+        "artifacts": {
+          "aggregate": 10327143320,
+          "bib_resolve": 10327238202,
+          "qbar_authority": 10326889371,
+          "r_authority": 10326743834,
+          "provenance_null": 10327263162
+        },
+        "aggregate_digest": "sha256:aa84c692363d6d627686be23f67580e028208822de2f320ce836f26c2a69784a",
+        "raw_aggregate_classification": "RC006_CITED_AUTHORITY_CHAIN_COMPLETE",
+        "scientific_classification": "INVALID_IMPLEMENTATION",
+        "report": "results/ITER024_RC006_CITED_AUTHORITY_CHAIN_INVALID_IMPLEMENTATION_2026-09-14.md"
+      },
+      "eq27_component_reconstruction_prereg_allowed": false,
+      "iter012_retry_authorized": false,
+      "eq29_amplitude_authorized": false,
+      "bridge_credit": false,
+      "next_gate": "PREREGISTER_CORRECTED_EXACT_QBAR_R_SOURCE_AUTHORITY_AUDIT"
+    },
+    "BH004_BH004B": {
+      "status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
+      "bridge_credit": false
+    },
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
+      "status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS",
+      "refinement_map_derived": false
+    },
+    "RC008": {
+      "status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"
+    },
+    "RC009": {
+      "status": "SCOPED_BLOCKED"
+    },
+    "LORENTZIAN_DELTA4": {
+      "status": "SATURATED_NEGATIVE_SCOPED",
+      "bridge_credit": false
+    }
+  },
+  "active_compute": [],
+  "idle_capacity": {
+    "scientifically_useful_jobs_queued": 0,
+    "scientifically_useful_jobs_in_progress": 0,
+    "avoidable_idle": false,
+    "reason": "Iter024 terminalized; next corrected authority gate must be preregistered before execution."
+  },
+  "authoritative_recovery_order": [
+    "recovery/state.json",
+    "recovery/CURRENT_FRONT.md",
+    "results/ITER024_RC006_CITED_AUTHORITY_CHAIN_INVALID_IMPLEMENTATION_2026-09-14.md",
+    "results/ITER023_RC006_QBAR_R_AUTHORITY_SPLIT_2026-09-14.md",
+    "docs/INTERFACE_ATLAS_V0_1.md",
+    "docs/CONSTITUTION.md"
+  ]
 }
