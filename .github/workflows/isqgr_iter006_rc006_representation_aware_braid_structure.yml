@@ -25,9 +25,7 @@ jobs:
         run: |
           python - <<'PY'
           import pathlib,re,json,hashlib
-          t=pathlib.Path('source.tex').read_text(errors='ignore')
-          low=t.lower()
-          # Bound the Proposition 3.4 neighborhood structurally, independent of RC006 outcomes.
+          t=pathlib.Path('source.tex').read_text(errors='ignore'); low=t.lower()
           starts=[m.start() for m in re.finditer(r'\\begin\{proposition\}',t)]
           blocks=[]
           for s in starts:
@@ -38,15 +36,15 @@ jobs:
           norm=' '.join(re.sub(r'[^a-z0-9]+',' ',block.lower()).split())
           sum_k=bool(re.search(r'\\sum\s*_?\s*\{?K\}?',block))
           alpha1k=('alpha 1 k' in norm or '\\alpha_1(K)' in block or '\\alpha_{1}(K)' in block)
-          alpha2k2=('alpha 2 k2' in norm or '\\alpha_2(K_2)' in block or '\\alpha_{2}(K_2)' in block)
-          unchanged34=(('alpha 3 k3' in norm or '\\alpha_3(K_3)' in block) and ('alpha 4 k4' in norm or '\\alpha_4(K_4)' in block))
+          alpha2k2=('alpha 2 k 2' in norm or 'alpha 2 k2' in norm or '\\alpha_2(K_2)' in block or '\\alpha_{2}(K_2)' in block)
+          unchanged34=(('alpha 3 k 3' in norm or 'alpha 3 k3' in norm or '\\alpha_3(K_3)' in block) and ('alpha 4 k 4' in norm or 'alpha 4 k4' in norm or '\\alpha_4(K_4)' in block))
           lam=('\\Lambda' in block or 'lambda' in norm)
-          input_order=(('alpha 1 k1' in norm) and ('alpha 2 k2' in norm))
+          input_order=(('alpha 1 k 1' in norm or 'alpha 1 k1' in norm) and ('alpha 2 k 2' in norm or 'alpha 2 k2' in norm))
           output_not_perm=bool(sum_k and alpha1k and alpha2k2 and input_order)
           footnote=('not necessarily an eprl representation' in low)
           free_summed=bool(sum_k and alpha1k and alpha2k2 and unchanged34 and footnote)
           valid=(len(cand)==1 and all([sum_k,alpha1k,alpha2k2,unchanged34,lam,output_not_perm,free_summed]))
-          out={'gate':'ITER006_RC006_REPRESENTATION_AWARE_BRAID_STRUCTURE','lane':'TEX_STRUCTURAL_PARSE','valid':valid,'proposition_candidate_count':len(cand),'sum_over_K':sum_k,'output_alpha1_depends_on_K':alpha1k,'output_alpha2_K2_present':alpha2k2,'alpha3_K3_alpha4_K4_preserved':unchanged34,'nontrivial_Lambda_kernel':lam,'input_to_output_not_simple_permutation':output_not_perm,'free_vs_summed_structure_distinguished':free_summed,'alpha1K_not_necessarily_EPRL_source_note':footnote,'block_sha256':hashlib.sha256(block.encode()).hexdigest() if block else None}
+          out={'gate':'ITER006_RC006_REPRESENTATION_AWARE_BRAID_STRUCTURE','lane':'TEX_STRUCTURAL_PARSE','valid':valid,'proposition_candidate_count':len(cand),'sum_over_K':sum_k,'output_alpha1_depends_on_K':alpha1k,'output_alpha2_K2_present':alpha2k2,'alpha3_K3_alpha4_K4_preserved':unchanged34,'nontrivial_Lambda_kernel':lam,'input_to_output_not_simple_permutation':output_not_perm,'free_vs_summed_structure_distinguished':free_summed,'alpha1K_not_necessarily_EPRL_source_note':footnote,'block_sha256':hashlib.sha256(block.encode()).hexdigest() if block else None,'implementation_note':'Index separators canonicalized from diagnostic run 34742102528; frozen scientific predicates unchanged.'}
           pathlib.Path('tex_structure.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
           PY
       - uses: actions/upload-artifact@v4
@@ -70,21 +68,20 @@ jobs:
           python - <<'PY'
           import pathlib,re,json,hashlib
           t=pathlib.Path('paper.txt').read_text(errors='ignore'); low=' '.join(t.lower().split())
-          i=low.find('proposition 3.4')
-          j=low.find('4. the 4-simplex amplitude',i if i>=0 else 0)
-          block=low[i:(j if j>i else min(len(low),i+2500))] if i>=0 else ''
-          # pdftotext can separate math glyphs; require both formula semantics and explanatory sentence.
-          sum_k=('= ∑ k' in block or '= ∑k' in block or 'transforms as' in block and '∑' in block)
-          alpha1k=('α1(k)' in block or 'α1 (k)' in block or 'alpha1(k)' in block)
-          alpha2k2=('α2(k2)' in block or 'α2 (k2)' in block or 'alpha2(k2)' in block)
-          preserved34=(('α3(k3)' in block or 'α3 (k3)' in block) and ('α4(k4)' in block or 'α4 (k4)' in block))
+          i=low.find('proposition 3.4'); j=low.find('4. the 4-simplex amplitude',i if i>=0 else 0)
+          block=low[i:(j if j>i else min(len(low),i+3000))] if i>=0 else ''
+          tokens=' '.join(re.sub(r'[^a-z0-9α-ω]+',' ',block).split())
+          sum_k=('transforms as' in block and '∑' in block)
+          alpha1k=('α1 k' in tokens or 'alpha1 k' in tokens)
+          alpha2k2=('α2 k2' in tokens or 'alpha2 k2' in tokens)
+          preserved34=(('α3 k3' in tokens or 'alpha3 k3' in tokens) and ('α4 k4' in tokens or 'alpha4 k4' in tokens))
           lam=('λ' in block or 'lambda' in block)
           noninv='not invariant under braiding' in block
-          not_eprl='not necessarily an eprl representation' in block
+          not_eprl=bool(re.search(r'α\s*\(k\)\s+is\s+not\s+(?:1\s+)?necessarily\s+an\s+eprl\s+representation',block)) or ('not necessarily an eprl representation' in block)
           output_not_perm=bool(sum_k and alpha1k and not_eprl)
           free_summed=bool(sum_k and alpha1k and alpha2k2 and preserved34 and not_eprl)
           valid=all([i>=0,sum_k,alpha1k,alpha2k2,preserved34,lam,noninv,output_not_perm,free_summed])
-          out={'gate':'ITER006_RC006_REPRESENTATION_AWARE_BRAID_STRUCTURE','lane':'PDF_TEXT_STRUCTURAL_PARSE','valid':valid,'proposition_found':i>=0,'sum_over_K':sum_k,'output_alpha1_depends_on_K':alpha1k,'output_alpha2_K2_present':alpha2k2,'alpha3_K3_alpha4_K4_preserved':preserved34,'nontrivial_Lambda_kernel':lam,'non_invariance_under_braiding':noninv,'input_to_output_not_simple_permutation':output_not_perm,'free_vs_summed_structure_distinguished':free_summed,'alpha1K_not_necessarily_EPRL_source_note':not_eprl,'block_sha256':hashlib.sha256(block.encode()).hexdigest() if block else None}
+          out={'gate':'ITER006_RC006_REPRESENTATION_AWARE_BRAID_STRUCTURE','lane':'PDF_TEXT_STRUCTURAL_PARSE','valid':valid,'proposition_found':i>=0,'sum_over_K':sum_k,'output_alpha1_depends_on_K':alpha1k,'output_alpha2_K2_present':alpha2k2,'alpha3_K3_alpha4_K4_preserved':preserved34,'nontrivial_Lambda_kernel':lam,'non_invariance_under_braiding':noninv,'input_to_output_not_simple_permutation':output_not_perm,'free_vs_summed_structure_distinguished':free_summed,'alpha1K_not_necessarily_EPRL_source_note':not_eprl,'block_sha256':hashlib.sha256(block.encode()).hexdigest() if block else None,'implementation_note':'PDF math spacing/footnote marker canonicalized from diagnostic run 34742102528; frozen scientific predicates unchanged.'}
           pathlib.Path('pdf_structure.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
           PY
       - uses: actions/upload-artifact@v4
