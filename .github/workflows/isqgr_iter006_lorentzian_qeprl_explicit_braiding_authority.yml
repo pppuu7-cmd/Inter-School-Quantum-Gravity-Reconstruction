@@ -28,9 +28,10 @@ jobs:
               except: pass
           raw='\n'.join(t for _,t in texts)
           flat=re.sub(r'\s+',' ',raw).lower()
+          canonical=re.sub(r'\$([a-z])\$',r'\1',flat)
           req={
             'quasitriangular': ('quasi-triangular' in flat or 'quasitriangular' in flat),
-            'rmatrix': ('r-matrix' in flat or 'r matrix' in flat),
+            'rmatrix': ('r-matrix' in canonical or 'r matrix' in canonical),
             'braiding': 'braiding' in flat,
             'flip_tau': ('flip map' in flat or '\\tau' in raw),
             'explicit_action': ('action of the braiding' in flat),
@@ -40,7 +41,7 @@ jobs:
           formula_like=bool(re.search(r'c[^\n]{0,180}(?:tau|\\tau)[^\n]{0,180}(?:pi|\\pi)[^\n]{0,180}r',raw,re.I))
           req['eq37_formula_like']=formula_like
           valid=all(req.values())
-          out={'gate':'ITER006_RC006_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY','lane':'ARXIV_SOURCE_TEX','valid':valid,'requirements':req,'file_count':len(files),'source_text_sha256':hashlib.sha256(raw.encode()).hexdigest()}
+          out={'gate':'ITER006_RC006_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY','lane':'ARXIV_SOURCE_TEX','valid':valid,'requirements':req,'file_count':len(files),'source_text_sha256':hashlib.sha256(raw.encode()).hexdigest(),'implementation_note':'Only TeX math delimiters around single-letter symbols are removed for lexical matching; scientific predicates unchanged.'}
           pathlib.Path('out/source_tex.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
           print(json.dumps(out,indent=2,sort_keys=True))
           PY
