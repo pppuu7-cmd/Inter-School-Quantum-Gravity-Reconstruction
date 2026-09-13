@@ -1,0 +1,23 @@
+{
+  "gate": "ITER006_RC006_BUFFENOIR_ROCHE_RMATRIX_SUBSTRATE",
+  "date": "2026-09-13",
+  "source": "Buffenoir-Roche arXiv:math/9910147v1",
+  "purpose": "Independently qualify the mathematical universal-R/braiding substrate referenced by the Lorentzian q-EPRL braiding source.",
+  "independence_lock": "Do not use Eq29 labels, RC006 historical signs, or the 1112.2511 Proposition 3.4 classifier to decide this gate.",
+  "lanes": ["ARXIV_SOURCE_TEX", "ARXIV_PDF_TEXT"],
+  "frozen_required_objects": [
+    "Uq(su(2)) described as ribbon quasi-triangular Hopf algebra",
+    "universal R-matrix R explicitly named",
+    "R(+) = R and R(-) = R^{-1}_{21} convention",
+    "braiding-matrix discussion in representation theory"
+  ],
+  "acceptance": "Both independent lanes recover all frozen objects from arXiv:math/9910147v1.",
+  "pass_classification": "INDEPENDENT_RMATRIX_BRAIDING_SUBSTRATE_QUALIFIED",
+  "fail_classification": "INDEPENDENT_RMATRIX_BRAIDING_SUBSTRATE_INCOMPLETE",
+  "downstream_if_pass": "May support, but cannot by itself determine, a separately preregistered RC006 orientation/incidence mapping.",
+  "claim_locks": {
+    "eq29_amplitude_authorized": false,
+    "historical_fail_rewritten": false,
+    "bridge_derived": false
+  }
+}
