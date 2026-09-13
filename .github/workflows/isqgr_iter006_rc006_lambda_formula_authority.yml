@@ -1,0 +1,148 @@
+name: ISQGR Iter006 RC006 Lambda Formula Authority Chain
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_lambda_formula_authority.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        source:
+          - eprl-proceedings
+          - eprl-full
+          - br-harmonic
+          - br-tensor
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch immutable primary source
+        run: |
+          set -euo pipefail
+          case "${{ matrix.source }}" in
+            eprl-proceedings) ID='1112.2511v1' ;;
+            eprl-full) ID='1012.4784v3' ;;
+            br-harmonic) ID='q-alg/9710022v2' ;;
+            br-tensor) ID='math/9910147v1' ;;
+          esac
+          printf '%s\n' "$ID" > source_id.txt
+          curl -L --fail --retry 3 --retry-delay 2 -o source.archive "https://export.arxiv.org/e-print/${ID}"
+          sha256sum source.archive | awk '{print $1}' > source_sha256.txt
+          mkdir src
+          if tar -tf source.archive >/dev/null 2>&1; then
+            tar -xf source.archive -C src
+          elif gzip -t source.archive >/dev/null 2>&1; then
+            (cd src && gzip -dc ../source.archive > source.raw)
+          else
+            cp source.archive src/source.raw
+          fi
+          find src -type f -maxdepth 3 -print0 | sort -z | xargs -0 -r cat > source_all.txt
+          test -s source_all.txt
+      - name: Extract frozen authority evidence
+        env:
+          SOURCE_KIND: ${{ matrix.source }}
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, re
+          kind=os.environ['SOURCE_KIND']
+          src=pathlib.Path('source_all.txt').read_text(errors='ignore')
+          low=src.lower()
+          sid=pathlib.Path('source_id.txt').read_text().strip()
+          sha=pathlib.Path('source_sha256.txt').read_text().strip()
+          def present(*patterns):
+              return any(re.search(p, src, re.I|re.S) for p in patterns)
+          def snippets(patterns, radius=450, limit=8):
+              out=[]
+              for pat in patterns:
+                  for m in re.finditer(pat, src, re.I|re.S):
+                      a=max(0,m.start()-radius); b=min(len(src),m.end()+radius)
+                      s=' '.join(src[a:b].split())
+                      if s not in out: out.append(s)
+                      if len(out)>=limit: return out
+              return out
+          lambda_symbol=present(r'\\Lambda', r'Lambda\^', r'Lambda_', r'\\lambda')
+          principal=present(r'principal.{0,80}represent', r'quantum Lorentz')
+          analytic_6j=present(r'analytic.{0,80}6j', r'continuation.{0,80}6j', r'6j.{0,100}continu')
+          askey=present(r'Askey[- ]Wilson', r'q[- ]Racah')
+          refers_elsewhere=present(r'will not give them here', r'refer.{0,120}where they are derived explicitly', r'refer.{0,120}studied in depth')
+          prop_braid=present(r'Proposition.{0,80}3\.4', r'not invariant under braiding', r'c_\{\\alpha_\{2\},\\alpha_\{1\}\}')
+          action_anchor=present(r'pi_\{?\\alpha\}?.{0,250}Lambda', r'\\Lambda\^\{JM\}_\{NL\}')
+          explicit_definition_signal=present(
+              r'\\Lambda.{0,250}=.{0,900}(6j|Racah|Wilson)',
+              r'(6j|Racah|Wilson).{0,900}=.{0,250}\\Lambda',
+              r'defin.{0,160}\\Lambda.{0,1200}(sum|prod|Gamma|6j|Racah|Wilson)'
+          )
+          normalization_signal=present(r'normalization', r'normalisation', r'orthogonality', r'unitary')
+          domain_signal=present(r'n\\in\\mathbb', r'p\\in', r'principal series', r'principal unitary')
+          rec={
+            'gate':'ITER006_RC006_LAMBDA_FORMULA_AUTHORITY_CHAIN',
+            'source_kind':kind,'source_id':sid,'source_sha256':sha,
+            'lambda_symbol':lambda_symbol,'principal_representation_context':principal,
+            'analytic_continuation_or_6j':analytic_6j,'askey_wilson_or_q_racah':askey,
+            'refers_elsewhere_for_formula':refers_elsewhere,
+            'prop34_or_braiding_anchor':prop_braid,'representation_action_anchor':action_anchor,
+            'explicit_definition_signal':explicit_definition_signal,
+            'normalization_signal':normalization_signal,'domain_signal':domain_signal,
+            'snippets':snippets([r'\\Lambda',r'analytic.{0,80}6j',r'Askey[- ]Wilson',r'will not give them here',r'derived explicitly'])
+          }
+          pathlib.Path('audit.json').write_text(json.dumps(rec,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(rec,indent=2,sort_keys=True))
+          # Only source extraction failure is fatal here; semantic classification is aggregate/manual.
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lambda-authority-${{ matrix.source }}
+          path: audit.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: source-audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: lambda-authority-*
+          path: inputs
+          merge-multiple: false
+      - name: Freeze machine-readable evidence summary
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          files=sorted(pathlib.Path('inputs').glob('**/audit.json'))
+          rows=[json.loads(p.read_text()) for p in files]
+          by={r['source_kind']:r for r in rows}
+          expected={'eprl-proceedings','eprl-full','br-harmonic','br-tensor'}
+          complete=set(by)==expected
+          eprl_map=complete and all(by[k]['lambda_symbol'] and by[k]['principal_representation_context'] for k in ['eprl-proceedings','eprl-full'])
+          eprl_referral=complete and all(by[k]['refers_elsewhere_for_formula'] for k in ['eprl-proceedings','eprl-full'])
+          br_formula_signal=complete and any(by[k]['explicit_definition_signal'] for k in ['br-harmonic','br-tensor'])
+          br_context=complete and all(by[k]['principal_representation_context'] for k in ['br-harmonic','br-tensor'])
+          # Machine signals do not alone certify mathematical executability; terminal scientific classification requires raw-source audit.
+          out={
+            'gate':'ITER006_RC006_LAMBDA_FORMULA_AUTHORITY_CHAIN',
+            'source_lane_count':len(rows),'source_complete':complete,
+            'eprl_object_mapping_signal':eprl_map,'eprl_external_formula_referral_signal':eprl_referral,
+            'buffenoir_roche_explicit_formula_signal':br_formula_signal,
+            'buffenoir_roche_principal_context_signal':br_context,
+            'machine_evidence_ready':complete,
+            'automatic_scientific_pass':False,
+            'manual_raw_formula_audit_required':True,
+            'eq29_amplitude_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False
+          }
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not complete: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lambda-authority-chain-summary
+          path: summary.json
+          if-no-files-found: warn
