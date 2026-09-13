@@ -1,0 +1,41 @@
+{
+  "gate": "ITER006_RC006_NAMESPACE_REPRESENTATION_MIXING_CAPABILITY",
+  "date": "2026-09-13",
+  "prerequisites": [
+    "run 34741553861: EXPLICIT_QEPRL_BRAIDING_REPRESENTATION_MIXING_QUALIFIED",
+    "run 34742148378: QEPRL_BRAIDING_REPRESENTATION_AWARE_STRUCTURE_EXTRACTED"
+  ],
+  "scope": "Current RC006 relation-aware serialization/data namespace only; this gate does not claim impossibility of extending RC006.",
+  "source_required_capabilities": [
+    "explicit summed representation label K",
+    "nontrivial Lambda kernel/coefficient indexed by source labels",
+    "linear combination/sum of transformed intertwiner states",
+    "output representation alpha1(K) distinct from fixed input alpha1(K1)",
+    "domain-escape flag because alpha1(K) is not necessarily EPRL"
+  ],
+  "repo_objects_to_audit": [
+    "experiments/rc006_relation_aware_serialization_retry.py",
+    "experiments/rc006_contraction_serialization_stability.py",
+    "experiments/rc006_serialization_failure_localization.py",
+    "protocol/ITER006_RC006_BRAID_SENSITIVE_ORDER_PROJECTION_PREREG.json"
+  ],
+  "independence_lock": "Do not use historical holdout outcomes, favorable signs, amplitude values, or desired Eq29 result. Audit only code/schema expressivity against the already-qualified source structure.",
+  "acceptance": "SUPPORTED only if the current RC006 namespace explicitly represents all five source-required capabilities without encoding a summed representation transformation as a single pair sign/order bit. PARTIAL if some but not all are explicit. INSUFFICIENT if none or only sign/order information exists.",
+  "classifications": [
+    "RC006_NAMESPACE_SUPPORTS_QEPRL_REPRESENTATION_MIXING",
+    "RC006_NAMESPACE_PARTIAL_FOR_QEPRL_REPRESENTATION_MIXING",
+    "RC006_NAMESPACE_INSUFFICIENT_FOR_QEPRL_REPRESENTATION_MIXING"
+  ],
+  "downstream": {
+    "SUPPORTED": "A separately preregistered source-to-RC006 representation-aware mapping may proceed.",
+    "PARTIAL_OR_INSUFFICIENT": "Do not retune pair signs. A new versioned namespace/schema extension must be prospectively designed before any representation-aware amplitude mapping."
+  },
+  "claim_locks": {
+    "qEPRL_model_false": false,
+    "RC006_extension_impossible": false,
+    "eq29_amplitude_authorized": false,
+    "historical_holdout_fail_rewritten": false,
+    "bridge_derived": false,
+    "new_physics_found": false
+  }
+}
