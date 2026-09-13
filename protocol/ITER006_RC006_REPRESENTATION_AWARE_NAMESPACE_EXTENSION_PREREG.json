@@ -1,0 +1,40 @@
+{
+  "gate": "ITER006_RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION",
+  "date": "2026-09-13",
+  "prerequisites": {
+    "representation_mixing_source_run": 34742148378,
+    "current_namespace_audit_run": 34742278486,
+    "current_namespace_classification": "RC006_NAMESPACE_INSUFFICIENT_FOR_QEPRL_REPRESENTATION_MIXING"
+  },
+  "purpose": "Validate a minimal versioned symbolic namespace capable of losslessly representing the source-qualified q-EPRL Proposition 3.4 braid transformation. This is a schema/representation gate only, not a numerical amplitude gate.",
+  "frozen_required_fields": [
+    "schema_version",
+    "input_representations alpha1(K1), alpha2(K2), alpha3(K3), alpha4(K4)",
+    "braid_operator with ordered inputs alpha2, alpha1 and source convention metadata",
+    "summation index K",
+    "kernel Lambda with dependencies upper=[K2,J], lower=[K1,K], argument=alpha2",
+    "output_representations alpha2(K2), alpha1(K), alpha3(K3), alpha4(K4)",
+    "domain flag alpha1(K)_necessarily_EPRL=false",
+    "legacy pair_sign explicitly marked non_authoritative_projection"
+  ],
+  "roundtrip_acceptance": "Two independent implementations serialize -> parse -> canonicalize the canonical Proposition-3.4 exemplar and recover identical free/summed indices, kernel dependencies, ordered input/output representation maps, and domain flag.",
+  "null_controls": [
+    "remove summation K -> must fail",
+    "remove Lambda kernel -> must fail",
+    "remove alpha1(K) output dependence -> must fail",
+    "flip domain flag to necessarily_EPRL=true -> must fail source-faithful validation",
+    "replace braid operator with pair_sign only -> must fail"
+  ],
+  "pass_classification": "RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION_VALIDATED",
+  "partial_classification": "RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION_PARTIAL",
+  "fail_classification": "RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION_INVALID",
+  "downstream_if_pass": "Authorize a separately preregistered source-to-RC006 symbolic mapping/roundtrip gate. Do not authorize Eq29 numerical amplitude yet.",
+  "independence_lock": "No historical holdout outcome, S_CROSS choice, target amplitude, or desired Eq29 result enters schema design or validation.",
+  "claim_locks": {
+    "eq29_amplitude_authorized": false,
+    "historical_holdout_fail_rewritten": false,
+    "bridge_derived": false,
+    "new_physics_found": false,
+    "candidate_theory_formed": false
+  }
+}
