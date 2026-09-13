@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-14",
+  "iteration": "ITERATION_018",
+  "preregistration_commit": "809c9a76b43c6bf05ac7c56cfb5d8d1fb260e2eb",
+  "final_audit_head": "ff5dca3f3488100c52434b127a1ca288ff0325c2",
+  "final_run": 34784718497,
+  "parallel_lanes": ["eq27-graph", "evenk-category", "provenance"],
+  "final_jobs": {
+    "eq27_graph": 103797981411,
+    "evenk_category": 103797981596,
+    "provenance": 103797981351,
+    "aggregate": 103798039733
+  },
+  "final_artifacts": {
+    "eq27_graph": {"id": 10326142705, "zip_sha256": "150e6b0d8ddc1db2fb69d36acab8b6c189c3919d76724d71f0a96c60f8f80eed"},
+    "evenk_category": {"id": 10326555531, "zip_sha256": "87bd12114cbc70adcfff80efd3f90dce325fdc5c9e957ab972995642ed6fbca9"},
+    "provenance": {"id": 10325618162, "zip_sha256": "6a58d13395e9bc30538baf0f9eaef56a7030e46113023dbc7a029602215dee64"},
+    "aggregate": {"id": 10325982983, "zip_sha256": "001bfbad3413976983779214b83b498442c296de07ca821c39e560a3fe09dc0f"}
+  },
+  "source_sha256": {
+    "1609.02429v2_eprint": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
+    "1609.02429v2_pdf": "accc590fb97d8e07ec0d7b836dbb03fb92052c98c9322512b428ca294a1be475",
+    "1312.0905v2_eprint": "69334656117892b255ebb9b0c3855b6387bafc630bb9345b084e5434e22294c0",
+    "1506.04749v3_eprint": "758e05bf73390015fb02f374c69892ad155c8edacb40a97876c12aa7f64c1e14",
+    "2304.02527v2_eprint": "9d725a2226ca2108fb68e070d4f52d954d11dcd86e0ee797ea0b60a2f9e998a5"
+  },
+  "final_machine_classification": "RC006_MECHANICAL_GATES_PASS_SOURCE_GRAPH_REVIEW_REQUIRED",
+  "terminal_classification_after_source_graph_review": "RC006_EQ27_GRAPH_AND_EVENK_CATEGORY_PINNED_IMPLEMENTATION_PREREG_ALLOWED",
+  "machine_gates": {
+    "eq27_mechanical_recovery_pass": true,
+    "even_k_category_pass": true,
+    "historical_source_hashes_match": true,
+    "k12_within_independent_category_source_domain": true
+  },
+  "source_graph_review": {
+    "exact_eq27_source_environment": "eq:eprl-3-valent",
+    "pdf_pages_visually_reviewed": [22, 37, 38],
+    "two_internal_j_sums": true,
+    "two_closed_l_loops": true,
+    "appendix_B_to_E3_normalization_chain": true,
+    "B15_F1_R_matrix_derivation_chain": true,
+    "ordinary_absolute_square_substituted": false
+  },
+  "parser_correction_runs": [34784469592, 34784658623, 34784718497],
+  "implementation_validation_prereg_allowed": true,
+  "implementation_validation_gate_authorized": false,
+  "iter012_retry_authorized": false,
+  "eq29_amplitude_authorized": false,
+  "bridge_credit": false,
+  "candidate_theory_authorized": false
+}
