@@ -18,7 +18,7 @@ The prospectively frozen `ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_PANEL`
 - run `34748687768`
 - frozen matrix: 8 lanes, `fail-fast:false`
 - attempt 1: seven lanes completed and uploaded artifacts; job `103701251385` failed before any steps materialized, so the attempt is `INFRASTRUCTURE_PARTIAL_JOB_START_FAILURE_NOT_SCIENTIFIC_CLASSIFICATION`, not a scientific FAIL
-- attempt 2 was started by rerunning failed jobs only; current run state is queued, with the previously failed lane job `103706316813` awaiting execution
+- attempt 2 was started by rerunning failed jobs only; current run state is queued, with replacement job `103706316813` awaiting execution
 
 No frozen threshold, source equation, panel point, sign convention, or interpretation rule was changed.
 
@@ -39,6 +39,6 @@ DED/DLD remains `BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS` from run
 ## Exact next admissible gate
 Consume terminal attempt 2 of run `34748687768` and terminal retry run `34750594795`. Only after both are classified may the low-spin boundary panel receive a scientific classification. If the q-binomial convention is not explicit in the immutable source, the next step is a separately preregistered authority-resolution gate; do not infer or fit a convention.
 
-Scientifically useful queued/in-progress: **10 / 0** at lane level (8 numerical + 2 diagnostic). No avoidable idle capacity: both nonduplicating frozen batches are queued.
+Scientifically useful queued/in-progress: **3 / 0**: one numerical retry lane plus two independent convention-diagnostic lanes. The seven already-terminal numerical lanes are not counted again. No avoidable idle capacity.
 
 Iteration completion: **89%**. Amplitude/refinement validation: **49%**. Overall programme readiness: **49%**. Candidate theory: **0% / UNFORMED**.
