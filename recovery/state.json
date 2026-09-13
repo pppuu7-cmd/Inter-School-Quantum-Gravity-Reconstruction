@@ -4,8 +4,8 @@
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_020",
-  "iteration_completion_percent": 20,
-  "iteration_completion_scope": "Iter019 terminal bounded q-CG implementation PASS recorded; Iter020 held-out non-retuned transport launched prospectively",
+  "iteration_completion_percent": 100,
+  "iteration_completion_scope": "Held-out non-retuned q-CG level/cutoff/recoupling transport and false-positive calibration closed PASS",
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -22,7 +22,7 @@
   },
   "frontier": {
     "RC006": {
-      "status": "QCG_SOLVER_BOUNDED_K12_VALIDATED_HELDOUT_TRANSPORT_RUNNING",
+      "status": "QCG_SOLVER_HELDOUT_TRANSPORT_VALIDATED_EQ27_COMPONENT_RECONSTRUCTION_PREREG_ALLOWED",
       "iter018": {
         "prereg_commit": "809c9a76b43c6bf05ac7c56cfb5d8d1fb260e2eb",
         "production_head": "ff5dca3f3488100c52434b127a1ca288ff0325c2",
@@ -35,24 +35,10 @@
         "implementation_commit": "4408ad9725aa1ac5bf0a80dd2619ac444c3bb91d",
         "production_head": "d5934a5f2251c01b2d8ec2315d1c36161b45f507",
         "run": 34785058584,
-        "jobs": {
-          "algebra": 103798900360,
-          "recoupling": 103798900429,
-          "projector_cap": 103798900448,
-          "classical_limit": 103798900462,
-          "aggregate": 103798931295
-        },
-        "artifacts": {
-          "algebra": 10326068204,
-          "recoupling": 10325843872,
-          "projector_cap": 10326526775,
-          "classical_limit": 10326073163,
-          "aggregate": 10326466098
-        },
+        "jobs": {"algebra":103798900360,"recoupling":103798900429,"projector_cap":103798900448,"classical_limit":103798900462,"aggregate":103798931295},
+        "artifacts": {"algebra":10326068204,"recoupling":10325843872,"projector_cap":10326526775,"classical_limit":10326073163,"aggregate":10326466098},
         "aggregate_digest": "sha256:66208c6a95c1c2e7375edf21e8172680a42b36a697c7d5a6ecc921f96dc4f025",
         "classification": "RC006_QCG_SOLVER_VALIDATED_BOUNDED_K12",
-        "implementation_validation_gate_authorized": true,
-        "bridge_credit": false,
         "report": "results/ITER019_RC006_QCG_SOLVER_VALIDATION_2026-09-14.md"
       },
       "iter020": {
@@ -60,41 +46,37 @@
         "implementation_commit": "b0ce5650b111e60a8b7219a327e7129a5f72ccb8",
         "production_head": "b2c3948e1463060ffa5a2da6230859278a24ccd7",
         "run": 34785245738,
-        "classification": "RUNNING",
-        "purpose": "held-out non-retuned level/cutoff/recoupling transport plus false-positive calibration"
+        "jobs": {"near_cutoff":103799413997,"heldout_recoupling":103799414066,"null_calibration":103799414145,"level_transport":103799414181,"aggregate":103799444617},
+        "artifacts": {"level_transport":10325868751,"near_cutoff":10325943779,"heldout_recoupling":10326775476,"null_calibration":10326083376,"aggregate":10326411477},
+        "aggregate_digest": "sha256:b67462bfedb91ca2ecff5cba655ffce92b430292b76b109e9eb4e525189ca32c",
+        "classification": "RC006_QCG_HELDOUT_TRANSPORT_PASS",
+        "report": "results/ITER020_RC006_QCG_HELDOUT_TRANSPORT_2026-09-14.md"
       },
       "implementation_validation_gate_authorized": true,
+      "eq27_component_reconstruction_prereg_allowed": true,
       "iter012_retry_authorized": false,
       "eq29_amplitude_authorized": false,
       "bridge_credit": false,
-      "next_gate": "CONSUME_ITER020_RAW_ARTIFACTS_THEN_IF_FULL_PASS_PREREGISTER_SOURCE_FAITHFUL_EQ27_COMPONENT_RECONSTRUCTION"
+      "next_gate": "PREREGISTER_SOURCE_FAITHFUL_EQ27_COMPONENT_TRANSLATION_RECONSTRUCTION_WITH_FROZEN_NORMALIZATION_AND_NEGATIVE_CONTROLS"
     },
-    "BH004_BH004B": {
-      "status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
-      "bridge_credit": false
-    },
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS",
-      "refinement_map_derived": false
-    },
-    "RC008": {"status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
-    "RC009": {"status": "SCOPED_BLOCKED"},
-    "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
+    "BH004_BH004B": {"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","refinement_map_derived":false},
+    "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
+    "RC009":{"status":"SCOPED_BLOCKED"},
+    "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
-  "active_compute": [
-    {"run": 34785245738, "workflow": "ISQGR Iter020 held-out q-CG transport", "scientifically_useful_jobs": 4}
-  ],
+  "active_compute": [],
   "idle_capacity": {
-    "scientifically_useful_jobs_queued": 4,
+    "scientifically_useful_jobs_queued": 0,
     "scientifically_useful_jobs_in_progress": 0,
-    "avoidable_idle": false,
-    "reason": "Iter020 four-lane non-retuned robustness batch is queued; no duplicate batch is permitted."
+    "avoidable_idle": true,
+    "reason": "Iter020 terminal PASS authorizes prospective Eq.(27) component-translation/reconstruction work; next gate should be frozen before implementation."
   },
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER020_RC006_QCG_HELDOUT_TRANSPORT_2026-09-14.md",
     "results/ITER019_RC006_QCG_SOLVER_VALIDATION_2026-09-14.md",
-    "prereg/ITER020_RC006_QCG_HELDOUT_TRANSPORT_2026-09-14.md",
     "results/ITER018_RC006_EQ27_EVENK_PARALLEL_2026-09-14.md",
     "docs/CONSTITUTION.md"
   ]
