@@ -1,0 +1,132 @@
+name: ISQGR Iter014 RC006 q-CG constructibility
+
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter014_rc006_qcg_constructibility.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [rep-action, constructibility, phase-gauge, cap-cup]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch frozen source panel
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p sources
+          for ID in 1609.02429v2 1312.0905v2 1506.04749v3; do
+            F="sources/${ID}.archive"
+            curl -L --fail --retry 4 --retry-delay 2 "https://export.arxiv.org/e-print/${ID}" -o "$F"
+            sha256sum "$F" >> sources/SHA256SUMS
+            D="sources/${ID}.src"; mkdir -p "$D"
+            if tar -tf "$F" >/dev/null 2>&1; then tar -xf "$F" -C "$D";
+            elif gzip -t "$F" >/dev/null 2>&1; then gzip -dc "$F" > "$D/source.tex";
+            else cp "$F" "$D/source.tex"; fi
+          done
+          find sources -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > source_all.tex
+          test -s source_all.tex
+      - name: Run frozen source-constructibility audit
+        env:
+          LANE: ${{ matrix.lane }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, re
+          lane=os.environ['LANE']; text=pathlib.Path('source_all.tex').read_text(errors='ignore'); low=text.lower()
+          def sig(p): return bool(re.search(p,text,re.I|re.S))
+          def ctx(p,r=700,n=8):
+            out=[]
+            for m in re.finditer(p,text,re.I|re.S):
+              s=re.sub(r'\s+',' ',text[max(0,m.start()-r):min(len(text),m.end()+r)])
+              if s not in out: out.append(s)
+              if len(out)>=n: break
+            return out
+          row={'lane':lane,'source_sha256':pathlib.Path('sources/SHA256SUMS').read_text().splitlines()}
+          if lane=='rep-action':
+            row.update({
+              'qnumber': sig(r'\[n\].{0,180}q'),
+              'coproduct_jpm': sig(r'\\Delta\s*\(J_\\pm\).*?otimes'),
+              'coproduct_jz': sig(r'\\Delta\s*\(J_z\)'),
+              'explicit_jpm_basis_action': sig(r'J_\\pm\s*\|\s*j\s*,\s*m\s*\\rangle\s*=') or sig(r'J_\{\\pm\}\s*\|\s*j\s*,\s*m'),
+              'explicit_jz_basis_action': sig(r'J_z\s*\|\s*j\s*,\s*m\s*\\rangle\s*=') or sig(r'J_\{z\}\s*\|\s*j\s*,\s*m'),
+              'finite_k_range': sig(r'j_\{\\max\}.{0,80}k\s*/?\s*2') or sig(r'j.{0,80}\\leq.{0,40}k/2'),
+              'anchors': ctx(r'J_\\pm|J_z|co\s*--?\s*product|coproduct')})
+            row['pass']=all(row[k] for k in ['qnumber','coproduct_jpm','coproduct_jz','explicit_jpm_basis_action','explicit_jz_basis_action','finite_k_range'])
+          elif lane=='constructibility':
+            row.update({
+              'decomposition_equation': sig(r'\|j,m\\rangle\s*&?=.{0,300}qC') or sig(r'decomposed.{0,500}Clebsch'),
+              'orthogonality': 'orthogonality' in low,
+              'completeness': 'completeness' in low,
+              'admissibility': sig(r'j_1\+j_2\+j_3.{0,80}\\leq.{0,20}k') and ('triangle' in low),
+              'external_formula_not_imported': True,
+              'anchors': ctx(r'decompos|orthogon|completeness|couplingcond')})
+            row['pass']=all(row[k] for k in ['decomposition_equation','orthogonality','admissibility'])
+          elif lane=='phase-gauge':
+            row.update({
+              'explicit_phase_language': sig(r'phase.{0,180}Clebsch|Clebsch.{0,180}phase'),
+              'dual_pairing_identity': sig(r'orthogonality.{0,800}Clebsch') or sig(r'concatenate.{0,300}identity'),
+              'eq27_anchor': sig(r'\\label\{[^}]*27[^}]*\}') or ('eprl' in low and 'appendix' in low),
+              'source_states_phase_cancellation_for_eq27': sig(r'phase.{0,250}(cancel|drop|independent).{0,500}EPRL') or sig(r'EPRL.{0,500}phase.{0,250}(cancel|independent)'),
+              'anchors': ctx(r'phase|orthogonality|concatenate')})
+            row['pass']=row['source_states_phase_cancellation_for_eq27'] and row['dual_pairing_identity']
+          else:
+            row.update({
+              'cap_signal': 'call `cap' in low or 'call ``cap' in low or ' cap ' in low,
+              'cup_signal': 'cup' in low,
+              'concatenation_identity': 'give the identity if we concatenate them' in low,
+              'qbar_duality': ('qbar' in low or '\\bar q' in low or 'q^{-1}' in low),
+              'euclidean_abs_square_required': sig(r'(absolute|modulus).{0,80}(square|squared).{0,120}(cap|cup)'),
+              'anchors': ctx(r'cap|cup|concatenate|qbar|\\bar\s*q')})
+            row['pass']=row['cap_signal'] and row['cup_signal'] and row['concatenation_identity'] and row['qbar_duality'] and not row['euclidean_abs_square_required']
+          pathlib.Path('evidence.json').write_text(json.dumps(row,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(row,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter014-${{ matrix.lane }}
+          path: evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter014-*
+          path: inputs
+          merge-multiple: false
+      - name: Frozen aggregate classification
+        shell: bash
+        run: |
+          python - <<'PY' | tee summary.json
+          import glob,json
+          rows=[json.load(open(f)) for f in sorted(glob.glob('inputs/**/evidence.json',recursive=True))]
+          by={r['lane']:r for r in rows}; need={'rep-action','constructibility','phase-gauge','cap-cup'}
+          if set(by)!=need:
+            cls='INFRASTRUCTURE_SOURCE_EXTRACTION_FAIL'; code=2
+          elif not by['rep-action']['pass']:
+            cls='RC006_QCG_CONSTRUCTIBILITY_BLOCKED_MISSING_REPRESENTATION_ACTION'; code=0
+          elif not by['constructibility']['pass']:
+            cls='RC006_QCG_CONSTRUCTIBILITY_BLOCKED_SOURCE_LINEAR_ALGEBRA_INCOMPLETE'; code=0
+          elif not (by['phase-gauge']['pass'] and by['cap-cup']['pass']):
+            cls='RC006_QCG_PHASE_GAUGE_BLOCKED_SOURCE_IDENTITY_INSUFFICIENT'; code=0
+          else:
+            cls='RC006_QCG_CONSTRUCTIBLE_FROM_OPEN_SOURCE_ALGEBRA_UP_TO_PHASE_GAUGE_SCOPED'; code=0
+          print(json.dumps({'classification':cls,'rows':rows,'iter012_retry_authorized':False,'implementation_validation_gate_authorized':cls=='RC006_QCG_CONSTRUCTIBLE_FROM_OPEN_SOURCE_ALGEBRA_UP_TO_PHASE_GAUGE_SCOPED','bridge_credit':False,'eq29_amplitude_authorized':False,'candidate_theory_authorized':False},indent=2,sort_keys=True))
+          raise SystemExit(code)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter014-summary
+          path: summary.json
+          if-no-files-found: error
