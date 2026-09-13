@@ -1,0 +1,51 @@
+name: ISQGR Iter006 RC006 Namespace Representation Mixing Capability
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_namespace_representation_mixing_capability.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  schema-audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit current RC006 namespace expressivity
+        run: |
+          python - <<'PY'
+          import pathlib,re,json
+          targets=[
+            'experiments/rc006_relation_aware_serialization_retry.py',
+            'experiments/rc006_contraction_serialization_stability.py',
+            'experiments/rc006_serialization_failure_localization.py',
+            'protocol/ITER006_RC006_BRAID_SENSITIVE_ORDER_PROJECTION_PREREG.json'
+          ]
+          blobs={p:pathlib.Path(p).read_text(errors='ignore') for p in targets if pathlib.Path(p).exists()}
+          joined='\n'.join(blobs.values())
+          low=joined.lower()
+          # Capability predicates require actual schema/code constructs, not comments claiming support.
+          summed_K=bool(re.search(r'(sum(?:med)?[_ ]?(?:representation[_ ]?)?k|representation[_ ]?sum|\\sum[_ ]?\{?k)',joined,re.I))
+          lambda_kernel=bool(re.search(r'(lambda[_ ]?(?:kernel|coefficient)|\\Lambda|Lambda\^)',joined,re.I))
+          linear_combination=bool(re.search(r'(linear[_ ]?combination|state[_ ]?sum|transformed[_ ]?intertwiner[_ ]?sum|superposition)',joined,re.I))
+          alpha1_output=bool(re.search(r'(alpha1[_ ]?of[_ ]?k|alpha_?1\s*\(\s*k\s*\)|output[_ ]?representation)',joined,re.I))
+          domain_escape=bool(re.search(r'(domain[_ ]?escape|not[_ ]?necessarily[_ ]?eprl|outside[_ ]?eprl)',joined,re.I))
+          pair_sign=('pair_sign' in joined or 'S_CROSS' in joined or 's_cross' in low)
+          order_only=('canonical_order' in joined or 'pair_sign' in joined)
+          caps={'summed_representation_K':summed_K,'lambda_kernel':lambda_kernel,'linear_combination_of_transformed_states':linear_combination,'output_alpha1_K_representation':alpha1_output,'domain_escape_not_necessarily_EPRL':domain_escape}
+          n=sum(caps.values())
+          if n==5 and not (pair_sign and not linear_combination): cl='RC006_NAMESPACE_SUPPORTS_QEPRL_REPRESENTATION_MIXING'
+          elif n>0: cl='RC006_NAMESPACE_PARTIAL_FOR_QEPRL_REPRESENTATION_MIXING'
+          else: cl='RC006_NAMESPACE_INSUFFICIENT_FOR_QEPRL_REPRESENTATION_MIXING'
+          out={'gate':'ITER006_RC006_NAMESPACE_REPRESENTATION_MIXING_CAPABILITY','audited_files':sorted(blobs),'all_required_files_present':len(blobs)==len(targets),'required_capabilities':caps,'capability_count':n,'pair_sign_or_S_CROSS_present':pair_sign,'order_namespace_present':order_only,'classification':cl,'schema_extension_preregistration_required':cl!='RC006_NAMESPACE_SUPPORTS_QEPRL_REPRESENTATION_MIXING','eq29_amplitude_authorized':False,'historical_holdout_fail_rewritten':False,'claim_scope':'Current RC006 serializer namespace only; not an impossibility theorem for RC006 extensions or qEPRL.'}
+          pathlib.Path('namespace_capability.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if len(blobs)!=len(targets): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-namespace-representation-mixing-capability
+          path: namespace_capability.json
+          if-no-files-found: error
