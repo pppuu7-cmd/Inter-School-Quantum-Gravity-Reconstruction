@@ -1,0 +1,142 @@
+name: ISQGR Iter006 RC006 Lambda Lowspin Boundary Numerical
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_lambda_lowspin_boundary_numerical.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  lambda-lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {id: H02_B0_C1_M0_R035, h: '0.2', B2: 0, C2: 2, m2: 0, rho: '0.35'}
+          - {id: H02_B05_C05_M0_R035, h: '0.2', B2: 1, C2: 1, m2: 0, rho: '0.35'}
+          - {id: H02_B05_C1_M05_R080, h: '0.2', B2: 1, C2: 2, m2: 1, rho: '0.80'}
+          - {id: H02_B1_C05_M05_R035, h: '0.2', B2: 2, C2: 1, m2: 1, rho: '0.35'}
+          - {id: H04_B05_C05_M1_R035, h: '0.4', B2: 1, C2: 1, m2: 2, rho: '0.35'}
+          - {id: H04_B1_C1_M0_R080, h: '0.4', B2: 2, C2: 2, m2: 0, rho: '0.80'}
+          - {id: H04_B1_C05_M15_R035, h: '0.4', B2: 2, C2: 1, m2: 3, rho: '0.35'}
+          - {id: H04_B05_C1_M15_R080, h: '0.4', B2: 1, C2: 2, m2: 3, rho: '0.80'}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Evaluate frozen source boundary coefficient
+        env:
+          LANE: ${{ matrix.id }}
+          H: ${{ matrix.h }}
+          B2: ${{ matrix.B2 }}
+          C2: ${{ matrix.C2 }}
+          M2: ${{ matrix.m2 }}
+          RHO: ${{ matrix.rho }}
+        run: |
+          python - <<'PY'
+          import cmath,json,math,os,pathlib
+          lane=os.environ['LANE']; h=float(os.environ['H']); B2=int(os.environ['B2']); C2=int(os.environ['C2']); m2=int(os.environ['M2']); rho=float(os.environ['RHO'])
+          B=B2/2; C=C2/2; m=m2/2; A=B+C; q=math.exp(-h)
+          def qnum_exp(z):
+              return (cmath.exp(cmath.log(q)*z)-cmath.exp(-cmath.log(q)*z))/(q-1/q)
+          def qnum_sinh(z):
+              return cmath.sinh(h*z)/math.sinh(h)
+          def qbinom(x,n,route):
+              if n<0 or int(n)!=n: return 0j
+              n=int(n)
+              f=qnum_exp if route=='exp' else qnum_sinh
+              out=1+0j
+              for j in range(n): out*=f(x-j)/f(n-j)
+              return out
+          def lam(rho0,route,drop_sign=False):
+              den=qbinom(2*B+2*C,2*B,route)
+              sign=(-1)**B2
+              if drop_sign: sign=1
+              denom=sign*den
+              if abs(denom)<1e-14: return None,abs(denom)
+              s=0j
+              for k2 in range(-B2,B2+1,2):
+                  k=k2/2
+                  n1=(B2+k2)//2; n2=(B2-k2)//2
+                  phase=cmath.exp(cmath.log(q)*(-2j*k*rho0))
+                  s += phase*qbinom(A+m,n1,route)*qbinom(A-m,n2,route)
+              return s/denom,abs(denom)
+          z1,d1=lam(rho,'exp'); z2,d2=lam(rho,'sinh'); zneg,_=lam(-rho,'sinh'); zwrong,_=lam(rho,'sinh',True)
+          blocked=(z1 is None or z2 is None)
+          if blocked:
+              out={'gate':'ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_PANEL','lane':lane,'blocked':True,'denom_abs':min(d1,d2),'classification':'NUMERICAL_DOMAIN_BLOCKED'}
+          else:
+              route_abs=abs(z1-z2); route_rel=route_abs/max(abs(z1),abs(z2),1e-300)
+              conj_abs=abs(zneg-z2.conjugate())
+              finite=all(math.isfinite(v) for z in [z1,z2,zneg,zwrong] for v in [z.real,z.imag])
+              b0_err=abs(z2-1) if B2==0 else None
+              source_selection_admissible=(A-abs(m)>=-1e-15 and abs((A-abs(m))-round(A-abs(m)))<1e-12)
+              wrong_diff=abs(zwrong-z2)
+              pass_route=route_abs<=1e-11 and (max(abs(z1),abs(z2))<=1e-10 or route_rel<=1e-10)
+              pass_conj=conj_abs<=1e-11
+              pass_b0=(B2!=0 or b0_err<=1e-12)
+              science_pass=finite and pass_route and pass_conj and pass_b0
+              out={
+                'gate':'ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_PANEL','lane':lane,'blocked':False,
+                'hbar':h,'B':B,'C':C,'m':m,'rho':rho,'A':A,'q':q,'denom_abs':min(d1,d2),
+                'lambda_exp':[z1.real,z1.imag],'lambda_sinh':[z2.real,z2.imag],
+                'route_abs_error':route_abs,'route_rel_error':route_rel,'rho_conjugation_abs_error':conj_abs,
+                'b0_identity_abs_error':b0_err,'source_selection_admissible':source_selection_admissible,
+                'wrong_drop_sign_abs_difference':wrong_diff,'half_integer_B':(B2%2==1),
+                'finite':finite,'pass_route':pass_route,'pass_conjugation':pass_conj,'pass_b0':pass_b0,'science_lane_pass':science_pass
+              }
+          pathlib.Path('result.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lambda-boundary-${{ matrix.id }}
+          path: result.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: lambda-lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: lambda-boundary-*
+          path: inputs
+          merge-multiple: false
+      - name: Apply frozen scientific classifier
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          rows=[json.loads(p.read_text()) for p in sorted(pathlib.Path('inputs').glob('**/result.json'))]
+          blocked=[r for r in rows if r.get('blocked')]
+          valid=[r for r in rows if not r.get('blocked')]
+          wrong=[r for r in valid if r.get('half_integer_B') and abs(complex(*r['lambda_sinh']))>1e-10 and r['wrong_drop_sign_abs_difference']>=1e-6]
+          forbidden=[r for r in valid if not r.get('source_selection_admissible',True)]
+          forbidden_zero=all(abs(complex(*r['lambda_sinh']))<=1e-11 for r in forbidden)
+          all_lane_pass=(len(rows)==8 and not blocked and all(r['science_lane_pass'] for r in valid))
+          if blocked:
+              cls='NUMERICAL_DOMAIN_BLOCKED'
+          elif all_lane_pass and forbidden_zero and len(wrong)>=3:
+              cls='BR_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_QUALIFIED_SCOPED'
+          else:
+              cls='SCIENTIFIC_FAIL_BR_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL'
+          out={
+            'gate':'ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_PANEL','lane_count':len(rows),
+            'blocked_count':len(blocked),'lane_pass_count':sum(bool(r.get('science_lane_pass')) for r in valid),
+            'wrong_sign_rejections':len(wrong),'selection_forbidden_count':len(forbidden),'selection_forbidden_zero_pass':forbidden_zero,
+            'classification':cls,'automatic_ci_green_is_not_scientific_pass':True,
+            'eq29_amplitude_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False,
+            'rows':rows
+          }
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({k:v for k,v in out.items() if k!='rows'},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lambda-lowspin-boundary-summary
+          path: summary.json
+          if-no-files-found: error
