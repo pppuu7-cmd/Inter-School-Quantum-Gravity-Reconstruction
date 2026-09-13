@@ -1,0 +1,89 @@
+name: ISQGR Iter018 parallel RC006 audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter018-parallel.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: audit (${{ matrix.lane }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [eq27-graph, evenk-category, provenance]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PDF page tools for Eq27 lane
+        if: matrix.lane == 'eq27-graph'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends poppler-utils
+      - name: Run frozen Iter018 lane
+        run: |
+          rm -rf out
+          python code/iter018/parallel_audit.py --lane '${{ matrix.lane }}'
+          cat out/evidence.json
+      - name: Upload lane evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter018-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: error
+          compression-level: 6
+
+  aggregate:
+    name: aggregate scientific state
+    if: always()
+    needs: audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Download all lane artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: iter018-*
+          path: lanes
+      - name: Frozen aggregate classification
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          rows=[]
+          for p in sorted(pathlib.Path('lanes').glob('*/evidence.json')):
+              try: rows.append(json.loads(p.read_text()))
+              except Exception as e: rows.append({'lane':str(p.parent),'aggregate_read_error':repr(e)})
+          by={r.get('lane'):r for r in rows}
+          infra=any(r.get('infrastructure_failure') or r.get('aggregate_read_error') for r in rows) or len(rows)!=3
+          eq=by.get('eq27-graph',{}).get('mechanical_recovery_pass') is True
+          even=by.get('evenk-category',{}).get('category_even_k_pass') is True
+          prov=by.get('provenance',{}).get('historical_hashes_match') is True
+          if infra:
+              cls='RC006_ITER018_PARALLEL_INFRASTRUCTURE_PARTIAL'
+          elif not prov:
+              cls='RC006_PROVENANCE_MISMATCH_REQUIRES_REAUDIT'
+          elif not eq:
+              cls='RC006_EQ27_GRAPH_SOURCE_BLOCKED'
+          elif not even:
+              cls='RC006_EVENK_CATEGORY_SOURCE_BLOCKED'
+          else:
+              cls='RC006_MECHANICAL_GATES_PASS_HUMAN_EQ27_TOPOLOGY_REVIEW_REQUIRED'
+          out={'classification':cls,'lanes':rows,
+               'implementation_validation_gate_authorized':False,
+               'iter012_retry_authorized':False,'eq29_amplitude_authorized':False,
+               'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - name: Upload aggregate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter018-aggregate
+          path: aggregate.json
+          if-no-files-found: error
