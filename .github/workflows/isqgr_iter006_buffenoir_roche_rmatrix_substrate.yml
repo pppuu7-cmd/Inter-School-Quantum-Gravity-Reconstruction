@@ -1,0 +1,105 @@
+name: ISQGR Iter006 Buffenoir Roche R-matrix Substrate
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_buffenoir_roche_rmatrix_substrate.yml'
+
+jobs:
+  source-tex:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch versioned arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://arxiv.org/e-print/math/9910147v1 -o source.bundle
+          sha256sum source.bundle | tee out/source_bundle.sha256
+          tar -xf source.bundle -C src || (mkdir -p src2 && cd src2 && tar -xzf ../source.bundle)
+      - name: Frozen TeX substrate extraction
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,hashlib
+          files=[p for p in pathlib.Path('.').glob('src*/**/*') if p.is_file()]
+          raw='\n'.join(p.read_text(errors='ignore') for p in files if p.is_file())
+          flat=re.sub(r'\s+',' ',raw).lower()
+          req={
+            'ribbon_quasitriangular': ('ribbon' in flat and ('quasi-triangular' in flat or 'quasitriangular' in flat)),
+            'universal_r': ('universal' in flat and ('r-matrix' in flat or 'r matrix' in flat or 'r-' in flat)),
+            'rplus_rminus': (('r^{(+)}' in raw or 'R^{(+)}' in raw or 'R(+)' in raw) and ('r^{(-)}' in raw or 'R^{(-)}' in raw or 'R(-)' in raw)),
+            'braiding_matrix_discussion': ('braiding' in flat and 'matrix' in flat)
+          }
+          valid=all(req.values())
+          out={'gate':'ITER006_RC006_BUFFENOIR_ROCHE_RMATRIX_SUBSTRATE','lane':'ARXIV_SOURCE_TEX','valid':valid,'requirements':req,'file_count':len(files),'source_text_sha256':hashlib.sha256(raw.encode()).hexdigest()}
+          pathlib.Path('out/source_tex.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rmatrix-substrate-source-tex
+          path: out/
+          if-no-files-found: error
+
+  pdf-text:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch versioned PDF and extract text
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y poppler-utils >/dev/null
+          mkdir -p out
+          curl -fL --retry 3 https://arxiv.org/pdf/math/9910147v1 -o paper.pdf
+          sha256sum paper.pdf | tee out/pdf.sha256
+          pdftotext -layout paper.pdf out/paper.txt
+      - name: Frozen PDF substrate extraction
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,hashlib
+          raw=pathlib.Path('out/paper.txt').read_text(errors='ignore')
+          flat=re.sub(r'\s+',' ',raw).lower()
+          req={
+            'version_identity': 'math/9910147v1' in flat,
+            'ribbon_quasitriangular': ('ribbon' in flat and ('quasi-triangular' in flat or 'quasitriangular' in flat)),
+            'universal_r': ('universal r' in flat or 'universal r−matrix' in flat or 'universal r-matrix' in flat),
+            'rplus_rminus': ('r(+)' in flat and 'r(−)' in flat) or ('r(+)' in flat and 'r(-)' in flat),
+            'braiding_matrix_discussion': ('braiding matrices' in flat or ('braiding' in flat and 'matrix' in flat))
+          }
+          valid=all(req.values())
+          out={'gate':'ITER006_RC006_BUFFENOIR_ROCHE_RMATRIX_SUBSTRATE','lane':'ARXIV_PDF_TEXT','valid':valid,'requirements':req,'pdf_text_sha256':hashlib.sha256(raw.encode()).hexdigest()}
+          pathlib.Path('out/pdf_text.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rmatrix-substrate-pdf-text
+          path: out/
+          if-no-files-found: error
+
+  aggregate:
+    needs: [source-tex, pdf-text]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rmatrix-substrate-*
+          path: inputs
+      - name: Apply frozen substrate classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          docs=[json.loads(pathlib.Path(p).read_text()) for p in glob.glob('inputs/**/*.json',recursive=True)]
+          by={d.get('lane'):d for d in docs}; a=by.get('ARXIV_SOURCE_TEX'); b=by.get('ARXIV_PDF_TEXT')
+          both=bool(a and b and a.get('valid') is True and b.get('valid') is True)
+          cl='INDEPENDENT_RMATRIX_BRAIDING_SUBSTRATE_QUALIFIED' if both else 'INDEPENDENT_RMATRIX_BRAIDING_SUBSTRATE_INCOMPLETE'
+          out={'gate':'ITER006_RC006_BUFFENOIR_ROCHE_RMATRIX_SUBSTRATE','lane_count':len(docs),'valid':bool(a and b),'source_tex_pass':bool(a and a.get('valid')),'pdf_text_pass':bool(b and b.get('valid')),'classification':cl,'rc006_orientation_mapping_support':both,'eq29_amplitude_authorized':False,'historical_fail_rewritten':False,'bridge_credit':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not (a and b): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rmatrix-substrate-summary
+          path: summary.json
+          if-no-files-found: error
