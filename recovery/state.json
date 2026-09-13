@@ -4,7 +4,7 @@
   "date": "2026-09-13",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 84,
+  "iteration_completion_percent": 86,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -15,108 +15,57 @@
     "kmqgb_promotion_authorized": false
   },
   "readiness_percent": {
-    "amplitude_refinement_cross_realization_validation": 47,
+    "amplitude_refinement_cross_realization_validation": 48,
     "candidate_theory_construction": 0,
     "overall_scientific_programme": 49
   },
   "frontier": {
     "RC006": {
-      "status": "INDEPENDENT_QEPRL_AUTHORITY_QUALIFIED_BRAID_PROJECTION_UNSTABLE_EQ29_STILL_BLOCKED",
-      "relation_aware_retry": {
-        "run": 34713459961,
-        "aggregate_job": 103610235012,
-        "artifact": 10303748952,
-        "artifact_digest": "sha256:5d55228c00ddf467147e928599ca11405c088fc0793605417e350d12afa46fe5",
-        "classification": "SCIENTIFIC_FAIL_RELATION_AWARE_CONTRACTION_SERIALIZATION_UNSTABLE"
-      },
-      "eq29_source_block": {
-        "run": 34717945469,
-        "classification": "EQ29_EPRL_SOURCE_BLOCK_EXTRACTED",
-        "align_block_sha256": "4f505657a580216d176c1c63ec92f5614dc73e8113294722a854d5a350b67083"
-      },
-      "eq29_source_dependency_audit": {
-        "run": 34718554940,
-        "aggregate_job": 103620177874,
-        "artifact": 10305491683,
-        "artifact_digest": "sha256:ca82d129681a540d7b0daa618b43b831957e2001a527e1556ea0852c8387ada8",
-        "classification": "EQ29_SOURCE_DEPENDENCIES_PARTIAL"
-      },
-      "eq29_arc_aware_source_geometry": {
-        "prereg_commit": "9c8221a066369e51367b569f7a65169ba757aa8c",
-        "implementation_commit": "286c67c9c7ab444a86bdbea12b9159b5aae36461",
-        "run": 34721521848,
-        "aggregate_job": 103628295264,
-        "summary_artifact": 10305789489,
-        "summary_digest": "sha256:3b0347308b27f1c9f9bd0aa122505e2dc3dd8799feece6c52366c91c60402d68",
-        "classification": "EQ29_ARC_AWARE_NO_PROPER_CROSSING",
-        "eq29_amplitude_authorized": false,
-        "bridge_credit": false
-      },
-      "eq29_literal_derivation_chain": {
-        "prereg_commit": "98197e8fa44224fc8af547edbc47a2e65f49ba56",
-        "implementation_commit": "a210a47edbc8f4510b6edd4e18e3f1dee377ed47",
-        "run": 34721872311,
-        "aggregate_job": 103629162115,
-        "aggregate_artifact": 10306412313,
-        "aggregate_digest": "sha256:4aff93ac51382f5cfb9f010a3f6a111f0a75e2ad9f8151bde05bca8749ddd56e",
-        "classification": "EQ29_APPENDIX_F_CHAIN_INCOMPLETE"
-      },
-      "eq29_cross_section_r_dependency": {
-        "prereg_commit": "2669d1d4a7a096e7e6475bc29b7e6443b1867a0b",
-        "implementation_commit": "728d0493fd5669de0d8d13667aec2ae82eaaff44",
-        "run": 34722014367,
-        "aggregate_job": 103629543164,
-        "aggregate_artifact": 10306119189,
-        "aggregate_digest": "sha256:8d405e40922de55cf8886ddd824fbc8bac5fb81f5cc592978842d4f467122234",
-        "classification": "EQ29_R_DEPENDENCY_AMBIGUOUS_MULTIPLE_PATHS"
-      },
-      "independent_qeprl_authority": {
-        "prereg_commit": "ae153319ab7aef0172448e021f85c8a4a62d6e28",
-        "authoritative_head": "eb4262a9274face22ddae68a882ee53b38cdd6cd",
-        "run": 34740915628,
-        "tex_job": 103680358748,
-        "pdf_job": 103680358793,
-        "aggregate_job": 103680392305,
-        "aggregate_artifact": 10312885197,
-        "aggregate_digest": "sha256:c767982d569e0eed8b248c490037075222961588df4bf16823608f46b5e6d728",
-        "classification": "INDEPENDENT_QEPRL_CATEGORICAL_AUTHORITY_QUALIFIED",
-        "source": "Fairbairn-Meusburger arXiv:1012.4784v3",
-        "path_mapping_preregistration_authorized": true,
-        "eq29_amplitude_authorized": false,
-        "bridge_credit": false
-      },
-      "braid_sensitive_order_projection": {
-        "prereg_commit": "3f7666687f5dbec2f39158765e028e0fe98f54f4",
-        "authoritative_head": "bb160e6212ef134a580bbf855cc2589541130d3a",
+      "status": "REPRESENTATION_AWARE_SOURCE_SCHEMA_EXACT_LAMBDA_DERIVATION_NEXT",
+      "historical_braid_projection": {
         "run": 34741140565,
-        "job": 103680932689,
         "artifact": 10312369390,
         "artifact_digest": "sha256:52d338c3c498b6197e4e8094ad5dd4f852143c50598cb6b7575b349657f4fa5a",
         "classification": "BRAID_SENSITIVE_ORDERING_UNSTABLE_UNDER_HOLDOUTS",
-        "frozen_pairs": ["j^+_2||j^-_1", "j^+_1||j^-_2"],
-        "holdouts_matching_full": 7,
-        "holdouts_total": 8,
-        "failing_holdout": "drop:app:EPRL-diagram",
-        "orientation_mapping_preregistration_authorized": false,
-        "historical_scientific_fail_rewritten": false,
+        "rewritten": false
+      },
+      "representation_aware_structure": {
+        "run": 34742062511,
+        "aggregate_job": 103683356899,
+        "aggregate_artifact": 10313600471,
+        "aggregate_digest": "sha256:f1c9756df339b57fa5d5a372a9b26f68c4418d410d3b9c8dd33101af4fb1df21"
+      },
+      "source_to_schema_mapping": {
+        "prereg_commit": "86c6707328113d747f4d42b90d937d6492ad9212",
+        "authoritative_head": "8ff8955d2a871d82291fcc43fedbdd4bf2556eec",
+        "run": 34742595474,
+        "pdf_job": 103684719334,
+        "tex_job": 103684719349,
+        "aggregate_job": 103684755104,
+        "aggregate_artifact": 10312672916,
+        "aggregate_digest": "sha256:e1df22121e7c991842dfb2ea971eca29d89e7a4bd07a4db1de700286cb33dcb0",
+        "classification": "QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_EXACT",
+        "lambda_kernel_derivation_preregistration_authorized": true,
         "eq29_amplitude_authorized": false,
         "bridge_credit": false
       },
+      "lambda_inventory_diagnostic": {
+        "run": 34742402136,
+        "job": 103684205511,
+        "classification": "INFRASTRUCTURE_OBJECT_INVENTORY_FAIL",
+        "cause": "referenced repository objects absent; no scientific artifact",
+        "scientific_fail": false
+      },
       "eq29_amplitude_authorized": false,
-      "next_gate": "REQUIRE_GENUINELY_INDEPENDENT_EXPLICIT_BRAIDING_TRANSFORMATION_OR_R_MATRIX_SOURCE_OBJECT; NO_POSTHOC_HOLDOUT_OR_SIGN_SELECTION"
+      "next_gate": "SOURCE_FAITHFUL_PROP34_LAMBDA_KERNEL_FORMULA_AND_DOMAIN_QUALIFICATION"
     },
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "DED_DLD_RASTER_SOURCE_PROSE_STRICT_VECTOR_AND_SOURCE_ALGEBRAIC_COLLAPSE_ROUTES_BLOCKED",
-      "source": "arXiv:1801.03771v2",
-      "source_tar_sha256": "9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303",
-      "dvd23_direct_structural_audit": {"run": 34710895347, "classification": "DVD23_DIRECT_TRIVIAL_EXTENSION_EXCLUDED"},
-      "zero_spin_asymmetric_heldout": {"run": 34712687076, "aggregate_job": 103604345234, "artifact": 10303514068, "artifact_digest": "sha256:b516d16574ee47e016fc4886cf91368c9081492989fe2da2c0c60fae0725e8c6", "classification": "B4_ZERO_SPIN_ASYMMETRIC_HELDOUT_PASS"},
-      "raster_topology": {"source_run": 34715789027, "recovery_run": 34716846693, "classification": "TOPOLOGY_EXTRACTION_UNSTABLE", "retuning_authorized": false},
-      "source_semantic_relation": {"run": 34722120621, "aggregate_job": 103629815502, "aggregate_artifact": 10306587389, "aggregate_digest": "sha256:05caa514ac34176fba8938c2394b5a408866ca56da4eaf7b01fa27121cb6d689", "classification": "DED_DLD_SOURCE_CONTEXT_ONLY"},
-      "vector_canonicalization": {"run": 34722257762, "aggregate_job": 103630201105, "aggregate_artifact": 10306487662, "aggregate_digest": "sha256:7011e93d7c2bdb29f6860d197319875c14968429baf5532757f46e714f9f3975", "classification": "DED_DLD_VECTOR_CANONICALIZATION_UNSTABLE", "posthoc_rounding_or_tolerance_authorized": false},
-      "source_algebraic_zero_face_collapse": {"run": 34724124735, "aggregate_job": 103635174759, "aggregate_artifact": 10307401066, "aggregate_digest": "sha256:5765ce15be5b6923eb9a16f0e06db6eb00d531448c887e92efac660ae7682dc5", "classification": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS", "mapping_unique": false, "bridge_credit": false},
-      "refinement_map_derived": false,
-      "next_gate": "BLOCKED_UNTIL_GENUINELY_NEW_INDEPENDENT_MATHEMATICAL_OR_SOURCE_AUTHORITY"
+      "status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS",
+      "run": 34724124735,
+      "aggregate_job": 103635174759,
+      "artifact": 10307401066,
+      "artifact_digest": "sha256:5765ce15be5b6923eb9a16f0e06db6eb00d531448c887e92efac660ae7682dc5",
+      "refinement_map_derived": false
     },
     "RC008": {"status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
     "RC009": {"status": "SCOPED_BLOCKED"},
@@ -126,14 +75,14 @@
   "idle_capacity": {
     "scientifically_useful_jobs_queued": 0,
     "scientifically_useful_jobs_in_progress": 0,
-    "avoidable_idle": false,
-    "reason": "The qualified q-EPRL categorical authority did not stabilize the braid-sensitive historical RC006 ordering under all frozen holdouts. A new computation is admissible only from a genuinely independent explicit braiding/R-matrix source object, not by selecting the seven agreeing holdouts or retuning signs."
+    "avoidable_idle": true,
+    "reason": "Exact source-to-schema mapping authorizes a new nonduplicating source-faithful Lambda-kernel qualification gate."
   },
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_RC006_REPRESENTATION_AWARE_SCHEMA_MAPPING_2026-09-13.md",
     "results/ITER006_QEPRL_AUTHORITY_AND_BRAID_PROJECTION_2026-09-13.md",
-    "results/ITER006_DED_DLD_SOURCE_ALGEBRAIC_ZERO_FACE_BLOCKED_2026-09-13.md",
     "docs/CONSTITUTION.md"
   ]
 }
