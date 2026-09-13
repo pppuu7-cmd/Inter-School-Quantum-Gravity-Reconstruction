@@ -1,0 +1,119 @@
+name: ISQGR Iter006 Lorentzian qEPRL Explicit Braiding Authority
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_lorentzian_qeprl_explicit_braiding_authority.yml'
+
+jobs:
+  source-tex:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch versioned arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://arxiv.org/e-print/1112.2511v1 -o source.bundle
+          sha256sum source.bundle | tee out/source_bundle.sha256
+          tar -xf source.bundle -C src || (mkdir -p src2 && cd src2 && tar -xzf ../source.bundle)
+      - name: Frozen TeX authority extraction
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,hashlib
+          files=[p for p in pathlib.Path('.').glob('src*/**/*') if p.is_file()]
+          texts=[]
+          for p in files:
+              try: texts.append((str(p),p.read_text(errors='ignore')))
+              except: pass
+          raw='\n'.join(t for _,t in texts)
+          flat=re.sub(r'\s+',' ',raw).lower()
+          req={
+            'quasitriangular': ('quasi-triangular' in flat or 'quasitriangular' in flat),
+            'rmatrix': ('r-matrix' in flat or 'r matrix' in flat),
+            'braiding': 'braiding' in flat,
+            'flip_tau': ('flip map' in flat or '\\tau' in raw),
+            'explicit_action': ('action of the braiding' in flat),
+            'prop34': ('proposition' in flat and 'not invariant under braiding' in flat),
+            'crossing_braiding': ('crossing' in flat and 'braiding' in flat)
+          }
+          formula_like=bool(re.search(r'c[^\n]{0,180}(?:tau|\\tau)[^\n]{0,180}(?:pi|\\pi)[^\n]{0,180}r',raw,re.I))
+          req['eq37_formula_like']=formula_like
+          valid=all(req.values())
+          out={'gate':'ITER006_RC006_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY','lane':'ARXIV_SOURCE_TEX','valid':valid,'requirements':req,'file_count':len(files),'source_text_sha256':hashlib.sha256(raw.encode()).hexdigest()}
+          pathlib.Path('out/source_tex.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qeprl-braiding-authority-source-tex
+          path: out/
+          if-no-files-found: error
+
+  pdf-text:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch versioned PDF and extract text
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y poppler-utils >/dev/null
+          mkdir -p out
+          curl -fL --retry 3 https://arxiv.org/pdf/1112.2511v1 -o paper.pdf
+          sha256sum paper.pdf | tee out/pdf.sha256
+          pdftotext -layout paper.pdf out/paper.txt
+      - name: Frozen PDF authority extraction
+        run: |
+          python - <<'PY'
+          import pathlib,re,json,hashlib
+          raw=pathlib.Path('out/paper.txt').read_text(errors='ignore')
+          flat=re.sub(r'\s+',' ',raw).lower()
+          req={
+            'version_identity': '1112.2511v1' in flat,
+            'quasitriangular': ('quasi-triangular' in flat or 'quasitriangular' in flat),
+            'rmatrix': ('r-matrix' in flat or 'r matrix' in flat),
+            'braiding': 'braiding' in flat,
+            'eq37': '(3.7)' in flat,
+            'eq38': '(3.8)' in flat,
+            'prop34': ('proposition 3.4' in flat and 'not invariant under braiding' in flat),
+            'crossing_braiding': ('crossing' in flat and 'braiding' in flat)
+          }
+          valid=all(req.values())
+          out={'gate':'ITER006_RC006_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY','lane':'ARXIV_PDF_TEXT','valid':valid,'requirements':req,'pdf_text_sha256':hashlib.sha256(raw.encode()).hexdigest()}
+          pathlib.Path('out/pdf_text.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qeprl-braiding-authority-pdf-text
+          path: out/
+          if-no-files-found: error
+
+  aggregate:
+    needs: [source-tex, pdf-text]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: qeprl-braiding-authority-*
+          path: inputs
+      - name: Apply frozen authority classifier
+        run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          docs=[]
+          for p in glob.glob('inputs/**/*.json',recursive=True): docs.append(json.loads(pathlib.Path(p).read_text()))
+          by={d.get('lane'):d for d in docs}
+          a=by.get('ARXIV_SOURCE_TEX'); b=by.get('ARXIV_PDF_TEXT')
+          both=bool(a and b and a.get('valid') is True and b.get('valid') is True)
+          cl='INDEPENDENT_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY_QUALIFIED' if both else 'INDEPENDENT_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY_INCOMPLETE'
+          out={'gate':'ITER006_RC006_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY','lane_count':len(docs),'valid':bool(a and b),'source_tex_pass':bool(a and a.get('valid')),'pdf_text_pass':bool(b and b.get('valid')),'classification':cl,'rc006_mapping_preregistration_authorized':both,'eq29_amplitude_authorized':False,'historical_fail_rewritten':False,'bridge_credit':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not (a and b): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qeprl-braiding-authority-summary
+          path: summary.json
+          if-no-files-found: error
