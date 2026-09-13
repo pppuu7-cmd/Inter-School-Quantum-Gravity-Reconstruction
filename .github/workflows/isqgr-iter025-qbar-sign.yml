@@ -1,0 +1,77 @@
+name: ISQGR Iter025 coherent qbar sign gauge
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter025-qbar-sign.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: iter025 (${{ matrix.lane }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [construction, cup, four, heldout]
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install --disable-pip-version-check 'numpy==2.3.3' 'mpmath==1.3.0'
+      - name: Run frozen sign-gauge lane
+        run: |
+          rm -rf out
+          python code/iter025/qbar_sign_normalization.py --lane '${{ matrix.lane }}'
+          sha256sum code/iter025/qbar_sign_normalization.py > out/CODE_SHA256.txt
+          sha256sum code/iter023/dual_braid_primitives.py > out/DUAL_BACKEND_SHA256.txt
+          sha256sum code/iter019/qcg_solver_validation.py > out/QCG_BACKEND_SHA256.txt
+          cat out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter025-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: error
+
+  aggregate:
+    name: iter025 aggregate
+    if: always()
+    needs: validate
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter025-*
+          path: lanes
+      - name: Frozen aggregate
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          rows=[]
+          for p in sorted(pathlib.Path('lanes').glob('*/evidence.json')):
+            try: rows.append(json.loads(p.read_text()))
+            except Exception as e: rows.append({'lane':str(p.parent),'aggregate_read_error':repr(e)})
+          by={r.get('lane'):r for r in rows}; exp=['construction','cup','four','heldout']
+          infra=len(rows)!=4 or any(r.get('infrastructure_failure') or r.get('aggregate_read_error') for r in rows)
+          ok={x:by.get(x,{}).get('pass') is True for x in exp}
+          if infra: cls='RC006_QBAR_SIGN_INFRASTRUCTURE_PARTIAL'
+          elif not ok['construction']: cls='RC006_QBAR_SIGN_CONSTRUCTION_FAIL'
+          elif not ok['cup']: cls='RC006_QBAR_CUP_INDEPENDENT_FAIL'
+          elif not ok['four']: cls='RC006_QBAR_4VALENT_INDEPENDENT_FAIL'
+          elif not ok['heldout']: cls='RC006_QBAR_SIGN_HELDOUT_FAIL'
+          else: cls='RC006_SOURCE_NORMALIZED_QBAR_SIGN_PASS'
+          out={'classification':cls,'lane_pass':ok,'lanes':rows,
+               'eq27_component_reconstruction_prereg_allowed':cls=='RC006_SOURCE_NORMALIZED_QBAR_SIGN_PASS',
+               'preserved_iter024_R_pass':True,'preserved_iter024_braid_pass':True,
+               'one_step_tnr_authorized':False,'iter012_retry_authorized':False,'eq29_amplitude_authorized':False,
+               'bridge_credit':False,'candidate_theory_authorized':False,'new_physics_found':False}
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n');print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter025-aggregate
+          path: aggregate.json
+          if-no-files-found: error
