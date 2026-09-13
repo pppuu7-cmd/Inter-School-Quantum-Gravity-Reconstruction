@@ -1,0 +1,121 @@
+name: ISQGR Iter006 RC006 Explicit qEPRL Braiding Law
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_explicit_qeprl_braiding_law.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  tex-source:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch immutable arXiv v1 source
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o src.tar https://export.arxiv.org/e-print/1112.2511v1
+          sha256sum src.tar | tee source.sha256
+          mkdir src
+          tar -xf src.tar -C src || (cd src && tar -xzf ../src.tar)
+          find src -type f \( -name '*.tex' -o -name '*.txt' \) -print0 | sort -z | xargs -0 cat > source.txt
+      - name: Apply frozen TeX semantic classifier
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,re,pathlib
+          t=pathlib.Path('source.txt').read_text(errors='ignore')
+          low=t.lower()
+          title=('q-deformation of lorentzian spin foam models' in low or 'q--deformation of lorentzian spin foam models' in low)
+          authors=('fairbairn' in low and 'meusburger' in low)
+          braiding=('r-matrix' in low or 'r--matrix' in low) and ('braiding' in low) and ('tau' in low or '\\tau' in t)
+          noninv=('not invariant under braiding' in low or 'not appear to be invariant under braiding' in low)
+          # Prospectively frozen structural signature of Proposition 3.4: a sum over K/Lambda coefficients and changed alpha1(K).
+          mixing=(('proposition 3.4' in low or 'prop' in low) and ('lambda' in low or '\\Lambda' in t) and ('alpha_1(k)' in low or 'alpha1(k)' in low or '\\alpha_1(k)' in t or '\\alpha_1(K)' in t) and ('\\sum' in t or 'sum' in low))
+          valid=all([title,authors,braiding,noninv,mixing])
+          out={'lane':'ARXIV_TEX','title_ok':title,'authors_ok':authors,'braiding_defined_by_R_matrix':braiding,'non_invariance_under_braiding':noninv,'representation_mixing_sum_over_K':mixing,'valid':valid}
+          pathlib.Path('tex.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: explicit-qeprl-braiding-tex
+          path: |
+            tex.json
+            source.sha256
+          if-no-files-found: error
+
+  pdf-text:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch immutable arXiv v1 PDF and extract text
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils >/dev/null
+          curl -L --fail --retry 3 -o paper.pdf https://arxiv.org/pdf/1112.2511v1
+          sha256sum paper.pdf | tee pdf.sha256
+          pdftotext -layout paper.pdf paper.txt
+      - name: Apply frozen PDF semantic classifier
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,re,pathlib
+          t=pathlib.Path('paper.txt').read_text(errors='ignore')
+          low=' '.join(t.lower().split())
+          title=('q-deformation of lorentzian spin foam models' in low)
+          authors=('winston j. fairbairn' in low and 'catherine meusburger' in low)
+          braiding=('r-matrix' in low and 'braiding' in low and ('flip map' in low or 'τ' in t or 'tau' in low))
+          noninv=('not invariant under braiding' in low)
+          mixing=(('proposition 3.4' in low) and ('λ' in t or 'lambda' in low) and ('α1(k)' in low or 'α1 (k)' in low or 'alpha1(k)' in low) and ('∑' in t or 'sum' in low))
+          valid=all([title,authors,braiding,noninv,mixing])
+          out={'lane':'ARXIV_PDF_TEXT','title_ok':title,'authors_ok':authors,'braiding_defined_by_R_matrix':braiding,'non_invariance_under_braiding':noninv,'representation_mixing_sum_over_K':mixing,'valid':valid}
+          pathlib.Path('pdf.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: explicit-qeprl-braiding-pdf
+          path: |
+            pdf.json
+            pdf.sha256
+          if-no-files-found: error
+
+  aggregate:
+    needs: [tex-source, pdf-text]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: explicit-qeprl-braiding-*
+          path: lanes
+          merge-multiple: true
+      - name: Apply frozen aggregate classifier
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib
+          rows=[]
+          for name in ['tex.json','pdf.json']:
+              p=pathlib.Path('lanes')/name
+              if p.exists(): rows.append(json.loads(p.read_text()))
+          valid=(len(rows)==2 and all(r.get('valid') is True for r in rows))
+          mixing=valid and all(r.get('representation_mixing_sum_over_K') is True for r in rows)
+          if not valid: cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          elif mixing: cl='EXPLICIT_QEPRL_BRAIDING_REPRESENTATION_MIXING_QUALIFIED'
+          else: cl='EXPLICIT_QEPRL_BRAIDING_SIGN_OR_PERMUTATION_ONLY_QUALIFIED'
+          out={'gate':'ITER006_RC006_EXPLICIT_QEPRL_BRAIDING_LAW_AUTHORITY','valid':valid,'classification':cl,'lanes':rows,'representation_aware_mapping_preregistration_authorized':cl=='EXPLICIT_QEPRL_BRAIDING_REPRESENTATION_MIXING_QUALIFIED','eq29_amplitude_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: explicit-qeprl-braiding-summary
+          path: summary.json
+          if-no-files-found: error
