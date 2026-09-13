@@ -1,0 +1,75 @@
+name: ISQGR Iter024 graphical dual braid components
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter024-graphical-dual-braid.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: iter024 (${{ matrix.lane }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [dual, R, braid, 'null']
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install --disable-pip-version-check 'numpy==2.3.3' 'mpmath==1.3.0'
+      - name: Run frozen component lane
+        run: |
+          rm -rf out
+          python code/iter023/dual_braid_primitives.py --lane '${{ matrix.lane }}'
+          sha256sum code/iter023/dual_braid_primitives.py > out/DERIVATION_CODE_SHA256.txt
+          sha256sum code/iter019/qcg_solver_validation.py > out/QCG_BACKEND_SHA256.txt
+          cat out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter024-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: error
+
+  aggregate:
+    name: iter024 aggregate
+    if: always()
+    needs: validate
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter024-*
+          path: lanes
+      - name: Frozen aggregate
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          rows=[]
+          for p in sorted(pathlib.Path('lanes').glob('*/evidence.json')):
+            try: rows.append(json.loads(p.read_text()))
+            except Exception as e: rows.append({'lane':str(p.parent),'aggregate_read_error':repr(e)})
+          by={r.get('lane'):r for r in rows}; exp=['dual','R','braid','null']
+          infra=len(rows)!=4 or any(r.get('infrastructure_failure') or r.get('aggregate_read_error') for r in rows)
+          ok={x:by.get(x,{}).get('pass') is True for x in exp}
+          if infra: cls='RC006_GRAPHICAL_DUAL_BRAID_INFRASTRUCTURE_PARTIAL'
+          elif not ok['dual']: cls='RC006_GRAPHICAL_QBAR_COMPONENT_FAIL'
+          elif not ok['R']: cls='RC006_GRAPHICAL_R_COMPONENT_FAIL'
+          elif not ok['braid']: cls='RC006_GRAPHICAL_BRAID_COHERENCE_FAIL'
+          elif not ok['null']: cls='RC006_GRAPHICAL_DUAL_BRAID_CALIBRATION_FAIL'
+          else: cls='RC006_GRAPHICAL_DUAL_BRAID_COMPONENT_PASS'
+          out={'classification':cls,'lane_pass':ok,'lanes':rows,
+               'eq27_component_reconstruction_prereg_allowed':cls=='RC006_GRAPHICAL_DUAL_BRAID_COMPONENT_PASS',
+               'one_step_tnr_authorized':False,'iter012_retry_authorized':False,'eq29_amplitude_authorized':False,
+               'bridge_credit':False,'candidate_theory_authorized':False,'new_physics_found':False}
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n');print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter024-aggregate
+          path: aggregate.json
+          if-no-files-found: error
