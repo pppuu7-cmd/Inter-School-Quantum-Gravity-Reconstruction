@@ -1,0 +1,120 @@
+name: ISQGR Iter006 DED DLD Consistent Deformation Invariant
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_ded_dld_consistent_deformation_invariant.yml'
+
+jobs:
+  authority:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [bahr_tex, bahr_pdf, sarno_tex, sarno_pdf]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install PDF tooling
+        if: contains(matrix.lane, 'pdf')
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: Qualify frozen source semantics
+        env:
+          LANE: ${{ matrix.lane }}
+        run: |
+          set -euo pipefail
+          mkdir -p work out
+          python - <<'PY'
+          import os,subprocess,pathlib,hashlib,json,re,tarfile
+          lane=os.environ['LANE']
+          is_bahr=lane.startswith('bahr_'); is_pdf=lane.endswith('_pdf')
+          arxiv='1006.0700v1' if is_bahr else '1801.03771v2'
+          url=(f'https://arxiv.org/pdf/{arxiv}' if is_pdf else f'https://export.arxiv.org/e-print/{arxiv}')
+          target='work/paper.pdf' if is_pdf else 'work/source.tar'
+          subprocess.run(['curl','-fL','--retry','3','--retry-delay','2',url,'-o',target],check=True)
+          raw=pathlib.Path(target).read_bytes(); file_sha=hashlib.sha256(raw).hexdigest()
+          if (not is_bahr) and (not is_pdf):
+              pinned='9fc0b3396573b4f5ec457cafbc487aa5a1681fcb48561916d1398ed5bcc35303'
+              if file_sha != pinned:
+                  raise SystemExit(f'Sarno source hash mismatch {file_sha} != {pinned}')
+          if is_pdf:
+              subprocess.run(['pdftotext','-layout',target,'work/text.txt'],check=True)
+              text=pathlib.Path('work/text.txt').read_text(errors='ignore')
+          else:
+              pathlib.Path('work/src').mkdir()
+              with tarfile.open(target,'r:*') as tf: tf.extractall('work/src')
+              pieces=[]
+              for p in pathlib.Path('work/src').rglob('*'):
+                  if p.is_file() and p.suffix.lower() in {'.tex','.txt'}:
+                      pieces.append(p.read_text(errors='ignore'))
+              text='\n'.join(pieces)
+          # Normalize formatting, not scientific content: strip TeX commands/braces and collapse whitespace.
+          norm=text.replace('−','-').replace('–','-')
+          norm=re.sub(r'\\[a-zA-Z@]+\*?(?:\[[^\]]*\])?',' ',norm)
+          norm=norm.replace('{',' ').replace('}',' ').replace('$',' ').replace('~',' ')
+          norm=' '.join(norm.split()).lower()
+          if is_bahr:
+              sem={
+                'trivial_subdivision_topology_preserving': ('without changing its topology' in norm and 'subdivid' in norm),
+                'edge_split_faces_vertices_unchanged': ('two edges where the original two-complex had only one' in norm and 'number of faces and vertices has not changed' in norm),
+                'inverse_edge_merge_same_endpoints': ('merging' in norm and 'two edges' in norm and ('same beginning' in norm or 'same beginning- and ending vertices' in norm or 'same beginning and ending vertices' in norm))
+              }
+              authority='arXiv:1006.0700v1'
+          else:
+              # Paper explicitly distinguishes one-edge DED from two-edge DLD; under its minimal-cycle face criterion,
+              # the DLD class is the one-internal-face class and DLD6 is evaluated as such.
+              ded=('two vertices and one edge' in norm and 'ded' in norm and 'dipole-edge-dipole' in norm)
+              dld=('two vertices and two edges' in norm and 'dld' in norm and 'dipole-loop-dipole' in norm)
+              oneface=('one internal face' in norm)
+              dld6=(bool(re.search(r'dld\s*6',norm)) or 'dld6' in norm) and oneface
+              sem={'ded_two_vertex_one_edge':ded,'dld_two_vertex_two_edge':dld,'dld_one_internal_face_class':oneface and dld,'dld6_internal_face_member':dld6}
+              authority='arXiv:1801.03771v2'
+          complete=all(sem.values())
+          out={'gate':'ITER006_DED_DLD_CONSISTENT_DEFORMATION_CELL_SUPPORT_INVARIANT','lane':lane,'authority':authority,'valid':True,'file_sha256':file_sha,'semantics':sem,'complete':complete}
+          pathlib.Path(f'out/{lane}.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-deformation-${{ matrix.lane }}
+          path: out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: authority
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ded-dld-deformation-*
+          path: lanes
+          merge-multiple: true
+      - name: Apply frozen face-invariant classifier
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,glob
+          rows=[json.loads(pathlib.Path(p).read_text()) for p in glob.glob('lanes/*.json')]
+          by={r.get('lane'):r for r in rows}
+          expected=['bahr_tex','bahr_pdf','sarno_tex','sarno_pdf']
+          shape=all(k in by for k in expected) and len(rows)==4 and all(by[k].get('valid') is True for k in expected)
+          source_complete=shape and all(by[k].get('complete') is True for k in expected)
+          # Frozen mathematical implication: a one-edge split/merge that keeps F fixed cannot turn a no-internal-cycle one-edge
+          # DED into a two-edge one-internal-face DLD. We do not extend this result to nontrivial moves.
+          face_invariant_excludes=bool(source_complete)
+          if not shape: cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          elif not source_complete: cl='DED_DLD_CONSISTENT_DEFORMATION_AUTHORITY_INCOMPLETE'
+          else: cl='DED_DLD_BAHR_TRIVIAL_REFINEMENT_EXCLUDED_BY_FACE_INVARIANT'
+          out={'gate':'ITER006_DED_DLD_CONSISTENT_DEFORMATION_CELL_SUPPORT_INVARIANT','valid':shape,
+               'source_authorities_complete':source_complete,'face_invariant_excludes_bahr_edge_pull_merge':face_invariant_excludes,
+               'classification':cl,'bridge_credit':False,'claim_no_nontrivial_refinement_exists':False,
+               'candidate_theory_authorized':False,'lanes':{k:by.get(k) for k in expected}}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not shape: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ded-dld-consistent-deformation-summary
+          path: summary.json
+          if-no-files-found: error
