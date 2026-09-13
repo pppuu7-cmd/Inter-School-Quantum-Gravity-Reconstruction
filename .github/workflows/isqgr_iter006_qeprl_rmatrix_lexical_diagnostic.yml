@@ -1,0 +1,37 @@
+name: ISQGR Iter006 qEPRL R-matrix Lexical Diagnostic
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_qeprl_rmatrix_lexical_diagnostic.yml'
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch exact arXiv source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 https://arxiv.org/e-print/1112.2511v1 -o source.bundle
+          echo 'd2dfda1a79b9978422b5a57387f9bbf1ebd4828327c656b59ed74c0acc98302c  source.bundle' | sha256sum -c -
+          tar -xf source.bundle -C src
+      - name: Emit response-blind lexical neighborhoods
+        run: |
+          python - <<'PY'
+          import pathlib,re,json
+          raw='\n'.join(p.read_text(errors='ignore') for p in pathlib.Path('src').rglob('*') if p.is_file())
+          hits=[]
+          for m in re.finditer(r'matrix|quantum double|quasi[- ]?triangular|braiding',raw,re.I):
+              s=max(0,m.start()-120); e=min(len(raw),m.end()+180)
+              hits.append(raw[s:e].replace('\n',' '))
+          out={'gate':'ITER006_QEPRL_RMATRIX_LEXICAL_DIAGNOSTIC','scientific_authority':False,'hit_count':len(hits),'snippets':hits[:80]}
+          pathlib.Path('out/diagnostic.json').write_text(json.dumps(out,indent=2,ensure_ascii=False)+'\n')
+          print(json.dumps(out,indent=2,ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qeprl-rmatrix-lexical-diagnostic
+          path: out/diagnostic.json
+          if-no-files-found: error
