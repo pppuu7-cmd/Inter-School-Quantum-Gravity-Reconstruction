@@ -1,0 +1,56 @@
+name: ISQGR Iter006 RC006 Lambda Kernel Ingredient Inventory
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_lambda_kernel_ingredient_inventory.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inventory existing q-group ingredients
+        run: |
+          python - <<'PY'
+          import pathlib,re,json
+          files=['experiments/rc006_qgroup_recoupling_kernel.jl','experiments/rc006_b13_sixjr_source_mapping.jl']
+          blobs={p:pathlib.Path(p).read_text(errors='ignore') for p in files if pathlib.Path(p).exists()}
+          joined='\n'.join(blobs.values()); low=joined.lower()
+          qnum=bool(re.search(r'qnum|q_number|quantum.?number|qdim|quantum.?dimension',low))
+          sixj=bool(re.search(r'sixj|6j|sixjr|recoupl',low))
+          admiss=bool(re.search(r'admiss|triangle|valid.?spin|fusion',low))
+          finite_k=bool(re.search(r'\bk\b|level|root.?of.?unity',low))
+          lorentz_alpha=bool(re.search(r'alpha_?1|alpha_?2|lorentz|principal.?series',low))
+          lambda_dep=bool(re.search(r'lambda.*k1|lambda.*k2|lambda.*alpha|\\lambda',joined,re.I))
+          out={
+            'gate':'ITER006_RC006_LAMBDA_KERNEL_INGREDIENT_INVENTORY',
+            'all_objects_present':len(blobs)==len(files),
+            'implemented_ingredients':{
+              'q_number_or_dimension':qnum,
+              'q6j_or_recoupling':sixj,
+              'admissibility_checks':admiss,
+              'finite_level_k_support':finite_k
+            },
+            'source_qualified_Lambda_dependencies_present':{
+              'lorentzian_alpha_K_representation_mixing':lorentz_alpha,
+              'Lambda_K1_K_K2_J_alpha2_dependency':lambda_dep
+            },
+            'classification':'RC006_LAMBDA_KERNEL_INGREDIENT_INVENTORY_COMPLETE',
+            'Lambda_implemented':False,
+            'eq29_amplitude_authorized':False,
+            'bridge_credit':False,
+            'scope':'Inventory only. Existing q-group routines are not promoted to the q-EPRL braid Lambda kernel.'
+          }
+          pathlib.Path('inventory.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if len(blobs)!=len(files): raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-lambda-kernel-ingredient-inventory
+          path: inventory.json
+          if-no-files-found: error
