@@ -1,0 +1,26 @@
+{
+  "gate": "ITER006_RC006_FORWARD_INVERSE_BRAID_CONVENTION",
+  "date": "2026-09-13",
+  "sources": [
+    "Fairbairn-Meusburger arXiv:1112.2511v1",
+    "Buffenoir-Roche arXiv:math/9910147v1"
+  ],
+  "purpose": "Qualify source-defined forward/inverse braiding conventions independently of RC006 holdout signs.",
+  "independence_lock": "No S_CROSS choice, no historical holdout result, and no desired RC006 contraction order may enter this audit.",
+  "lanes": ["QEPRL_BRAIDING_CONVENTION", "RMATRIX_PLUS_MINUS_CONVENTION"],
+  "frozen_required_objects": [
+    "q-EPRL source defines braiding c using tau composed with representation of R",
+    "R-matrix substrate source distinguishes R(+) = R from R(-) = R^{-1}_{21}",
+    "the two source conventions jointly distinguish a forward R action from its inverse/opposite action without fitting signs"
+  ],
+  "acceptance": "Both source lanes must independently recover their frozen convention and the aggregate may only state convention compatibility, not assign an RC006 sign.",
+  "pass_classification": "SOURCE_FORWARD_INVERSE_BRAID_CONVENTION_QUALIFIED",
+  "fail_classification": "SOURCE_FORWARD_INVERSE_BRAID_CONVENTION_INCOMPLETE",
+  "downstream_if_pass": "May constrain an explicitly preregistered RC006 orientation/incidence map together with the representation-aware structure gate.",
+  "claim_locks": {
+    "rc006_sign_selected": false,
+    "eq29_amplitude_authorized": false,
+    "historical_fail_rewritten": false,
+    "bridge_derived": false
+  }
+}
