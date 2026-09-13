@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/isqgr-iter018-parallel.yml'
+      - 'code/iter018/parallel_audit_v2.py'
   workflow_dispatch:
 
 permissions:
@@ -12,7 +13,7 @@ permissions:
 
 jobs:
   audit:
-    name: audit (${{ matrix.lane }})
+    name: audit-v2 (${{ matrix.lane }})
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
@@ -26,21 +27,21 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends poppler-utils
-      - name: Run frozen Iter018 lane
+      - name: Run corrected frozen Iter018 lane
         run: |
           rm -rf out
-          python code/iter018/parallel_audit.py --lane '${{ matrix.lane }}'
+          python code/iter018/parallel_audit_v2.py --lane '${{ matrix.lane }}'
           cat out/evidence.json
       - name: Upload lane evidence
         uses: actions/upload-artifact@v4
         with:
-          name: iter018-${{ matrix.lane }}
+          name: iter018-v2-${{ matrix.lane }}
           path: out/
           if-no-files-found: error
           compression-level: 6
 
   aggregate:
-    name: aggregate scientific state
+    name: aggregate-v2 scientific state
     if: always()
     needs: audit
     runs-on: ubuntu-24.04
@@ -49,7 +50,7 @@ jobs:
       - name: Download all lane artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: iter018-*
+          pattern: iter018-v2-*
           path: lanes
       - name: Frozen aggregate classification
         run: |
@@ -73,8 +74,9 @@ jobs:
           elif not even:
               cls='RC006_EVENK_CATEGORY_SOURCE_BLOCKED'
           else:
-              cls='RC006_MECHANICAL_GATES_PASS_HUMAN_EQ27_TOPOLOGY_REVIEW_REQUIRED'
+              cls='RC006_MECHANICAL_GATES_PASS_SOURCE_GRAPH_REVIEW_REQUIRED'
           out={'classification':cls,'lanes':rows,
+               'implementation_validation_prereg_allowed_by_machine_gates':bool(eq and even and prov and not infra),
                'implementation_validation_gate_authorized':False,
                'iter012_retry_authorized':False,'eq29_amplitude_authorized':False,
                'bridge_credit':False,'candidate_theory_authorized':False}
@@ -84,8 +86,8 @@ jobs:
       - name: Upload aggregate evidence
         uses: actions/upload-artifact@v4
         with:
-          name: iter018-aggregate
+          name: iter018-v2-aggregate
           path: aggregate.json
           if-no-files-found: error
 
-# Iter018 trigger marker: prereg 809c9a76b43c6bf05ac7c56cfb5d8d1fb260e2eb
+# Iter018 v2 trigger: parser false-negative/false-positive correction only; prereg 809c9a76b43c6bf05ac7c56cfb5d8d1fb260e2eb
