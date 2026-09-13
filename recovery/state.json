@@ -4,38 +4,48 @@
   "date": "2026-09-13",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 89,
+  "iteration_completion_percent": 90,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {"known_schools_fail": false,"new_theory_required": false,"new_physics_found": false,"bridge_derived": false,"rqir_promotion_authorized": false,"kmqgb_promotion_authorized": false},
   "readiness_percent": {"amplitude_refinement_cross_realization_validation": 49,"candidate_theory_construction": 0,"overall_scientific_programme": 49},
   "frontier": {
     "RC006": {
-      "status": "LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_INFRA_RETRY_AND_QBINOMIAL_DIAGNOSTIC_RUNNING",
+      "status": "LAMBDA_LOWSPIN_NUMERICAL_SCOPED_PASS_SOURCE_AUTHORITY_CHAIN_RUNNING",
       "lambda_lowspin_boundary_numerical": {
         "prereg_commit":"38c4ecbbcab236fcce643abeb6b686962b156da6",
         "authoritative_head":"ffd7a5abd3ddb74ae0cc7d57194419ae5888586e",
         "run":34748687768,
-        "attempt1_classification":"INFRASTRUCTURE_PARTIAL_JOB_START_FAILURE_NOT_SCIENTIFIC_CLASSIFICATION",
-        "attempt1_terminal_lanes_with_artifacts":7,
-        "attempt1_failed_before_steps_job":103701251385,
-        "attempt2_pending_job":103706316813,
-        "attempt2_status":"queued",
-        "frozen_lane_count":8,
-        "classification":null
+        "attempt2_aggregate_job":103706342803,
+        "summary_artifact":10315119742,
+        "summary_digest":"sha256:4277d6446f88708c92803c12ed76fc3628c190b615eecf86959088405cabbe6a",
+        "classification":"BR_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_QUALIFIED_SCOPED",
+        "lane_count":8,
+        "lane_pass_count":8,
+        "blocked_count":0,
+        "wrong_sign_rejections":4,
+        "source_faithful_promotion_blocked":true
       },
       "qbinomial_convention_diagnostic": {
         "prereg_commit":"ef63638e7a0c75211c5998bf796079fbccd7a894",
-        "initial_head":"54e67fdffe7b674a5ee809ba67127866f3b37e20",
-        "initial_run":34748837126,
-        "initial_classification":"INFRASTRUCTURE_STARTUP_FAILURE_NO_JOBS",
         "retry_head":"8032ed5b2ddade53f28ef4908c2f7d4e41a26a79",
         "retry_run":34750594795,
-        "retry_status":"queued",
+        "jobs":[103706488910,103706489166,103706518415],
+        "summary_artifact":10315349245,
+        "summary_digest":"sha256:2ae1eec4dba68e74b240e0e739ac37c508a6dcf37edd3292d3d55cc07272b39f",
+        "classification":"SOURCE_QBINOMIAL_CONVENTION_NOT_EXPLICIT",
         "scientific_credit":0
+      },
+      "qbinomial_primary_source_authority": {
+        "prereg_commit":"8f2bc5fa90899d7abf609a9961449e33ff4ee545",
+        "implementation_head":"f18f3165f73d5505d11e1d4446f0901103a14587",
+        "run":34753224660,
+        "status":"queued",
+        "frozen_lane_count":3,
+        "classification":null
       },
       "eq29_amplitude_authorized": false,
       "bridge_credit": false,
-      "next_gate": "CONSUME_NUMERICAL_ATTEMPT2_AND_QBINOMIAL_DIAGNOSTIC_RETRY"
+      "next_gate": "CONSUME_PRIMARY_SOURCE_AUTHORITY_CHAIN_RUN_34753224660"
     },
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","run":34724124735,"aggregate_job":103635174759,"artifact":10307401066,"artifact_digest":"sha256:5765ce15be5b6923eb9a16f0e06db6eb00d531448c887e92efac660ae7682dc5","refinement_map_derived":false},
     "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
@@ -43,9 +53,8 @@
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
   "active_compute": [
-    {"gate":"ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_PANEL","run":34748687768,"attempt":2,"head":"ffd7a5abd3ddb74ae0cc7d57194419ae5888586e","status":"queued","pending_scientific_jobs":1},
-    {"gate":"ITER006_RC006_LAMBDA_QBINOMIAL_CONVENTION_DIAGNOSTIC","run":34750594795,"head":"8032ed5b2ddade53f28ef4908c2f7d4e41a26a79","status":"queued","pending_scientific_jobs":2,"scientific_credit":0}
+    {"gate":"ITER006_RC006_LAMBDA_QBINOMIAL_PRIMARY_SOURCE_AUTHORITY_CHAIN","run":34753224660,"head":"f18f3165f73d5505d11e1d4446f0901103a14587","status":"queued","pending_scientific_jobs":3,"scientific_credit":0}
   ],
-  "idle_capacity": {"scientifically_useful_jobs_queued":3,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"One failed numerical lane is queued for infrastructure-only retry and two independent convention-diagnostic lanes are queued; seven numerical lanes are already terminal and are not counted again."},
-  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_PANEL.md","prereg/ITER006_RC006_LAMBDA_QBINOMIAL_CONVENTION_DIAGNOSTIC.md","results/ITER006_RC006_LAMBDA_LOWSPIN_CONVENTION_PANEL_2026-09-13.md","docs/CONSTITUTION.md"]
+  "idle_capacity": {"scientifically_useful_jobs_queued":3,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"Three independent primary-source authority lanes are queued. Dependent general formLambda6j/Eq.(29) work is not authorized until the convention provenance blocker is classified."},
+  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_AND_QBINOMIAL_AUTHORITY_2026-09-13.md","prereg/ITER006_RC006_LAMBDA_QBINOMIAL_PRIMARY_SOURCE_AUTHORITY_CHAIN.md","docs/CONSTITUTION.md"]
 }
