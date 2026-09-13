@@ -1,45 +1,66 @@
-# Current front - ISQGR
+# Current front — ISQGR
 
-Date: 2026-09-14. Latest closed checkpoint: ITERATION_017 (100% checkpoint completion; **scoped source/algebra PASS, visual/convention qualification still pending**).
+Date: 2026-09-14.
 
-Candidate theory: **UNFORMED**. Administrative readiness values remain 49% amplitude/refinement cross-realization validation, 49% overall programme, 0% candidate construction. These are unchanged bookkeeping values, not measured probabilities.
+Candidate theory: **UNFORMED / 0%**. Administrative programme readiness remains **49%**. This is roadmap bookkeeping, not a correctness probability.
 
-## RC006
+## RC006 current authority
 
-Terminal classification: `RC006_DUAL_PAIRING_AND_PHASE_GAUGE_SOURCE_QUALIFIED_EQ27_VISUAL_PENDING`.
+ITER018 closed the Eq.(27) graph/even-k source-convention prerequisite as `RC006_EQ27_GRAPH_AND_EVENK_CATEGORY_PINNED_IMPLEMENTATION_PREREG_ALLOWED`.
 
-Preregistration: `fe11ca9c2b71e7561beb4aca12ee795dc909ca70`. Report: `results/ITER017_RC006_PHASE_DUAL_PAIRING_2026-09-14.md`. Checker and provenance: `code/iter017/check_phase_dual_pairing.py`, `results/ITER017_CHECK_RUN.txt`, `results/ITER017_EXECUTION_MANIFEST.json`.
+ITER019 is now terminal **SCIENTIFIC PASS** in its frozen bounded scope:
 
-### What moved
+`RC006_QCG_SOLVER_VALIDATED_BOUNDED_K12`.
 
-The target arXiv:1609.02429v2 Appendix B explicitly defines the cap and cup, requires their concatenation to be the identity, constructs the inverse/complex-conjugate-q Clebsch-Gordan map by bending a leg, and identifies it as the dual map. Therefore categorical qbar duality is present in the frozen open target source. The old Iter014 `qbar_duality=false` was a regex false negative for the braced TeX form `\\bar{q}`; historical Iter014 remains unchanged because its terminal blocker was representation-action authority.
+Authority:
 
-Exact symbolic bookkeeping verifies the source cap/cup identity for 819 magnetic-component cases through j=6 with zero failures. Target bilinear orthogonality (A9) also removes a generic scalar phase of a normalized fusion channel: `C -> lambda C` preserves A9 only for `lambda^2=1`, leaving a sign. In a properly paired source-defined dual contraction that residual sign appears twice and cancels. This qualifies the **abstract phase gauge**, not the exact graphical Eq.(27) contraction.
+- prereg `4f497a0e6413d8f4bc0408f0050552fa80d2ba98`
+- implementation `4408ad9725aa1ac5bf0a80dd2619ac444c3bb91d`
+- production head `d5934a5f2251c01b2d8ec2315d1c36161b45f507`
+- run `34785058584`
+- jobs: algebra `103798900360`; recoupling `103798900429`; projector-cap `103798900448`; classical-limit `103798900462`; aggregate `103798931295`
+- aggregate artifact `10326466098`, digest `sha256:66208c6a95c1c2e7375edf21e8172680a42b36a697c7d5a6ecc921f96dc4f025`
+- durable result: `results/ITER019_RC006_QCG_SOLVER_VALIDATION_2026-09-14.md`
 
-The target A7 cutoff and Fairbairn-Meusburger Eq.(93) are algebraically identical under `r=k+2`; 23,408 spin triples for k=1..16 were checked with zero mismatches. A new scope restriction is decisive: Fairbairn-Meusburger explicitly assumes `r>2` odd in its root-of-unity Euclidean section. Hence the mapping directly covers odd target k only and does **not** independently qualify k=12 (`r=14`), while the target paper identifies k=12 as its first non-trivial level for the EPRL normalization map.
+Raw artifacts were consumed lane-by-lane. All frozen predicates pass. Maximum algebra intertwiner residual is `1.5625802476324566e-12`; maximum A9 residual `1.183923065063617e-12`; held frozen recoupling `F^T F-I` residual `1.2228665433368622e-15`; classical-projector continuity difference `8.883991123583906e-4 < 2e-3`.
 
-Fairbairn-Meusburger's generic-q reality condition plus Wigner convention fixes phase/sign in the real-positive-q section, but that condition is not silently continued to the unit-modulus even-k root. The target itself points to Biedenharn-Lohe for its standard q-CG convention; no inaccessible external coefficient formula has been imported.
+This sets `implementation_validation_gate_authorized=true` only for the bounded solver implementation. It does **not** authorize historical Iter012, Eq.(29)/Lambda, alpha selection, bridge credit or candidate theory.
 
-### Preserved source provenance
+## Active ITER020
 
-Historical Iter014 logs pin the downloaded archive hashes:
+Prospectively preregistered gate:
 
-- `1609.02429v2`: `3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee`
-- `1312.0905v2`: `69334656117892b255ebb9b0c3855b6387bafc630bb9345b084e5434e22294c0`
-- `1506.04749v3`: `758e05bf73390015fb02f374c69892ad155c8edacb40a97876c12aa7f64c1e14`
+`RC006_QCG_HELDOUT_NONRETUNED_TRANSPORT`.
 
-The archives are not currently materialized in the local runtime; these are historical frozen-run hashes, not newly downloaded bytes.
+- prereg commit `35a003e743bfa47bc8577f0a19267367e149be55`
+- implementation commit `b0ce5650b111e60a8b7219a327e7129a5f72ccb8`
+- production head `b2c3948e1463060ffa5a2da6230859278a24ccd7`
+- authoritative run `34785245738`
 
-### What remains blocked
+Four independent lanes are frozen before result inspection:
 
-Eq.(27)'s text layer and Appendices E/F show a graphical/bilinear normalization with explicit sign and quantum-dimension factors, but the exact edge topology of Eq.(27) was not certified: exact-version PDF screenshot calls returned cache-miss transport errors and local PDF acquisition did not succeed. No diagram was reconstructed from guesswork.
+1. held-out level transport at k=6 and k=10;
+2. adversarial near-cutoff channels at k=6,10,12;
+3. held-out non-retuned recoupling invariants at k=6 and k=10;
+4. false-positive/null calibration using deliberately wrong coproduct/q-number choices.
 
-Therefore `implementation_validation_gate_authorized=false`. The next admissible gate is `EXACT_EQ27_GRAPH_COMPONENT_TRANSLATION_AND_EVEN_K_CONVENTION_QUALIFICATION`: obtain readable exact graph/source evidence for Eq.(27), translate it to components without convention changes, prove the remaining signs are paired/gauge-covariant there, and independently qualify the even-k case (especially k=12) or derive the needed convention directly from the target source. Only then may a bounded q-CG implementation-validation gate be preregistered.
+No threshold, panel or convention may be changed after production results are visible. Green CI is not a scientific PASS.
 
-## Preserved history and claim locks
+## Locks
 
-ITER016 remains `RC006_ACTION_TEXT_LOCATED_CONVENTION_AND_VISUAL_QUALIFICATION_PENDING`; ITER015 remains infrastructure failure (timeouts/HTTP 429), not a no-source result; ITER014 and ITER013 retain their recorded classifications. No historical classification was rewritten.
+Still false:
 
-BH004/BH004B remains scoped-negative. Multi-vertex Lorentzian EPRL refinement remains blocked by source algebraic zero-face-collapse ambiguity. RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope. These fronts were not rerun.
+- `iter012_retry_authorized`
+- `eq29_amplitude_authorized`
+- `bridge_credit`
+- `candidate_theory_authorized`
+- `preferred_alpha_found`
+- `new_physics_found`
+- `ALL_KNOWN_SCHOOLS_FAIL`
+- `NEW_QG_THEORY_REQUIRED`
 
-`bridge_credit=false`; `iter012_retry_authorized=false`; `eq29_amplitude_authorized=false`; `candidate_theory_authorized=false`. No q-CG numerical implementation, fitted phase, amplitude scan, preferred-alpha, new-physics, all-schools-fail, new-theory-required or bridge-derived claim was made in ITER017.
+BH004/BH004B remains scoped-negative; genuine multi-vertex Lorentzian refinement remains source-blocked; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
+
+## Exact next gate
+
+Consume every raw ITER020 artifact and the frozen aggregate from run `34785245738`. Only a full preregistered PASS may authorize a new source-faithful Eq.(27) component/reconstruction preregistration. A failed robustness lane is preserved as a negative result and must not be repaired by post-hoc retuning.
