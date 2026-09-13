@@ -1,0 +1,57 @@
+name: ISQGR Iter024 cited authority chain
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter024/**'
+      - '.github/workflows/isqgr-iter024-cited-authority-chain.yml'
+      - 'triggers/iter024.txt'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [bib-resolve, qbar-authority, r-authority, provenance-null]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python code/iter024/cited_authority_chain.py --lane '${{ matrix.lane }}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter024-${{ matrix.lane }}
+          path: out/
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter024-*
+          path: lanes
+      - run: |
+          python - <<'PY'
+          import glob,json,os
+          ev=[]
+          for f in glob.glob('lanes/**/evidence.json',recursive=True):
+              try: ev.append(json.load(open(f)))
+              except: pass
+          expected={'bib-resolve','qbar-authority','r-authority','provenance-null'}; by={x.get('lane'):x for x in ev}
+          infra=set(by)!=expected or any(x.get('infrastructure_failure') for x in ev)
+          if infra: cls='RC006_CITED_AUTHORITY_CHAIN_INFRASTRUCTURE_FAIL'
+          elif not by['provenance-null'].get('pass'): cls='RC006_CITED_AUTHORITY_CHAIN_NULL_FAIL'
+          elif all(by[x].get('pass') for x in expected): cls='RC006_CITED_AUTHORITY_CHAIN_COMPLETE'
+          else: cls='RC006_CITED_AUTHORITY_CHAIN_BLOCKED'
+          out={'classification':cls,'lane_pass':{k:bool(by.get(k,{}).get('pass')) for k in expected},'bridge_credit':False,'candidate_theory_authorized':False,'iter012_retry_authorized':False,'eq29_amplitude_authorized':False,'new_physics_found':False,'lanes':ev}
+          os.makedirs('aggregate',exist_ok=True); json.dump(out,open('aggregate/aggregate.json','w'),indent=2,sort_keys=True); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter024-aggregate
+          path: aggregate/aggregate.json
