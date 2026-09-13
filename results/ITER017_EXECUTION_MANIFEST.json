@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-14",
+  "iteration": "ITERATION_017",
+  "preregistration_commit": "fe11ca9c2b71e7561beb4aca12ee795dc909ca70",
+  "execution": "local offline CPython exact arithmetic checker plus source audit",
+  "python": "3.13.5",
+  "command": "python code/iter017/check_phase_dual_pairing.py",
+  "checks": {
+    "cap_cup_component_cases": 819,
+    "cap_cup_failures": 0,
+    "fusion_spin_triple_cases": 23408,
+    "fusion_failures": 0,
+    "fusion_k_range": "1..16",
+    "phase_fit_performed": false,
+    "physics_amplitude_runs": 0
+  },
+  "code_sha256": "cbee9130e4cb1cecae28fb5fd2a3610f50c94bd70055e0f3972afb486912ab8f",
+  "run_log_sha256": "67cacf7279b8da0c2885c5b8b064f1705addc0bbede2505cedf07b223ec80c77",
+  "historical_source_archive_sha256": {
+    "1609.02429v2": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
+    "1312.0905v2": "69334656117892b255ebb9b0c3855b6387bafc630bb9345b084e5434e22294c0",
+    "1506.04749v3": "758e05bf73390015fb02f374c69892ad155c8edacb40a97876c12aa7f64c1e14"
+  },
+  "pdf_visual_status": {
+    "1609.02429v2_eq27": "BLOCKED_WEB_SCREENSHOT_CACHE_MISS",
+    "1609.02429v2_appendix_b": "BLOCKED_WEB_SCREENSHOT_CACHE_MISS",
+    "local_pdf_acquisition": "UNAVAILABLE_IN_CHECKPOINT",
+    "text_layer_and_historical_tex_source_available": true
+  },
+  "classification": "RC006_DUAL_PAIRING_AND_PHASE_GAUGE_SOURCE_QUALIFIED_EQ27_VISUAL_PENDING",
+  "implementation_validation_gate_authorized": false,
+  "bridge_credit": false,
+  "iter012_retry_authorized": false,
+  "eq29_amplitude_authorized": false,
+  "candidate_theory_authorized": false
+}
