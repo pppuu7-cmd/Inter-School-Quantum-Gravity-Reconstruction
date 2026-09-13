@@ -1,0 +1,24 @@
+{
+  "A9_phase_constraint": {
+    "paired_dual_consequence": "B5/B6 build the dual map from the same normalized channel; under the surviving lambda=+/-1 rephasing, a paired composition scales by lambda^2=1.",
+    "residual_freedom": "sign",
+    "statement": "For a normalized bilinear q-CG channel C -> lambda C, target A9 scales by lambda^2; preserving A9 requires lambda^2=1, hence lambda=+/-1 over C."
+  },
+  "FM_root_domain": {
+    "consequence": "FM root-of-unity section maps directly only to odd target k; it does not directly qualify even target k such as k=12.",
+    "dictionary": "r_FM = k_target + 2 for the fusion cutoff comparison",
+    "source_assumption": "r>2 odd primitive root"
+  },
+  "cap_cup_identity": {
+    "cases": 819,
+    "failures": [],
+    "pass": true
+  },
+  "fitted_phases": 0,
+  "fusion_cutoff_equivalence_r_eq_k_plus_2": {
+    "cases": 23408,
+    "failures": [],
+    "pass": true
+  },
+  "physics_amplitude_runs": 0
+}
