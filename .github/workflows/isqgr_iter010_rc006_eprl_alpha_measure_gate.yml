@@ -1,0 +1,56 @@
+name: ISQGR Iter010 RC006 EPRL alpha measure-family gate
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr_iter010_rc006_eprl_alpha_measure_gate.yml'
+  workflow_dispatch:
+
+jobs:
+  lanes:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [A, B, C, D]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen lane
+        run: |
+          mkdir -p out
+          python code/iter010_rc006_eprl_alpha_measure_gate.py --lane ${{ matrix.lane }} | tee out/lane_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter010-lane-${{ matrix.lane }}
+          path: out/lane_${{ matrix.lane }}.json
+
+  aggregate:
+    needs: lanes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter010-lane-*
+          merge-multiple: true
+          path: out
+      - name: Frozen aggregate
+        run: |
+          python - <<'PY' | tee out/aggregate.json
+          import json,glob
+          fs=sorted(glob.glob('out/lane_*.json'))
+          rows=[]
+          for f in fs:
+              try: rows.append(json.load(open(f)))
+              except Exception as e: rows.append({'lane':f,'pass':False,'parse_error':str(e)})
+          ok=len(rows)==4 and {r.get('lane') for r in rows}==set('ABCD') and all(r.get('pass') is True for r in rows)
+          label='RC006_EPRL_ALPHA_MEASURE_FAMILY_SOURCE_RECONSTRUCTED_SCOPED' if ok else 'ITER010_FROZEN_GATE_FAIL'
+          print(json.dumps({'classification':label,'pass':ok,'lane_count':len(rows),'lanes':rows},indent=2,sort_keys=True))
+          raise SystemExit(0 if ok else 2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter010-summary
+          path: out/aggregate.json
