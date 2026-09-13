@@ -1,0 +1,31 @@
+{
+  "gate": "ITER006_RC006_REPRESENTATION_AWARE_BRAID_STRUCTURE",
+  "date": "2026-09-13",
+  "prerequisite": {
+    "run_id": 34741553861,
+    "classification": "EXPLICIT_QEPRL_BRAIDING_REPRESENTATION_MIXING_QUALIFIED"
+  },
+  "source": "Fairbairn-Meusburger arXiv:1112.2511v1",
+  "purpose": "Extract the source-defined representation-mixing index structure of the q-EPRL braiding law without using any RC006 holdout sign or desired contraction order.",
+  "independence_lock": "No historical RC006 holdout outcomes, S_CROSS, serialization order, Eq29 desired answer, or amplitude value may be used to select or simplify the source structure.",
+  "lanes": ["TEX_STRUCTURAL_PARSE", "PDF_TEXT_STRUCTURAL_PARSE"],
+  "frozen_required_objects": [
+    "braiding action is expressed with an explicit sum over at least one intermediate representation label K",
+    "the transformed object contains source-defined representation labels/functions depending on the summed K",
+    "a nontrivial coefficient/kernel multiplies the transformed q-EPRL object",
+    "the output representation data are not merely a permutation of the input labels",
+    "free versus summed indices can be distinguished from the source expression"
+  ],
+  "acceptance": "Both independent lanes must recover the same qualitative index graph: summed representation label(s), transformed representation label dependence, and nontrivial coefficient/kernel. If either lane cannot distinguish free/summed structure, fail closed as PARTIAL.",
+  "pass_classification": "QEPRL_BRAIDING_REPRESENTATION_AWARE_STRUCTURE_EXTRACTED",
+  "partial_classification": "QEPRL_BRAIDING_REPRESENTATION_AWARE_STRUCTURE_PARTIAL",
+  "fail_classification": "QEPRL_BRAIDING_REPRESENTATION_AWARE_STRUCTURE_UNSUPPORTED",
+  "downstream_if_pass": "A separate source-to-RC006 namespace/incidence mapping preregistration is authorized. No sign-only mapping is authorized.",
+  "claim_locks": {
+    "sign_only_mapping_authorized": false,
+    "eq29_amplitude_authorized": false,
+    "historical_holdout_fail_rewritten": false,
+    "bridge_derived": false,
+    "new_physics_found": false
+  }
+}
