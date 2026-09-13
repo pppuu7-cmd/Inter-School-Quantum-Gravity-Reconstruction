@@ -1,0 +1,35 @@
+{
+  "gate": "ITER006_RC006_BRAID_SENSITIVE_ORDER_PROJECTION",
+  "date": "2026-09-13",
+  "purpose": "Test whether the previous relation-aware serialization instability affects the two label-order relations that are specifically braid-sensitive under the newly qualified independent q-EPRL categorical authority.",
+  "qualified_authority_run": 34740915628,
+  "required_authority_classification": "INDEPENDENT_QEPRL_CATEGORICAL_AUTHORITY_QUALIFIED",
+  "historical_serialization_run": 34713459961,
+  "frozen_pairs": [
+    "j^+_2||j^-_1",
+    "j^+_1||j^-_2"
+  ],
+  "why_these_pairs": "The independent Euclidean q-EPRL authority factorizes the CG map with the explicit middle-factor permutation tau_23. In the two Eq.(29) bracket orientations, the corresponding middle plus/minus fine-label pairs are j2+ versus j1- and j1+ versus j2-. The gate tests stability only; it does not assume which orientation sign is physically correct.",
+  "frozen_lanes": {
+    "full": 1,
+    "drop_holdouts": 8,
+    "null_unordered": 1
+  },
+  "pass_rule": "Authority must be qualified. The full and all eight drop holdouts must contain both frozen pair_sign keys, be valid computations, and agree exactly with the full-lane sign for both pairs. No minimum agreement less than 100 percent is allowed. null_unordered is diagnostic only and cannot rescue a failure.",
+  "classifications": {
+    "PASS": "BRAID_SENSITIVE_ORDERING_STABLE_UNDER_HOLDOUTS",
+    "FAIL": "BRAID_SENSITIVE_ORDERING_UNSTABLE_UNDER_HOLDOUTS",
+    "INVALID": "INVALID_SOURCE_OR_IMPLEMENTATION"
+  },
+  "permissions_on_pass": {
+    "authorize_orientation_mapping_preregistration": true,
+    "authorize_eq29_amplitude": false,
+    "authorize_bridge_credit": false
+  },
+  "forbidden": [
+    "Changing the frozen pair list after reading lane results",
+    "Choosing the sign that best matches Eq.(29)",
+    "Dropping a holdout after failure",
+    "Treating stability as proof of the Eq.(29) amplitude or a refinement bridge"
+  ]
+}
