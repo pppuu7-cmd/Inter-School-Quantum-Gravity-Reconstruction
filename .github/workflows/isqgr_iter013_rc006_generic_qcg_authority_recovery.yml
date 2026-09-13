@@ -1,0 +1,119 @@
+name: ISQGR Iter013 RC006 generic q-CG authority recovery
+
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter013_rc006_generic_qcg_authority_recovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [main-authority, prior-1312, prior-1506, cap-cup]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch same frozen sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          case '${{ matrix.lane }}' in
+            main-authority|cap-cup) ID='1609.02429v2' ;;
+            prior-1312) ID='1312.0905v2' ;;
+            prior-1506) ID='1506.04749v3' ;;
+          esac
+          curl -L --fail --retry 4 --retry-delay 2 "https://export.arxiv.org/e-print/${ID}" -o source.archive
+          sha256sum source.archive | tee source.sha256
+          mkdir src
+          if tar -tf source.archive >/dev/null 2>&1; then tar -xf source.archive -C src;
+          elif gzip -t source.archive >/dev/null 2>&1; then gzip -dc source.archive > src/source.tex;
+          else cp source.archive src/source.tex; fi
+          find src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > source_all.tex
+          test -s source_all.tex
+      - name: Recover citation-key and co-product parsing only
+        env:
+          LANE: ${{ matrix.lane }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,os,pathlib,re
+          lane=os.environ['LANE']; text=pathlib.Path('source_all.tex').read_text(errors='ignore'); low=text.lower()
+          sha=pathlib.Path('source.sha256').read_text().split()[0]
+          def contexts(patterns,radius=650,limit=10):
+              out=[]
+              for p in patterns:
+                  for m in re.finditer(p,text,re.I|re.S):
+                      s=re.sub(r'\s+',' ',text[max(0,m.start()-radius):min(len(text),m.end()+radius)])
+                      if s not in out: out.append(s)
+                      if len(out)>=limit:return out
+              return out
+          delegation_phrase=bool(re.search(r'not\s+the\s+standard\s+clebsch.{0,180}defined\s+in',low,re.S))
+          citation_key=('\\cite{biedenharn}' in low or '\\citep{biedenharn}' in low or '\\citet{biedenharn}' in low)
+          names=('biedenharn' in low and 'lohe' in low)
+          external_authority=(citation_key or names)
+          formula_tokens=['qfactorial','q-factorial','q factorial','qbinom','q-binomial','hypergeometric']
+          explicit_formula_candidate=any(t in low for t in formula_tokens) and bool(re.search(r'clebsch',low))
+          row={'lane':lane,'source_sha256':sha,'delegation_phrase':delegation_phrase,
+               'biedenharn_citation_key':citation_key,'biedenharn_lohe_names':names,
+               'external_standard_qcg_authority_resolved':external_authority,
+               'standard_coefficient_delegation_detected':delegation_phrase and external_authority,
+               'explicit_generic_formula_candidate':explicit_formula_candidate,
+               'anchors':contexts([r'not\s+the\s+standard\s+Clebsch.{0,180}defined\s+in',r'\\cite\{biedenharn\}',r'Clebsch.{0,120}Gordan'])}
+          if lane=='main-authority':
+              row.update({'coproduct_signal':bool(re.search(r'co\s*--?\s*product|coproduct',low)) and ('\\delta' in low),
+                          'orthogonality_signal':'orthogonality relation' in low,
+                          'cup_identity_signal':'give the identity if we concatenate them' in low})
+          if lane=='cap-cup':
+              cap=contexts([r'call\s+[`\'\"]?cap'],1000,4); joined=' '.join(cap)
+              row.update({'cap_explicit_quantum_dimension_factor_signal':bool(re.search(r'\\sqrt\{d_\{?j\}?\}',joined,re.I|re.S)),
+                          'cap_cup_identity_requirement_signal':'give the identity if we concatenate them' in low,
+                          'euclidean_abs_square_norm_stated':bool(re.search(r'(absolute|modulus).{0,80}(square|squared).{0,100}cap',low,re.S)),
+                          'cap_contexts':cap})
+              row['subclassification']='CAP_CUP_NORMALIZATION_IDENTITY_SOURCE_QUALIFIED' if row['cap_explicit_quantum_dimension_factor_signal'] and row['cap_cup_identity_requirement_signal'] and not row['euclidean_abs_square_norm_stated'] else 'CAP_CUP_NORMALIZATION_AMBIGUOUS'
+          pathlib.Path('evidence.json').write_text(json.dumps(row,indent=2,sort_keys=True)+'\n'); print(json.dumps(row,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter013-recovery-${{ matrix.lane }}
+          path: evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter013-recovery-*
+          path: inputs
+          merge-multiple: false
+      - name: Same frozen classification with parser recovery
+        shell: bash
+        run: |
+          python - <<'PY' | tee summary.json
+          import glob,json
+          rows=[json.load(open(f)) for f in sorted(glob.glob('inputs/**/evidence.json',recursive=True))]
+          by={r['lane']:r for r in rows}; need={'main-authority','prior-1312','prior-1506','cap-cup'}
+          if set(by)!=need: cls='INFRASTRUCTURE_SOURCE_EXTRACTION_FAIL'; code=2
+          else:
+              opens=[by[x] for x in ('main-authority','prior-1312','prior-1506')]
+              if any(r['explicit_generic_formula_candidate'] for r in opens): cls='RC006_GENERIC_QCG_EXPLICIT_FORMULA_CANDIDATE_REQUIRES_MANUAL_SOURCE_VALIDATION'; code=0
+              elif all(r['standard_coefficient_delegation_detected'] and r['external_standard_qcg_authority_resolved'] for r in opens): cls='RC006_GENERIC_QCG_EXTERNAL_BOOK_AUTHORITY_REQUIRED'; code=0
+              else: cls='RC006_GENERIC_QCG_AUTHORITY_PARTIAL'; code=0
+          cap=by.get('cap-cup',{}).get('subclassification','INFRASTRUCTURE_SOURCE_EXTRACTION_FAIL')
+          print(json.dumps({'classification':cls,'cap_cup_classification':cap,'rows':rows,
+                            'parser_recovery_only':True,'scientific_predicates_changed':False,
+                            'qcg_implementation_authorized':False,'iter012_retry_authorized':False,
+                            'eq29_amplitude_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False},indent=2,sort_keys=True))
+          raise SystemExit(code)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter013-recovery-summary
+          path: summary.json
+          if-no-files-found: error
