@@ -1,0 +1,28 @@
+name: ISQGR Iter025 exact qbar R authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter025/**'
+      - '.github/workflows/isqgr-iter025-exact-qbar-r-authority.yml'
+      - 'triggers/iter025.txt'
+  workflow_dispatch:
+
+jobs:
+  collect-exact-source-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Collect exact source evidence only
+        run: python code/iter025/exact_authority_audit.py
+      - name: Upload raw ITER025 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter025-exact-authority-evidence
+          path: out/iter025/
