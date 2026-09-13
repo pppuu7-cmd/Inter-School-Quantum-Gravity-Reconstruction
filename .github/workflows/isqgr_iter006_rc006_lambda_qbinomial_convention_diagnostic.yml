@@ -1,0 +1,122 @@
+name: ISQGR Iter006 RC006 Lambda q-binomial convention diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_lambda_qbinomial_convention_diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [lexical-definition, dependency-map]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch immutable source
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o source.archive 'https://export.arxiv.org/e-print/math/9910147v1'
+          echo '316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc  source.archive' | sha256sum -c -
+          mkdir src
+          if tar -tf source.archive >/dev/null 2>&1; then tar -xf source.archive -C src;
+          elif gzip -t source.archive >/dev/null 2>&1; then gzip -dc source.archive > src/source.tex;
+          else cp source.archive src/source.tex; fi
+          find src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > source.tex
+          test -s source.tex
+      - name: Enumerate convention evidence
+        env:
+          MODE: ${{ matrix.mode }}
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, re
+          mode=os.environ['MODE']
+          text=pathlib.Path('source.tex').read_text(errors='ignore')
+          lines=text.splitlines()
+          def excerpt(i,r=3):
+              a=max(1,i-r); b=min(len(lines),i+r)
+              return '\n'.join(f'{j}: {lines[j-1]}' for j in range(a,b+1))
+          binom=[]
+          for i,line in enumerate(lines,1):
+              if re.search(r'\\binom|q[- ]?binom|binomial',line,re.I):
+                  binom.append({'line':i,'excerpt':excerpt(i,4)})
+          primitive=[]
+          for i,line in enumerate(lines,1):
+              if re.search(r'\\forall x .*\\CC.*\[x\]=|\[x\]_k|\[k\]!?=|Pochhammer|\\varphi|infinite product|q=e\^',line,re.I):
+                  primitive.append({'line':i,'excerpt':excerpt(i,3)})
+          boundary=[]
+          for i,line in enumerate(lines,1):
+              if 'lambdaboundary' in line or 'symetryLambda' in line:
+                  boundary.append({'line':i,'excerpt':excerpt(i,4)})
+          # Explicit means the source itself states/defines q-binomial notation in terms of primitives.
+          explicit=[]
+          for i,line in enumerate(lines,1):
+              if re.search(r'\\binom|q[- ]?binom|binomial',line,re.I):
+                  window=' '.join(lines[max(0,i-3):min(len(lines),i+2)])
+                  if re.search(r'(we define|is defined|definition|denote|:=)',window,re.I) or re.search(r'\\binom[^\n]{0,120}=',window):
+                      # Boundary Lambda equations are usages, not definitions of q-binomial.
+                      if 'lambdaboundary' not in window and 'symetryLambda' not in window:
+                          explicit.append({'line':i,'excerpt':excerpt(i,4)})
+          out={
+            'gate':'ITER006_RC006_LAMBDA_QBINOMIAL_CONVENTION_DIAGNOSTIC',
+            'mode':mode,
+            'source_sha256':'316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc',
+            'qbinomial_occurrence_count':len(binom),
+            'primitive_definition_hit_count':len(primitive),
+            'boundary_anchor_count':len(boundary),
+            'explicit_qbinomial_definition_candidates':explicit,
+            'explicit_candidate_count':len(explicit),
+            'qbinomial_occurrences':binom if mode=='lexical-definition' else [],
+            'primitive_definitions':primitive if mode=='dependency-map' else [],
+            'boundary_anchors':boundary,
+            'scientific_credit':0,
+            'lowspin_numerical_authorized':False,
+            'eq29_amplitude_authorized':False,
+            'bridge_credit':False
+          }
+          pathlib.Path('evidence.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({k:out[k] for k in ['mode','qbinomial_occurrence_count','primitive_definition_hit_count','boundary_anchor_count','explicit_candidate_count']},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qbinomial-diagnostic-${{ matrix.mode }}
+          path: evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: diagnostic
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: qbinomial-diagnostic-*
+          path: inputs
+      - name: Fail-closed classification
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('inputs').glob('**/evidence.json')]
+          modes={r['mode'] for r in rows}
+          infra_ok=len(rows)==2 and modes=={'lexical-definition','dependency-map'} and all(r['source_sha256']=='316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc' for r in rows)
+          if not infra_ok:
+              cls='INFRASTRUCTURE_SOURCE_EXTRACTION_FAIL'
+          elif all(r['explicit_candidate_count']>0 for r in rows):
+              cls='SOURCE_EXPLICIT_QBINOMIAL_CONVENTION_FOUND'
+          else:
+              cls='SOURCE_QBINOMIAL_CONVENTION_NOT_EXPLICIT'
+          out={'gate':'ITER006_RC006_LAMBDA_QBINOMIAL_CONVENTION_DIAGNOSTIC','classification':cls,'lane_count':len(rows),'modes':sorted(modes),'scientific_credit':0,'lowspin_numerical_authorized':False,'eq29_amplitude_authorized':False,'bridge_credit':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qbinomial-diagnostic-summary
+          path: summary.json
+          if-no-files-found: error
