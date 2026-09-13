@@ -1,0 +1,65 @@
+name: ISQGR Iter012 RC006 Eq27 one-step TNR reconstruction
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr_iter012_rc006_eq27_one_step_tnr_reconstruction.yml'
+  workflow_dispatch:
+
+jobs:
+  lanes:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [A, B, C, D]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen Iter012 lane
+        run: |
+          mkdir -p out
+          python code/iter012_rc006_eq27_one_step_tnr_reconstruction.py --lane ${{ matrix.lane }} | tee out/lane_${{ matrix.lane }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter012-lane-${{ matrix.lane }}
+          path: out/lane_${{ matrix.lane }}.json
+
+  aggregate:
+    needs: lanes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter012-lane-*
+          merge-multiple: true
+          path: out
+      - name: Frozen aggregate classification
+        run: |
+          python - <<'PY' | tee out/aggregate.json
+          import glob,json
+          rows=[]
+          for f in sorted(glob.glob('out/lane_*.json')):
+              try: rows.append(json.load(open(f)))
+              except Exception as e: rows.append({'lane':f,'status':'INFRA','parse_error':str(e)})
+          lanes={r.get('lane') for r in rows}
+          statuses=[r.get('status') for r in rows]
+          if len(rows)!=4 or lanes!=set('ABCD') or 'INFRA' in statuses:
+              label='RC006_EQ27_ONE_STEP_TNR_RECONSTRUCTION_INFRASTRUCTURE_NUMERICAL_FAIL'; code=2
+          elif 'FAIL' in statuses:
+              label='RC006_EQ27_ONE_STEP_TNR_RECONSTRUCTION_SCIENTIFIC_FAIL'; code=2
+          elif 'BLOCKED' in statuses:
+              label='RC006_EQ27_ONE_STEP_TNR_RECONSTRUCTION_BLOCKED_SOURCE_IMPLEMENTATION_GAP'; code=0
+          elif all(r.get('pass') is True for r in rows):
+              label='RC006_EQ27_ONE_STEP_TNR_RECONSTRUCTION_VALIDATED_SCOPED'; code=0
+          else:
+              label='RC006_EQ27_ONE_STEP_TNR_RECONSTRUCTION_SCIENTIFIC_FAIL'; code=2
+          print(json.dumps({'classification':label,'rows':rows},indent=2,sort_keys=True))
+          raise SystemExit(code)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter012-summary
+          path: out/aggregate.json
