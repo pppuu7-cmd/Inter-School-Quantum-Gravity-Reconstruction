@@ -40,23 +40,24 @@ jobs:
   rmatrix-convention:
     runs-on: ubuntu-24.04
     steps:
-      - name: Fetch Buffenoir-Roche source
+      - name: Fetch immutable Buffenoir-Roche PDF
         run: |
           set -euo pipefail
-          curl -L --fail --retry 3 -o source.bundle https://arxiv.org/e-print/math/9910147v1
-          echo '316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc  source.bundle' | sha256sum -c -
-          cp source.bundle source.tex
+          sudo apt-get update -qq && sudo apt-get install -y poppler-utils >/dev/null
+          curl -L --fail --retry 3 -o paper.pdf https://arxiv.org/pdf/math/9910147v1
+          echo '1feefdb019e76ea7b036b9c89ffb7869d7c933b90dda19c30515e3d177c11522  paper.pdf' | sha256sum -c -
+          pdftotext -layout paper.pdf paper.txt
       - name: Extract R plus/minus convention
         run: |
           python - <<'PY'
           import pathlib,re,json
-          t=pathlib.Path('source.tex').read_text(errors='ignore')
-          compact=re.sub(r'\s+','',t)
-          # Accept TeX-equivalent source spellings, but require both plus=R and minus=inverse/opposite-21 content.
-          plus=bool(re.search(r'R\^?\{?\(\+\)\}?\s*=\s*R',compact,re.I)) or ('R^{(+)}=R' in compact)
-          minus=(('R^{(-)}' in compact or 'R(-)' in compact) and ('-1' in compact or '^{-1}' in compact) and ('21' in compact))
-          braiding=('braid' in t.lower() and 'matrix' in t.lower())
-          out={'gate':'ITER006_RC006_FORWARD_INVERSE_BRAID_CONVENTION','lane':'RMATRIX_PLUS_MINUS_CONVENTION','valid':bool(plus and minus and braiding),'R_plus_equals_R':plus,'R_minus_inverse_21':minus,'braiding_matrix_context':braiding,'rc006_sign_selected':False}
+          t=pathlib.Path('paper.txt').read_text(errors='ignore')
+          flat=' '.join(t.lower().split())
+          plus=('r(+) = r' in flat)
+          minus=bool(re.search(r'r\(−\)\s*=\s*r\s*−1\s*21',flat)) or bool(re.search(r'r\(-\)\s*=\s*r\s*-1\s*21',flat))
+          ribbon=('ribbon quasi-triangular hopf algebra' in flat or ('ribbon' in flat and 'quasi-triangular' in flat))
+          braiding=('braiding matrices' in flat)
+          out={'gate':'ITER006_RC006_FORWARD_INVERSE_BRAID_CONVENTION','lane':'RMATRIX_PLUS_MINUS_CONVENTION','valid':bool(plus and minus and ribbon and braiding),'R_plus_equals_R':plus,'R_minus_inverse_21':minus,'ribbon_quasitriangular_context':ribbon,'braiding_matrix_context':braiding,'rc006_sign_selected':False,'implementation_note':'Uses immutable PDF text because arXiv e-print is a legacy monolithic TeX serialization; frozen convention predicate unchanged.'}
           pathlib.Path('rmatrix.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
           PY
       - uses: actions/upload-artifact@v4
