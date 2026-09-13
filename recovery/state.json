@@ -18,6 +18,7 @@
         "attempt1_classification":"INFRASTRUCTURE_PARTIAL_JOB_START_FAILURE_NOT_SCIENTIFIC_CLASSIFICATION",
         "attempt1_terminal_lanes_with_artifacts":7,
         "attempt1_failed_before_steps_job":103701251385,
+        "attempt2_pending_job":103706316813,
         "attempt2_status":"queued",
         "frozen_lane_count":8,
         "classification":null
@@ -42,9 +43,9 @@
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
   "active_compute": [
-    {"gate":"ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_PANEL","run":34748687768,"attempt":2,"head":"ffd7a5abd3ddb74ae0cc7d57194419ae5888586e","status":"queued","frozen_lane_count":8},
-    {"gate":"ITER006_RC006_LAMBDA_QBINOMIAL_CONVENTION_DIAGNOSTIC","run":34750594795,"head":"8032ed5b2ddade53f28ef4908c2f7d4e41a26a79","status":"queued","frozen_lane_count":2,"scientific_credit":0}
+    {"gate":"ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_PANEL","run":34748687768,"attempt":2,"head":"ffd7a5abd3ddb74ae0cc7d57194419ae5888586e","status":"queued","pending_scientific_jobs":1},
+    {"gate":"ITER006_RC006_LAMBDA_QBINOMIAL_CONVENTION_DIAGNOSTIC","run":34750594795,"head":"8032ed5b2ddade53f28ef4908c2f7d4e41a26a79","status":"queued","pending_scientific_jobs":2,"scientific_credit":0}
   ],
-  "idle_capacity": {"scientifically_useful_jobs_queued":10,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"Frozen numerical retry and independent convention diagnostic retry are queued; no duplicate compute launched."},
+  "idle_capacity": {"scientifically_useful_jobs_queued":3,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"One failed numerical lane is queued for infrastructure-only retry and two independent convention-diagnostic lanes are queued; seven numerical lanes are already terminal and are not counted again."},
   "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER006_RC006_LAMBDA_LOWSPIN_BOUNDARY_NUMERICAL_PANEL.md","prereg/ITER006_RC006_LAMBDA_QBINOMIAL_CONVENTION_DIAGNOSTIC.md","results/ITER006_RC006_LAMBDA_LOWSPIN_CONVENTION_PANEL_2026-09-13.md","docs/CONSTITUTION.md"]
 }
