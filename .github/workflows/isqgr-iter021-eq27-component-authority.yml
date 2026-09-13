@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lane: [topology, primitives, normalization, null]
+        lane: [topology, primitives, normalization, 'null']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
