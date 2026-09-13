@@ -24,7 +24,13 @@ jobs:
           curl -L --fail --retry 3 -o source.archive 'https://export.arxiv.org/e-print/math/9910147v1'
           echo '316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc  source.archive' | sha256sum -c -
           mkdir src
-          tar -xf source.archive -C src
+          if tar -tf source.archive >/dev/null 2>&1; then
+            tar -xf source.archive -C src
+          elif gzip -t source.archive >/dev/null 2>&1; then
+            gzip -dc source.archive > src/source.tex
+          else
+            cp source.archive src/source.tex
+          fi
           find src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > source.tex
           test -s source.tex
       - name: Extract frozen evidence lane
@@ -37,7 +43,7 @@ jobs:
           patterns={
             'macro-grammar':[r'\\def\\coef[a-z]*lambda',r'\\Lambda\^'],
             'definition-equalities':[r'coef[a-z]*lambda',r'\\Lambda\^'],
-            'analytic-6j':[r'6j',r'Racah',r'Askey[- ]Wilson',r'analytic continuation',r'analytic continuation'],
+            'analytic-6j':[r'6j',r'Racah',r'Askey[- ]Wilson',r'analytic continuation'],
             'normalization-domain':[r'normalization',r'normalisation',r'orthogonality',r'principal unitary',r'Plancherel',r'lambda=\(',r'\\lambda=']
           }[mode]
           hits=[]
@@ -48,13 +54,11 @@ jobs:
               a=max(1,i-3); b=min(len(lines),i+3)
               excerpt='\n'.join(f'{j}: {lines[j-1]}' for j in range(a,b+1))
               hits.append({'line':i,'excerpt':excerpt})
-          # De-duplicate strongly overlapping hit windows while preserving source order.
           kept=[]; last=-100
           for h in hits:
             if h['line']-last<3: continue
             kept.append(h); last=h['line']
             if len(kept)>=40: break
-          # Lane-specific structural signals; these are evidence only, not scientific PASS.
           if mode=='macro-grammar':
             signal=bool(re.search(r'\\def\\coefalambda.*\\Lambda',text,re.I|re.S) and re.search(r'\\def\\coefblambda.*\\Lambda',text,re.I|re.S))
           elif mode=='definition-equalities':
