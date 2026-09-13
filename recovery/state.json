@@ -3,19 +3,19 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-13",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_013",
+  "active_iteration": "ITERATION_014",
   "iteration_completion_percent": 100,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {"known_schools_fail": false,"new_theory_required": false,"new_physics_found": false,"bridge_derived": false,"rqir_promotion_authorized": false,"kmqgb_promotion_authorized": false},
   "readiness_percent": {"amplitude_refinement_cross_realization_validation": 49,"candidate_theory_construction": 0,"overall_scientific_programme": 49},
   "frontier": {
     "RC006": {
-      "status": "ONE_STEP_EQ27_BLOCKED_GENERIC_QCG_EXTERNAL_AUTHORITY_REQUIRED",
-      "iter012": {"prereg_commit":"161ff5d7213d61da547c827158fa361447cbb2f3","implementation_commit":"d684b3bb61d11ab145aa6f6f99ac2a45575f8401","production_head":"6fb36720515dc0c3e298715b35850ce853d67062","run":34773202384,"jobs":{"A":103766462446,"B":103766462328,"C":103766462436,"D":103766462416,"aggregate":103766582453},"artifacts":{"A":10323125687,"B":10322906327,"C":10323150489,"D":10322831438,"summary":10322866532},"summary_digest":"sha256:1388b06979edc681d43955def8cce2f3c982f3d69fbc5ca6ea8937cf7e07260f","classification":"RC006_EQ27_ONE_STEP_TNR_RECONSTRUCTION_BLOCKED_SOURCE_IMPLEMENTATION_GAP","bridge_credit":false},
-      "iter013": {"prereg_commit":"728d79fcbdc1df314ae6401f1b4bf0b346689df6","production_launch":"1e239586e7db3b659375d5b441b26ebc7490c675","recovery_head":"4fb4e457440adcfd438dff754cca24a67bb03354","run":34774537357,"jobs":{"main_authority":103770104060,"prior_1312":103770104124,"cap_cup":103770104160,"prior_1506":103770104162,"aggregate":103770131285},"artifacts":{"main_authority":10322743677,"prior_1312":10323082724,"cap_cup":10322858414,"prior_1506":10322638937,"summary":10322818577},"summary_digest":"sha256:5ccc6efebf17143f2ee6869892d2a8fc2cf7ad266551d5ca74fe009abbd90848","classification":"RC006_GENERIC_QCG_EXTERNAL_BOOK_AUTHORITY_REQUIRED","cap_cup_classification":"CAP_CUP_NORMALIZATION_IDENTITY_SOURCE_QUALIFIED","bridge_credit":false},
+      "status": "QCG_CONSTRUCTIBILITY_BLOCKED_MISSING_REPRESENTATION_ACTION_AUTHORITY",
+      "iter014": {"prereg_commit":"8d62c1600e99815f6dcf71a6755335888a74ea0f","production_head":"6fdda05f1e8f5547a60d46d5fc41615299133ef4","run":34776142969,"jobs":{"rep_action":103774493019,"constructibility":103774492957,"phase_gauge":103774492979,"cap_cup":103774493037,"aggregate":103774586834},"artifacts":{"rep_action":10323621328,"constructibility":10323149819,"phase_gauge":10323916125,"cap_cup":10324115545,"summary":10323861241},"summary_digest":"sha256:3e2a46dc541a616b603dcde734eec8e95b2e57ef2f2d8284fd3dc31b8e63e10e","classification":"RC006_QCG_CONSTRUCTIBILITY_BLOCKED_MISSING_REPRESENTATION_ACTION","bridge_credit":false},
       "eq29_amplitude_authorized": false,
+      "iter012_retry_authorized": false,
       "bridge_credit": false,
-      "next_gate": "PROSPECTIVE_QCG_CONSTRUCTIBILITY_FROM_SOURCE_ALGEBRA_AND_PHASE_GAUGE_AUDIT_OR_PIN_EXTERNAL_AUTHORITY"
+      "next_gate": "PROSPECTIVE_OPEN_AUTHORITY_PIN_FOR_EXPLICIT_UQSU2_BASIS_ACTION_AND_PHASE_CONVENTION"
     },
     "BH004_BH004B": {"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","refinement_map_derived":false},
@@ -24,6 +24,6 @@
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
   "active_compute": [],
-  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":true,"reason":"Iter013 identifies the exact remaining q-CG authority blocker; a new prospective constructibility/phase-gauge gate is admissible and should be launched rather than retrying Iter012."},
-  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER013_RC006_GENERIC_QCG_AUTHORITY_AND_NORMALIZATION_2026-09-13.md","results/ITER012_RC006_EQ27_ONE_STEP_TNR_RECONSTRUCTION_2026-09-13.md","docs/CONSTITUTION.md"]
+  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":true,"reason":"Iter014 terminally localizes the blocker to explicit representation-action/phase authority; a prospective authority-acquisition gate is admissible."},
+  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER014_RC006_QCG_CONSTRUCTIBILITY_2026-09-13.md","results/ITER013_RC006_GENERIC_QCG_AUTHORITY_AND_NORMALIZATION_2026-09-13.md","docs/CONSTITUTION.md"]
 }
