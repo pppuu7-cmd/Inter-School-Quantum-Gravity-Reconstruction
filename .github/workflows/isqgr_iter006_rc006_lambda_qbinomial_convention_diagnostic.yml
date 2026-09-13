@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/isqgr_iter006_rc006_lambda_qbinomial_convention_diagnostic.yml'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -55,13 +55,11 @@ jobs:
           for i,line in enumerate(lines,1):
               if 'lambdaboundary' in line or 'symetryLambda' in line:
                   boundary.append({'line':i,'excerpt':excerpt(i,4)})
-          # Explicit means the source itself states/defines q-binomial notation in terms of primitives.
           explicit=[]
           for i,line in enumerate(lines,1):
               if re.search(r'\\binom|q[- ]?binom|binomial',line,re.I):
                   window=' '.join(lines[max(0,i-3):min(len(lines),i+2)])
                   if re.search(r'(we define|is defined|definition|denote|:=)',window,re.I) or re.search(r'\\binom[^\n]{0,120}=',window):
-                      # Boundary Lambda equations are usages, not definitions of q-binomial.
                       if 'lambdaboundary' not in window and 'symetryLambda' not in window:
                           explicit.append({'line':i,'excerpt':excerpt(i,4)})
           out={
