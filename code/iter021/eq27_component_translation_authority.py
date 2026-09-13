@@ -8,6 +8,7 @@ def load(path,name):
     spec=importlib.util.spec_from_file_location(name,ROOT/path)
     m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
 v1=load(pathlib.Path('code/iter018/parallel_audit.py'),'it18v1')
+sys.modules['parallel_audit']=v1
 v2=load(pathlib.Path('code/iter018/parallel_audit_v2.py'),'it18v2')
 qcg=load(pathlib.Path('code/iter019/qcg_solver_validation.py'),'it19qcg')
 TARGET='1609.02429v2'
@@ -80,7 +81,6 @@ def lane_primitives():
       'R_braiding':{'status':'MISSING_EXECUTABLE_PRIMITIVE','evidence':(('r matrices' in alltex.lower()) or ('r-matrix' in alltex.lower()))},
     }
     missing=[k for k,v in required.items() if (not v['evidence']) or v['status'].startswith('MISSING') or v['status'].endswith('PENDING')]
-    # Authority PASS requires every required primitive executable or source-proven-cancelled; do not infer cancellation.
     passed=(h==HIST and len(hits)==1 and not missing)
     ev={'lane':'primitives','source_hash':h,'historical_hash_match':h==HIST,'required_primitives':required,'missing_or_pending':missing,'pass':bool(passed),'scientific_interpretation':'MISSING means component reconstruction remains BLOCKED; no convention is invented'}
     write(ev,{'primitive_source_context.tex':ctx,'eq27_exact.tex':sn})
@@ -88,7 +88,6 @@ def lane_primitives():
 def lane_normalization():
     src,h,files,alltex,packing=source_bundle(); low=alltex.lower()
     ctx=find_context(alltex,['(E3)','label{','graphical identities','T_{EPRL}','T_EPRL'],7000)
-    # Frozen source-level obligations; do not pretend textual audit is a numerical full-graph evaluation.
     signals={
       'appendix_b_graphical_identity_signal':('graphical identities' in low and 'appendix' in low),
       'E3_signal':('(e3)' in low or 'e3}' in low or 'label{e3' in low or 'label{eq:e3' in low),
@@ -96,7 +95,6 @@ def lane_normalization():
       'quantum_dimension_signal':('quantum dimension' in low or 'qdim' in low or 'd_' in alltex),
       'bilinear_not_hermitian_manifest':True,
     }
-    # Executable singlet control using the already validated k=12 solver.
     cap_rows=[]; capmax=0.0
     for tj in [1,2,4,6,8]:
         C=qcg.solve_channel(tj,tj,0,12)['C']; B=qcg.b2_singlet(tj,12)
@@ -109,8 +107,12 @@ def lane_normalization():
 
 def lane_null():
     src,h,files,alltex,packing=source_bundle(); hits=exact_eq27(files); sn=hits[0][1] if len(hits)==1 else ''
-    base={'qdim':('d' in sn or 'dim' in sn.lower()),'dual':(('J^+)' in sn and '(J^-)' in sn),'orientation':(('J^+)' in sn and '$J^+$' in sn),'l_loops':sn.count('node {$l$}')==2}
-    # Validator obligations are intentionally structural and frozen.
+    base={
+      'qdim':('d' in sn or 'dim' in sn.lower()),
+      'dual':(('J^+)' in sn and '(J^-)' in sn),
+      'orientation':(('J^+)' in sn and '$J^+$' in sn),
+      'l_loops':sn.count('node {$l$}')==2,
+    }
     def accept(m): return all(bool(m[k]) for k in ['qdim','dual','orientation','l_loops'])
     controls=[]
     for key in ['qdim','dual','orientation']:
