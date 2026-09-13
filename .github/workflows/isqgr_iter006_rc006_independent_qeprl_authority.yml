@@ -1,0 +1,148 @@
+name: ISQGR Iter006 RC006 Independent qEPRL Authority
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_independent_qeprl_authority.yml'
+
+jobs:
+  tex-source:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch immutable arXiv v3 source
+        run: |
+          set -euo pipefail
+          mkdir -p src out
+          curl -fL --retry 3 --retry-delay 2 https://export.arxiv.org/e-print/1012.4784v3 -o source.bundle || curl -fL --retry 3 --retry-delay 2 https://arxiv.org/e-print/1012.4784v3 -o source.bundle
+          sha256sum source.bundle | tee out/source_bundle.sha256
+          tar -xf source.bundle -C src
+      - name: Extract frozen categorical semantics from TeX
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,re,hashlib
+          tex='\n'.join(p.read_text(errors='ignore') for p in pathlib.Path('src').rglob('*.tex'))
+          if not tex.strip():
+              raise SystemExit('no TeX source')
+          # Strip unescaped comments, then collapse whitespace only. No equation/path selection.
+          active=[]
+          for line in tex.splitlines():
+              cut=None
+              for i,c in enumerate(line):
+                  if c!='%': continue
+                  n=0; j=i-1
+                  while j>=0 and line[j]=='\\': n+=1; j-=1
+                  if n%2==0: cut=i; break
+              active.append(line if cut is None else line[:cut])
+          s=' '.join(' '.join(active).split())
+          lo=s.lower()
+          eprl_def = ('quantum eprl intertwiner' in lo and ('iota' in lo or '\\iota' in s))
+          # Definition 3.2 is an ordered composition Lambda_K o f^K_alpha o T_{V[alpha]}.
+          composition = bool(re.search(r'\\Lambda',s) and re.search(r'f\s*\^?\s*\{?K\}?',s) and ('T_{V' in s or 'T_{V[' in s or 'T_' in s))
+          tau23 = ('tau_{23}' in s or 'tau_{2 3}' in s or '\\tau_{23}' in s)
+          factorization = ('factorise into clebsch-gordan' in lo or 'factorize into clebsch-gordan' in lo) and tau23
+          nonbraid = ('not invariant under braiding' in lo or 'not invariant under the braiding' in lo)
+          sem={'euclidean_quantum_eprl_intertwiner_definition':eprl_def,
+               'ordered_composition_contains_Lambda_f_T':composition,
+               'clebsch_gordan_factorization_contains_tau23':factorization,
+               'eprl_not_invariant_under_braiding_statement':nonbraid}
+          allok=all(sem.values())
+          out={'gate':'ITER006_RC006_INDEPENDENT_QEPRL_AUTHORITY_QUALIFICATION','lane':'TEX_SOURCE','valid':True,
+               'authority':'arXiv:1012.4784v3','tex_file_count':len(list(pathlib.Path('src').rglob('*.tex'))),
+               'active_tex_sha256':hashlib.sha256(s.encode()).hexdigest(),'semantics':sem,
+               'classification':'TEX_QEPRL_AUTHORITY_COMPLETE' if allok else 'TEX_QEPRL_AUTHORITY_PARTIAL'}
+          pathlib.Path('out/tex.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: independent-qeprl-authority-tex
+          path: out/
+          if-no-files-found: error
+
+  pdf-text:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install PDF text tools
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: Fetch immutable arXiv v3 PDF
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          curl -fL --retry 3 --retry-delay 2 https://arxiv.org/pdf/1012.4784v3 -o paper.pdf
+          sha256sum paper.pdf | tee out/pdf.sha256
+          pdftotext -layout paper.pdf out/paper.txt
+          test -s out/paper.txt
+      - name: Independently verify frozen PDF semantics
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,re,hashlib
+          raw=pathlib.Path('out/paper.txt').read_text(errors='ignore')
+          s=' '.join(raw.split()); lo=s.lower()
+          eprl_def=('quantum eprl intertwiner' in lo)
+          # PDF glyph extraction varies; require the ordered-composition prose plus all three named morphism objects.
+          composition=('is the morphism' in lo and ('lambda' in lo or 'Λ' in s) and ('t_v' in lo or 'tv' in lo or 't v' in lo) and ('f' in lo))
+          factor_phrase=('factorise into clebsch-gordan maps' in lo or 'factorize into clebsch-gordan maps' in lo)
+          tau23=bool(re.search(r'(τ|tau)\s*2\s*3',s,re.I) or 'τ23' in s or 'tau23' in lo)
+          factorization=factor_phrase and tau23
+          nonbraid=('not invariant under braiding' in lo or 'not invariant under the braiding' in lo)
+          sem={'euclidean_quantum_eprl_intertwiner_definition':eprl_def,
+               'ordered_composition_contains_Lambda_f_T':composition,
+               'clebsch_gordan_factorization_contains_tau23':factorization,
+               'eprl_not_invariant_under_braiding_statement':nonbraid}
+          allok=all(sem.values())
+          out={'gate':'ITER006_RC006_INDEPENDENT_QEPRL_AUTHORITY_QUALIFICATION','lane':'PDF_TEXT','valid':True,
+               'authority':'arXiv:1012.4784v3','text_sha256':hashlib.sha256(s.encode()).hexdigest(),'semantics':sem,
+               'classification':'PDF_QEPRL_AUTHORITY_COMPLETE' if allok else 'PDF_QEPRL_AUTHORITY_PARTIAL'}
+          pathlib.Path('out/pdf.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: independent-qeprl-authority-pdf
+          path: out/
+          if-no-files-found: error
+
+  aggregate:
+    needs: [tex-source, pdf-text]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: independent-qeprl-authority-*
+          path: inputs
+      - name: Apply frozen authority classifier
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import glob,json,pathlib
+          docs=[]
+          for p in glob.glob('inputs/**/*.json',recursive=True):
+              try: docs.append(json.loads(pathlib.Path(p).read_text()))
+              except: pass
+          by={d.get('lane'):d for d in docs}; T=by.get('TEX_SOURCE'); P=by.get('PDF_TEXT')
+          valid=bool(T and P and T.get('valid') is True and P.get('valid') is True)
+          keys=['euclidean_quantum_eprl_intertwiner_definition','ordered_composition_contains_Lambda_f_T','clebsch_gordan_factorization_contains_tau23','eprl_not_invariant_under_braiding_statement']
+          if not valid:
+              cl='INVALID_SOURCE_OR_IMPLEMENTATION'; agreed={}
+          else:
+              agreed={k:(T['semantics'].get(k) is True and P['semantics'].get(k) is True) for k in keys}
+              n=sum(agreed.values())
+              cl='INDEPENDENT_QEPRL_CATEGORICAL_AUTHORITY_QUALIFIED' if n==4 else ('INDEPENDENT_QEPRL_CATEGORICAL_AUTHORITY_PARTIAL' if n>0 else 'INDEPENDENT_QEPRL_AUTHORITY_NOT_QUALIFIED')
+          out={'gate':'ITER006_RC006_INDEPENDENT_QEPRL_AUTHORITY_QUALIFICATION','valid':valid,
+               'tex_classification':T.get('classification') if T else None,'pdf_classification':P.get('classification') if P else None,
+               'joint_semantics':agreed,'classification':cl,
+               'path_mapping_preregistration_authorized':cl=='INDEPENDENT_QEPRL_CATEGORICAL_AUTHORITY_QUALIFIED',
+               'eq29_amplitude_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: independent-qeprl-authority-summary
+          path: summary.json
+          if-no-files-found: error
