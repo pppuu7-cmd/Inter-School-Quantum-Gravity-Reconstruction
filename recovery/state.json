@@ -4,107 +4,26 @@
   "date": "2026-09-13",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 87,
+  "iteration_completion_percent": 88,
   "candidate_theory_status": "UNFORMED",
-  "claim_locks": {
-    "known_schools_fail": false,
-    "new_theory_required": false,
-    "new_physics_found": false,
-    "bridge_derived": false,
-    "rqir_promotion_authorized": false,
-    "kmqgb_promotion_authorized": false
-  },
-  "readiness_percent": {
-    "amplitude_refinement_cross_realization_validation": 49,
-    "candidate_theory_construction": 0,
-    "overall_scientific_programme": 49
-  },
+  "claim_locks": {"known_schools_fail": false,"new_theory_required": false,"new_physics_found": false,"bridge_derived": false,"rqir_promotion_authorized": false,"kmqgb_promotion_authorized": false},
+  "readiness_percent": {"amplitude_refinement_cross_realization_validation": 49,"candidate_theory_construction": 0,"overall_scientific_programme": 49},
   "frontier": {
     "RC006": {
-      "status": "LAMBDA_SOURCE_STRUCTURE_QUALIFIED_LOW_SPIN_RECONSTRUCTION_NEXT",
-      "historical_braid_projection": {
-        "run": 34741140565,
-        "artifact": 10312369390,
-        "artifact_digest": "sha256:52d338c3c498b6197e4e8094ad5dd4f852143c50598cb6b7575b349657f4fa5a",
-        "classification": "BRAID_SENSITIVE_ORDERING_UNSTABLE_UNDER_HOLDOUTS",
-        "rewritten": false
-      },
-      "representation_aware_structure": {
-        "run": 34742062511,
-        "aggregate_job": 103683356899,
-        "aggregate_artifact": 10313600471,
-        "aggregate_digest": "sha256:f1c9756df339b57fa5d5a372a9b26f68c4418d410d3b9c8dd33101af4fb1df21"
-      },
-      "source_to_schema_mapping": {
-        "prereg_commit": "86c6707328113d747f4d42b90d937d6492ad9212",
-        "authoritative_head": "8ff8955d2a871d82291fcc43fedbdd4bf2556eec",
-        "run": 34742595474,
-        "pdf_job": 103684719334,
-        "tex_job": 103684719349,
-        "aggregate_job": 103684755104,
-        "aggregate_artifact": 10312672916,
-        "aggregate_digest": "sha256:e1df22121e7c991842dfb2ea971eca29d89e7a4bd07a4db1de700286cb33dcb0",
-        "classification": "QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_EXACT",
-        "bridge_credit": false
-      },
-      "lambda_source_qualification": {
-        "prereg_commit": "a18bb2e0ab8adda10aa16f14fdbef82341f6688e",
-        "initial_run": 34744039075,
-        "initial_aggregate_artifact": 10313323964,
-        "initial_aggregate_digest": "sha256:8c6af75d492221c45e7dce605528cfcf310b779cff17975e92bc308f38800acf",
-        "initial_scientific_classification": "INFRASTRUCTURE_PARSER_TOKENIZATION_FAIL",
-        "first_repair_run": 34746508475,
-        "authoritative_head": "639acff2f84468ee5462898a56b913d242df7a1b",
-        "run": 34746554509,
-        "pdf_lexical_job": 103695433732,
-        "tex_lexical_job": 103695433809,
-        "tex_structural_job": 103695433834,
-        "pdf_structural_job": 103695433846,
-        "aggregate_job": 103695474938,
-        "aggregate_artifact": 10314366524,
-        "aggregate_digest": "sha256:7761a3788e2d860ae0dd1156abd83217047d09c0c506e810fb540a77ab4fa7de",
-        "passing_lanes": 4,
-        "canonical_agreement": true,
-        "classification": "QEPRL_PROP34_LAMBDA_SOURCE_STRUCTURE_QUALIFIED",
-        "low_spin_lambda_implementation_authorized": true,
-        "eq29_amplitude_authorized": false,
-        "bridge_credit": false
-      },
-      "lambda_inventory_diagnostic": {
-        "run": 34742402136,
-        "job": 103684205511,
-        "classification": "INFRASTRUCTURE_OBJECT_INVENTORY_FAIL",
-        "cause": "referenced repository objects absent; no scientific artifact",
-        "scientific_fail": false
-      },
+      "status": "LAMBDA_EXACT_EQUATION_CHAIN_QUALIFIED_LOW_SPIN_CONVENTION_PANEL_NEXT",
+      "historical_braid_projection": {"run":34741140565,"artifact":10312369390,"artifact_digest":"sha256:52d338c3c498b6197e4e8094ad5dd4f852143c50598cb6b7575b349657f4fa5a","classification":"BRAID_SENSITIVE_ORDERING_UNSTABLE_UNDER_HOLDOUTS","rewritten":false},
+      "source_to_schema_mapping": {"run":34742595474,"aggregate_artifact":10312672916,"aggregate_digest":"sha256:e1df22121e7c991842dfb2ea971eca29d89e7a4bd07a4db1de700286cb33dcb0","classification":"QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_EXACT"},
+      "lambda_source_qualification": {"prereg_commit":"a18bb2e0ab8adda10aa16f14fdbef82341f6688e","authoritative_head":"639acff2f84468ee5462898a56b913d242df7a1b","run":34746554509,"aggregate_job":103695474938,"aggregate_artifact":10314366524,"aggregate_digest":"sha256:7761a3788e2d860ae0dd1156abd83217047d09c0c506e810fb540a77ab4fa7de","classification":"QEPRL_PROP34_LAMBDA_SOURCE_STRUCTURE_QUALIFIED"},
+      "lambda_formula_authority_chain": {"prereg_commit":"1deee2a885fddf5a2c92d7d4aee6ee0e2d27cc7d","head":"1fb60e63a48f13f3faab873dc63ff5335e5d2182","run":34746758765,"aggregate_job":103696006904,"aggregate_artifact":10314183009,"aggregate_digest":"sha256:41fbd115758784856ef19f121d157846e20c7cde1ab5e2051c1681c942bcce03","classification":"QEPRL_LAMBDA_AUTHORITY_CHAIN_PARTIAL"},
+      "lambda_exact_equation_chain": {"prereg_commit":"35beb34283d3492a44a20cb378a9d5261e86b407","initial_run":34746854011,"initial_classification":"INFRASTRUCTURE_SOURCE_EXTRACTION_FAIL","authoritative_head":"362143199837e8e6b7081f00b28da885b18d088a","run":34746885145,"aggregate_job":103696342737,"aggregate_artifact":10314422640,"aggregate_digest":"sha256:c8b8ffdf675ee01f78aadadea483650e8cb00959f03db2483088e219839161d3","classification":"BR_LAMBDA_EXACT_EQUATION_CHAIN_QUALIFIED","low_spin_implementation_authorized":true},
       "eq29_amplitude_authorized": false,
-      "next_gate": "SOURCE_FAITHFUL_LOW_SPIN_LAMBDA_COEFFICIENT_RECONSTRUCTION"
+      "bridge_credit": false,
+      "next_gate": "SOURCE_FAITHFUL_LOW_SPIN_LAMBDA_CONVENTION_AND_BOUNDARY_PANEL"
     },
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS",
-      "run": 34724124735,
-      "aggregate_job": 103635174759,
-      "artifact": 10307401066,
-      "artifact_digest": "sha256:5765ce15be5b6923eb9a16f0e06db6eb00d531448c887e92efac660ae7682dc5",
-      "refinement_map_derived": false
-    },
-    "RC008": {"status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
-    "RC009": {"status": "SCOPED_BLOCKED"},
-    "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","run":34724124735,"aggregate_job":103635174759,"artifact":10307401066,"artifact_digest":"sha256:5765ce15be5b6923eb9a16f0e06db6eb00d531448c887e92efac660ae7682dc5","refinement_map_derived":false},
+    "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},"RC009":{"status":"SCOPED_BLOCKED"},"LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
   "active_compute": [],
-  "idle_capacity": {
-    "scientifically_useful_jobs_queued": 0,
-    "scientifically_useful_jobs_in_progress": 0,
-    "avoidable_idle": true,
-    "reason": "Qualified Lambda source structure now authorizes a nonduplicating source-faithful low-spin coefficient reconstruction prerequisite."
-  },
-  "authoritative_recovery_order": [
-    "recovery/state.json",
-    "recovery/CURRENT_FRONT.md",
-    "results/ITER006_RC006_LAMBDA_SOURCE_QUALIFICATION_2026-09-13.md",
-    "results/ITER006_RC006_REPRESENTATION_AWARE_SCHEMA_MAPPING_2026-09-13.md",
-    "results/ITER006_QEPRL_AUTHORITY_AND_BRAID_PROJECTION_2026-09-13.md",
-    "docs/CONSTITUTION.md"
-  ]
+  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":true,"reason":"Exact Lambda equation chain is qualified; a source-faithful low-spin convention/boundary panel is now admissible."},
+  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC006_BR_LAMBDA_EXACT_EQUATION_CHAIN_2026-09-13.md","results/ITER006_RC006_LAMBDA_FORMULA_AUTHORITY_CHAIN_2026-09-13.md","results/ITER006_RC006_LAMBDA_SOURCE_QUALIFICATION_2026-09-13.md","docs/CONSTITUTION.md"]
 }
