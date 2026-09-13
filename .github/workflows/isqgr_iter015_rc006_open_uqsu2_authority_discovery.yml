@@ -1,0 +1,78 @@
+name: ISQGR Iter015 RC006 open Uqsu2 authority discovery
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter015_rc006_open_uqsu2_authority_discovery.yml'
+  workflow_dispatch:
+jobs:
+  discover:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [uqsu2-action, quantum-clebsch, root-unity-representation, qangular-momentum]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Search open arXiv source candidates
+        env:
+          LANE: ${{ matrix.lane }}
+        run: |
+          python - <<'PY'
+          import os,urllib.parse,urllib.request,xml.etree.ElementTree as ET,json,re,time
+          lane=os.environ['LANE']
+          qs={
+            'uqsu2-action':'all:"U_q(su(2))" AND all:representation',
+            'quantum-clebsch':'all:"quantum Clebsch-Gordan" AND all:su(2)',
+            'root-unity-representation':'all:"root of unity" AND all:"U_q(su(2))"',
+            'qangular-momentum':'all:"q angular momentum" AND all:representation'}
+          url='https://export.arxiv.org/api/query?search_query='+urllib.parse.quote(qs[lane])+'&start=0&max_results=8&sortBy=relevance'
+          req=urllib.request.Request(url,headers={'User-Agent':'ISQGR-source-audit/1.0'})
+          xml=urllib.request.urlopen(req,timeout=30).read()
+          root=ET.fromstring(xml); ns={'a':'http://www.w3.org/2005/Atom'}
+          rows=[]
+          for e in root.findall('a:entry',ns):
+            aid=e.find('a:id',ns).text.rsplit('/',1)[-1]; title=' '.join(e.find('a:title',ns).text.split())
+            rec={'id':aid,'title':title,'source_ok':False,'uq_context':False,'jz_action':False,'jpm_action':False,'qnumber':False,'candidate':False}
+            try:
+              src=urllib.request.urlopen(urllib.request.Request('https://export.arxiv.org/e-print/'+aid,headers={'User-Agent':'ISQGR-source-audit/1.0'}),timeout=40).read(12_000_000)
+              txt=src.decode('latin1','ignore')
+              rec['source_ok']=len(txt)>1000
+              lo=txt.lower()
+              rec['uq_context']=('u_q' in lo or 'u_{q}' in lo or 'quantum group' in lo) and ('su(2)' in lo or 'sl(2)' in lo)
+              rec['jz_action']=bool(re.search(r'J[_\{]?z|K\s*\|?j.?m|q\^\{?J',txt,re.I))
+              rec['jpm_action']=bool(re.search(r'J[_\{]?[+\\-]|E\s*\|?j.?m|F\s*\|?j.?m',txt,re.I))
+              rec['qnumber']=bool(re.search(r'\[n\].{0,120}q|q[- ]number|q[- ]factorial',txt,re.I|re.S))
+              rec['candidate']=all(rec[k] for k in ['source_ok','uq_context','jz_action','jpm_action','qnumber'])
+            except Exception as ex: rec['error']=type(ex).__name__+': '+str(ex)[:180]
+            rows.append(rec); time.sleep(.25)
+          out={'lane':lane,'query':qs[lane],'rows':rows,'candidate_ids':[r['id'] for r in rows if r['candidate']]}
+          open('evidence.json','w').write(json.dumps(out,indent=2,sort_keys=True))
+          print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter015-${{ matrix.lane }}
+          path: evidence.json
+  aggregate:
+    needs: discover
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter015-*
+          path: inputs
+      - name: Frozen aggregate discovery classification
+        run: |
+          python - <<'PY'
+          import glob,json
+          rows=[]
+          for f in glob.glob('inputs/**/evidence.json',recursive=True): rows.append(json.load(open(f)))
+          ids=sorted(set(i for r in rows for i in r.get('candidate_ids',[])))
+          cls='RC006_OPEN_UQSU2_ACTION_AUTHORITY_CANDIDATES_FOUND_SCOPED' if ids else 'RC006_OPEN_UQSU2_ACTION_AUTHORITY_NOT_FOUND_BLOCKED'
+          out={'classification':cls,'candidate_ids':ids,'lanes':rows,'bridge_credit':False,'iter012_retry_authorized':False,'eq29_amplitude_authorized':False,'candidate_theory_authorized':False}
+          open('summary.json','w').write(json.dumps(out,indent=2,sort_keys=True)); print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter015-summary
+          path: summary.json
