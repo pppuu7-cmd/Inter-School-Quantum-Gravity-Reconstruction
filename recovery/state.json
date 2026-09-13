@@ -3,23 +3,24 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_016",
+  "active_iteration": "ITERATION_017",
   "iteration_completion_percent": 100,
-  "iteration_completion_scope": "Closed source/convention checkpoint; qualification remains PARTIAL, not scientific success",
+  "iteration_completion_scope": "Closed source/algebra phase-dual checkpoint; Eq.(27) visual topology and even-k independent convention authority remain pending",
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {"known_schools_fail": false,"new_theory_required": false,"new_physics_found": false,"bridge_derived": false,"rqir_promotion_authorized": false,"kmqgb_promotion_authorized": false},
   "readiness_percent": {"amplitude_refinement_cross_realization_validation": 49,"candidate_theory_construction": 0,"overall_scientific_programme": 49},
   "frontier": {
     "RC006": {
-      "status": "ACTION_TEXT_LOCATED_CONVENTION_AND_VISUAL_QUALIFICATION_PENDING",
+      "status": "DUAL_PAIRING_AND_PHASE_GAUGE_SOURCE_QUALIFIED_EQ27_VISUAL_PENDING",
       "iter014": {"prereg_commit":"8d62c1600e99815f6dcf71a6755335888a74ea0f","production_head":"6fdda05f1e8f5547a60d46d5fc41615299133ef4","run":34776142969,"jobs":{"rep_action":103774493019,"constructibility":103774492957,"phase_gauge":103774492979,"cap_cup":103774493037,"aggregate":103774586834},"artifacts":{"rep_action":10323621328,"constructibility":10323149819,"phase_gauge":10323916125,"cap_cup":10324115545,"summary":10323861241},"summary_digest":"sha256:3e2a46dc541a616b603dcde734eec8e95b2e57ef2f2d8284fd3dc31b8e63e10e","classification":"RC006_QCG_CONSTRUCTIBILITY_BLOCKED_MISSING_REPRESENTATION_ACTION","bridge_credit":false},
       "iter015": {"production_head":"b45e10f15f7793576ef3da8412a79a47fc266578","run":34782247507,"aggregate_job":103791647383,"summary_artifact":10325695571,"summary_digest":"sha256:029acd36f96ee520b7bab767a9f68cada978add8490a2682200cf4d1bf4738ce","classification":"RC006_OPEN_UQSU2_ACTION_AUTHORITY_DISCOVERY_INFRASTRUCTURE_FAIL","api_timeouts":3,"http_429":1,"candidate_absence_is_scientific_negative":false},
-      "iter016": {"prereg_commit":"87d9a8a354d7a7e6d43eb262c81a4cdf954328df","classification":"RC006_ACTION_TEXT_LOCATED_CONVENTION_AND_VISUAL_QUALIFICATION_PENDING","qualification":"PARTIAL","source_versions":["math/0104045v1","1012.4784v3","2503.23554v2","1609.02429v2"],"source_bytes_archived":false,"required_visual_inspection_complete":false,"synthetic_decoder_tests_passed":30,"physics_experiments_run":0,"algebraic_findings":["Q=r^2 dictionary and FM generator rescaling","ordinary factorwise adjoint maps coproduct to opposite coproduct at unit modulus","displayed optional HTML antipode sign has a nonzero Hopf-identity residual"],"report":"results/ITER016_RC006_CONVENTION_AUDIT_2026-09-14.md","execution_manifest":"results/ITER016_EXECUTION_MANIFEST.json"},
+      "iter016": {"prereg_commit":"87d9a8a354d7a7e6d43eb262c81a4cdf954328df","classification":"RC006_ACTION_TEXT_LOCATED_CONVENTION_AND_VISUAL_QUALIFICATION_PENDING","qualification":"PARTIAL","source_versions":["math/0104045v1","1012.4784v3","2503.23554v2","1609.02429v2"],"source_bytes_archived_locally":false,"required_visual_inspection_complete":false,"synthetic_decoder_tests_passed":30,"physics_experiments_run":0,"algebraic_findings":["Q=r^2 dictionary and FM generator rescaling","ordinary factorwise adjoint maps coproduct to opposite coproduct at unit modulus","displayed optional HTML antipode sign has a nonzero Hopf-identity residual"],"report":"results/ITER016_RC006_CONVENTION_AUDIT_2026-09-14.md","execution_manifest":"results/ITER016_EXECUTION_MANIFEST.json"},
+      "iter017": {"prereg_commit":"fe11ca9c2b71e7561beb4aca12ee795dc909ca70","classification":"RC006_DUAL_PAIRING_AND_PHASE_GAUGE_SOURCE_QUALIFIED_EQ27_VISUAL_PENDING","qualification":"SCOPED_SOURCE_ALGEBRA_PASS_VISUAL_PENDING","report":"results/ITER017_RC006_PHASE_DUAL_PAIRING_2026-09-14.md","execution_manifest":"results/ITER017_EXECUTION_MANIFEST.json","checks":{"cap_cup_cases":819,"cap_cup_failures":0,"fusion_cases":23408,"fusion_failures":0,"fusion_k_range":"1..16","fitted_phases":0,"physics_amplitude_runs":0},"phase_gauge":{"A9_residual_scalar":"+/-1","paired_dual_sign_invariant":true,"eq27_specific_topology_qualified":false},"finite_level":{"target_A7_matches_FM93_under_r_eq_k_plus_2":true,"FM_root_section_requires_odd_r":true,"FM_direct_even_k_authority":false,"k12_directly_covered_by_FM_root_section":false},"historical_source_archive_sha256":{"1609.02429v2":"3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee","1312.0905v2":"69334656117892b255ebb9b0c3855b6387bafc630bb9345b084e5434e22294c0","1506.04749v3":"758e05bf73390015fb02f374c69892ad155c8edacb40a97876c12aa7f64c1e14"},"historical_iter014_qbar_parser_false_negative":true,"source_archives_currently_materialized":false,"pdf_visual_transport":"CACHE_MISS"},
       "implementation_validation_gate_authorized": false,
       "eq29_amplitude_authorized": false,
       "iter012_retry_authorized": false,
       "bridge_credit": false,
-      "next_gate": "COMPLETE_PINNED_PAGE_IMAGES_THEN_FINITE_K_PHASE_AND_CATEGORICAL_DUAL_COMPATIBILITY"
+      "next_gate": "EXACT_EQ27_GRAPH_COMPONENT_TRANSLATION_AND_EVEN_K_CONVENTION_QUALIFICATION"
     },
     "BH004_BH004B": {"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","refinement_map_derived":false},
@@ -28,6 +29,6 @@
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
   "active_compute": [],
-  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"No unqualified physics run queued. Source image/byte retrieval and phase-dual compatibility remain prerequisites; offline transport tests completed."},
-  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER016_RC006_CONVENTION_AUDIT_2026-09-14.md","results/ITER016_EXECUTION_MANIFEST.json","results/ITER014_RC006_QCG_CONSTRUCTIBILITY_2026-09-13.md","results/ITER013_RC006_GENERIC_QCG_AUTHORITY_AND_NORMALIZATION_2026-09-13.md","docs/CONSTITUTION.md"]
+  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"No unqualified physics run queued. Eq.(27) graph/component qualification and an even-k convention authority/direct target derivation remain prerequisites."},
+  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER017_RC006_PHASE_DUAL_PAIRING_2026-09-14.md","results/ITER017_EXECUTION_MANIFEST.json","results/ITER017_CHECK_RUN.txt","results/ITER016_RC006_CONVENTION_AUDIT_2026-09-14.md","results/ITER014_RC006_QCG_CONSTRUCTIBILITY_2026-09-13.md","results/ITER013_RC006_GENERIC_QCG_AUTHORITY_AND_NORMALIZATION_2026-09-13.md","docs/CONSTITUTION.md"]
 }
