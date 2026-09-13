@@ -1,0 +1,161 @@
+name: ISQGR Iter006 RC006 Lambda Source Qualification
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_lambda_source_qualification.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        source: [tex, pdf]
+        parser: [lexical, structural]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch immutable source
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.source }}" = tex ]; then
+            curl -L --fail --retry 3 -o src.tar https://export.arxiv.org/e-print/1112.2511v1
+            echo 'd2dfda1a79b9978422b5a57387f9bbf1ebd4828327c656b59ed74c0acc98302c  src.tar' | sha256sum -c -
+            mkdir src
+            tar -xf src.tar -C src || (cd src && tar -xzf ../src.tar)
+            find src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > source.txt
+          else
+            sudo apt-get update -qq && sudo apt-get install -y poppler-utils >/dev/null
+            curl -L --fail --retry 3 -o paper.pdf https://arxiv.org/pdf/1112.2511v1
+            echo 'b41866cdd69defdef1862416bfb40e8b4c39775b53a51718a7cae837fedf6667  paper.pdf' | sha256sum -c -
+            pdftotext -layout paper.pdf source.txt
+          fi
+      - name: Apply frozen source predicates
+        env:
+          SOURCE_KIND: ${{ matrix.source }}
+          PARSER_KIND: ${{ matrix.parser }}
+        run: |
+          python - <<'PY'
+          import os,re,json,pathlib
+          src=pathlib.Path('source.txt').read_text(errors='ignore')
+          sk=os.environ['SOURCE_KIND']; pk=os.environ['PARSER_KIND']
+          if sk=='tex':
+              lowsrc=src.lower()
+              candidates=[]
+              for m in re.finditer(r'\\begin\{proposition\}',src):
+                  e=src.find('\\end{proposition}',m.start())
+                  if e>=0:
+                      b=src[m.start():e+len('\\end{proposition}')]
+                      if 'braid' in b.lower() and ('\\lambda' in b.lower() or '\\Lambda' in b): candidates.append(b)
+              block=candidates[0] if len(candidates)==1 else ''
+          else:
+              low=' '.join(src.lower().split())
+              i=low.find('proposition 3.4'); j=low.find('4. the 4-simplex amplitude', i if i>=0 else 0)
+              block=low[i:(j if j>i else min(len(low),i+4500))] if i>=0 else ''
+              lowsrc=low
+          if pk=='lexical':
+              canon=' '.join(re.sub(r'[^a-z0-9α-ω]+',' ',block.lower()).split())
+              compact=re.sub(r'\s+','',block.lower())
+              pred={
+                'braid_order': ('alpha 2' in canon and 'alpha 1' in canon and 'braid' in block.lower()) or ('α2' in compact and 'α1' in compact and 'braid' in block.lower()),
+                'sum_K': ('sum' in canon and re.search(r'(^| )k( |$)',canon) is not None) or ('∑' in block),
+                'lambda_present': ('lambda' in canon) or ('λ' in block.lower()) or ('\\Lambda' in block),
+                'K1': ('k 1' in canon) or ('k1' in canon),
+                'K': re.search(r'(^| )k( |$)',canon) is not None,
+                'K2': ('k 2' in canon) or ('k2' in canon),
+                'J': re.search(r'(^| )j( |$)',canon) is not None,
+                'domain_note': 'not necessarily an eprl representation' in lowsrc,
+                'alpha3K3': ('alpha 3 k 3' in canon) or ('α3 k3' in canon),
+                'alpha4K4': ('alpha 4 k 4' in canon) or ('α4 k4' in canon),
+                'alpha2K2': ('alpha 2 k 2' in canon) or ('α2 k2' in canon),
+                'alpha1K': ('alpha 1 k' in canon) or ('α1 k' in canon)
+              }
+          else:
+              norm=block.replace('{',' ').replace('}',' ').replace('_',' ').replace('\\',' ')
+              norm=' '.join(norm.lower().split())
+              pred={
+                'braid_order': 'braid' in norm and (('alpha 2' in norm and 'alpha 1' in norm) or ('α2' in norm and 'α1' in norm)),
+                'sum_K': ('sum' in norm or '∑' in block) and bool(re.search(r'\bk\b',norm)),
+                'lambda_present': ('lambda' in norm) or ('λ' in norm),
+                'K1': bool(re.search(r'\bk\s*1\b|\bk1\b',norm)),
+                'K': bool(re.search(r'\bk\b',norm)),
+                'K2': bool(re.search(r'\bk\s*2\b|\bk2\b',norm)),
+                'J': bool(re.search(r'\bj\b',norm)),
+                'domain_note': bool(re.search(r'not\s+necessarily\s+an\s+eprl\s+representation',lowsrc)),
+                'alpha3K3': ('alpha 3' in norm or 'α3' in norm) and bool(re.search(r'k\s*3|k3',norm)),
+                'alpha4K4': ('alpha 4' in norm or 'α4' in norm) and bool(re.search(r'k\s*4|k4',norm)),
+                'alpha2K2': ('alpha 2' in norm or 'α2' in norm) and bool(re.search(r'k\s*2|k2',norm)),
+                'alpha1K': ('alpha 1' in norm or 'α1' in norm) and bool(re.search(r'\bk\b',norm))
+              }
+          valid=all(pred.values())
+          record={
+            'braid_inputs':['alpha2','alpha1'],
+            'summation':['K'],
+            'kernel':'Lambda',
+            'kernel_labels':['K1','K','K2','J'],
+            'domain_alpha1K_necessarily_EPRL':False,
+            'untouched_outputs':['alpha3(K3)','alpha4(K4)'],
+            'braided_outputs':['alpha2(K2)','alpha1(K)']
+          } if valid else {}
+          out={'gate':'ITER006_RC006_LAMBDA_SOURCE_QUALIFICATION','source':sk,'parser':pk,'valid':valid,'predicates':pred,'canonical_record':record}
+          fn=f"lane_{sk}_{pk}.json"; pathlib.Path(fn).write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lambda-source-${{ matrix.source }}-${{ matrix.parser }}
+          path: lane_${{ matrix.source }}_${{ matrix.parser }}.json
+          if-no-files-found: warn
+
+  aggregate:
+    needs: source-lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: lambda-source-*
+          path: inputs
+          merge-multiple: true
+      - name: Apply frozen classifier
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          files=sorted(pathlib.Path('inputs').glob('lane_*.json'))
+          rows=[json.loads(p.read_text()) for p in files]
+          passing=[r for r in rows if r.get('valid') is True]
+          records=[json.dumps(r.get('canonical_record',{}),sort_keys=True) for r in passing]
+          agree=len(passing)==4 and len(set(records))==1
+          if len(passing)==4 and agree:
+              cl='QEPRL_PROP34_LAMBDA_SOURCE_STRUCTURE_QUALIFIED'
+          elif len(passing)>=2:
+              cl='QEPRL_PROP34_LAMBDA_SOURCE_STRUCTURE_AMBIGUOUS'
+          else:
+              cl='QEPRL_PROP34_LAMBDA_SOURCE_STRUCTURE_UNSUPPORTED'
+          out={
+            'gate':'ITER006_RC006_LAMBDA_SOURCE_QUALIFICATION',
+            'lane_count':len(rows),
+            'passing_lanes':len(passing),
+            'canonical_agreement':agree,
+            'classification':cl,
+            'low_spin_lambda_implementation_authorized':cl=='QEPRL_PROP34_LAMBDA_SOURCE_STRUCTURE_QUALIFIED',
+            'eq29_amplitude_authorized':False,
+            'bridge_credit':False,
+            'candidate_theory_authorized':False,
+            'historical_braid_projection_rewritten':False
+          }
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if len(rows)<2: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lambda-source-qualification-summary
+          path: summary.json
+          if-no-files-found: error
