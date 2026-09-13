@@ -1,0 +1,39 @@
+{
+  "gate": "ITER006_RC006_EXPLICIT_QEPRL_BRAIDING_LAW_AUTHORITY",
+  "date": "2026-09-13",
+  "purpose": "Qualify a second independent published source object with an explicit q-EPRL braiding transformation law and determine prospectively whether that law is permutation/sign-only or representation-mixing before any further RC006 Eq.(29) mapping attempt.",
+  "authority": {
+    "arxiv": "1112.2511v1",
+    "title": "q-Deformation of Lorentzian spin foam models",
+    "authors": ["Winston J. Fairbairn", "Catherine Meusburger"],
+    "proceedings": "PoS(QGQGS 2011)017"
+  },
+  "independence": "This proceedings source is external to ISQGR and supplies an explicit braiding operator and intertwiner transformation law. It is not selected by agreement with the seven historical RC006 holdouts.",
+  "frozen_lanes": ["ARXIV_TEX", "ARXIV_PDF_TEXT"],
+  "frozen_required_semantics": {
+    "braiding_defined_by_R_matrix": "c = tau composed with (pi tensor pi)(R)",
+    "explicit_intertwiner_braiding_transformation": true,
+    "non_invariance_under_braiding": true,
+    "representation_mixing_sum_over_K": true
+  },
+  "pass_rule": "Both independent lanes must identify the exact authority and independently recover all four frozen semantics. No historical RC006 pair signs are inputs to source qualification.",
+  "classifications": {
+    "MIXING": "EXPLICIT_QEPRL_BRAIDING_REPRESENTATION_MIXING_QUALIFIED",
+    "SIGN_ONLY": "EXPLICIT_QEPRL_BRAIDING_SIGN_OR_PERMUTATION_ONLY_QUALIFIED",
+    "PARTIAL": "EXPLICIT_QEPRL_BRAIDING_AUTHORITY_PARTIAL",
+    "INVALID": "INVALID_SOURCE_OR_IMPLEMENTATION"
+  },
+  "interpretation_rule": "If the qualified source transformation contains a nontrivial sum over representation label K and changes an EPRL representation label under braiding, classify MIXING. Such a result blocks any sign-only RC006 orientation map from being promoted as source-faithful without a new representation-aware derivation. It does not prove Eq.(29) false.",
+  "permissions": {
+    "on_mixing_authorize_representation_aware_mapping_preregistration": true,
+    "authorize_eq29_amplitude": false,
+    "authorize_bridge_credit": false,
+    "authorize_candidate_theory": false
+  },
+  "forbidden": [
+    "Using the seven agreeing historical holdouts to choose source semantics",
+    "Collapsing a representation-mixing source law to a fitted plus/minus sign",
+    "Changing source phrases or classifier after reading production output",
+    "Claiming bridge derivation, new physics, or candidate theory"
+  ]
+}
