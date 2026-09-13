@@ -4,7 +4,7 @@ Date: 2026-09-14.
 
 Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains **49%**; this is not a correctness probability.
 
-## Closed chain through ITER023
+## Closed chain through ITER024
 
 ITER019 validated the bounded source-derived q-CG solver; ITER020 passed independent held-out/adversarial transport. ITER021 source-pinned Eq.(27) topology but blocked full component translation on categorical primitives. ITER022 qualified cap/cup numerically but left qbar graph-to-index ordering and R authority open.
 
@@ -12,21 +12,15 @@ ITER023 is terminal **BLOCKED** as:
 
 `RC006_QBAR_INDEX_ORDER_BLOCKED`.
 
-Authority: prereg `f236741ce6b76050b40ed9fc5ef52998048a8c35`, implementation `b3ac56b8dec57873d2e59c72c57c30b64f1f46b3`, production head `86366a7abd003c166ea5ef277b1a3d1048e92e0a`, run `34785936567`, jobs qbar-inventory `103801306450`, r-authority `103801306540`, qbar-orientation `103801306566`, provenance-null `103801306710`, aggregate `103801340359`. Aggregate artifact `10326268909`, digest `sha256:626ed7f8fc035b845783828f8121d0da40698804d2cd44369a47af5c4f32d642`.
+Authority: prereg `f236741ce6b76050b40ed9fc5ef52998048a8c35`, implementation `b3ac56b8dec57873d2e59c72c57c30b64f1f46b3`, production head `86366a7abd003c166ea5ef277b1a3d1048e92e0a`, run `34785936567`, aggregate artifact `10326268909`, digest `sha256:626ed7f8fc035b845783828f8121d0da40698804d2cd44369a47af5c4f32d642`.
 
-Raw artifacts were consumed. qbar inventory is `BLOCKED_GRAPHICAL_ONLY`: no explicit index-level equality was found. Six frozen qbar orientation candidates had zero source-qualified survivors and no numerical fitting was used. R authority is `BLOCKED_BARE_MENTION_OR_REFERENCE` under the frozen rule. Provenance/null PASS retained the cap/cup residual `2.6360122491655997e-17` against `1e-12` and rejected ordinary-Hermitian and missing-orientation controls. Durable note: `results/ITER023_RC006_QBAR_R_AUTHORITY_SPLIT_2026-09-14.md`.
+ITER024 attempted a cited-authority-chain closure. Its GitHub run `34788335930` completed `success`, and its raw aggregate artifact `10327143320` emitted `RC006_CITED_AUTHORITY_CHAIN_COMPLETE`. After consuming the raw artifacts and auditing the implementation against the prospectively frozen prereg, the **scientific** terminal classification is instead:
 
-## Active ITER024
+`INVALID_IMPLEMENTATION`.
 
-Prospectively frozen gate: **resolve the cited authority chain behind `q-spinnet`, `biedenharn`, and `wojtek`** for the exact missing qbar index ordering and R/R^-1 convention.
+Reason: the qbar lane did not download or inspect the resolved `q-spinnet` source (`arXiv:1312.0905`); it searched only the `1609.02429v2` package and retained a boolean regex hit with no source locator or index formula. The R lane likewise did not inspect Biedenharn-Lohe or `arXiv:1311.1798`; it checked bibliography presence plus a target-package regex and retained no executable R/R^-1 convention, representation ordering, orientation, or locator. Thus the implementation is weaker than the frozen PASS criterion. Durable note: `results/ITER024_RC006_CITED_AUTHORITY_CHAIN_INVALID_IMPLEMENTATION_2026-09-14.md`.
 
-- prereg commit `6d007bf342997425d5eee88d0f354062e9f8bb95`
-- implementation commit `c223a73f0c66c950da98f478cfe4b7d2d3be8ca0`
-- production/workflow head `2511ad18bf53d7159b935df306419dad709a210c`
-- authoritative run `34788335930`
-- lanes: `bib-resolve`, `qbar-authority`, `r-authority`, `provenance-null`; `fail-fast:false`.
-
-No Eq.(27) reconstruction retry is authorized during this gate. Missing or ambiguous source authority remains BLOCKED; transport failures are INFRASTRUCTURE FAIL.
+This invalid result is not negative evidence. The ITER023 scientific blockers remain unresolved: exact qbar graph-to-index ordering and exact executable R/R^-1 convention.
 
 ## Locks
 
@@ -36,4 +30,4 @@ BH004/BH004B remains scoped-negative; genuine multivertex Lorentzian refinement 
 
 ## Exact next action
 
-Consume all four ITER024 raw artifacts and frozen aggregate from run `34788335930`. Only a complete, source-locatable qbar index ordering plus executable R convention may authorize a separately preregistered bounded Eq.(27) component contraction. Otherwise preserve the exact missing authority as BLOCKED; do not fit conventions post hoc.
+Prospectively preregister a corrected exact source-authority audit. It must actually download and hash the exact cited primary-source versions, preserve source-file/line context for each candidate qbar and R formula, and determine whether the cited chain uniquely fixes the missing index ordering and R/R^-1 convention without fitted phases/orientations. If either remains ambiguous, classify `BLOCKED_SOURCE_AUTHORITY`. Only unambiguous source-locatable closure may authorize a separate bounded Eq.(27) component-contraction preregistration.
