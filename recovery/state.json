@@ -4,7 +4,7 @@
   "date": "2026-09-13",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 86,
+  "iteration_completion_percent": 87,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -15,13 +15,13 @@
     "kmqgb_promotion_authorized": false
   },
   "readiness_percent": {
-    "amplitude_refinement_cross_realization_validation": 48,
+    "amplitude_refinement_cross_realization_validation": 49,
     "candidate_theory_construction": 0,
     "overall_scientific_programme": 49
   },
   "frontier": {
     "RC006": {
-      "status": "REPRESENTATION_AWARE_SOURCE_SCHEMA_EXACT_LAMBDA_DERIVATION_NEXT",
+      "status": "LAMBDA_SOURCE_STRUCTURE_QUALIFIED_LOW_SPIN_RECONSTRUCTION_NEXT",
       "historical_braid_projection": {
         "run": 34741140565,
         "artifact": 10312369390,
@@ -45,7 +45,28 @@
         "aggregate_artifact": 10312672916,
         "aggregate_digest": "sha256:e1df22121e7c991842dfb2ea971eca29d89e7a4bd07a4db1de700286cb33dcb0",
         "classification": "QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_EXACT",
-        "lambda_kernel_derivation_preregistration_authorized": true,
+        "bridge_credit": false
+      },
+      "lambda_source_qualification": {
+        "prereg_commit": "a18bb2e0ab8adda10aa16f14fdbef82341f6688e",
+        "initial_run": 34744039075,
+        "initial_aggregate_artifact": 10313323964,
+        "initial_aggregate_digest": "sha256:8c6af75d492221c45e7dce605528cfcf310b779cff17975e92bc308f38800acf",
+        "initial_scientific_classification": "INFRASTRUCTURE_PARSER_TOKENIZATION_FAIL",
+        "first_repair_run": 34746508475,
+        "authoritative_head": "639acff2f84468ee5462898a56b913d242df7a1b",
+        "run": 34746554509,
+        "pdf_lexical_job": 103695433732,
+        "tex_lexical_job": 103695433809,
+        "tex_structural_job": 103695433834,
+        "pdf_structural_job": 103695433846,
+        "aggregate_job": 103695474938,
+        "aggregate_artifact": 10314366524,
+        "aggregate_digest": "sha256:7761a3788e2d860ae0dd1156abd83217047d09c0c506e810fb540a77ab4fa7de",
+        "passing_lanes": 4,
+        "canonical_agreement": true,
+        "classification": "QEPRL_PROP34_LAMBDA_SOURCE_STRUCTURE_QUALIFIED",
+        "low_spin_lambda_implementation_authorized": true,
         "eq29_amplitude_authorized": false,
         "bridge_credit": false
       },
@@ -57,7 +78,7 @@
         "scientific_fail": false
       },
       "eq29_amplitude_authorized": false,
-      "next_gate": "SOURCE_FAITHFUL_PROP34_LAMBDA_KERNEL_FORMULA_AND_DOMAIN_QUALIFICATION"
+      "next_gate": "SOURCE_FAITHFUL_LOW_SPIN_LAMBDA_COEFFICIENT_RECONSTRUCTION"
     },
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
       "status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS",
@@ -76,11 +97,12 @@
     "scientifically_useful_jobs_queued": 0,
     "scientifically_useful_jobs_in_progress": 0,
     "avoidable_idle": true,
-    "reason": "Exact source-to-schema mapping authorizes a new nonduplicating source-faithful Lambda-kernel qualification gate."
+    "reason": "Qualified Lambda source structure now authorizes a nonduplicating source-faithful low-spin coefficient reconstruction prerequisite."
   },
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER006_RC006_LAMBDA_SOURCE_QUALIFICATION_2026-09-13.md",
     "results/ITER006_RC006_REPRESENTATION_AWARE_SCHEMA_MAPPING_2026-09-13.md",
     "results/ITER006_QEPRL_AUTHORITY_AND_BRAID_PROJECTION_2026-09-13.md",
     "docs/CONSTITUTION.md"
