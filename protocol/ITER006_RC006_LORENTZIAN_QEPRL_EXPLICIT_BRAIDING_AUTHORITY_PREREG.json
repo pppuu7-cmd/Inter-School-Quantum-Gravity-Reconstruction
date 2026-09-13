@@ -1,0 +1,27 @@
+{
+  "gate": "ITER006_RC006_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY",
+  "date": "2026-09-13",
+  "source": "Fairbairn-Meusburger arXiv:1112.2511v1",
+  "purpose": "Qualify a genuinely independent explicit Lorentzian q-EPRL braiding transformation object without using historical RC006 holdout signs.",
+  "independence_lock": "No historical serialization sign, seven-agreeing holdout selector, Eq29 desired ordering, or post-result sign fit may enter this gate.",
+  "lanes": ["ARXIV_SOURCE_TEX", "ARXIV_PDF_TEXT"],
+  "frozen_required_objects": [
+    "quantum Lorentz group described as quasi-triangular Hopf algebra",
+    "existence of R-matrix in the quantum double tensor square",
+    "braiding definition c = tau composed with tensor-product representation applied to R (Eq. 3.7)",
+    "explicit action of braiding (Eq. 3.8)",
+    "Proposition 3.4 q-EPRL intertwiner transformation under c",
+    "statement that q-EPRL intertwiner is not invariant under braiding",
+    "graphical-calculus crossing assigned a braiding"
+  ],
+  "acceptance": "Both independent lanes must recover all frozen objects from the versioned source. Otherwise FAIL_CLOSED_SOURCE_AUTHORITY_INCOMPLETE.",
+  "pass_classification": "INDEPENDENT_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY_QUALIFIED",
+  "fail_classification": "INDEPENDENT_LORENTZIAN_QEPRL_EXPLICIT_BRAIDING_AUTHORITY_INCOMPLETE",
+  "downstream_if_pass": "A separately preregistered source-to-RC006 incidence/orientation mapping audit is authorized; Eq29 numerical amplitude is not authorized by this source gate alone.",
+  "claim_locks": {
+    "rewrite_historical_RC006_fail": false,
+    "eq29_amplitude_authorized": false,
+    "bridge_derived": false,
+    "new_physics_found": false
+  }
+}
