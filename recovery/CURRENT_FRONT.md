@@ -1,43 +1,35 @@
 # ISQGR CURRENT FRONT
 
 Date: 2026-09-13  
-Active iteration: `ITERATION_011`  
+Active iteration: `ITERATION_013`  
 Iteration completion: **100%**  
 Amplitude/refinement cross-realization validation: **49%**  
 Overall scientific programme readiness: **49%**  
 Candidate-theory construction: **0% — UNFORMED / constitutionally locked**
 
+## RC006 newest terminal layers
+
+### Iter012 — one-step Eq.(27) reconstruction
+Terminal classification: `RC006_EQ27_ONE_STEP_TNR_RECONSTRUCTION_BLOCKED_SOURCE_IMPLEMENTATION_GAP`.
+
+Authority: prereg `161ff5d7213d61da547c827158fa361447cbb2f3`, implementation `d684b3bb61d11ab145aa6f6f99ac2a45575f8401`, production `6fb36720515dc0c3e298715b35850ce853d67062`, run `34773202384`, aggregate job `103766582453`, summary artifact `10322866532`, digest `sha256:1388b06979edc681d43955def8cce2f3c982f3d69fbc5ca6ea8937cf7e07260f`.
+
+A and D pass their frozen support/negative-control predicates. B is BLOCKED because a generic source-faithful q-CG numerical implementation is absent; the Appendix-B cap/cup special case is insufficient. C therefore correctly does not execute the Eq.(27) contraction. This is not a numerical/infrastructure failure and not a scientific falsification.
+
+### Iter013 — generic q-CG authority audit
+Terminal classification: `RC006_GENERIC_QCG_EXTERNAL_BOOK_AUTHORITY_REQUIRED`. Cap/cup sub-classification: `CAP_CUP_NORMALIZATION_IDENTITY_SOURCE_QUALIFIED`.
+
+Authority: prereg `728d79fcbdc1df314ae6401f1b4bf0b346689df6`, parser-recovery head `4fb4e457440adcfd438dff754cca24a67bb03354`, authoritative recovery run `34774537357`, aggregate job `103770131285`, summary artifact `10322818577`, digest `sha256:5ccc6efebf17143f2ee6869892d2a8fc2cf7ad266551d5ca74fe009abbd90848`.
+
+The audited open primary sources define the q-CG object, coproduct/decomposition structure, admissibility and cap/cup identities, but delegate the standard generic coefficient convention/formula to the external Biedenharn authority. The parser-recovery run changed parsing only; frozen science was unchanged. No generic q-CG implementation and no Iter012 retry is authorized from this result alone.
+
 ## Claim locks
-`ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate action/Hamiltonian/field equations and RQIR/KMQGB candidate promotion remain forbidden. RC008 remains BLOCKED; RC009 remains `SCOPED BLOCKED`; Lorentzian Delta4 remains `SATURATED NEGATIVE/SCOPED` with zero bridge credit.
-
-## RC006 — newest terminal layer
-### Iter011 — Eq.(27)/Appendix-F numerical authority chain
-Terminal scientific PASS:
-- prereg `1d967344dafcbfbf23e802d3042c7c8b7669b8d0`
-- implementation `350a90124b04c8a83e5f0e978e2e8ca33c4c0fb9`
-- production head `a261237e1a549264917d37cec4adb556462eea6c`
-- run `34769981357`
-- jobs A `103757677191`, B `103757677291`, C `103757677262`, D `103757677321`, aggregate `103757712301`
-- artifacts A `10321452567`, B `10321692002`, C `10322105524`, D `10321333042`, summary `10322335128`
-- summary digest `sha256:440ec9bcec015cd1cb23d0b4cf7a761c80caf2588196e7e46b372d9f49e6dff0`
-- classification `RC006_EQ27_APPENDIXF_NUMERICAL_AUTHORITY_CHAIN_COMPLETE_SCOPED`.
-
-All four raw logs/artifacts plus the frozen aggregate were consumed. Eq.(27)'s scalar ingredients, Appendix-A/B q-CG/duality/recoupling conventions, Appendix-F derivation closure and negative controls all satisfy the prospectively frozen authority gate. Eq.(29), Lambda/formLambda6j and fitted normalization were not used.
-
-This result authorizes only the smallest source-faithful one-step numerical reconstruction with `alpha` declared prospectively. It gives zero bridge credit by itself and does not select a preferred alpha or establish a genuine refinement bridge.
-
-The older Lambda/q-binomial/Eq.(29) path remains independently blocked and unauthorized.
+No `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, candidate action/Hamiltonian/field equations, or RQIR/KMQGB candidate promotion. Eq.(29)/Lambda remains unauthorized. No preferred alpha.
 
 ## Other fronts
-BH-004/BH-004B Fusion dynamic selector remains terminal `SCOPED_NEGATIVE_FUSION_DYNAMIC_SELECTOR_PREDICTIVITY` from run `34676760272`, artifact `10292547840`.
-
-Genuine multivertex Lorentzian DED/DLD remains `BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS` from run `34724124735`, artifact `10307401066`; no unique refinement map is derived.
-
-RC008 remains `SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED`; RC009 remains `SCOPED_BLOCKED`; Lorentzian Delta4 remains saturated negative/scoped.
+BH-004/BH-004B selector remains scoped-negative. Genuine multivertex Lorentzian EPRL refinement remains source-blocked by the algebraic zero-face-collapse ambiguity. RC008 is BLOCKED; RC009 is SCOPED BLOCKED; Lorentzian Delta4 remains saturated negative/scoped.
 
 ## Current admissible frontier
-Scientifically useful queued/in-progress: **0 / 0** after terminal Iter011. Unlike the pre-Iter011 state, this is now scientifically avoidable idle: the frozen authority prerequisite has passed.
+Scientifically useful queued/in-progress at synchronization: **0 / 0**. This idle is avoidable because Iter013 sharply identifies the remaining q-CG blocker.
 
-Exact next admissible gate: prospectively preregister and run the **smallest source-faithful one-step Eq.(27)/Appendix-F TNR reconstruction**, with alpha declared before execution, no Eq.(29)/Lambda inputs, and independent held-out/negative controls. The first purpose is implementation validation and one-step transport consistency, not bridge promotion. Any missing numerical ingredient encountered during implementation must produce BLOCKED or infrastructure/numerical classification rather than a fitted convention.
-
-Iteration completion: **100%**. Amplitude/refinement validation: **49%**. Overall programme readiness: **49%**. Candidate theory: **0% / UNFORMED**.
+Exact next admissible gate: prospectively test whether the source-stated `U_q(su(2))` algebra, coproduct, representation action, orthogonality and cap/cup identities are sufficient to construct generic q-CG numerically **up to trivalent phase gauge**, and independently test whether the Eq.(27)-relevant contractions are invariant under that residual phase gauge. If the source does not specify enough representation data, classify BLOCKED; do not import or fit a formula. Only a PASS could authorize a later implementation-validation gate.
