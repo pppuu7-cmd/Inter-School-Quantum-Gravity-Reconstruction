@@ -4,26 +4,27 @@
   "date": "2026-09-13",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_006",
-  "iteration_completion_percent": 88,
+  "iteration_completion_percent": 89,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {"known_schools_fail": false,"new_theory_required": false,"new_physics_found": false,"bridge_derived": false,"rqir_promotion_authorized": false,"kmqgb_promotion_authorized": false},
   "readiness_percent": {"amplitude_refinement_cross_realization_validation": 49,"candidate_theory_construction": 0,"overall_scientific_programme": 49},
   "frontier": {
     "RC006": {
-      "status": "LAMBDA_EXACT_EQUATION_CHAIN_QUALIFIED_LOW_SPIN_CONVENTION_PANEL_NEXT",
+      "status": "LAMBDA_LOWSPIN_CONVENTIONS_QUALIFIED_NUMERICAL_BOUNDARY_PANEL_NEXT",
       "historical_braid_projection": {"run":34741140565,"artifact":10312369390,"artifact_digest":"sha256:52d338c3c498b6197e4e8094ad5dd4f852143c50598cb6b7575b349657f4fa5a","classification":"BRAID_SENSITIVE_ORDERING_UNSTABLE_UNDER_HOLDOUTS","rewritten":false},
       "source_to_schema_mapping": {"run":34742595474,"aggregate_artifact":10312672916,"aggregate_digest":"sha256:e1df22121e7c991842dfb2ea971eca29d89e7a4bd07a4db1de700286cb33dcb0","classification":"QEPRL_PROP34_SOURCE_TO_RC006_SCHEMA_MAPPING_EXACT"},
       "lambda_source_qualification": {"prereg_commit":"a18bb2e0ab8adda10aa16f14fdbef82341f6688e","authoritative_head":"639acff2f84468ee5462898a56b913d242df7a1b","run":34746554509,"aggregate_job":103695474938,"aggregate_artifact":10314366524,"aggregate_digest":"sha256:7761a3788e2d860ae0dd1156abd83217047d09c0c506e810fb540a77ab4fa7de","classification":"QEPRL_PROP34_LAMBDA_SOURCE_STRUCTURE_QUALIFIED"},
       "lambda_formula_authority_chain": {"prereg_commit":"1deee2a885fddf5a2c92d7d4aee6ee0e2d27cc7d","head":"1fb60e63a48f13f3faab873dc63ff5335e5d2182","run":34746758765,"aggregate_job":103696006904,"aggregate_artifact":10314183009,"aggregate_digest":"sha256:41fbd115758784856ef19f121d157846e20c7cde1ab5e2051c1681c942bcce03","classification":"QEPRL_LAMBDA_AUTHORITY_CHAIN_PARTIAL"},
       "lambda_exact_equation_chain": {"prereg_commit":"35beb34283d3492a44a20cb378a9d5261e86b407","initial_run":34746854011,"initial_classification":"INFRASTRUCTURE_SOURCE_EXTRACTION_FAIL","authoritative_head":"362143199837e8e6b7081f00b28da885b18d088a","run":34746885145,"aggregate_job":103696342737,"aggregate_artifact":10314422640,"aggregate_digest":"sha256:c8b8ffdf675ee01f78aadadea483650e8cb00959f03db2483088e219839161d3","classification":"BR_LAMBDA_EXACT_EQUATION_CHAIN_QUALIFIED","low_spin_implementation_authorized":true},
+      "lambda_lowspin_conventions": {"prereg_commit":"e6096df9a399305f8749480847077629c3f181e4","authoritative_head":"e361f96ad200d8cdd2620810a03324969c8d43b9","run":34747075146,"jobs":[103696850297,103696850531,103696850785,103696850848],"aggregate_job":103696875774,"aggregate_artifact":10314348181,"aggregate_digest":"sha256:e8bc4c4bdd07486906fdffa73bcac366d9787d1004ee846a30a657057d791385","classification":"BR_LAMBDA_LOWSPIN_CONVENTIONS_QUALIFIED","numerical_lowspin_panel_authorized":true},
       "eq29_amplitude_authorized": false,
       "bridge_credit": false,
-      "next_gate": "SOURCE_FAITHFUL_LOW_SPIN_LAMBDA_CONVENTION_AND_BOUNDARY_PANEL"
+      "next_gate": "SOURCE_FAITHFUL_LOW_SPIN_LAMBDA_BOUNDARY_NUMERICAL_PANEL"
     },
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","run":34724124735,"aggregate_job":103635174759,"artifact":10307401066,"artifact_digest":"sha256:5765ce15be5b6923eb9a16f0e06db6eb00d531448c887e92efac660ae7682dc5","refinement_map_derived":false},
     "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},"RC009":{"status":"SCOPED_BLOCKED"},"LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
   "active_compute": [],
-  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":true,"reason":"Exact Lambda equation chain is qualified; a source-faithful low-spin convention/boundary panel is now admissible."},
-  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC006_BR_LAMBDA_EXACT_EQUATION_CHAIN_2026-09-13.md","results/ITER006_RC006_LAMBDA_FORMULA_AUTHORITY_CHAIN_2026-09-13.md","results/ITER006_RC006_LAMBDA_SOURCE_QUALIFICATION_2026-09-13.md","docs/CONSTITUTION.md"]
+  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":true,"reason":"Low-spin conventions are qualified; a prospectively frozen finite boundary numerical Lambda panel is now admissible."},
+  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER006_RC006_LAMBDA_LOWSPIN_CONVENTION_PANEL_2026-09-13.md","results/ITER006_RC006_BR_LAMBDA_EXACT_EQUATION_CHAIN_2026-09-13.md","results/ITER006_RC006_LAMBDA_FORMULA_AUTHORITY_CHAIN_2026-09-13.md","docs/CONSTITUTION.md"]
 }
