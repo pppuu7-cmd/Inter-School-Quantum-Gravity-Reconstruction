@@ -57,6 +57,7 @@ jobs:
               i=low.find('proposition 3.4'); j=low.find('4. the 4-simplex amplitude', i if i>=0 else 0)
               block=low[i:(j if j>i else min(len(low),i+4500))] if i>=0 else ''
               lowsrc=low
+          domain_text=re.sub(r'(?<=[a-z])-\s+(?=[a-z])','',lowsrc)
           if pk=='lexical':
               canon=' '.join(re.sub(r'[^a-z0-9α-ω]+',' ',block.lower()).split())
               compact=re.sub(r'\s+','',block.lower())
@@ -68,7 +69,7 @@ jobs:
                 'K': re.search(r'(^| )k( |$)',canon) is not None,
                 'K2': ('k 2' in canon) or ('k2' in canon),
                 'J': re.search(r'(^| )j( |$)',canon) is not None,
-                'domain_note': 'not necessarily an eprl representation' in lowsrc,
+                'domain_note': 'not necessarily an eprl representation' in domain_text,
                 'alpha3K3': ('alpha 3 k 3' in canon) or ('α3 k3' in canon),
                 'alpha4K4': ('alpha 4 k 4' in canon) or ('α4 k4' in canon),
                 'alpha2K2': ('alpha 2 k 2' in canon) or ('α2 k2' in canon),
@@ -85,7 +86,7 @@ jobs:
                 'K': bool(re.search(r'\bk\b',norm)),
                 'K2': bool(re.search(r'\bk\s*2\b|\bk2\b',norm)),
                 'J': bool(re.search(r'\bj\b',norm)),
-                'domain_note': bool(re.search(r'not\s+necessarily\s+an\s+eprl\s+representation',lowsrc)),
+                'domain_note': bool(re.search(r'not\s+necessarily\s+an\s+eprl\s+representation',domain_text)),
                 'alpha3K3': ('alpha 3' in norm or 'α3' in norm) and bool(re.search(r'k\s*3|k3',norm)),
                 'alpha4K4': ('alpha 4' in norm or 'α4' in norm) and bool(re.search(r'k\s*4|k4',norm)),
                 'alpha2K2': ('alpha 2' in norm or 'α2' in norm) and bool(re.search(r'k\s*2|k2',norm)),
