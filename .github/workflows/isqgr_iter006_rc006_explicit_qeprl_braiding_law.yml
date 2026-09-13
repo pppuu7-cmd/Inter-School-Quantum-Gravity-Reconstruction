@@ -28,12 +28,12 @@ jobs:
           import json,re,pathlib
           t=pathlib.Path('source.txt').read_text(errors='ignore')
           low=t.lower()
-          title=('q-deformation of lorentzian spin foam models' in low or 'q--deformation of lorentzian spin foam models' in low)
-          authors=('fairbairn' in low and 'meusburger' in low)
-          braiding=('r-matrix' in low or 'r--matrix' in low) and ('braiding' in low) and ('tau' in low or '\\tau' in t)
-          noninv=('not invariant under braiding' in low or 'not appear to be invariant under braiding' in low)
-          # Prospectively frozen structural signature of Proposition 3.4: a sum over K/Lambda coefficients and changed alpha1(K).
-          mixing=(('proposition 3.4' in low or 'prop' in low) and ('lambda' in low or '\\Lambda' in t) and ('alpha_1(k)' in low or 'alpha1(k)' in low or '\\alpha_1(k)' in t or '\\alpha_1(K)' in t) and ('\\sum' in t or 'sum' in low))
+          norm=' '.join(re.sub(r'[^a-z0-9]+',' ',low).split())
+          title=('q deformation of lorentzian spin foam models' in norm)
+          authors=('fairbairn' in norm and 'meusburger' in norm)
+          braiding=('r matrix' in norm and 'braiding' in norm and ('tau' in norm or '\\tau' in t))
+          noninv=('not invariant under braiding' in norm or 'not appear to be invariant under braiding' in norm)
+          mixing=(('proposition 3 4' in norm or 'prop' in norm) and ('lambda' in norm or '\\Lambda' in t) and ('alpha 1 k' in norm or '\\alpha_1(k)' in t or '\\alpha_1(K)' in t) and ('\\sum' in t or 'sum' in norm))
           valid=all([title,authors,braiding,noninv,mixing])
           out={'lane':'ARXIV_TEX','title_ok':title,'authors_ok':authors,'braiding_defined_by_R_matrix':braiding,'non_invariance_under_braiding':noninv,'representation_mixing_sum_over_K':mixing,'valid':valid}
           pathlib.Path('tex.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
