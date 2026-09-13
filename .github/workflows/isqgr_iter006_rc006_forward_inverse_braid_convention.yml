@@ -1,0 +1,95 @@
+name: ISQGR Iter006 RC006 Forward Inverse Braid Convention
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_forward_inverse_braid_convention.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qeprl-convention:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch qEPRL source
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o src.tar https://export.arxiv.org/e-print/1112.2511v1
+          echo 'd2dfda1a79b9978422b5a57387f9bbf1ebd4828327c656b59ed74c0acc98302c  src.tar' | sha256sum -c -
+          mkdir src && tar -xf src.tar -C src || (cd src && tar -xzf ../src.tar)
+          find src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > source.tex
+      - name: Extract c=tau pi(R) convention
+        run: |
+          python - <<'PY'
+          import pathlib,re,json
+          t=pathlib.Path('source.tex').read_text(errors='ignore')
+          norm=' '.join(re.sub(r'[^a-z0-9]+',' ',t.lower()).split())
+          has_c=('braiding' in norm and 'r matrix' in norm and ('flip map' in norm or 'tau' in norm))
+          formula=bool(re.search(r'c[^=]{0,160}=\s*\\tau[^\n]{0,300}R',t,re.I|re.S))
+          out={'gate':'ITER006_RC006_FORWARD_INVERSE_BRAID_CONVENTION','lane':'QEPRL_BRAIDING_CONVENTION','valid':bool(has_c and formula),'braiding_c_uses_R':bool(has_c and formula),'rc006_sign_selected':False}
+          pathlib.Path('qeprl.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: forward-inverse-qeprl
+          path: qeprl.json
+          if-no-files-found: error
+
+  rmatrix-convention:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch Buffenoir-Roche source
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o source.bundle https://arxiv.org/e-print/math/9910147v1
+          echo '316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc  source.bundle' | sha256sum -c -
+          cp source.bundle source.tex
+      - name: Extract R plus/minus convention
+        run: |
+          python - <<'PY'
+          import pathlib,re,json
+          t=pathlib.Path('source.tex').read_text(errors='ignore')
+          compact=re.sub(r'\s+','',t)
+          # Accept TeX-equivalent source spellings, but require both plus=R and minus=inverse/opposite-21 content.
+          plus=bool(re.search(r'R\^?\{?\(\+\)\}?\s*=\s*R',compact,re.I)) or ('R^{(+)}=R' in compact)
+          minus=(('R^{(-)}' in compact or 'R(-)' in compact) and ('-1' in compact or '^{-1}' in compact) and ('21' in compact))
+          braiding=('braid' in t.lower() and 'matrix' in t.lower())
+          out={'gate':'ITER006_RC006_FORWARD_INVERSE_BRAID_CONVENTION','lane':'RMATRIX_PLUS_MINUS_CONVENTION','valid':bool(plus and minus and braiding),'R_plus_equals_R':plus,'R_minus_inverse_21':minus,'braiding_matrix_context':braiding,'rc006_sign_selected':False}
+          pathlib.Path('rmatrix.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: forward-inverse-rmatrix
+          path: rmatrix.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: [qeprl-convention, rmatrix-convention]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: forward-inverse-*
+          path: inputs
+          merge-multiple: true
+      - name: Apply frozen convention classifier
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          rows=[]
+          for n in ['qeprl.json','rmatrix.json']:
+              p=pathlib.Path('inputs')/n
+              if p.exists(): rows.append(json.loads(p.read_text()))
+          valid=(len(rows)==2 and all(r.get('valid') is True for r in rows))
+          cl='SOURCE_FORWARD_INVERSE_BRAID_CONVENTION_QUALIFIED' if valid else 'SOURCE_FORWARD_INVERSE_BRAID_CONVENTION_INCOMPLETE'
+          out={'gate':'ITER006_RC006_FORWARD_INVERSE_BRAID_CONVENTION','valid':len(rows)==2,'classification':cl,'lanes':rows,'orientation_incidence_mapping_support':valid,'rc006_sign_selected':False,'eq29_amplitude_authorized':False,'historical_fail_rewritten':False,'bridge_credit':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: forward-inverse-braid-convention-summary
+          path: summary.json
+          if-no-files-found: error
