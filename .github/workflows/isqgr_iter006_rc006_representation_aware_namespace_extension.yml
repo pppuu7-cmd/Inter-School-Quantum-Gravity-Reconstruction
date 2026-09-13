@@ -1,0 +1,98 @@
+name: ISQGR Iter006 RC006 Representation-Aware Namespace Extension
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_representation_aware_namespace_extension.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  schema-roundtrip:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate schema and canonical roundtrip
+        run: |
+          python - <<'PY'
+          import json,pathlib,importlib.util
+          p='experiments/rc006_representation_aware_braid_schema.py'
+          spec=importlib.util.spec_from_file_location('s',p); s=importlib.util.module_from_spec(spec); spec.loader.exec_module(s)
+          o=s.canonical_exemplar(); errs=s.validate(o); c1=s.canonicalize(o); p2=json.loads(c1); errs2=s.validate(p2); c2=s.canonicalize(p2)
+          out={'gate':'ITER006_RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION','lane':'SCHEMA_ROUNDTRIP','valid':not errs and not errs2 and c1==c2,'initial_errors':errs,'roundtrip_errors':errs2,'canonical_identity':c1==c2,'canonical_object':p2}
+          pathlib.Path('schema_roundtrip.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not out['valid']: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rep-aware-schema-roundtrip
+          path: schema_roundtrip.json
+          if-no-files-found: error
+
+  independent-validator:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Independent source-structure and null-control validation
+        run: |
+          python - <<'PY'
+          import ast,json,pathlib,subprocess
+          raw=subprocess.check_output(['python','experiments/rc006_representation_aware_braid_schema.py'],text=True)
+          d=json.loads(raw); o=d['object']; controls=d['null_controls']
+          # Independent checker does not import validate().
+          checks={
+            'schema_version':o.get('schema_version')=='RC006-QEPRL-BRAID-v1',
+            'input_map':[(x['slot'],x['label']) for x in o['input_representations']]==[('alpha1','K1'),('alpha2','K2'),('alpha3','K3'),('alpha4','K4')],
+            'braid_order':o['braid_operator']['ordered_inputs']==['alpha2','alpha1'],
+            'braid_R_source':o['braid_operator']['source_definition']=='tau_compose_pi_tensor_pi_of_R',
+            'summed_K':o['summations']==[{'index':'K','domain':'source_representation_domain'}],
+            'Lambda_dependencies':o['kernel']=={'name':'Lambda','upper_indices':['K2','J'],'lower_indices':['K1','K'],'arguments':['alpha2']},
+            'output_map':[(x['slot'],x['label']) for x in o['output_representations']]==[('alpha2','K2'),('alpha1','K'),('alpha3','K3'),('alpha4','K4')],
+            'domain_escape':o['domain_metadata']['alpha1(K)_necessarily_EPRL'] is False,
+            'legacy_non_authoritative':o['legacy_projection']=={'pair_sign_authoritative':False,'status':'non_authoritative_projection'},
+            'all_nulls_fail_closed':len(controls)==5 and all(x.get('fails_closed') for x in controls)
+          }
+          out={'gate':'ITER006_RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION','lane':'INDEPENDENT_VALIDATOR','valid':all(checks.values()),'checks':checks,'null_controls':controls}
+          pathlib.Path('independent_validator.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not out['valid']: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rep-aware-schema-independent-validator
+          path: independent_validator.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: [schema-roundtrip, independent-validator]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rep-aware-schema-*
+          path: inputs
+          merge-multiple: true
+      - name: Apply frozen namespace-extension classifier
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          rows=[]
+          for n in ['schema_roundtrip.json','independent_validator.json']:
+              p=pathlib.Path('inputs')/n
+              if p.exists(): rows.append(json.loads(p.read_text()))
+          valid=len(rows)==2
+          passes=sum(r.get('valid') is True for r in rows)
+          if valid and passes==2: cl='RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION_VALIDATED'
+          elif valid and passes==1: cl='RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION_PARTIAL'
+          else: cl='RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION_INVALID'
+          out={'gate':'ITER006_RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION','valid':valid,'lane_count':len(rows),'passing_lanes':passes,'classification':cl,'source_to_rc006_symbolic_mapping_preregistration_authorized':cl=='RC006_REPRESENTATION_AWARE_NAMESPACE_EXTENSION_VALIDATED','eq29_amplitude_authorized':False,'historical_holdout_fail_rewritten':False,'bridge_credit':False,'new_physics_found':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rep-aware-schema-summary
+          path: summary.json
+          if-no-files-found: error
