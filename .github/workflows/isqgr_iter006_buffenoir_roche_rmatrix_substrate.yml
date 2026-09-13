@@ -16,7 +16,14 @@ jobs:
           mkdir -p src out
           curl -fL --retry 3 https://arxiv.org/e-print/math/9910147v1 -o source.bundle
           sha256sum source.bundle | tee out/source_bundle.sha256
-          tar -xf source.bundle -C src || (mkdir -p src2 && cd src2 && tar -xzf ../source.bundle)
+          if tar -tf source.bundle >/dev/null 2>&1; then
+            tar -xf source.bundle -C src
+          elif gzip -t source.bundle >/dev/null 2>&1; then
+            mkdir -p src2
+            (cd src2 && tar -xzf ../source.bundle) || gunzip -c source.bundle > src/source.tex
+          else
+            cp source.bundle src/source.tex
+          fi
       - name: Frozen TeX substrate extraction
         run: |
           python - <<'PY'
