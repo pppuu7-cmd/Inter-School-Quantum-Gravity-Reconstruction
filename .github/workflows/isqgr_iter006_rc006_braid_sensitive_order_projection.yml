@@ -1,0 +1,76 @@
+name: ISQGR Iter006 RC006 Braid Sensitive Order Projection
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_braid_sensitive_order_projection.yml'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  frozen-projection:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download qualified independent authority
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction
+          run-id: 34740915628
+          name: independent-qeprl-authority-summary
+          path: authority
+      - name: Download historical frozen serialization lanes
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction
+          run-id: 34713459961
+          pattern: rc006-relation-aware-serialization-?
+          path: lanes
+          merge-multiple: true
+      - name: Apply frozen braid-sensitive projection
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import glob,json,pathlib
+          auth=json.loads(pathlib.Path('authority/summary.json').read_text())
+          rows=[json.loads(pathlib.Path(p).read_text()) for p in glob.glob('lanes/*.json')]
+          pairs=['j^+_2||j^-_1','j^+_1||j^-_2']
+          full=[x for x in rows if x.get('role')=='full']
+          holds=[x for x in rows if str(x.get('role','')).startswith('drop:')]
+          null=[x for x in rows if x.get('role')=='null_unordered']
+          authority_ok=(auth.get('classification')=='INDEPENDENT_QEPRL_CATEGORICAL_AUTHORITY_QUALIFIED')
+          shape_ok=(len(rows)==10 and len(full)==1 and len(holds)==8 and len(null)==1 and all(x.get('valid_computation') is True for x in rows))
+          key_ok=bool(shape_ok and all(k in full[0].get('pair_sign',{}) for k in pairs) and all(all(k in h.get('pair_sign',{}) for k in pairs) for h in holds))
+          comparisons=[]
+          stable=False
+          full_signs={}
+          if key_ok:
+              full_signs={k:full[0]['pair_sign'][k] for k in pairs}
+              for h in sorted(holds,key=lambda x:x['role']):
+                  comparisons.append({'role':h['role'],'signs':{k:h['pair_sign'][k] for k in pairs},'matches_full':all(h['pair_sign'][k]==full_signs[k] for k in pairs)})
+              stable=all(x['matches_full'] for x in comparisons)
+          valid=bool(authority_ok and shape_ok and key_ok)
+          if not valid: cl='INVALID_SOURCE_OR_IMPLEMENTATION'
+          elif stable: cl='BRAID_SENSITIVE_ORDERING_STABLE_UNDER_HOLDOUTS'
+          else: cl='BRAID_SENSITIVE_ORDERING_UNSTABLE_UNDER_HOLDOUTS'
+          out={'gate':'ITER006_RC006_BRAID_SENSITIVE_ORDER_PROJECTION','valid':valid,
+               'authority_classification':auth.get('classification'),'historical_lane_count':len(rows),
+               'frozen_pairs':pairs,'full_signs':full_signs,'holdout_comparisons':comparisons,
+               'null_ambiguous_group_count':null[0].get('ambiguous_group_count') if null else None,
+               'classification':cl,
+               'orientation_mapping_preregistration_authorized':cl=='BRAID_SENSITIVE_ORDERING_STABLE_UNDER_HOLDOUTS',
+               'eq29_amplitude_authorized':False,'bridge_credit':False,
+               'historical_scientific_fail_rewritten':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc006-braid-sensitive-order-projection-summary
+          path: summary.json
+          if-no-files-found: error
