@@ -1,0 +1,140 @@
+name: ISQGR Iter006 RC006 q-binomial primary-source authority
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_qbinomial_primary_source_authority.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  authority-lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [import-chain, prior-explicit-definition, symbol-compatibility]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch immutable/current and prior primary sources
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o current.archive 'https://export.arxiv.org/e-print/math/9910147v1'
+          echo '316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc  current.archive' | sha256sum -c -
+          curl -L --fail --retry 3 -o prior.archive 'https://export.arxiv.org/e-print/q-alg/9710022'
+          sha256sum prior.archive | tee prior.sha256
+          mkdir current_src prior_src
+          if tar -tf current.archive >/dev/null 2>&1; then tar -xf current.archive -C current_src; elif gzip -t current.archive >/dev/null 2>&1; then gzip -dc current.archive > current_src/source.tex; else cp current.archive current_src/source.tex; fi
+          if tar -tf prior.archive >/dev/null 2>&1; then tar -xf prior.archive -C prior_src; elif gzip -t prior.archive >/dev/null 2>&1; then gzip -dc prior.archive > prior_src/source.tex; else cp prior.archive prior_src/source.tex; fi
+          find current_src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > current.tex
+          find prior_src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > prior.tex
+          test -s current.tex
+          test -s prior.tex
+      - name: Audit frozen authority lane
+        env:
+          MODE: ${{ matrix.mode }}
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, re
+          mode=os.environ['MODE']
+          cur=pathlib.Path('current.tex').read_text(errors='ignore')
+          prior=pathlib.Path('prior.tex').read_text(errors='ignore')
+          cur_lines=cur.splitlines(); prior_lines=prior.splitlines()
+          prior_sha=pathlib.Path('prior.sha256').read_text().split()[0]
+          def excerpts(lines, pattern, radius=4):
+              out=[]
+              rx=re.compile(pattern,re.I)
+              for i,line in enumerate(lines,1):
+                  if rx.search(line):
+                      a=max(1,i-radius); b=min(len(lines),i+radius)
+                      out.append({'line':i,'excerpt':'\n'.join(f'{j}: {lines[j-1]}' for j in range(a,b+1))})
+              return out
+          import_hits=excerpts(cur_lines,r'Harmonic Analysis|9710022|previous (paper|work)|as in \[|notation.*(same|following)|we (use|follow).*notation',5)
+          # Require stronger language than a bare bibliography occurrence.
+          strong_import=[]
+          for h in import_hits:
+              s=h['excerpt']
+              if re.search(r'(notation|convention|defined|definition|as in|following).*?(Harmonic|previous|\[[A-Za-z0-9-]+\])|(Harmonic|previous|\[[A-Za-z0-9-]+\]).*?(notation|convention|defined|definition|as in|following)',s,re.I|re.S):
+                  strong_import.append(h)
+          qbinom_hits=excerpts(prior_lines,r'\\binom|q[- ]?binom|binomial',5)
+          explicit=[]
+          for h in qbinom_hits:
+              s=h['excerpt']
+              if re.search(r'(:=|\bdefine(?:d)?\b|\bdenote\b|\\binom[^\n]{0,160}=|=.{0,160}\\binom)',s,re.I|re.S):
+                  explicit.append(h)
+          bracket_hits=excerpts(prior_lines,r'\[.*\].*=|q\^.*-.*q\^|sinh|q-number|quantum number',4)
+          symmetric=[]
+          for h in bracket_hits:
+              s=h['excerpt'].replace(' ','')
+              if ('q^' in s or 'q^{' in s) and ('q^{-1}' in s or 'q^{-x}' in s or 'q^{-z}' in s or 'q^{-n}' in s) and ('q-q^{-1}' in s or 'q-q^{-1}' in s.replace('\\','')):
+                  symmetric.append(h)
+          # Compatibility can also be explicit factorial construction from the same bracket primitive.
+          factorial_hits=excerpts(prior_lines,r'\[.*\]!|factorial',4)
+          if mode=='import-chain':
+              lane_pass=bool(strong_import)
+          elif mode=='prior-explicit-definition':
+              lane_pass=bool(explicit)
+          else:
+              lane_pass=bool(symmetric) and bool(explicit or factorial_hits)
+          out={
+            'gate':'ITER006_RC006_LAMBDA_QBINOMIAL_PRIMARY_SOURCE_AUTHORITY_CHAIN',
+            'mode':mode,
+            'current_sha256':'316ab7737a6e201c9c5d988326077358b562e6f5d47cfffbf1d2935cdd9389bc',
+            'prior_arxiv':'q-alg/9710022',
+            'prior_sha256':prior_sha,
+            'import_hit_count':len(import_hits),'strong_import_count':len(strong_import),
+            'prior_qbinomial_hit_count':len(qbinom_hits),'explicit_definition_count':len(explicit),
+            'bracket_hit_count':len(bracket_hits),'symmetric_bracket_candidate_count':len(symmetric),
+            'factorial_hit_count':len(factorial_hits),'lane_pass':lane_pass,
+            'strong_import_evidence':strong_import,
+            'explicit_definition_evidence':explicit,
+            'symmetric_bracket_evidence':symmetric,
+            'factorial_evidence':factorial_hits,
+            'eq29_amplitude_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False
+          }
+          pathlib.Path('evidence.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({k:v for k,v in out.items() if not k.endswith('_evidence')},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qbinomial-authority-${{ matrix.mode }}
+          path: evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: authority-lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: qbinomial-authority-*
+          path: inputs
+          merge-multiple: false
+      - name: Apply frozen authority classifier
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('inputs').glob('**/evidence.json')]
+          modes={r['mode'] for r in rows}
+          expected={'import-chain','prior-explicit-definition','symbol-compatibility'}
+          infra_ok=len(rows)==3 and modes==expected and all(r.get('prior_sha256') for r in rows)
+          if not infra_ok:
+              cls='INFRASTRUCTURE_PRIMARY_SOURCE_AUDIT_FAIL'
+          elif all(r.get('lane_pass') for r in rows):
+              cls='SOURCE_AUTHORITY_CHAIN_ESTABLISHED'
+          else:
+              cls='BLOCKED_SOURCE_AUTHORITY_CHAIN_NOT_ESTABLISHED'
+          out={'gate':'ITER006_RC006_LAMBDA_QBINOMIAL_PRIMARY_SOURCE_AUTHORITY_CHAIN','classification':cls,'lane_count':len(rows),'modes':sorted(modes),'rows':rows,'lowspin_source_faithful_authorized':cls=='SOURCE_AUTHORITY_CHAIN_ESTABLISHED','eq29_amplitude_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({k:v for k,v in out.items() if k!='rows'},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qbinomial-primary-source-authority-summary
+          path: summary.json
+          if-no-files-found: error
