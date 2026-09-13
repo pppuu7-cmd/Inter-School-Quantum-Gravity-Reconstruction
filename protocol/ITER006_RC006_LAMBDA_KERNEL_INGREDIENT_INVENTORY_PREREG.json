@@ -1,0 +1,19 @@
+{
+  "gate": "ITER006_RC006_LAMBDA_KERNEL_INGREDIENT_INVENTORY",
+  "date": "2026-09-13",
+  "purpose": "Inventory existing RC006 q-group numerical ingredients that may support a future source-faithful implementation of the qualified q-EPRL braid kernel Lambda. This is analysis-only and must not classify any existing function as Lambda unless source equivalence is later derived.",
+  "objects": [
+    "experiments/rc006_qgroup_recoupling_kernel.jl",
+    "experiments/rc006_b13_sixjr_source_mapping.jl"
+  ],
+  "required_inventory": [
+    "q-number or quantum-dimension capability",
+    "q-Clebsch/recoupling or q-6j capability",
+    "admissibility/domain checks",
+    "finite-level k support",
+    "explicit absence or presence of Lorentzian alpha/K representation-mixing and Lambda dependencies"
+  ],
+  "acceptance": "Report exact implemented ingredients and exact missing source-qualified dependencies. No equivalence promotion is permitted from name similarity.",
+  "pass_classification": "RC006_LAMBDA_KERNEL_INGREDIENT_INVENTORY_COMPLETE",
+  "claim_locks": {"Lambda_implemented": false, "eq29_amplitude_authorized": false, "bridge_derived": false}
+}
