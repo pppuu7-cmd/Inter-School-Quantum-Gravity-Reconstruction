@@ -1,0 +1,115 @@
+name: ISQGR Iter006 RC006 q-binomial delegation-target audit
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr_iter006_rc006_qbinomial_delegation_target.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [qbinomial-context, notation-preamble, bibliography-map]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and verify frozen prior source
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o prior.archive 'https://export.arxiv.org/e-print/q-alg/9710022'
+          echo '7acfbb6e3ae77d8fab56f00f4c0ae78287b706f4d99d5db77afa1b3310fecd98  prior.archive' | sha256sum -c -
+          mkdir prior_src
+          if tar -tf prior.archive >/dev/null 2>&1; then tar -xf prior.archive -C prior_src; elif gzip -t prior.archive >/dev/null 2>&1; then gzip -dc prior.archive > prior_src/source.tex; else cp prior.archive prior_src/source.tex; fi
+          find prior_src -type f -name '*.tex' -print0 | sort -z | xargs -0 cat > prior.tex
+          test -s prior.tex
+      - name: Run frozen delegation audit lane
+        env:
+          MODE: ${{ matrix.mode }}
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib,re
+          mode=os.environ['MODE']; text=pathlib.Path('prior.tex').read_text(errors='ignore'); lines=text.splitlines()
+          cite_rx=re.compile(r'\\cite(?:\[[^\]]*\])?\{([^}]*)\}')
+          bib_rx=re.compile(r'\\bibitem(?:\[[^\]]*\])?\{([^}]*)\}')
+          def window(i,r=12):
+              a=max(0,i-r); b=min(len(lines),i+r+1)
+              return '\n'.join(f'{j+1}: {lines[j]}' for j in range(a,b))
+          def cites(s):
+              out=[]
+              for m in cite_rx.finditer(s): out.extend(k.strip() for k in m.group(1).split(',') if k.strip())
+              return sorted(set(out))
+          qhits=[]
+          for i,l in enumerate(lines):
+              if re.search(r'\\binom|q[- ]?binom|binomial',l,re.I):
+                  w=window(i); qhits.append({'line':i+1,'context':w,'cite_keys':cites(w)})
+          delegation_rx=re.compile(r'(we\s+(?:use|follow|adopt).*?(?:convention|notation)|(?:convention|notation).*?(?:of|from|following)|as\s+(?:defined|in)\s+|following\s+(?:the\s+)?(?:notation|convention)|defined\s+in)',re.I)
+          notation_hits=[]
+          for i,l in enumerate(lines):
+              w=window(i,8)
+              if delegation_rx.search(l) and re.search(r'(q|quantum|bracket|factorial|binom|notation|convention)',w,re.I):
+                  notation_hits.append({'line':i+1,'context':w,'cite_keys':cites(w)})
+          bib={}
+          for i,l in enumerate(lines):
+              m=bib_rx.search(l)
+              if m: bib[m.group(1).strip()]=window(i,3)
+          candidate_keys=sorted(set(k for h in qhits+notation_hits for k in h['cite_keys']))
+          mapped={k:bib[k] for k in candidate_keys if k in bib}
+          explicit=[]
+          for h in qhits+notation_hits:
+              if delegation_rx.search(h['context']) and h['cite_keys']:
+                  explicit.append(h)
+          if mode=='qbinomial-context':
+              lane={'occurrences':qhits,'explicit_delegation_candidates':[h for h in qhits if delegation_rx.search(h['context']) and h['cite_keys']]}
+          elif mode=='notation-preamble':
+              lane={'notation_hits':notation_hits,'explicit_delegation_candidates':explicit}
+          else:
+              lane={'candidate_keys':candidate_keys,'mapped_bibliography':mapped,'unmapped_keys':[k for k in candidate_keys if k not in bib],'explicit_delegation_candidates':explicit}
+          out={'gate':'ITER006_RC006_QBINOMIAL_EXPLICIT_DELEGATION_TARGET_AUDIT','mode':mode,'prior_sha256':'7acfbb6e3ae77d8fab56f00f4c0ae78287b706f4d99d5db77afa1b3310fecd98',**lane,'bridge_credit':False,'convention_authorized':False}
+          pathlib.Path('evidence.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'mode':mode,'qbinomial_occurrences':len(qhits),'notation_hits':len(notation_hits),'candidate_keys':candidate_keys,'mapped_count':len(mapped),'explicit_candidate_count':len(explicit)},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: delegation-${{ matrix.mode }}
+          path: evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    runs-on: ubuntu-24.04
+    needs: audit
+    if: always()
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: delegation-*
+          path: inputs
+      - name: Apply frozen classifier
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          rows=[json.loads(p.read_text()) for p in pathlib.Path('inputs').glob('**/evidence.json')]
+          expected={'qbinomial-context','notation-preamble','bibliography-map'}; modes={r.get('mode') for r in rows}
+          if len(rows)!=3 or modes!=expected or any(r.get('prior_sha256')!='7acfbb6e3ae77d8fab56f00f4c0ae78287b706f4d99d5db77afa1b3310fecd98' for r in rows):
+              cls='INFRASTRUCTURE_DELEGATION_AUDIT_FAIL'; targets=[]
+          else:
+              b=next(r for r in rows if r['mode']=='bibliography-map'); mapped=b.get('mapped_bibliography',{})
+              keys=set()
+              for r in rows:
+                  for h in r.get('explicit_delegation_candidates',[]): keys.update(h.get('cite_keys',[]))
+              targets=sorted(k for k in keys if k in mapped)
+              cls='EXPLICIT_DELEGATION_TARGET_IDENTIFIED' if targets else 'NO_EXPLICIT_DELEGATION_TARGET_IN_AUDITED_SOURCE'
+          out={'gate':'ITER006_RC006_QBINOMIAL_EXPLICIT_DELEGATION_TARGET_AUDIT','classification':cls,'resolved_targets':targets,'lane_count':len(rows),'modes':sorted(x for x in modes if x),'bridge_credit':False,'convention_authorized':False,'eq29_authorized':False,'candidate_theory_authorized':False}
+          pathlib.Path('summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: delegation-target-summary
+          path: summary.json
+          if-no-files-found: error
