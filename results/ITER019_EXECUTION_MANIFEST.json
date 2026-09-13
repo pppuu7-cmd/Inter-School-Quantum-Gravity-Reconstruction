@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-14",
+  "iteration": "ITERATION_019",
+  "preregistration_commit": "4f497a0e6413d8f4bc0408f0050552fa80d2ba98",
+  "production_head": "d5934a5f2251c01b2d8ec2315d1c36161b45f507",
+  "production_run": 34785058584,
+  "runtime": {"python": "3.13.11", "numpy": "2.3.3", "mpmath": "1.3.0"},
+  "code": {
+    "path": "code/iter019/qcg_solver_validation.py",
+    "sha256": "57c0e253afc6ac4077d00b29228a0679166adcb99da133fb53260a2fb99b6b82"
+  },
+  "jobs": {
+    "recoupling": 103798881343,
+    "algebra": 103798881391,
+    "classical_limit": 103798881424,
+    "projector_cap": 103798881594,
+    "aggregate": 103798931295
+  },
+  "artifacts": {
+    "algebra": {"id": 10325903240, "zip_sha256": "92cf6e5036f4b3b39d7849aa8fab34197c74c6dafc30f8a982c91cd71e7c762b"},
+    "projector_cap": {"id": 10326635226, "zip_sha256": "98d0326733f367c8925257737018e5ebf76a9bc999aec203685960143afb05ce"},
+    "recoupling": {"id": 10326578245, "zip_sha256": "1f3ac43231485be5996c704c7c0f7bf067747e020266fae51a5a297e9d8202f"},
+    "classical_limit": {"id": 10325907403, "zip_sha256": "804263646443fec62f3e25f7d6a0878d9c55311aafd8f69c9fb12f42186f29b6"},
+    "aggregate": {"id": 10326636905, "zip_sha256": "62892f576c56d6f6ae09708594bb6b6286d56a4ce5f4821043faf2367fea73cf"}
+  },
+  "metrics": {
+    "algebra_channel_count": 19,
+    "algebra_max_intertwiner_residual": 1.6462900610405706e-12,
+    "all_highest_weight_nullspaces_dim_one": true,
+    "a9_max_cross_channel_residual": 1.2318946614931203e-12,
+    "full_3x3_completeness_residual": 3.908846888280509e-13,
+    "projector_4x4_idempotence_residual_high_precision": 1.8184291884891273e-74,
+    "projector_4x4_rank": 25,
+    "projector_4x4_trace_minus_25_abs": 8.3915e-76,
+    "max_B2_singlet_residual_up_to_sign": 5.770557056164968e-15,
+    "recoupling_max_M_independence_residual": 1.5221333771292962e-12,
+    "recoupling_max_transpose_orthogonality_residual": 3.6690448108052944e-12,
+    "recoupling_max_imaginary_part": 1.6237011735142914e-13,
+    "classical_limit_max_projector_frobenius_difference": 0.0005651832113359061
+  },
+  "terminal_classification": "RC006_QCG_SOLVER_VALIDATED_BOUNDED_K12",
+  "lane_pass": {"algebra": true, "projector_cap": true, "recoupling": true, "classical_limit": true},
+  "implementation_validation_gate_authorized": true,
+  "iter012_retry_authorized": false,
+  "eq29_amplitude_authorized": false,
+  "bridge_credit": false,
+  "candidate_theory_authorized": false,
+  "preferred_alpha_found": false,
+  "phase_fit_performed": false,
+  "external_closed_form_qcg_imported": false
+}
