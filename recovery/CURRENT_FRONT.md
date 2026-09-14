@@ -32,50 +32,47 @@ Published `K_4` and `Delta` pseudocritical shifts scale together; a scalar `K_4`
 
 `PASS_SCOPED_FORMAL_RESPONSE_MATRIX_DATA_AUTHORITY_OPEN`, terminal `7cfcc82037a7d2695a8c00a152b8b6c1752d5833`.
 
-Exact CDT-internal response object:
+Exact CDT-internal response object: `F_ij = Cov(A_i,A_j)`, with `A=(-N_0, N_41-6N_0, N_4)` and `N_4=N_41+N_32`. Published scalar summaries do not expose the matched off-diagonal connected covariances needed to evaluate it.
 
-`F_ij = Cov(A_i,A_j)`, with `A=(-N_0, N_41-6N_0, N_4)` and `N_4=N_41+N_32`.
+### ITER094-ITER096 — public-data saturation
 
-Published scalar summaries do not expose the matched off-diagonal connected covariances needed to evaluate it.
+ITER094: `DISCOVERY_SATURATED_NO_PUBLIC_DATA_IN_FROZEN_SET`, terminal `a115755e6f5e6b7b1318d7287af7f93495c52531`.
 
-### ITER094
+ITER095: `DISCOVERY_SATURATED_NO_PUBLIC_ARCHIVE_DATA_IN_FROZEN_PROVIDERS`, terminal `afafa79d954327920db079a5f55ec411fb2d42e5`.
 
-`DISCOVERY_SATURATED_NO_PUBLIC_DATA_IN_FROZEN_SET`.
+ITER096: `SCOPED_BLOCKED_PRIMARY_SOURCES_NO_QUALIFYING_PUBLIC_DATA`, terminal `838ac066caadcf953b8ec6d507dc6606fcab7170`.
 
-Prereg `c6c9d1b71a033306b0ec19cb6027b19a2d6b8492`; production head `35c812381b33f22eac3f45dbb9ab9f9d13c2f2e1`; run `34906684974`; aggregate job `104184934584`; artifact `10373135110`; digest `sha256:94ff118b234c8d31a9b4f4ee1369d0415d7be8de8dcefc92a8fd1ba2dedc040c`; terminal result `a115755e6f5e6b7b1318d7287af7f93495c52531`.
+Authoritative ITER096 run `34907499223` completed successfully. All five frozen arXiv source archives (`1704.04373`, `1802.10434`, `2002.01051`, `1904.05755`, `2510.02159`) were inventoried. Four contained zero data-like payloads; the sole formal data-like hit in `2510.02159` was `00README.json`, not matched Monte-Carlo primitive counts. No source supplied matched 3+1 `N_0,N_41,N_32` samples with coupling, volume-fixing and provenance metadata.
 
-Frozen public GitHub candidates contained only low-dimensional/test fixtures or no plausible production data; no 3+1 matched `N_0,N_41,N_32` dataset was found.
+### ITER097
 
-### ITER095
+`NO_GO_SCOPED_MARGINALS_DO_NOT_IDENTIFY_RESPONSE_EIGENDIRECTIONS`, terminal `3a6b15df0dc1c3509ed92e04ea48943962818c1a`.
 
-`DISCOVERY_SATURATED_NO_PUBLIC_ARCHIVE_DATA_IN_FROZEN_PROVIDERS`.
+For any `2 x 2` principal block `[[d1,c],[c,d2]]`, `tan(2 theta)=2c/(d1-d2)`. Hence even exact diagonal susceptibilities leave the sign and orientation of the eigendirections undetermined as the admissible covariance `c` ranges inside the PSD/Cauchy-Schwarz interval. The full `3 x 3` problem is less identifiable because the `kappa_4`/volume row is also protocol-sensitive under volume fixing. Transition-locus tangents cannot be promoted to Fisher/RG eigenvectors.
 
-Prereg `1f5ab92f5d54656c48a9a349065c29c752caa712`; production head `a27f5fc882cd7bacfd423028f64c4a358dd74e26`; run `34907330487`; aggregate job `104187038668`; artifact `10373451111`; digest `sha256:750cdd65e7b435bdc6ade8be4e3f69732b10e9ed726c148964406984e98f20e3`; terminal result `afafa79d954327920db079a5f55ec411fb2d42e5`.
+### ITER098
 
-Zenodo, DataCite and Figshare frozen searches completed. Genuine CDT paper/software records were found, but no public 3+1 joint primitive-count Monte-Carlo dataset satisfying ITER093 requirements survived manual audit.
+`PASS_SCOPED_MULTIVARIATE_OBJECT_EXISTS_DIFFERENT_DOMAIN`, terminal `cc6474072839cbff5087b40c0000f931bf767984`.
 
-## Active gate — ITER096
+CDT does publish genuine multivariate covariance/Hessian information for spatial-volume fluctuations `C_tt'=Cov(delta n_t,delta n_t')`, with `C^{-1}` used as the Hessian of a reduced effective spatial-volume action, and transfer-matrix methods provide related reduced multivariate dynamics. However these objects live in time-slice/profile or reduced-state space, not in the bare action-conjugate basis `(-N_0,N_41-6N_0,N_4)`. No frozen source gives an invertible Jacobian between the two bases, and integrating out microscopic degrees of freedom cannot be silently inverted.
 
-`PRIMARY_CDT_PAPER_ANCILLARY_DATA_AUTHORITY`.
+## Saturated branch
 
-Prereg `d47f08eafcb6eaf50e54a8ed1ca02af843be38e9`; production head `d219bd3683e613ce1154eca79c3782b292eb0224`; authoritative run `34907499223`.
+The direct CDT bare-scaling-field route is now saturated under the current source stack:
 
-Frozen exact arXiv source lanes:
+1. the exact response matrix is known (ITER093);
+2. public matched primitive data are absent on GitHub, archive, and primary-source ancillary surfaces (ITER094-ITER096);
+3. marginals plus PSD bounds cannot identify eigendirections (ITER097);
+4. published multivariate covariance matrices are real but belong to a different reduced variable space (ITER098).
 
-- `1704.04373`;
-- `1802.10434`;
-- `2002.01051`;
-- `1904.05755`;
-- `2510.02159`.
-
-The audit inventories exact source/ancillary payloads and availability/link language. PASS still requires matched 3+1 `N_0,N_41,N_32` Monte-Carlo samples plus coupling and volume-fixing metadata. Figures, TeX tables, scalar summaries and low-dimensional examples do not qualify.
+Reopening requires either matched primitive cross-moments/time series or a source-derived reduced-to-bare response Jacobian.
 
 ## Readiness
 
-ITER094 and ITER095: terminal discovery saturation on their frozen surfaces.
-ITER096: **~15%** after preregistration, implementation and launch.
 Overall scientific programme: **50% (Δ0)**.
 Candidate theory: **0% / UNFORMED**.
 Bridge credit: **0**.
 
-Exact next admissible action: consume all terminal ITER096 raw source-inventory artifacts and aggregate, manually classify against the frozen gate, then only if a qualifying ancillary dataset exists preregister an ITER093 response-matrix computation.
+## Next admissible frontier
+
+Do not repeat raw-data discovery or reinterpret spatial-volume covariance as a bare Fisher matrix. The next high-information gate should move to an independently source-defined cross-school observable/critical quantity whose published data already inhabit a comparable basis, unless a CDT source-derived reduced-to-bare Jacobian is found first.
