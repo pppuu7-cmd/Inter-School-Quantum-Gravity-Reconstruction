@@ -42,8 +42,10 @@ Frozen queries cover: Lorentzian EPRL + refinement/coarse graining; Lorentzian s
 
 Prereg commit `c80a38a78e0ce99633dc9738281ab5a46bbd5b87`; implementation `5ee7fdc6f65594656f130c1c5e223d0390bda686`; production/workflow head `369f366c2c81f186c72c8e0f3a1eaea1e82511d3`; authoritative run **`34823751928`**.
 
-Latest workload: **2 queued / 3 in_progress** scientifically useful jobs: null-provenance `103910999053` queued; Lorentzian-spin-foam-map `103910999198` in progress; EPRL-RG-simplicial `103910999228` queued; EPRL-refinement-map `103910999231` in progress; Lorentzian-EPRL-refinement `103910999361` in progress. No duplicate batch is running.
+The first terminal attempt was **INFRASTRUCTURE FAIL PRE-SCIENCE**, not a scientific result: all four live discovery lanes hit HTTP 429 from the arXiv metadata endpoint. The null/provenance lane succeeded and produced artifact `10339278252` (`sha256:c782087855a7097a9a9015462d46d08569260ce0595f37c933f08ddc74cbf215`). The resulting partial aggregate `10338604250` is stale/non-authoritative for scientific classification.
+
+Frozen science was not changed. Only the four failed jobs were re-run. Current retry workload is **4 queued / 0 in_progress**: `103915277099` eprl-refinement-map; `103915277287` lorentzian-spin-foam-map; `103915277359` lorentzian-eprl-refinement; `103915277417` eprl-rg-simplicial. No duplicate batch is running. Recovery update commit for this infra event: `7cb62a2079d2078d25d4cc8dc6eb4f0a7f284308`.
 
 ## Exact next admissible action
 
-Consume all ITER059 raw discovery artifacts and aggregate. If genuinely new metadata candidates satisfy the frozen inclusion rule, freeze their exact source IDs in a separate qualification gate before inspecting source-level results. If no new candidates survive, classify discovery saturation and preserve the refinement-map blocker. No coarse↔fine numerical test is authorized yet.
+Consume the four ITER059 retry artifacts plus a fresh aggregate. If genuinely new metadata candidates satisfy the frozen inclusion rule, freeze their exact source IDs in a separate qualification gate before inspecting source-level results. If no new candidates survive, classify discovery saturation and preserve the refinement-map blocker. No coarse↔fine numerical test is authorized yet.
