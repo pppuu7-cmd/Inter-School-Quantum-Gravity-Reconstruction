@@ -1,0 +1,55 @@
+name: ITER083A graph continuum Laplacian normalization
+# prereg d6fcecc6a5f73eb00136ae0c55bf263218dcd489
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/iter083a_graph_continuum_laplacian_normalization.yml']
+  workflow_dispatch:
+jobs:
+  source:
+    strategy:
+      fail-fast: false
+      matrix:
+        source: ['1804.02294','1903.00430','1912.11311','2306.10408']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check requests pypdf
+      - shell: python
+        env: {SOURCE: '${{ matrix.source }}'}
+        run: |
+          import io,json,os,re,time,pathlib,requests,hashlib
+          from pypdf import PdfReader
+          a=os.environ['SOURCE']; data=None; errs=[]; used=None
+          for u in [f'https://arxiv.org/pdf/{a}',f'https://export.arxiv.org/pdf/{a}']:
+            for j in range(3):
+              try:
+                r=requests.get(u,timeout=45,headers={'User-Agent':'ISQGR-ITER083A/1.0'})
+                if r.status_code==200 and r.content[:4]==b'%PDF': data=r.content; used=u; break
+                errs.append(f'{u}:HTTP{r.status_code}')
+              except Exception as e: errs.append(f'{u}:{type(e).__name__}:{e}')
+              time.sleep(2*(j+1))
+            if data: break
+          if not data: out={'source':a,'classification':'INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION','errors':errs,'gate_credit':False,'bridge_credit':False}
+          else:
+            rd=PdfReader(io.BytesIO(data)); text='\n'.join((p.extract_text() or '') for p in rd.pages); low=text.lower(); terms=['lattice spacing','laplace matrix','laplace-beltrami','eigenvalue','continuum limit','thermodynamic limit','normalization','wavenumber','diameter','spatial laplacian','regulator','coarse graining']; rows=[]
+            for t in terms:
+              for m in re.finditer(re.escape(t),low): rows.append({'trigger':t,'snippet':re.sub(r'\s+',' ',text[max(0,m.start()-1400):min(len(text),m.end()+1400)])[:3200]})
+            out={'source':a,'classification':'SOURCE_CANDIDATE_REQUIRES_MANUAL_EQUATION_AUDIT','pages':len(rd.pages),'pdf_sha256':hashlib.sha256(data).hexdigest(),'retrieved_from':used,'passages':rows[:260],'gate_credit':False,'bridge_credit':False}
+          pathlib.Path('out').mkdir(); pathlib.Path(f'out/{a}.json').write_text(json.dumps(out,indent=2)+'\n')
+      - uses: actions/upload-artifact@v4
+        with: {name: 'iter083a-${{ matrix.source }}', path: 'out/${{ matrix.source }}.json', if-no-files-found: error}
+  aggregate:
+    needs: source
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {pattern: 'iter083a-*', path: inputs, merge-multiple: true}
+      - shell: python
+        run: |
+          import glob,json,pathlib
+          rows=[json.load(open(p)) for p in glob.glob('inputs/*.json')]; exp=['1804.02294','1903.00430','1912.11311','2306.10408']; got=[r.get('source') for r in rows]; infra=[r.get('source') for r in rows if r.get('classification')=='INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION']; miss=[x for x in exp if x not in got]; cls='INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION' if infra or miss else 'SOURCE_CANDIDATES_REQUIRE_MANUAL_EQUATION_AUDIT'; pathlib.Path('out').mkdir(); pathlib.Path('out/summary.json').write_text(json.dumps({'iteration':'ITER083A','classification':cls,'expected_sources':exp,'sources':got,'infrastructure_fail_sources':infra,'missing_sources':miss,'gate_credit':False,'bridge_credit':False},indent=2)+'\n')
+      - uses: actions/upload-artifact@v4
+        with: {name: iter083a-aggregate, path: out/summary.json}
