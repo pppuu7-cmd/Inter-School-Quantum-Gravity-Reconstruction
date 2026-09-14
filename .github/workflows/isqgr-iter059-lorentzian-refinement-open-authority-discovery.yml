@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
 
+# Transport-only relaunch after repeated arXiv endpoint timeouts; frozen queries/scoring unchanged.
 jobs:
   discovery:
     strategy:
