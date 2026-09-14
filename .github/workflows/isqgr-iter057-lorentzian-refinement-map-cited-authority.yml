@@ -1,0 +1,69 @@
+name: ISQGR ITER057 Lorentzian refinement-map cited authority
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr-iter057-lorentzian-refinement-map-cited-authority.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  cited-authority:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane:
+          - primary-source-chain
+          - eprlfk-1803
+          - radiative-0810
+          - lorentzian-vertex-1903
+          - holomorphic-control-1412
+          - null-controls
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen source lane
+        run: |
+          mkdir -p out
+          python3 code/iter057/cited_authority.py --lane '${{ matrix.lane }}' --root "$RUNNER_TEMP/iter057" --out out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter057-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: cited-authority
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter057-*
+          path: evidence
+      - name: Aggregate evidence without auto-promoting regex candidates
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          rows={}
+          for p in pathlib.Path('evidence').rglob('evidence.json'):
+              x=json.loads(p.read_text()); rows[x['lane']]=x
+          required=['primary-source-chain','eprlfk-1803','radiative-0810','lorentzian-vertex-1903','holomorphic-control-1412','null-controls']
+          missing=[x for x in required if x not in rows]
+          retrieval={k:rows.get(k,{}).get('retrieval_pass') for k in required if k!='null-controls'}
+          candidates={k:len(rows.get(k,{}).get('explicit_relation_candidates',[])) for k in required if k!='null-controls'}
+          if missing or any(v is not True for v in retrieval.values()):
+              classification='INFRASTRUCTURE_FAIL_SOURCE_RETRIEVAL'
+          else:
+              # Manual raw-source classification is required by prereg; green CI/regex cannot establish authority PASS.
+              classification='AWAIT_RAW_SOURCE_CLASSIFICATION'
+          out={'iteration':'ITER057','classification':classification,'missing':missing,'retrieval':retrieval,'explicit_relation_candidate_counts':candidates,'green_ci_not_scientific_pass':True,'manual_source_classification_required':True,'refinement_map_derived':False,'bridge_credit':False,'candidate_theory':'UNFORMED','candidate_theory_percent':0}
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter057-aggregate
+          path: aggregate/aggregate.json
+          if-no-files-found: error
