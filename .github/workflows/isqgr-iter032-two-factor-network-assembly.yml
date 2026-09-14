@@ -1,0 +1,86 @@
+name: ISQGR ITER032 two-factor bounded network assembly
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter032-two-factor-network-assembly.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [authority, factors, assembly, nulls]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install frozen numerical dependencies
+        run: python3 -m pip install --user numpy mpmath
+      - name: Run preregistered ITER032 lane
+        run: |
+          rm -rf out/iter032
+          python3 code/iter032/two_factor_network_assembly.py --lane '${{ matrix.lane }}'
+      - name: Preserve raw evidence
+        run: |
+          mkdir -p lane_out
+          cp out/iter032/evidence.json lane_out/evidence.json
+          cat lane_out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter032-${{ matrix.lane }}
+          path: lane_out/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter032-*
+          path: downloaded_iter032
+      - name: Aggregate preregistered scientific classes
+        run: |
+          python3 - <<'PY'
+          import glob,json,os
+          rows=[]
+          for p in sorted(glob.glob('downloaded_iter032/**/evidence.json',recursive=True)):
+              with open(p) as f: rows.append(json.load(f))
+          by={r.get('lane'):r for r in rows}
+          aliases={'source-factorization-authority':'authority','independent-factor-reconstruction':'factors','two-factor-assembly':'assembly','null-controls':'nulls'}
+          canon={aliases.get(k,k):v for k,v in by.items()}
+          expected=['authority','factors','assembly','nulls']
+          missing=[x for x in expected if x not in canon]
+          infra=[x for x,r in canon.items() if r.get('infrastructure_failure')]
+          authority_blocked=('authority' in canon and not canon['authority'].get('pass',False) and not canon['authority'].get('infrastructure_failure'))
+          failed=[x for x,r in canon.items() if x!='authority' and not r.get('pass',False) and not r.get('infrastructure_failure')]
+          if missing or infra:
+              classification='NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE'; scientific_pass=False
+          elif authority_blocked:
+              classification='BLOCKED_TWO_FACTOR_SOURCE_FACTORIZATION'; scientific_pass=False
+          elif failed:
+              classification='RC006_EQ27_TWO_FACTOR_BOUNDED_NETWORK_ASSEMBLY_FAIL'; scientific_pass=False
+          else:
+              classification='RC006_EQ27_TWO_FACTOR_BOUNDED_NETWORK_ASSEMBLY_PASS'; scientific_pass=True
+          out={'classification':classification,'scientific_pass':scientific_pass,'lanes':canon,'missing':missing,
+               'infrastructure_lanes':infra,'failed_lanes':failed,'authority_blocked':authority_blocked,
+               'claim_locks_preserved':True,'full_eq27_amplitude_claimed':False,'bridge_credit':False,
+               'eq29_amplitude_authorized':False,'one_step_tnr_authorized':False}
+          os.makedirs('out_iter032_aggregate',exist_ok=True)
+          with open('out_iter032_aggregate/aggregate.json','w') as f: json.dump(out,f,indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter032-aggregate
+          path: out_iter032_aggregate/
+          if-no-files-found: error
+          retention-days: 90
