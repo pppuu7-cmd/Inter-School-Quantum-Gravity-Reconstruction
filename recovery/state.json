@@ -2,8 +2,8 @@
   "project": "Inter-School Quantum Gravity Reconstruction",
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
-  "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITER067_TERMINAL_PASS_SCOPED_PENDING_ITER068_PREREG",
+  "phase": "PHASE_1_TYPED_COMPOSITION_DISCRIMINATION_ACTIVE",
+  "active_iteration": "ITER069_TERMINAL_PASS_SCOPED_PENDING_ITER070_PREREG",
   "iteration_completion_percent": 100,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
@@ -21,6 +21,11 @@
     "lorentzian_refinement_derived": false,
     "universal_common_parent_found": false
   },
+  "typed_composition_atlas": {
+    "C_seq": "CDT sequential temporal/state-sum composition",
+    "C_tensor": "HaPPY subsystem/tensor contraction and isometric encoding",
+    "C_scale_flow": "FRG regulator-dependent EAA/theory-space scale flow"
+  },
   "frontier": {
     "RC002": {
       "status": "COMPOSITION_MEASURE_AUTHORITY_PASS_SCOPED_CONTINUUM_OPEN",
@@ -32,79 +37,77 @@
         "critic_commit": "6e87bb17cd7e4ccbf6230c83f5b2bd7c2603eade",
         "terminal_result_commit": "7a2b606b67d982b7c9e9010c82a3418bbafaa8e4",
         "realization_update_commit": "da64060fcbefa9bb8212fa6bfb58f5001339c54e",
-        "full_state_space_qualified_regulated": true,
-        "full_transfer_matrix_qualified_regulated": true,
-        "automorphism_weighted_measure_qualified_regulated": true,
         "exact_semigroup_gluing_qualified_regulated": true,
-        "t_squared_positivity_hamiltonian_qualified_regulated": true,
-        "elementary_t_positivity_d4_established": false,
-        "full_effective_operator_identity_established": false,
         "preferred_discrete_time_dependency_essential": true,
-        "wick_relation_source_defined": true,
-        "cross_school_bridge_derived": false,
-        "gate_credit": true,
         "bridge_credit": false
-      },
-      "bridge_credit": false
+      }
+    },
+    "RC005": {
+      "status": "HAPPY_TENSOR_QEC_COMPOSITION_MAPPED_SCOPED",
+      "iter068": {
+        "status": "TERMINAL",
+        "classification": "FAIL_SCOPED_PHYSICAL_COMPOSITION_TYPE_EQUIVALENCE_REJECTED",
+        "retained_subresult": "COMMON_ALGEBRAIC_KERNEL_ONLY",
+        "prereg_commit": "a50779bcd93ba34546b16751d61245ad45e6ee01",
+        "source_audit_commit": "af299c1d125799595dbe77a0a2c49fffed4f1404",
+        "critic_commit": "24e232d9f26cb9a5ee81a06c16c0131bd52c4234",
+        "terminal_result_commit": "c7b8cdf9b03b7c89a2f4f664f988682996fa4aac",
+        "cdt_happy_physical_equivalence": false,
+        "common_algebraic_kernel": true,
+        "bridge_credit": false
+      }
+    },
+    "RC003": {
+      "status": "SCALE_OPERATION_AUTHORITY_PASS_SCOPED",
+      "iter069": {
+        "status": "TERMINAL",
+        "classification": "PASS_SCOPED_FRG_SCALE_OPERATION_QUALIFIED",
+        "mandatory_qualifier": "FINITE_SOURCE_DEFINED_COMPOSITION_LAW_NOT_ESTABLISHED_IN_FROZEN_STACK",
+        "prereg_commit": "c938f74feed0e1aae729cdafea05a3d6e5d70227",
+        "extraction_commit": "89aab44905ebc8406bf65711c384a39576c9ad5b",
+        "authoritative_run": 34889707865,
+        "source_authority_commit": "2a851fab018fbf72d49c895b14a41d68d2804624",
+        "critic_commit": "8639ccacef0f54c1bd5cc773ca19a3560d088a98",
+        "terminal_result_commit": "37ee6cb2e4754588d9715e73cc31931a20b430da",
+        "realization_update_commit": "4735746bd2fbf1b0968362af78951098b9f68177",
+        "eaa_wetterich_object_qualified": true,
+        "theory_space_domain_codomain_qualified": true,
+        "regulator_structure_qualified": true,
+        "gauge_background_structure_qualified": true,
+        "finite_source_defined_composition_law_established": false,
+        "fixed_point_physical_refinement_identification": false,
+        "typed_operation": "C_scale_flow",
+        "bridge_credit": false
+      }
+    },
+    "BH004_BH004B": {
+      "status": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
+      "iter066": {
+        "status": "TERMINAL",
+        "classification": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
+        "authoritative_run": 34884258757,
+        "quantum_measure_or_amplitude_qualified": true,
+        "classical_csg_scale_map_qualified": true,
+        "quantum_scale_refinement_map_qualified": false,
+        "bridge_credit": false
+      }
     },
     "RC006": {
       "status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
       "bridge_credit": false
     },
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED",
-      "refinement_map_derived": false,
-      "bridge_credit": false
-    },
-    "BH004_BH004B": {
-      "status": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
-      "prior_status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
-      "iter066": {
-        "status": "TERMINAL",
-        "classification": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
-        "prereg_commit": "1a65535f840424668ff05176c2fddad0d30bf8ad",
-        "implementation_commit": "e0c8009fd7c78f181df5f8dbd2987881d3fefdea",
-        "initial_production_head": "915255cfae8d13a10b37f95742fe61cfd9f6e6ad",
-        "initial_run": 34878725306,
-        "initial_run_classification": "ARTIFACT_PRESERVATION_FAILURE_AFTER_SOURCE_AUDIT",
-        "artifact_failure_record_commit": "2a575fac0c58fcf316d1990f513f7949550c70a4",
-        "transport_repair_commit": "1caebf07c29bc90eedec67180f28683e031e5a14",
-        "authoritative_run": 34884258757,
-        "frozen_source_ids": [
-          "1903.11544",
-          "2007.13192",
-          "gr-qc/0212064"
-        ],
-        "source_authority_record_commit": "c5a0c94defd149140878b77eb95785d188520890",
-        "critic_commit": "752693e81a96c2f6f821c8bd27fe9df0264d2abf",
-        "terminal_result_commit": "f72f7cf08162f1467b1e1e8bcb82251a77e48709",
-        "quantum_measure_or_amplitude_qualified": true,
-        "classical_csg_scale_map_qualified": true,
-        "bdg_action_continuum_object_qualified": true,
-        "quantum_scale_refinement_map_qualified": false,
-        "bh004_numeric_amplitude_refinement_authorized": false,
-        "gate_credit": false
-      },
-      "bridge_credit": false
-    },
     "RC008": {
       "status": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY",
-      "iter065": {
-        "classification": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY",
-        "initial_run": 34877639682,
-        "source_repair_run": 34877767148,
-        "source_repair_aggregate_artifact": {
-          "id": 10362035885,
-          "digest": "sha256:c152167507d988f392548bc8577fa59802bd564aa120aacbf943abc029d20b8c"
-        },
-        "terminal_result_commit": "d1787f9473d25e587d31b2f1fa8ecc8891427f89",
-        "gate_credit": false
-      },
       "corrected_crossing_authorized": false,
       "bridge_credit": false
     },
     "RC009": {
       "status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"
+    },
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
+      "status": "REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED",
+      "refinement_map_derived": false,
+      "bridge_credit": false
     },
     "LORENTZIAN_DELTA4": {
       "status": "SATURATED_NEGATIVE_SCOPED",
@@ -117,21 +120,20 @@
     "scientifically_useful_jobs_in_progress": 0,
     "avoidable_idle": false
   },
-  "next_gate": "PREREGISTER_ITER068_CDT_HAPPY_COMPOSITION_TYPE_DISCRIMINATION",
-  "next_gate_rationale": "ITER067 establishes an exact regulated CDT temporal-composition package but also proves its preferred-time, automorphism-measure and T^2-positivity qualifiers are structural. RC005 supplies an exact but semantically different tensor-network/QEC subsystem composition mechanism. Comparing these two explicit objects is the cheapest high-falsifiability test of whether the atlas coordinate C is a genuine common physical operation or an over-broad label. A negative result rules out a large false-correspondence class; a positive result can only authorize a typed mechanism-level common-structure candidate, not a gravity bridge. Lorentzian EPRL composition remains source-blocked and RC008 remains globally measure-blocked, so they are lower-information immediate comparators.",
+  "next_gate": "PREREGISTER_ITER070_FRG_CDT_SCALE_TIME_TYPE_DISCRIMINATION",
+  "next_gate_rationale": "ITER069 establishes C_scale_flow as a source-qualified FRG/EAA theory-space operation while retaining the absence of an exact source-defined finite physical composition law. ITER067 provides the strongest qualified dynamical comparator, CDT C_seq, with exact regulated temporal gluing. A prospective typed comparison is the cheapest high-falsifiability test of whether the two share any non-forgetful invariant after regulator, measure, state-space, dynamics, time/scale semantics and observables are retained. RG-time/proper-time substitution, regulator erasure, full/reduced-state substitution and fixed-point/refinement substitution must be frozen as failure controls.",
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
-    "results/ITER067_RC002_FULL_CDT_TRANSFER_MATRIX_COMPOSITION_MEASURE_AUTHORITY_2026-09-14.md",
-    "sources/ITER067_RC002_FULL_CDT_TRANSFER_MATRIX_AUTHORITY_2026-09-14.md",
-    "results/ITER067_ADVERSARIAL_CRITIC_2026-09-14.md",
-    "prereg/ITER067_RC002_FULL_CDT_TRANSFER_MATRIX_COMPOSITION_MEASURE_AUTHORITY_2026-09-14.md",
-    "results/ITER066_BH004_CAUSAL_SET_AMPLITUDE_REFINEMENT_SOURCE_AUTHORITY_2026-09-14.md",
-    "sources/ITER066_BH004_EQUATION_LEVEL_AUTHORITY_AUDIT_2026-09-14.md",
-    "results/ITER066_ADVERSARIAL_CRITIC_2026-09-14.md",
-    "research_log/2026-09-14_ITER066_ITER067_DEEP_RESEARCH.md",
+    "results/ITER069_RC003_FRG_SCALE_COMPOSITION_AUTHORITY_2026-09-14.md",
+    "sources/ITER069_RC003_FRG_SCALE_OPERATION_AUTHORITY_2026-09-14.md",
+    "results/ITER069_ADVERSARIAL_CRITIC_2026-09-14.md",
+    "prereg/ITER069_RC003_FRG_SCALE_COMPOSITION_AUTHORITY_2026-09-14.md",
+    "realizations/RC-003_ASYMPTOTIC_SAFETY_EAA_EH_TRUNCATION.md",
+    "results/ITER068_CDT_HAPPY_COMPOSITION_TYPE_DISCRIMINATION_2026-09-14.md",
     "realizations/RC-002_4D_CDT_TRANSFER_MATRIX.md",
     "realizations/RC-005_HAPPY_HOLOGRAPHIC_QEC.md",
+    "results/ITER067_RC002_FULL_CDT_TRANSFER_MATRIX_COMPOSITION_MEASURE_AUTHORITY_2026-09-14.md",
     "docs/INTERFACE_ATLAS_V0_1.md",
     "docs/CONSTITUTION.md"
   ]
