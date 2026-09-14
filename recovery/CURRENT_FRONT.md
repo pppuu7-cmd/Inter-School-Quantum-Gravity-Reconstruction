@@ -2,100 +2,55 @@
 
 Date: 2026-09-14.
 
-Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains **49%**. Bridge credit remains zero.
+Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness: **50%**. Bridge credit remains zero.
 
 ## Persistent locks
 
-RC006 numerical retry remains unauthorized. RC009 remains scoped blocked on its tested reduced isotemporal route. Lorentzian Delta4 negative results remain preserved. No full Eq.(27), Eq.(29), Lambda, one-step TNR, bridge derivation or candidate-theory construction is authorized.
-
-`refinement_map_derived=false`; `bridge_credit=false`; candidate theory `0 / UNFORMED`.
+RC006 numerical retry remains unauthorized. RC009 remains scoped blocked on its tested reduced isotemporal route. Lorentzian Delta4 negative results remain preserved. No full Eq.(27), full EPRL/FK refinement, Lorentzian refinement, q-deformed bridge derivation or candidate-theory construction is authorized.
 
 Forbidden claims remain `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`.
 
-## Auto-research lineage consumed
+## ITER062B terminal scoped PASS
 
-The durable auto-research contribution has been re-read rather than inferred from memory. The Researcher lineage used the reconciled ITER024/025 source/executable split, then the ITER026 direct-source qbar PASS, prospectively preregistered ITER027 and launched its four-lane bounded Eq.(27) gate. ITER027 run 1 failed pre-science on missing `mpmath`; the corrected execution later received the terminal manual scientific verdict `INVALID_IMPLEMENTATION — RC006_EQ27_TOPOLOGY_NOT_INSTANTIATED` because its local primitive checks never instantiated the frozen Eq.(27) graph topology. That result remains a methodology lock: local primitive closure is not graph-level closure.
+Preregistered commit: `6fa9eb40d45be8facc952716bde83c57e962469d`.
+Implementation commit: `8039a7e8a17aa2b62baead26452425971367ae9c`.
+Production/workflow head: `3f4b1c89d5183cde99ae6f7cdfa9efe06ae6d829`.
+Authoritative run: `34874113741`.
+Aggregate job: `104077252124`.
+Aggregate artifact: `10359819990`, digest `sha256:fd62c82a618b6ded0e4ab0013610f00a33a70551e9d3f76ab1188d1c2f44493b`.
+Durable result commit: `19dbebcdcd32a3c2d1292a343d4e74a08a4ca362`.
 
-No durable automation-era Critic result was found that overrides this scientific lineage. At the latest operational inspection in this continuation, the ISQGR Researcher and Critic automations were disabled; repository state, not automation memory, remains authoritative.
+Scientific verdict: **`SCIENTIFIC_PASS_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_SCOPED`**.
 
-## Lorentzian frontier — preserved
+Calibration passed all frozen analytic/null predicates. With no boundary-specific retuning:
 
-ITER054 and ITER055 remain scoped SCIENTIFIC PASS results for bounded five-vertex fixed summands and four low-spin recoupling transport classes without retuning. They do not establish a full sum or refinement invariance.
+- B0 converged and crossed on `[0.50,0.55]` (report-only interpolation `0.534507642057044`);
+- B1 converged and crossed on `[0.55,0.60]` (`0.5669524248350563`);
+- B2 converged and crossed on `[0.50,0.55]` (`0.5277179126897538`);
+- B3 converged but did not cross on the frozen panel; this held-out negative is preserved.
 
-ITER056, ITER057 and ITER058 remain source/refinement-transfer blockers: no exact source-qualified Lorentzian simplicial EPRL 5→1 coarse↔fine map has been established.
+This raises only restricted RC008 numerical-reconstruction readiness. It does not supply bridge credit, full refinement, Lorentzian support or candidate-theory authorization.
 
-ITER060 remains **SCOPED BLOCKED — `SCOPED_BLOCKED_NO_EXPLICIT_REFINEMENT_MAP`** for arXiv:1107.2633.
+## ITER063 active — held-out non-retuned transport / selector
 
-ITER059 attempt 6 is terminal `INFRASTRUCTURE_FAIL_DISCOVERY`: target lane failed pre-science with HTTP 429 before source predicates and artifact output. It is not a scientific NULL and does not support an absence claim. Repeating the identical transport route is not authorized without a genuinely different retrieval method.
+The next gate was prospectively frozen before execution.
 
-## RC009 and BH004/BH004B
+Prereg commit: `04dacfba44f2a59efb882dbe162cc5161c7e7795`.
+Implementation commits: `a30bd8a3b4b06d61506411a18dd3d48dd2825318`, `8b248e50c19ae8829af98f00c74cf98acf0892df`.
+Production head: `a6fa3c4d11b0b34298b3c3ac3e934721db757639`.
+Authoritative Actions run: `34874671586`.
 
-RC009's tested reduced isotemporal positive-measure route remains scoped-negative on endpoint power and frozen source-phase rescue. A genuinely new source-defined measure/contour/full-amplitude route remains open.
+Frozen lanes use independent Sobol seeds and inherit the ITER062B amplitude, alpha grid, integration domains, sample powers, convergence thresholds and crossing rule unchanged.
 
-BH004/BH004B retains natural causal-set support for its source-native factorization while the nearest-framework fusion dynamic-selector predictivity test is scoped negative. No bridge credit follows.
+Permutation controls: P1 `(1,3,1,1)`, P2 `(1,1,3,1)`.
+New held-out anisotropies: H1 `(2,1,1,2)`, H2 `(2,3,1,1)`, H3 `(2,3,4,1)`, H4 `(1,2,3,2)`.
 
-## RC008 — ITER061 terminal PASS
-
-RC008 is the symmetry-restricted **Riemannian EPRL-FK quantum-cuboid/hypercuboid** realization only.
-
-Earlier RC008 work had already established source formula/dependency closure, machine-readable source structure, a stationary-phase Hessian-kernel homogeneity PASS, a source-faithful hypercuboid 4-volume/refinement prerequisite PASS and published boundary-state robustness. What remained missing was exact source authority for the coarse/refined gluing/refinement complex.
-
-ITER061 prospectively tested a source-faithful companion review:
-
-- Sebastian Steinhaus, *Coarse Graining Spin Foam Quantum Gravity—A Review*, Frontiers in Physics 8:295 (2020), DOI `10.3389/fphy.2020.00295`;
-- target source retained as Bahr & Steinhaus, *Hypercuboidal renormalization in spin foam quantum gravity*, Phys. Rev. D 95, 126006 (2017).
-
-Prereg commit: `daebb8faeef53624c0fa2c45d51a27a151c0928a`.
-
-Initial implementation commit: `200f9b1cad97750764914e914a21bf90cb07656d`.
-
-Workflow commit: `f32f10c44ad7b5e2abdd7ae02ac18f5db0a0c106`.
-
-Run 1 `34868725240` had five PASS lanes plus 5/5 null-control detection, but its source-identity lane falsely failed a bibliography metadata regex because Frontiers normalization inserted spaces around punctuation. The emitted context itself contained the exact 2017 target. Run 1 was therefore terminalized `INVALID_IMPLEMENTATION — SOURCE_REFERENCE_METADATA_REGEX_FALSE_NEGATIVE`, not source BLOCKED. Durable run-1 report commit: `4799a4265e207d31bbefd722fe03d5f6219f7808`.
-
-Only whitespace/punctuation tolerance in that bibliography regex was repaired; no scientific predicate or threshold changed. Repair commit: `89bfafca666a306400a4b619181d005207abc957`.
-
-Corrected run 2: `34869227590`, aggregate job `104060814468`, aggregate artifact `10357629198`, digest `sha256:b3521aacdb952c45e74feaaae29a7fcbe3e6aa5a2f9c0d2489185f0d1ecf4273`.
-
-Run 2 outcome:
-
-- all six expected lanes present;
-- all six lanes PASS;
-- no missing or infrastructure lanes;
-- normalized source hash identical across all lanes: `2a0ffc7259c3167783dc11c63e78cfe100066ad9e515c4204f705d63d5df9673`;
-- manual source audit PASS.
-
-Terminal scientific verdict:
-
-**`PASS — RC008_COMPANION_REFINEMENT_COMPLEX_GLUING_AUTHORITY_COMPLETE`**
-
-Durable result commit: `b7dc77c0ca8fe3e3cd9d3893b3e3b89659b4382c`.
-
-### What the source now authorizes
-
-The companion review explicitly supplies both layers of the formerly missing source object:
-
-1. **Cuboid-specific coarse/fine interface** — two hypercuboids glued along a common 3D cuboid, fixed coarse boundary geometry, each hypercuboid subdivided into 16, prescribed geometric embedding with fine areas summing to coarse area, fine-to-coarse `alpha' -> alpha` flow, and coarse/fine comparison of 4-volume variance.
-2. **Amplitude-level blocking interface** — blocking of 16 hypercubic vertex amplitudes, boundary/bulk separation, summing over block-bulk labels into a fine amplitude, and embedding/coarse-graining maps deriving an effective coarse amplitude.
-
-The review distinguishes provenance correctly: the immediate cuboid setup is attributed to Bahr/Steinhaus reference 112 (2016); the same calculation at different coarse boundary states is explicitly attributed to reference 113, the 2017 hypercuboidal-renormalization paper.
-
-### What it does not authorize
-
-This PASS is source-authority closure only. It does **not** reproduce the vertex amplitude, 4-volume variance curves, alpha fixed point, all-boundary cylindrical consistency, full Riemannian EPRL/FK refinement, Lorentzian refinement, continuum/GR recovery or any cross-school bridge.
-
-The source itself labels the geometric embedding choice, fixed coarse boundary and projection back to the original amplitude form as strong simplifications and describes this fixed-transition flow as weaker than an all-boundary flow.
+At launch inspection there were 7 scientifically useful jobs queued and no duplicated scientific batch. The dependent aggregate is allowed only after all lanes terminalize.
 
 ## Readiness
 
-Overall scientific programme: **49% (Δ0)**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
-
-Scientifically useful compute after ITER061 terminalization: **0 queued / 0 in_progress**.
+Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
 ## Exact next admissible action
 
-Prospectively preregister `RC008_RESTRICTED_HYPERCUBOID_COARSE_FINE_AMPLITUDE_RECONSTRUCTION` using the newly qualified source object.
-
-The successor must freeze, before computation: exact amplitude formula and dependencies, boundary state, coarse and fine complexes, embedding relation, internal variables and integration/summation domains, alpha panel, normalization, 4-volume observable, numerical tolerances, held-out checks and adversarial controls.
-
-Do **not** execute or interpret that successor as full EPRL/FK refinement. Do not start a second scientific gate until its preregistration is durable and authoritative-state checks show no competing active gate.
+Consume all ITER063 raw artifacts and logs after terminalization, then classify strictly against `prereg/ITER063_RC008_HELDOUT_NONRETUNED_TRANSPORT_SELECTOR_2026-09-14.md`. Green CI is not sufficient. If the gate scientifically passes, preserve any individual held-out negative lanes and only then choose the next independent PHASE_1 gate. If it fails numerically or scientifically, do not retune the frozen panel.
