@@ -1,0 +1,62 @@
+{
+  "purpose": "Outcome-independent preparation only; no amplitude has been evaluated. This file does not authorize the successor numerical gate.",
+  "author_code_commit": "84b375f2a2e0d29b44dd8820953553624bb007a3",
+  "backend_commit": "052e4346028870bd76f69a3034e6cae8defb8f7f",
+  "argument_semantics": {
+    "vertex_amplitude_cli": "folder gamma two_j1,...,two_j10 two_i1,...,two_i5 Dl",
+    "physical_to_doubled": "two_x = 2*x",
+    "gamma": 1.2,
+    "Dl": 0
+  },
+  "global_to_local_spin_order": {
+    "up": ["jb","jb","jb","jb","j1","j2","j3","j4","j5","j6"],
+    "left": ["jb","jb","jb","jb","j7","j8","j1","j9","j2","j3"],
+    "bottom_left": ["jb","jb","jb","jb","j10","j4","j7","j5","j8","j1"],
+    "bottom_right": ["jb","jb","jb","jb","j6","j9","j10","j2","j4","j7"],
+    "right": ["jb","jb","jb","jb","j3","j5","j6","j8","j9","j10"]
+  },
+  "source_qualified_original_local_intertwiner_order": {
+    "up": ["ib","i4","i11","i12","i1"],
+    "left": ["ib","i6","i14","i13","i3"],
+    "bottom_left": ["ib","i8","i15","i11","i5"],
+    "bottom_right": ["ib","i10","i12","i14","i7"],
+    "right": ["ib","i2","i13","i15","i9"]
+  },
+  "recoupling_pairs": [["i1","i2"],["i3","i4"],["i5","i6"],["i7","i8"],["i9","i10"]],
+  "primary": {
+    "physical": {
+      "jb": 0.5,
+      "j1_to_j10": [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+      "ib": 0,
+      "i1_to_i15": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    },
+    "backend_calls": {
+      "up": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[0,0,0,0,0]},
+      "left": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[0,0,0,0,0]},
+      "bottom_left": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[0,0,0,0,0]},
+      "bottom_right": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[0,0,0,0,0]},
+      "right": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[0,0,0,0,0]}
+    }
+  },
+  "heldout": {
+    "physical": {
+      "jb": 0.5,
+      "j1_to_j10": [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+      "ib": 1,
+      "i1_to_i15": [0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]
+    },
+    "backend_calls": {
+      "up": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[2,2,0,2,0]},
+      "left": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[2,2,2,0,0]},
+      "bottom_left": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[2,2,0,0,0]},
+      "bottom_right": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[2,2,2,2,0]},
+      "right": {"two_js":[1,1,1,1,1,1,1,1,1,1],"two_is":[2,2,0,0,0]}
+    }
+  },
+  "locks": {
+    "amplitude_values_present": false,
+    "phase_convention_selected": false,
+    "face_weight_selected_by_output": false,
+    "successor_gate_authorized_by_this_file": false
+  }
+}
