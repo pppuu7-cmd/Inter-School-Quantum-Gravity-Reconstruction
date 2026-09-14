@@ -3,9 +3,9 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_026_TERMINAL",
+  "active_iteration": "ITERATION_027_TERMINAL_INVALID_IMPLEMENTATION",
   "iteration_completion_percent": 100,
-  "iteration_completion_scope": "ITER026 direct-source qbar identity execution terminal PASS across domain, algebra, cup, four-valent and null lanes; bounded Eq.(27) component translation/contraction is now eligible only for a separate prospective preregistration.",
+  "iteration_completion_scope": "ITER027 executed the frozen primary/heldout primitive controls but did not instantiate the source-pinned Eq.(27) topology; scientific terminal classification INVALID_IMPLEMENTATION. A new topology-faithful prospective successor is required.",
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -24,7 +24,7 @@
   },
   "frontier": {
     "RC006": {
-      "status": "DIRECT_SOURCE_QBAR_PRIMITIVE_VALIDATED",
+      "status": "EQ27_TOPOLOGY_IMPLEMENTATION_INVALID",
       "iter023": {
         "prereg_commit": "f236741ce6b76050b40ed9fc5ef52998048a8c35",
         "implementation_commit": "b3ac56b8dec57873d2e59c72c57c30b64f1f46b3",
@@ -59,25 +59,13 @@
         "implementation_commit": "1dd6d2a316a63a487d49fec6f6a40f86b75223ae",
         "production_head": "72ef40054d450d6c97213ffa211ffb63a8b524f9",
         "run": 34786242013,
-        "aggregate_job": 103802168903,
-        "aggregate_artifact": 10327015625,
-        "aggregate_digest": "sha256:ff04cbffd2cf45db0c5f8b09f74f4075d54548ad412e048d517d3f9f42c6d40e",
-        "classification": "RC006_QBAR_CUP_INDEPENDENT_FAIL",
-        "lane_pass": {
-          "construction": true,
-          "cup": false,
-          "four": true,
-          "heldout": false
-        }
+        "classification": "RC006_QBAR_CUP_INDEPENDENT_FAIL"
       },
       "iter025B_exact_qbar_R_source_authority": {
         "prereg_commit": "db2e00079e61258e69c1c8d68c587674e921be9e",
         "implementation_commit": "8294e02f2e0ab9e08f44b124d608efbc44a05072",
         "production_head": "cdf8142df05b61ea17b116571326e4e2721dbde0",
         "run": 34788769863,
-        "job": 103808982965,
-        "artifact": 10326669550,
-        "artifact_digest": "sha256:cb1e40dc31495eb1b21d38315fb28dcc70b35f6d0505f7cd81091c0ecd4afba5",
         "classification": "RC006_EXACT_QBAR_R_SOURCE_AUTHORITY_COMPLETE",
         "source_record": "sources/ITER025_RC006_QBAR_R_AUTHORITY.md",
         "report": "results/ITER025_RC006_EXACT_QBAR_R_SOURCE_AUTHORITY_2026-09-14.md"
@@ -90,59 +78,71 @@
       "iter026": {
         "prereg_commit": "17dd87a110645b2a7ca6cc22df52569758502a70",
         "implementation_commit": "caf988b3313a9c7cf5f7c6b409e6eb3ef99f0215",
-        "invalid_run1": {
-          "run": 34789842824,
-          "production_head": "be3de636b18b494c61c15179f67e6d1af8cf6634",
-          "classification": "INVALID_IMPLEMENTATION_PRE_SCIENCE",
-          "note_commit": "99f6424c42f144affd48840b6d6c4bb5c2edd598",
-          "reason": "unquoted YAML null scalar prevented the frozen five-lane matrix contract from instantiating; no scientific output used"
-        },
         "production_head": "d6a457f364feefd3fd4523ab84e09f8803590f3c",
         "run": 34789873827,
-        "jobs": {
-          "algebra": 103812003442,
-          "four": 103812003478,
-          "domain": 103812003485,
-          "null": 103812003488,
-          "cup": 103812003489,
-          "aggregate": 103812043906
-        },
-        "artifacts": {
-          "algebra": 10328475225,
-          "four": 10328385419,
-          "null": 10328295540,
-          "cup": 10327548996,
-          "domain": 10327359843,
-          "aggregate": 10328005590
-        },
+        "aggregate_artifact": 10328005590,
         "aggregate_digest": "sha256:f74355c6d101ee1728e01f7ddc953bac09d3b00a6d8678db51287e5ecfa98bad",
         "classification": "RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_VALIDATED",
-        "lane_pass": {
-          "domain": true,
-          "algebra": true,
-          "cup": true,
-          "four": true,
-          "null": true
-        },
-        "metrics": {
-          "cup_case_count": 55,
-          "known_iter025A_counterexamples_retained": 8,
-          "max_source_identity_residual": 0.0,
-          "max_qbar_intertwiner_residual": 1.5594956288365066e-12,
-          "max_B2_residual": 2.3525204118543076e-15,
-          "max_cup_residual": 2.3525204118543076e-15,
-          "max_four_valent_residual": 8.052062385546474e-13,
-          "structural_wrong_controls_detected": 3
-        },
         "report": "results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md",
         "report_commit": "b87fb2bb84c161a37b2927e6cd0c085d851065ab"
+      },
+      "iter027": {
+        "prereg_commit": "d07fd121f0abeb34396bb4f2bc4028070fed0e12",
+        "implementation_commit": "fcb17f980caa82fd7a1a1482a523084125915d53",
+        "initial_workflow_head": "95073389c83cf45851bb44473f972c89af6d3564",
+        "initial_run": 34791069641,
+        "initial_run_classification": "INFRASTRUCTURE_FAIL_PRE_SCIENCE_MISSING_MPMATH",
+        "control_only_repair_commit": "b59fbc7a53ec2dda697826beb07550201052cd71",
+        "production_head": "b59fbc7a53ec2dda697826beb07550201052cd71",
+        "run": 34792339154,
+        "jobs": {
+          "authority_domain": 103818770258,
+          "component_translation": 103818770467,
+          "bounded_contraction": 103818770439,
+          "null_controls": 103818770400,
+          "aggregate": 103818814261
+        },
+        "artifacts": {
+          "authority_domain": 10327933057,
+          "component_translation": 10328319002,
+          "bounded_contraction": 10328109395,
+          "null_controls": 10328775999,
+          "aggregate": 10328698059
+        },
+        "aggregate_digest": "sha256:fe1369502a90c617e601d7d45a3d7620010dd516b24174b3191117b013e20411",
+        "raw_aggregate_classification": "RC006_EQ27_COMPONENT_CONTRACTION_BLOCKED_AUTHORITY",
+        "raw_lane_pass": {
+          "authority_domain": false,
+          "component_translation": true,
+          "bounded_contraction": true,
+          "null_controls": true
+        },
+        "scientific_classification": "INVALID_IMPLEMENTATION_RC006_EQ27_TOPOLOGY_NOT_INSTANTIATED",
+        "implementation_findings": {
+          "authority_self_scanner_false_positive": true,
+          "eq27_two_l_loops_instantiated": false,
+          "eq27_internal_j_jpm_Jpm_network_instantiated": false,
+          "eq27_primed_unprimed_channel_wiring_instantiated": false,
+          "eq27_four_graph_blocks_contracted": false,
+          "full_eq27_amplitude_claimed_by_code": false
+        },
+        "surviving_local_control_metrics": {
+          "max_source_identity": 0.0,
+          "max_qbar_intertwiner": 3.839616566770844e-15,
+          "max_dual_contraction": 8.671119018262734e-16,
+          "max_R_inverse": 7.224267142543843e-15,
+          "null_controls_detected": 2,
+          "null_controls_required": 2
+        },
+        "report": "results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md",
+        "report_commit": "cad509649420b79a46b4c8e08616865e35673a0f"
       },
       "eq27_component_reconstruction_prereg_allowed": true,
       "iter012_retry_authorized": false,
       "eq29_amplitude_authorized": false,
       "one_step_tnr_authorized": false,
       "bridge_credit": false,
-      "next_gate": "PREREGISTER_BOUNDED_EQ27_COMPONENT_TRANSLATION_CONTRACTION"
+      "next_gate": "PREREGISTER_TOPOLOGY_FAITHFUL_EQ27_COMPONENT_CONTRACTION_SUCCESSOR"
     },
     "BH004_BH004B": {
       "status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
@@ -168,21 +168,17 @@
     "scientifically_useful_jobs_queued": 0,
     "scientifically_useful_jobs_in_progress": 0,
     "avoidable_idle": false,
-    "reason": "Exactly one new scientific gate, ITER026, was executed and terminalized. Eq.(27) requires a new prospective preregistration."
+    "reason": "ITER027 is terminal INVALID_IMPLEMENTATION. A topology-faithful Eq.(27) successor requires a new prospective preregistration; no silent post-result patch is authorized."
   },
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md",
+    "prereg/ITER027_RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_2026-09-14.md",
     "results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md",
-    "prereg/ITER026_RC006_DIRECT_SOURCE_QBAR_IDENTITY_EXECUTION_2026-09-14.md",
-    "results/ITER026_RUN1_INVALID_IMPLEMENTATION_PRE_SCIENCE_2026-09-14.md",
+    "results/ITER021_RC006_EQ27_COMPONENT_TRANSLATION_2026-09-14.md",
     "results/ITER024_025_AB_PROVENANCE_RECONCILIATION_2026-09-14.md",
-    "results/ITER025_RC006_EXACT_QBAR_R_SOURCE_AUTHORITY_2026-09-14.md",
     "sources/ITER025_RC006_QBAR_R_AUTHORITY.md",
-    "prereg/ITER025_RC006_SOURCE_NORMALIZED_QBAR_SIGN_2026-09-14.md",
-    "results/ITER024_RC006_GRAPHICAL_DUAL_BRAID_2026-09-14.md",
-    "results/ITER024_RC006_CITED_AUTHORITY_CHAIN_INVALID_IMPLEMENTATION_2026-09-14.md",
-    "results/ITER023_RC006_QBAR_R_AUTHORITY_SPLIT_2026-09-14.md",
     "docs/INTERFACE_ATLAS_V0_1.md",
     "docs/CONSTITUTION.md"
   ]
