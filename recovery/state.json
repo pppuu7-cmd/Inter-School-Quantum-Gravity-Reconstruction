@@ -3,22 +3,22 @@
   "repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date":"2026-09-14",
   "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration":"ITERATION_048_LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_RUNNING",
+  "active_iteration":"ITERATION_049_LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_RUNNING",
   "iteration_completion_percent":20,
   "candidate_theory_status":"UNFORMED",
   "readiness_percent":{"amplitude_refinement_cross_realization_validation":49,"candidate_theory_construction":0,"overall_scientific_programme":49},
   "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"full_eq27_amplitude_derived":false},
   "frontier":{
-    "RC006":{"status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","iter039":{"status":"SCIENTIFIC_FAIL","authoritative_run":34806079470,"classification":"RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_FAIL"},"iter041":{"status":"SCOPED_BLOCKED","classification":"RC006_ROOT_UNITY_PRIMITIVE_DOMAIN_SOURCE_AUTHORITY_BLOCKED"},"iter042":{"status":"SCOPED_BLOCKED","authoritative_run":34806737112,"classification":"DELEGATED_AUTHORITY_SOURCE_EXPANSION_BLOCKED","report_commit":"70a8ccd7f88c9ff98a4d0b5c7cfb8996039f71f6"},"bridge_credit":false},
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"EQ11_ROUTING_REFERENCE_AUTHORITY_RUNNING","source_refinement_map_qualified":true,"refinement_map_derived":false,"zero_face_collapse_status":"BLOCKED_UNCHANGED","iter047":{"status":"SCIENTIFIC_PASS","classification":"LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS","authoritative_run":34808646324,"report_commit":"d477c5514e4c6156ce96187cbe75f27c40cb2b6d","bridge_credit":false},"iter048":{"status":"RUNNING","prereg_commit":"faad5c1dcf5e00a9d2eac425e0db0be505295c5b","production_head":"508f09658fe79b75bec5a7efe789dc48cb7b81db","authoritative_run":34811518934,"jobs":{"backend_api":103873656998,"algebra_null":103873657125,"tex_eq11":103873657146,"cited_reference":103873657258},"scientific_result":null}},
+    "RC006":{"status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","bridge_credit":false},
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"AUTHOR_CODE_ROUTING_RECONCILIATION_RUNNING","source_refinement_map_qualified":true,"refinement_map_derived":false,"zero_face_collapse_status":"BLOCKED_UNCHANGED","iter047":{"status":"SCIENTIFIC_PASS","classification":"LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS","authoritative_run":34808646324,"report_commit":"d477c5514e4c6156ce96187cbe75f27c40cb2b6d"},"iter048":{"status":"SCOPED_BLOCKED","classification":"LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY","original_run":34811518934,"rawtex_run":34811727020,"rawtex_job":103874254568,"rawtex_artifact":{"id":10334723630,"digest":"sha256:191262f0c2a6d5c5b3ac6f1036caacd6808735c4bc38ecc73c45da49b2c53cb9"},"main_tex_sha256":"bff93f3a7857658264a04eb23521bb935a68eccb7760b284589ff5ec4073f063","report_commit":"851d0665305cd7d379f758b2b4f4a320d85691ae"},"iter049":{"status":"RUNNING","prereg_commit":"e0e87f1f87afe9e8fe0a3795cc8b0408991d8683","production_head":"946d427f2821971c3342f2ff5831b2cdeae79dc9","authoritative_run":34811866640,"jobs":{"code_routing":103874660015,"routing_null":103874660170,"tex_code_crosswalk":103874660187,"notebook_callgraph":103874660292},"scientific_result":null},"bridge_credit":false},
     "BH004_BH004B":{"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},"RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},"RC009":{"status":"SCOPED_BLOCKED"},"LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
   "active_compute":[
-    {"run":34811518934,"job":103873656998,"status":"in_progress","purpose":"ITER048 exact pinned backend API authority"},
-    {"run":34811518934,"job":103873657125,"status":"in_progress","purpose":"ITER048 exact SU2 algebra/admissibility and null precheck"},
-    {"run":34811518934,"job":103873657146,"status":"in_progress","purpose":"ITER048 arXiv source TeX Eq11/Eq12 routing authority"},
-    {"run":34811518934,"job":103873657258,"status":"in_progress","purpose":"ITER048 cited repository [30] authority"}
+    {"run":34811866640,"job":103874660015,"status":"queued","purpose":"ITER049 author-code routing evidence"},
+    {"run":34811866640,"job":103874660170,"status":"in_progress","purpose":"ITER049 routing null controls"},
+    {"run":34811866640,"job":103874660187,"status":"in_progress","purpose":"ITER049 exact TeX to author-code crosswalk"},
+    {"run":34811866640,"job":103874660292,"status":"in_progress","purpose":"ITER049 EPRL vertex-renormalization notebook callgraph"}
   ],
-  "idle_capacity":{"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":4,"recent_terminal_consumed":5,"avoidable_idle":false},
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER048_LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_2026-09-14.md","results/ITER047_LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS_2026-09-14.md","docs/CONSTITUTION.md"]
+  "idle_capacity":{"scientifically_useful_jobs_queued":1,"scientifically_useful_jobs_in_progress":3,"recent_terminal_consumed":7,"avoidable_idle":false},
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER049_LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_2026-09-14.md","results/ITER048_LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_2026-09-14.md","results/ITER047_LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS_2026-09-14.md","docs/CONSTITUTION.md"]
 }
