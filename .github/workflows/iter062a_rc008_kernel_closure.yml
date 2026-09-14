@@ -1,0 +1,151 @@
+name: ITER062A RC008 restricted amplitude-kernel closure
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter062a_rc008_kernel_closure.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  EXPECTED_SHA: 78415347fa92b1d0bce1bbd4010faeb3cc939c5f5d6b14d72f340138e4c573ef
+
+jobs:
+  source-acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    outputs:
+      source_sha: ${{ steps.meta.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch exact arXiv 1701.02311 source file with bounded fallbacks
+        run: |
+          python - <<'PY'
+          import io, os, tarfile, time, urllib.request, hashlib
+          urls=[
+            'https://export.arxiv.org/e-print/1701.02311',
+            'https://arxiv.org/e-print/1701.02311',
+            'https://export.arxiv.org/src/1701.02311',
+          ]
+          expected=os.environ['EXPECTED_SHA']
+          last=None
+          for attempt in range(6):
+            for url in urls:
+              try:
+                req=urllib.request.Request(url,headers={'User-Agent':'ISQGR-source-audit/1.0 (scientific reproducibility)'} )
+                with urllib.request.urlopen(req,timeout=45) as r: data=r.read()
+                candidates=[]
+                try:
+                  with tarfile.open(fileobj=io.BytesIO(data),mode='r:*') as tf:
+                    for m in tf.getmembers():
+                      if m.isfile() and m.name.endswith('QuantumCuboidsLong_article.tex'):
+                        candidates.append(tf.extractfile(m).read())
+                except tarfile.TarError:
+                  if b'QuantumCuboidsLong_article.tex' in data or b'Eq:RenormalizedAmplitude' in data:
+                    candidates=[data]
+                for raw in candidates:
+                  h=hashlib.sha256(raw).hexdigest()
+                  print('candidate',url,'sha256',h,'bytes',len(raw))
+                  if h==expected:
+                    open('QuantumCuboidsLong_article.tex','wb').write(raw)
+                    open('source_meta.txt','w').write(f'url={url}\nsha256={h}\nbytes={len(raw)}\n')
+                    raise SystemExit(0)
+                last=f'no exact-hash candidate from {url}'
+              except SystemExit:
+                raise
+              except Exception as e:
+                last=f'{url}: {type(e).__name__}: {e}'
+                print(last)
+            time.sleep(min(20,2**attempt))
+          raise RuntimeError('SOURCE_ACQUISITION_PRE_SCIENCE_FAIL: '+str(last))
+          PY
+      - id: meta
+        name: Record exact source hash
+        run: |
+          echo "source_sha=$(sha256sum QuantumCuboidsLong_article.tex | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          cat source_meta.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter062a-source
+          path: |
+            QuantumCuboidsLong_article.tex
+            source_meta.txt
+          if-no-files-found: error
+
+  closure:
+    needs: source-acquire
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        lane:
+          - dependency-source-identity
+          - vertex-kernel-closure
+          - renormalized-amplitude-closure
+          - gluing-index-closure
+          - observable-closure
+          - adversarial-null
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter062a-source
+          path: source
+      - name: Run frozen lane
+        run: |
+          mkdir -p out
+          python code/iter062a/closure.py \
+            --lane '${{ matrix.lane }}' \
+            --source source/QuantumCuboidsLong_article.tex \
+            --out 'out/${{ matrix.lane }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter062a-${{ matrix.lane }}
+          path: out/*.json
+          if-no-files-found: warn
+
+  aggregate:
+    needs: [source-acquire, closure]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter062a-*
+          path: artifacts
+          merge-multiple: true
+      - name: Aggregate without converting green CI into scientific PASS
+        run: |
+          python - <<'PY'
+          import glob,json,os
+          expected=['dependency-source-identity','vertex-kernel-closure','renormalized-amplitude-closure','gluing-index-closure','observable-closure','adversarial-null']
+          rows={}
+          for p in glob.glob('artifacts/*.json'):
+            try:
+              d=json.load(open(p)); rows[d['lane']]=d
+            except Exception as e: print('unreadable',p,e)
+          missing=[x for x in expected if x not in rows]
+          if missing:
+            classification='INFRASTRUCTURE_FAIL_PRE_SCIENCE'
+            scientific_pass=False
+          else:
+            null_ok=rows['adversarial-null'].get('pass') is True and rows['adversarial-null'].get('detected')==rows['adversarial-null'].get('total')
+            science=expected[:-1]
+            all_science=all(rows[x].get('pass') is True for x in science)
+            scientific_pass=all_science and null_ok
+            classification='SCIENTIFIC_PASS_RC008_RESTRICTED_AMPLITUDE_KERNEL_SOURCE_CLOSED' if scientific_pass else 'SCOPED_BLOCKED_RC008_RESTRICTED_AMPLITUDE_KERNEL_INCOMPLETE_SOURCE_OBJECT'
+          summary={'classification':classification,'scientific_pass':scientific_pass,'missing':missing,'lanes':rows,'claim_locks':{'bridge_credit':False,'candidate_theory':'UNFORMED','full_eprl_refinement':False,'lorentzian_refinement':False}}
+          os.makedirs('aggregate',exist_ok=True)
+          open('aggregate/summary.json','w').write(json.dumps(summary,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(summary,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter062a-aggregate
+          path: aggregate/summary.json
+          if-no-files-found: error
