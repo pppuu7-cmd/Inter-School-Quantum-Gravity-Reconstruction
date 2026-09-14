@@ -1,0 +1,75 @@
+name: ISQGR ITER061 RC008 companion refinement gluing authority
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter061/**'
+      - '.github/workflows/isqgr-iter061-rc008-companion-authority.yml'
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUNBUFFERED: '1'
+
+jobs:
+  authority-lanes:
+    name: authority (${{ matrix.lane }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        lane:
+          - source-identity
+          - cuboid-complex
+          - embedding-relation
+          - amplitude-blocking
+          - observable-comparator
+          - null-controls
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen authority lane
+        run: |
+          mkdir -p out
+          python3 code/iter061/companion_authority.py \
+            --lane '${{ matrix.lane }}' \
+            --out out/evidence.json
+      - name: Show lane evidence
+        if: always()
+        run: cat out/evidence.json || true
+      - name: Upload lane evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter061-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    name: aggregate
+    runs-on: ubuntu-latest
+    needs: [authority-lanes]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download all lane evidence
+        uses: actions/download-artifact@v4
+        with:
+          pattern: iter061-*
+          path: evidence
+      - name: Aggregate preregistered lane statuses
+        run: |
+          mkdir -p aggregate
+          python3 code/iter061/companion_authority.py \
+            --aggregate-dir evidence \
+            --out aggregate/aggregate.json
+          cat aggregate/aggregate.json
+      - name: Upload aggregate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter061-aggregate
+          path: aggregate/aggregate.json
+          if-no-files-found: error
