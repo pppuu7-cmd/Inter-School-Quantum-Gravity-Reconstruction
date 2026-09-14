@@ -4,97 +4,52 @@ Date: 2026-09-14.
 
 Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains **49%**; this is not a correctness probability.
 
-## Reconciled lineage through ITER027
+## Authoritative RC006 lineage through ITER028
 
-ITER025B established exact source authority for ordered q<->qbar components and R/R^-1 crossing. ITER026 prospectively executed the direct-source qbar identity and terminalized `PASS — RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_VALIDATED`.
+ITER026 terminalized `PASS — RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_VALIDATED`.
 
-ITER027 then attempted the separately preregistered bounded Eq.(27) gate. Its first run `34791069641` failed before science because the workflow omitted `mpmath`; an exact control-only dependency repair produced corrected run `34792339154`.
+ITER027 is terminal `INVALID_IMPLEMENTATION — RC006_EQ27_TOPOLOGY_NOT_INSTANTIATED`; its local qbar/duality/R controls remain controls only and give no Eq.(27) physics verdict. Durable report: `results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md`.
 
-The corrected run executed four independent matrix lanes. Local primitive controls were strong: qbar/intertwiner, dual-pairing and R/R^-1 identities passed on primary and held-out panels, and two strong wrong-structure controls were detected. However, the authority-domain lane contained a self-referential blacklist false positive, and more importantly the implementation never instantiated the source-pinned Eq.(27) topology itself. It did not encode/contract the two closed l loops, internal j/j_i^+/j_i^-/J^+/J^- network, primed/unprimed channel wiring, or the four source graphical blocks.
+ITER028 was prospectively preregistered at commit `73246639c6710ab3e7228c3e5f0f11ae654f32b7` and Stage S has now been executed without changing the contract.
 
-Therefore ITER027 is terminal:
+### ITER028 Stage S — terminal BLOCKED
 
-**`INVALID_IMPLEMENTATION — RC006_EQ27_TOPOLOGY_NOT_INSTANTIATED`**.
+Implementation commit: `a56829c6beeee273d410c5dc87a7234aa76daef4`.
 
-Durable report: `results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md`, commit `cad509649420b79a46b4c8e08616865e35673a0f`.
+Workflow/production head: `3661564138585ad990761371e8a2d1e980719433`.
 
-This is not a physical FAIL of RC006 and not a source-authority BLOCKED result. Its local primitive PASSes remain controls only.
+Authoritative run/job: `34794113275 / 103823792085`.
 
-## ITER028 prospectively frozen — NOT EXECUTED
+Artifact: `10329326228`, digest `sha256:9d077dfe52a76033c6061de872e6068cdea1980f55ceda0bf8e25c976d4f7c03`.
 
-A new successor has now been preregistered before any substantive ITER028 implementation or numerical result:
+Graph dictionary digest: `sha256:c6ced1ae5348d6ff57571b7007c50b061a3296b4ee75b2e584c2a0dfaf482216`.
 
-`prereg/ITER028_RC006_EQ27_TOPOLOGY_FAITHFUL_CONTRACTION_2026-09-14.md`
+Scientific classification:
 
-Prereg commit:
+**`BLOCKED — RC006_EQ27_SOURCE_GRAPH_COMPONENT_MAP_BLOCKED`**.
 
-`73246639c6710ab3e7228c3e5f0f11ae654f32b7`
+The GitHub job itself was green; green CI is not the scientific verdict.
 
-Status: **`PREREGISTERED_NOT_EXECUTED`**.
+Fresh source provenance passed exactly. The recovered arXiv `1609.02429v2` archive SHA256 equals the frozen `3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee`, and the unique `eq:eprl-3-valent` display SHA256 equals the frozen `88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d`.
 
-### Exact frozen source object
+The exact Eq.(27) display mechanically contains two `sum_j` structures, primed/unprimed J labels and the expected representation/scalar labels, but only **two `tikzpicture` environments**. The frozen ITER028 source inventory required four TikZ graphical blocks / source graphical factors. That exact preregistered predicate therefore cannot be satisfied without changing the contract after seeing the source extraction.
 
-Primary target: arXiv:1609.02429v2.
+No post-hoc reinterpretation or threshold/model change was made. Post-Stage-S numerical lanes A–F are not authorized and were not launched.
 
-Required source archive SHA256:
+Durable result: `results/ITER028_RC006_EQ27_STAGE_S_SOURCE_GRAPH_MAP_BLOCKED_2026-09-14.md`, result commit `c9b783f9dedef67011bb3f54b45159d92f99a6e0`.
 
-`3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee`.
+## Current RC006 blocker and next admissible gate
 
-Required historical exact Eq.(27) source-snippet SHA256 from ITER021:
+The current blocker is now narrower than ITER027: the byte-pinned source display and the historical “four graphical blocks” inventory are not mechanically identical under the frozen Stage-S predicate.
 
-`88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d`.
+The exact next admissible scientific gate is a **new prospectively preregistered source-semantics reconciliation audit** that asks, before any new Eq.(27) contraction implementation, whether “four graphical blocks” in the historical extraction meant subfactors/components inside the two source TikZ diagrams rather than four TikZ environments, and whether that decomposition is uniquely source-determined with exact graph-to-index ordering. ITER028 itself must remain BLOCKED and may not be retroactively repaired.
 
-The source topology inventory remains the ITER021 inventory: the unique `eq:eprl-3-valent` display, four graphical blocks, two internal sums, two closed `l` loops, internal `j`/`j_i^+`/`j_i^-`/`J^+`/`J^-` channels and both primed/unprimed J pairs, together with every source scalar/sign/dimension/normalization factor and exact tensor-leg/index order.
+Only a future successful reconciliation may authorize a fresh topology-faithful Eq.(27) contraction gate. It does not authorize the historical ITER012 object, Eq.(29)/Lambda, or one-step TNR.
 
-### Required Stage S
+## Other programme fronts
 
-ITER028 begins with an immutable source graph compiler. It must emit a machine-readable component dictionary with stable node/edge IDs, ordered legs, summed/free indices, representation labels, orientation/bend/crossing metadata and source locator for every entry.
-
-If any exact leg order, loop attachment, crossing, summation range, normalization or graph-to-index relation remains unresolved, Stage S must terminalize `RC006_EQ27_SOURCE_GRAPH_COMPONENT_MAP_BLOCKED`; no numerical graph contraction may run.
-
-### Parallel lanes after Stage S
-
-Only after Stage S passes may six independent lanes run concurrently with `fail-fast:false`, all consuming the same immutable graph dictionary:
-
-1. full tensor-network/einsum Eq.(27) contraction;
-2. independently written explicit nested-index/channel-sum contraction;
-3. independent Appendix-E E1–E4/E3–E4 source reduction comparator;
-4. q=1 graph/compiler sentinel using the identical topology;
-5. historical source-number/normalization sentinel where exact source identity is unambiguous;
-6. topology-breaking adversarial controls.
-
-The two full contraction engines may share source-qualified primitive tensors and frozen graph metadata, but may not share contraction-order code or a cached final scalar.
-
-### Frozen primary scope
-
-Primary target is k=12 with source-defined free-spin samples `j=1,2,3` only where Stage S can mechanically complete all additional labels from the same exact source context before numerical execution.
-
-No post-result finite-k panel expansion is allowed inside ITER028.
-
-### Frozen adversarial topology controls
-
-At minimum test: non-symmetric leg swap, removal/miswire of one l loop, primed/unprimed J-channel erasure, R/R^-1 swap where source-required, Hermitian replacement of qbar/cap-cup duality, and removal of one source quantum-dimension factor.
-
-At least 4/6 must be detected, with l-loop removal/miswire and primed/unprimed erasure mandatory. If a mandatory control is structurally inapplicable, verdict is `INVALID_CONTROL_DESIGN`, not automatic PASS.
-
-### Frozen scientific PASS ceiling
-
-Only full Stage-S + all-lane PASS may establish:
-
-`RC006_EQ27_TOPOLOGY_FAITHFUL_COMPONENT_CONTRACTION_PASS_SCOPED`.
-
-That would mean only a bounded, source-faithful component realization/internal validation of target Eq.(27) in the frozen reduced Euclidean RC006 sectors. It would not establish Eq.(29), TNR flow, preferred alpha, Lorentzian EPRL, GR recovery, a bridge, a parent principle, new physics or a candidate theory.
-
-## Exact next action
-
-Implement the already-frozen ITER028 Stage S **without changing its scientific contract**. If Stage S passes, launch the six post-Stage-S lanes in parallel through GitHub Actions and assemble exactly one aggregate scientific verdict after all required lanes are terminal.
-
-Do not create a competing Eq.(27) gate. Do not reuse ITER027 local identities as a substitute for topology execution. Do not alter thresholds, source topology, k/spin scope or controls after seeing results.
-
-Recovery state registering ITER028 preregistration: commit `75d0beaddf8a987a3066e2c7268102d8706109bb`.
+BH004/BH004B remains scoped-negative. Genuine multivertex Lorentzian EPRL refinement remains source-blocked. RC008 remains source-only coarse/refined blocked. RC009 remains scoped blocked. Lorentzian Delta4 remains saturated-negative in scope.
 
 ## Locks
 
 Still false: `iter012_retry_authorized`, `eq29_amplitude_authorized`, `one_step_tnr_authorized`, `bridge_credit`, `candidate_theory_authorized`, `preferred_alpha_found`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `UNIVERSAL_BRIDGE_FOUND`.
-
-BH004/BH004B remains scoped-negative; genuine multivertex Lorentzian refinement remains source-blocked; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
