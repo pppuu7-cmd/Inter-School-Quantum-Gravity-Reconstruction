@@ -58,7 +58,7 @@ def lane_authority():
     # Source-level multiplicative separation: after the first closing bracket and before the second opening bracket,
     # there is no equality/comma/plus operator that would turn them into alternatives/terms. Whitespace or TeX spacing is allowed.
     separator=d[ms[0].end():ms[1].start()] if len(ms)==2 else ''
-    sep_clean=re.sub(r'\\(?:,|;|!|quad|qquad)\b?','',separator)
+    sep_clean=re.sub(r'\\(?:,|;|!|quad|qquad)','',separator)
     multiplicative=bool(len(ms)==2 and not re.search(r'[=,+]',sep_clean))
     forbidden_exec=[]  # this implementation imports no Eq.(29)/Lambda numerical object.
     ok=(not missing and len(ms)==2 and sums==2 and distinct and multiplicative and not forbidden_exec)
