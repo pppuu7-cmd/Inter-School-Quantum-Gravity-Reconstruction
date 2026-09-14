@@ -2,8 +2,8 @@
   "project": "Inter-School Quantum Gravity Reconstruction",
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
-  "phase": "PHASE_1_TYPED_COMPOSITION_DISCRIMINATION_ACTIVE",
-  "active_iteration": "ITER069_TERMINAL_PASS_SCOPED_PENDING_ITER070_PREREG",
+  "phase": "PHASE_1_OBSERVABLE_IDENTITY_AND_SCALE_AUTHORITY_ACTIVE",
+  "active_iteration": "ITER074_TERMINAL_PENDING_ITER075_PREREG",
   "iteration_completion_percent": 100,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
@@ -26,71 +26,74 @@
     "C_tensor": "HaPPY subsystem/tensor contraction and isometric encoding",
     "C_scale_flow": "FRG regulator-dependent EAA/theory-space scale flow"
   },
+  "spectral_observable_frontier": {
+    "iter071": {
+      "status": "TERMINAL",
+      "classification": "PASS_SCOPED_COMMON_DEFINITION_DIFFERENT_REALIZATION",
+      "prereg_commit": "bd42843d2dbb6203b3d1513b079107499ce631d2",
+      "source_authority_commit": "3582bcca11dcfa4eca279cc2b266213712de48b3",
+      "critic_commit": "0e26ac63d1ea947c219394ee7cbcdeac6f32cafc",
+      "terminal_result_commit": "4b907ada70c25e536b6c9cce1a89835bf1fb4ab7",
+      "same_observable_definition": true,
+      "pointwise_4d_comparator_authorized": false,
+      "bridge_credit": false
+    },
+    "iter072": {
+      "status": "TERMINAL",
+      "classification": "PASS_SCOPED_CDT_DIFFUSION_SCALE_CALIBRATED_CONTINUUM_OPEN",
+      "prereg_commit": "3cc0751629f6c3cf3eb2ba5bb89c1fcccbef439e",
+      "metadata_correction_commit": "bfb8f7fab32f5bdf021c61e6ffc6b6adc397ad99",
+      "source_authority_commit": "c341d4191c9db02af027b80d997ac622f9c7dcc1",
+      "critic_commit": "57de6150d6ffe0f681ed8daf8c0dfd58f766f310",
+      "terminal_result_commit": "4c1ace6de4fe4911033fcb0c27380b33355cd0b7",
+      "relative_spectral_scale_authority": true,
+      "absolute_lattice_scale_authority": "SCOPED_SEMICLASSICAL",
+      "continuum_limit_established": false,
+      "uv_fixed_point_established": false,
+      "bridge_credit": false
+    },
+    "iter073": {
+      "status": "TERMINAL",
+      "classification": "BLOCKED_INDEPENDENT_PHYSICAL_SCALE_NORMALIZATION",
+      "prereg_commit": "8082e08b2b5349b53b5ffbf20a4676a2e57bf859",
+      "source_authority_commit": "dc604f6881f81fb12d4e1f6aab5ae62b0f75251c",
+      "critic_commit": "384f01d4b6656aece95b9819582999315885029c",
+      "terminal_result_commit": "257d4d90ce4726859fdca8f49c2db885e15290ae",
+      "independent_4d_physical_scale_crosswalk": false,
+      "published_direct_fit_scope": "3D_TARGET_FITTED",
+      "bridge_credit": false
+    },
+    "iter074": {
+      "status": "TERMINAL",
+      "classification": "PASS_SCOPED_REGULAR_STEP_GEOMETRY_ONLY",
+      "prereg_commit": "6ed0ba6a07d28c2fa44c66bc03caff1db4da1a2e",
+      "source_authority_commit": "3a0eb0714cf17c2294a601c734c98fba627b1847",
+      "critic_commit": "9b4cca52601bc29c18df59be1cba605570e7ef73",
+      "terminal_result_commit": "75502b348d4c5c9be37e4b531b5143baa36d7038",
+      "full_4d_random_walk_definition": true,
+      "regular_sqrt_sigma_step_heuristic": true,
+      "independent_full_4d_geodesic_distance": true,
+      "independent_r2_of_sigma": false,
+      "scale_dependent_walk_dimension": false,
+      "absolute_planckian_diffusion_radius": false,
+      "iter073_reopened": false,
+      "bridge_credit": false
+    }
+  },
   "frontier": {
     "RC002": {
       "status": "COMPOSITION_MEASURE_AUTHORITY_PASS_SCOPED_CONTINUUM_OPEN",
-      "iter067": {
-        "status": "TERMINAL",
-        "classification": "PASS_SCOPED_STRUCTURAL_MAP_ESTABLISHED_SCOPED",
-        "prereg_commit": "c103cb2e5b39d7dcf8fe747210dd9d7e3d0a58b9",
-        "source_authority_commit": "5af80dd04cea2dce8dcaa8a934e10da712b7d99c",
-        "critic_commit": "6e87bb17cd7e4ccbf6230c83f5b2bd7c2603eade",
-        "terminal_result_commit": "7a2b606b67d982b7c9e9010c82a3418bbafaa8e4",
-        "realization_update_commit": "da64060fcbefa9bb8212fa6bfb58f5001339c54e",
-        "exact_semigroup_gluing_qualified_regulated": true,
-        "preferred_discrete_time_dependency_essential": true,
-        "bridge_credit": false
-      }
-    },
-    "RC005": {
-      "status": "HAPPY_TENSOR_QEC_COMPOSITION_MAPPED_SCOPED",
-      "iter068": {
-        "status": "TERMINAL",
-        "classification": "FAIL_SCOPED_PHYSICAL_COMPOSITION_TYPE_EQUIVALENCE_REJECTED",
-        "retained_subresult": "COMMON_ALGEBRAIC_KERNEL_ONLY",
-        "prereg_commit": "a50779bcd93ba34546b16751d61245ad45e6ee01",
-        "source_audit_commit": "af299c1d125799595dbe77a0a2c49fffed4f1404",
-        "critic_commit": "24e232d9f26cb9a5ee81a06c16c0131bd52c4234",
-        "terminal_result_commit": "c7b8cdf9b03b7c89a2f4f664f988682996fa4aac",
-        "cdt_happy_physical_equivalence": false,
-        "common_algebraic_kernel": true,
-        "bridge_credit": false
-      }
+      "bridge_credit": false
     },
     "RC003": {
       "status": "SCALE_OPERATION_AUTHORITY_PASS_SCOPED",
-      "iter069": {
-        "status": "TERMINAL",
-        "classification": "PASS_SCOPED_FRG_SCALE_OPERATION_QUALIFIED",
-        "mandatory_qualifier": "FINITE_SOURCE_DEFINED_COMPOSITION_LAW_NOT_ESTABLISHED_IN_FROZEN_STACK",
-        "prereg_commit": "c938f74feed0e1aae729cdafea05a3d6e5d70227",
-        "extraction_commit": "89aab44905ebc8406bf65711c384a39576c9ad5b",
-        "authoritative_run": 34889707865,
-        "source_authority_commit": "2a851fab018fbf72d49c895b14a41d68d2804624",
-        "critic_commit": "8639ccacef0f54c1bd5cc773ca19a3560d088a98",
-        "terminal_result_commit": "37ee6cb2e4754588d9715e73cc31931a20b430da",
-        "realization_update_commit": "4735746bd2fbf1b0968362af78951098b9f68177",
-        "eaa_wetterich_object_qualified": true,
-        "theory_space_domain_codomain_qualified": true,
-        "regulator_structure_qualified": true,
-        "gauge_background_structure_qualified": true,
-        "finite_source_defined_composition_law_established": false,
-        "fixed_point_physical_refinement_identification": false,
-        "typed_operation": "C_scale_flow",
-        "bridge_credit": false
-      }
+      "typed_operation": "C_scale_flow",
+      "finite_source_defined_composition_law_established": false,
+      "bridge_credit": false
     },
-    "BH004_BH004B": {
-      "status": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
-      "iter066": {
-        "status": "TERMINAL",
-        "classification": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
-        "authoritative_run": 34884258757,
-        "quantum_measure_or_amplitude_qualified": true,
-        "classical_csg_scale_map_qualified": true,
-        "quantum_scale_refinement_map_qualified": false,
-        "bridge_credit": false
-      }
+    "RC005": {
+      "status": "HAPPY_TENSOR_QEC_COMPOSITION_MAPPED_SCOPED",
+      "bridge_credit": false
     },
     "RC006": {
       "status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
@@ -98,15 +101,17 @@
     },
     "RC008": {
       "status": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY",
-      "corrected_crossing_authorized": false,
       "bridge_credit": false
     },
     "RC009": {
       "status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"
     },
+    "BH004_BH004B": {
+      "status": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
+      "bridge_credit": false
+    },
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
       "status": "REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED",
-      "refinement_map_derived": false,
       "bridge_credit": false
     },
     "LORENTZIAN_DELTA4": {
@@ -120,20 +125,22 @@
     "scientifically_useful_jobs_in_progress": 0,
     "avoidable_idle": false
   },
-  "next_gate": "PREREGISTER_ITER070_FRG_CDT_SCALE_TIME_TYPE_DISCRIMINATION",
-  "next_gate_rationale": "ITER069 establishes C_scale_flow as a source-qualified FRG/EAA theory-space operation while retaining the absence of an exact source-defined finite physical composition law. ITER067 provides the strongest qualified dynamical comparator, CDT C_seq, with exact regulated temporal gluing. A prospective typed comparison is the cheapest high-falsifiability test of whether the two share any non-forgetful invariant after regulator, measure, state-space, dynamics, time/scale semantics and observables are retained. RG-time/proper-time substitution, regulator erasure, full/reduced-state substitution and fixed-point/refinement substitution must be frozen as failure controls.",
+  "next_gate": "PREREGISTER_ITER075_FRG_CDT_VOLUME_PROFILE_EFFECTIVE_ACTION_OBSERVABLE_AUTHORITY",
+  "next_gate_rationale": "ITER071-074 establish a same spectral observable definition and CDT-internal scale calibration but localize the remaining pointwise physical-scale blocker to missing independent full-4D walk-distance normalization and independent cross-school scale selection. Repeating spectral curve fits is now low-information. The next high-information route is an independent observable family: compare the source-qualified CDT de-Sitter three-volume profile/effective minisuperspace action with the closest QEG/FRG background-geometry or scale-factor effective object, first auditing observable/effective-action identity before any parameter or functional-shape comparison.",
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER074_CDT_4D_WALK_DISTANCE_DIFFUSION_NORMALIZATION_AUTHORITY_2026-09-14.md",
+    "sources/ITER074_CDT_4D_WALK_DISTANCE_DIFFUSION_NORMALIZATION_AUTHORITY_2026-09-14.md",
+    "results/ITER074_ADVERSARIAL_CRITIC_2026-09-14.md",
+    "prereg/ITER074_CDT_4D_WALK_DISTANCE_DIFFUSION_NORMALIZATION_AUTHORITY_2026-09-14.md",
+    "results/ITER073_FRG_CDT_SPECTRAL_PHYSICAL_SCALE_CROSSWALK_2026-09-14.md",
+    "results/ITER072_CDT_SPECTRAL_DIFFUSION_SCALE_CONTINUUM_AUTHORITY_2026-09-14.md",
+    "results/ITER071_FRG_CDT_SPECTRAL_DIMENSION_OBSERVABLE_IDENTITY_AUTHORITY_2026-09-14.md",
+    "results/ITER070_FRG_CDT_SCALE_TIME_TYPE_DISCRIMINATION_2026-09-14.md",
     "results/ITER069_RC003_FRG_SCALE_COMPOSITION_AUTHORITY_2026-09-14.md",
-    "sources/ITER069_RC003_FRG_SCALE_OPERATION_AUTHORITY_2026-09-14.md",
-    "results/ITER069_ADVERSARIAL_CRITIC_2026-09-14.md",
-    "prereg/ITER069_RC003_FRG_SCALE_COMPOSITION_AUTHORITY_2026-09-14.md",
     "realizations/RC-003_ASYMPTOTIC_SAFETY_EAA_EH_TRUNCATION.md",
-    "results/ITER068_CDT_HAPPY_COMPOSITION_TYPE_DISCRIMINATION_2026-09-14.md",
     "realizations/RC-002_4D_CDT_TRANSFER_MATRIX.md",
-    "realizations/RC-005_HAPPY_HOLOGRAPHIC_QEC.md",
-    "results/ITER067_RC002_FULL_CDT_TRANSFER_MATRIX_COMPOSITION_MEASURE_AUTHORITY_2026-09-14.md",
     "docs/INTERFACE_ATLAS_V0_1.md",
     "docs/CONSTITUTION.md"
   ]
