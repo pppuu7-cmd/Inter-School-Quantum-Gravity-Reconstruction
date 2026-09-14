@@ -1,0 +1,72 @@
+{
+  "purpose": "Outcome-independent held-out transport panel frozen before any ITER055 amplitude output. Completes the two recoupling classes not numerically exercised by ITER054.",
+  "inherits": {
+    "backend_commit": "052e4346028870bd76f69a3034e6cae8defb8f7f",
+    "runtime_run": 34818301950,
+    "gamma": 1.2,
+    "Dl": 0,
+    "mu_weight": 1,
+    "jb": 0.5,
+    "j1_to_j10": [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+    "production_convention": "AUTHOR_EXECUTABLE_CONVENTION",
+    "paper_conversion": -1
+  },
+  "global_to_local_intertwiner_order": {
+    "up": ["ib","i4","i11","i12","i1"],
+    "left": ["ib","i6","i14","i13","i3"],
+    "bottom_left": ["ib","i8","i15","i11","i5"],
+    "bottom_right": ["ib","i10","i12","i14","i7"],
+    "right": ["ib","i2","i13","i15","i9"]
+  },
+  "recoupling_pairs": [["i1","i2"],["i3","i4"],["i5","i6"],["i7","i8"],["i9","i10"]],
+  "already_exercised_ITER054_not_recomputed": {
+    "00_class": "primary: every pair 0->0",
+    "01_class": "heldout: every pair 0->1"
+  },
+  "sectors": {
+    "R10": {
+      "design_role": "complete recoupling class 1->0 without retuning",
+      "physical": {
+        "ib": 0,
+        "i1_to_i15": [1,0,1,0,1,0,1,0,1,0,0,0,0,0,0]
+      },
+      "backend_two_is": {
+        "up": [0,0,0,0,2],
+        "left": [0,0,0,0,2],
+        "bottom_left": [0,0,0,0,2],
+        "bottom_right": [0,0,0,0,2],
+        "right": [0,0,0,0,2]
+      },
+      "five_recoupling_factors_exact": "-sqrt(3)/2",
+      "final_signs": [-1,-1,-1,-1,-1],
+      "df_phase": 1,
+      "face_factor": 1024
+    },
+    "R11": {
+      "design_role": "complete recoupling class 1->1 without retuning",
+      "physical": {
+        "ib": 1,
+        "i1_to_i15": [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+      },
+      "backend_two_is": {
+        "up": [2,2,2,2,2],
+        "left": [2,2,2,2,2],
+        "bottom_left": [2,2,2,2,2],
+        "bottom_right": [2,2,2,2,2],
+        "right": [2,2,2,2,2]
+      },
+      "five_recoupling_factors_exact": "-1/2",
+      "final_signs": [1,1,1,1,1],
+      "df_phase": 1,
+      "face_factor": 1024
+    }
+  },
+  "locks": {
+    "amplitude_values_present": false,
+    "sector_selection_depends_on_ITER054_values": false,
+    "threshold_retuning_allowed": false,
+    "full_internal_sum_authorized": false,
+    "refinement_map_derived": false,
+    "bridge_credit": false
+  }
+}
