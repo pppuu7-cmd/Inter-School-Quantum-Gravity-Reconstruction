@@ -15,11 +15,11 @@ Do 4D CDT sources provide a source-defined calibration from spectral-diffusion d
 
 ## Frozen sources
 
-- arXiv:1603.02076 — J. Ambjorn, J. Gizbert-Studnicki, A. Goerlich, J. Jurkiewicz, *The transfer matrix in four-dimensional CDT* / continuum-limit lattice-spacing study as represented by the exact source record used in this gate; the audited paper explicitly develops two lattice-spacing estimators, including spectral-dimension rescaling and a fluctuation/Planck-scale calibration.
-- arXiv:1411.7712 — J. H. Cooperman / CDT spectral-dimension lattice-spacing analysis as identified in the exact source record; used for the relative spectral-rescaling construction and its assumptions.
-- arXiv:2604.05641 — J. Ambjorn, R. Loll, 2026 CDT review; used only as current status/claim-ceiling authority for continuum-limit interpretation.
+- arXiv:1603.02076 — Jan Ambjorn, Daniel Coumbe, Jakub Gizbert-Studnicki, Jerzy Jurkiewicz, *Searching for a continuum limit in causal dynamical triangulation quantum gravity*.
+- arXiv:1411.7712 — D. N. Coumbe, J. Jurkiewicz, *Evidence for Asymptotic Safety from Dimensional Reduction in Causal Dynamical Triangulations*.
+- arXiv:2604.05641 — J. Ambjørn, R. Loll, *Causal Dynamical Triangulations: New Lattice Theory of Quantum Gravity*; used only as current status/claim-ceiling authority for continuum-limit interpretation.
 
-Because bibliographic metadata in older CDT records can be inconsistent across mirrors, scientific authority in this gate is attached to the frozen arXiv identifiers and exact equations/statements, not to memory of titles or author order.
+Scientific authority in this gate is attached to the frozen arXiv identifiers and exact source-defined equations/statements.
 
 ## Required predicates
 
