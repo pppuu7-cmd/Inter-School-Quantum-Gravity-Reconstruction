@@ -30,16 +30,16 @@ Attempt-5 aggregate job `104026737223` uploaded artifact **`10353877344`**, dige
 
 Durable attempt-5 result note commit: `8a812bd9236cf12e049a5079ec351868626330fa`.
 
-A failed-only rerun has been requested without changing frozen science. GitHub created workflow attempt 6; latest verified workflow state is **queued**. Queries, inclusion/scoring predicates, thresholds, consumed-source set, and explicit-map criterion remain unchanged.
+The failed-only rerun is now active. Attempt-6 scientifically unresolved target job **`104048033247`** (`eprl-refinement-map`) is **in_progress**. Re-instantiated non-target jobs `104048033734`, `104048034370`, `104048035078`, and `104048069073` are terminal success but are redundant repeats and are not counted as new science. Queries, inclusion/scoring predicates, thresholds, consumed-source set, and explicit-map criterion remain unchanged.
 
-Latest `recovery/state.json` commit: `7ac9122b056b5173a284ac286ad7c973a96b8643`.
+Latest `recovery/state.json` commit: `55f6d128c3f770e787d7817120744966c1558906`.
 
 ## Readiness
 
 Current iteration/front completion: **≈70%**. Overall scientific programme: **49% (Δ0)**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
-Scientifically useful compute at the latest verified check: **1 queued / 0 in_progress**. This satisfies anti-idle while the single unresolved frozen discovery lane is retried; no duplicate heavy computation is being credited as new science.
+Scientifically useful compute at the latest verified check: **0 queued / 1 in_progress**. No duplicate heavy computation is credited as new science.
 
 ## Exact next admissible action
 
-Consume the terminal attempt-6 `eprl-refinement-map` raw output and fresh aggregate. If it completes scientifically and yields a genuinely new source ID, freeze that exact ID in a separate source-qualification gate before interpretation. If it completes scientifically with no new ID beyond blocked `1107.2633`, classify ITER059 as `DISCOVERY_SATURATED_SCOPED`, preserve the Lorentzian refinement-map authority blocker, and shift compute to another independent PHASE_1 branch. If HTTP 429 recurs, classify only as infrastructure failure; do not weaken or retune frozen queries/scoring/thresholds/map criterion.
+Consume terminal raw output from attempt-6 target job `104048033247`, then its fresh aggregate. If it completes scientifically and yields a genuinely new source ID, freeze that exact ID in a separate source-qualification gate before interpretation. If it completes scientifically with no new ID beyond blocked `1107.2633`, classify ITER059 as `DISCOVERY_SATURATED_SCOPED`, preserve the Lorentzian refinement-map authority blocker, and shift compute to another independent PHASE_1 branch. If HTTP 429 recurs, classify only as infrastructure failure; do not weaken or retune frozen queries/scoring/thresholds/map criterion.
