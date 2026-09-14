@@ -3,7 +3,7 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITER059_TRANSPORT_REPAIRED_DISCOVERY_WITH_ITER060_TERMINAL_BLOCKER",
+  "active_iteration": "ITER059_TRANSPORT_REPAIRED_DISCOVERY_RETRY_WITH_ITER060_TERMINAL_BLOCKER",
   "iteration_completion_percent": 60,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {"amplitude_refinement_cross_realization_validation": 49, "candidate_theory_construction": 0, "overall_scientific_programme": 49},
@@ -11,7 +11,7 @@
   "frontier": {
     "RC006": {"status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED", "bridge_credit": false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "FOUR_CLASS_BOUNDED_TRANSPORT_PASS_OPEN_REFINEMENT_AUTHORITY_DISCOVERY_RUNNING_WITH_1107_2633_SOURCE_BLOCKED",
+      "status": "FOUR_CLASS_BOUNDED_TRANSPORT_PASS_OPEN_REFINEMENT_AUTHORITY_DISCOVERY_RETRY_RUNNING_WITH_1107_2633_SOURCE_BLOCKED",
       "source_refinement_map_qualified": false,
       "refinement_map_derived": false,
       "iter054": {"status": "SCIENTIFIC_PASS", "classification": "LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_VALIDATED_SCOPED", "authoritative_run": 34821111285},
@@ -20,16 +20,22 @@
       "iter057": {"status": "SCOPED_BLOCKED", "classification": "LORENTZIAN_REFINEMENT_MAP_CITED_AUTHORITY_BLOCKED", "authoritative_run": 34823253593, "report_commit": "9adf888c7abe76f841a23597462251fbbebf34f0"},
       "iter058": {"status": "SCOPED_BLOCKED", "classification": "LORENTZIAN_REFINEMENT_TRANSFER_SECOND_HOP_BLOCKED", "authoritative_run": 34823516850, "report_commit": "63847888c8ff02f1782b5e252b9dff8a60fd85a0"},
       "iter059": {
-        "status": "RUNNING_AFTER_TRANSPORT_ONLY_REPAIR",
-        "classification": null,
+        "status": "RUNNING_RETRY_AFTER_INFRASTRUCTURE_FAIL_PARTIAL",
+        "classification": "INFRASTRUCTURE_FAIL_DISCOVERY_PARTIAL",
         "prereg_commit": "c80a38a78e0ce99633dc9738281ab5a46bbd5b87",
         "original_implementation_commit": "5ee7fdc6f65594656f130c1c5e223d0390bda686",
         "transport_repair_commit": "de36e6dbfc1c4b575f95a6f1f7b31a8744a2de7a",
         "current_production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b",
         "authoritative_run": 34835772221,
+        "aggregate_job_previous_attempt": 103950107579,
+        "aggregate_artifact_previous_attempt": {"id": 10344805518, "digest": "sha256:828ea5babbb64013c2f16492a776773d0f4c05a979156db73305a4aa02ecf6fa"},
+        "previous_attempt_missing_lanes": ["eprl-rg-simplicial", "eprl-refinement-map"],
+        "previous_attempt_failure_reason": "HTTP_429_PRE_SCIENCE",
+        "previous_attempt_new_candidate_ids": ["1107.2633"],
+        "previous_attempt_candidate_already_qualified_blocked": true,
         "frozen_queries_and_scoring_unchanged": true,
-        "previous_run": 34823751928,
-        "previous_attempt4": {"classification": "INFRASTRUCTURE_FAIL_PARTIAL", "timeout_jobs": [103948233703,103948234030], "successful_no_candidate_job": 103948234051, "successful_candidate_id": "1107.2633"}
+        "active_retry_job": 103964393982,
+        "still_failed_retry_job": 103964395296
       },
       "iter060": {
         "status": "SCOPED_BLOCKED",
@@ -55,9 +61,9 @@
     "RC009": {"status": "SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
-  "active_compute": [{"iteration": "ITER059", "run": 34835772221, "production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b", "jobs": [103949121291,103949121452,103949121501,103949121524]}],
-  "idle_capacity": {"scientifically_useful_jobs_queued": 1, "scientifically_useful_jobs_in_progress": 3, "avoidable_idle": false},
-  "next_gate": "CONSUME_RUN_34835772221_RAW_DISCOVERY_ARTIFACTS_AND_AGGREGATE; DEDUPLICATE_IDS; PRESERVE_ITER060_BLOCKER",
+  "active_compute": [{"iteration": "ITER059", "run": 34835772221, "production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b", "jobs_in_progress": [103964393982], "jobs_failed_pre_science": [103964395296]}],
+  "idle_capacity": {"scientifically_useful_jobs_queued": 0, "scientifically_useful_jobs_in_progress": 1, "avoidable_idle": false},
+  "next_gate": "CONSUME_RETRY_JOB_103964393982; THEN RETRY_ONLY_EPRL_REFINEMENT_MAP_IF_RUN_NOT_ACTIVE; DO_NOT ALTER FROZEN SCIENCE",
   "next_gate_after_iter059_positive": "FREEZE_ANY_OTHER_EXACT_NEW_SOURCE_IDS_IN_SEPARATE_SOURCE_QUALIFICATION_GATE_BEFORE_INTERPRETATION",
   "next_gate_after_iter059_saturated": "PRESERVE_REFINEMENT_MAP_AUTHORITY_BLOCKER_AND_REASSESS_OTHER_INDEPENDENT_PHASE1_BRANCHES",
   "authoritative_recovery_order": ["recovery/state.json", "recovery/CURRENT_FRONT.md", "results/ITER060_LORENTZIAN_CANDIDATE_1107_2633_SOURCE_QUALIFICATION_2026-09-14.md", "prereg/ITER060_LORENTZIAN_CANDIDATE_1107_2633_SOURCE_QUALIFICATION_2026-09-14.md", "prereg/ITER059_LORENTZIAN_REFINEMENT_OPEN_AUTHORITY_DISCOVERY_2026-09-14.md", "docs/CONSTITUTION.md"]
