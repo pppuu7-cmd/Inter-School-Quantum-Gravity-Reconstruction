@@ -1,0 +1,30 @@
+name: ISQGR Iter028 Stage S source graph compiler
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter028/stage_s_source_graph_compiler.py'
+      - '.github/workflows/isqgr-iter028-stage-s.yml'
+  workflow_dispatch:
+
+jobs:
+  stage_s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute frozen Stage S
+        run: python3 code/iter028/stage_s_source_graph_compiler.py
+      - name: Show scientific evidence
+        if: always()
+        run: |
+          test -f out_iter028_stage_s/stage_s_evidence.json && cat out_iter028_stage_s/stage_s_evidence.json || true
+      - name: Upload immutable Stage-S evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter028-stage-s-evidence
+          path: out_iter028_stage_s/
+          if-no-files-found: error
+          retention-days: 90
