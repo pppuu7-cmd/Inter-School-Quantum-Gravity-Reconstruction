@@ -3,8 +3,8 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_034_EQ27_SOURCE_LABEL_DOMAIN_AUTHORITY_RUNNING",
-  "iteration_completion_percent": 25,
+  "active_iteration": "ITERATION_035_INDEXED_SIMPLICITY_MAP_SOURCE_AUTHORITY_RUNNING",
+  "iteration_completion_percent": 20,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -24,62 +24,44 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ27_SOURCE_LABEL_DOMAIN_AUTHORITY_RUNNING",
-      "iter031": {
-        "status": "PASS",
-        "classification": "RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_CORRECTED_STAGE_S_PASS",
-        "authoritative_run": 34804179870,
-        "aggregate_job": 103852685845,
-        "aggregate_artifact": 10332821665,
-        "aggregate_digest": "sha256:d690afd7ac1f3cd09c6c88df8361df1d24455b26f1e66f6d4ea5230c41366ccb",
-        "report_commit": "3b2f8274647831965a3e06f13fb40072cef08e38"
-      },
-      "iter032": {
-        "status": "PASS",
-        "prereg_commit": "bda9c7c12a2f2e4886d4734b9d1835119a700491",
-        "implementation_commit": "a369586e5d05b04e757f36468e58aaba00cb1253",
-        "technical_repair_commit": "43ed319f0047a3a71c9eed8962902c7b25ac97d5",
-        "production_head": "e1c472ae48f9aeb0aae8419404f1f6382a37b045",
-        "authoritative_run": 34804537344,
-        "jobs": {"assembly":103853680863,"authority":103853680965,"nulls":103853681028,"factors":103853681161,"aggregate":103853724474},
-        "aggregate_artifact": 10333010977,
-        "aggregate_digest": "sha256:9a36150c1efac2f20f3763088a80fdb9fc849232f6e64044776efd68ffd21f5a",
-        "classification": "RC006_EQ27_TWO_FACTOR_BOUNDED_NETWORK_ASSEMBLY_PASS",
-        "report_commit": "29e8b1cd197433eefa027231e44bbd5b5853765f"
-      },
-      "iter033": {
-        "status": "PASS",
-        "prereg_commit": "d49e51f6fd75613c0ef32d0aea4c98f25f8ff18e",
-        "implementation_commit": "c77af1903a9f647abe5ab2e1121b20142bcfa8a3",
-        "production_head": "580088bdff30de000519a95665f69e9518c0b9d1",
-        "authoritative_run": 34804648187,
-        "jobs": {"nulls":103854004300,"segmentation":103854004389,"scalar":103854004403,"binding":103854004437,"aggregate":103854032782},
-        "artifacts": {
-          "binding": {"id":10332712572,"digest":"sha256:58c54aafc854b1e3a4daf34783b561f1dbc128c3a6db887a477dc5c8a77fbaff"},
-          "nulls": {"id":10332682542,"digest":"sha256:e0d785f2a3efebbf293f7af22c70a647dface260c0c3da58924fe4e5e1c8dce0"},
-          "segmentation": {"id":10332428073,"digest":"sha256:1c2218b9980dcaf7cdc12a2e9c5f0f8e6df261a1e951b763d8432a1fbcad6a75"},
-          "scalar": {"id":10332173538,"digest":"sha256:22a676f996c329114d83bf268d17bcf8a72e4423b516d0709dc23012c5c7cb1c"},
-          "aggregate": {"id":10332517828,"digest":"sha256:bd46e0c451957c4d0dbc640e6b85390d7882f6f2bd76a897fc0a66f158bf36cd"}
-        },
-        "classification": "RC006_EQ27_SOURCE_SUMMATION_SCALAR_STRUCTURE_PASS",
-        "report_commit": "ce4e18848d0846231dc393a91653079cca0ea5b1"
-      },
+      "status": "INDEXED_SIMPLICITY_MAP_SOURCE_AUTHORITY_RUNNING_AFTER_LABEL_DOMAIN_BLOCKER",
+      "iter031": {"status":"PASS","classification":"RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_CORRECTED_STAGE_S_PASS","authoritative_run":34804179870,"aggregate_job":103852685845,"aggregate_artifact":10332821665,"aggregate_digest":"sha256:d690afd7ac1f3cd09c6c88df8361df1d24455b26f1e66f6d4ea5230c41366ccb","report_commit":"3b2f8274647831965a3e06f13fb40072cef08e38"},
+      "iter032": {"status":"PASS","prereg_commit":"bda9c7c12a2f2e4886d4734b9d1835119a700491","implementation_commit":"a369586e5d05b04e757f36468e58aaba00cb1253","technical_repair_commit":"43ed319f0047a3a71c9eed8962902c7b25ac97d5","production_head":"e1c472ae48f9aeb0aae8419404f1f6382a37b045","authoritative_run":34804537344,"aggregate_job":103853724474,"aggregate_artifact":10333010977,"aggregate_digest":"sha256:9a36150c1efac2f20f3763088a80fdb9fc849232f6e64044776efd68ffd21f5a","classification":"RC006_EQ27_TWO_FACTOR_BOUNDED_NETWORK_ASSEMBLY_PASS","report_commit":"29e8b1cd197433eefa027231e44bbd5b5853765f"},
+      "iter033": {"status":"PASS","prereg_commit":"d49e51f6fd75613c0ef32d0aea4c98f25f8ff18e","implementation_commit":"c77af1903a9f647abe5ab2e1121b20142bcfa8a3","production_head":"580088bdff30de000519a95665f69e9518c0b9d1","authoritative_run":34804648187,"aggregate_job":103854032782,"aggregate_artifact":10332517828,"aggregate_digest":"sha256:bd46e0c451957c4d0dbc640e6b85390d7882f6f2bd76a897fc0a66f158bf36cd","classification":"RC006_EQ27_SOURCE_SUMMATION_SCALAR_STRUCTURE_PASS","report_commit":"ce4e18848d0846231dc393a91653079cca0ea5b1"},
       "iter034": {
-        "status": "RUNNING",
-        "prereg_commit": "c0e19fd4c4b76c75bd7fa5d44ad134131d043fbd",
-        "implementation_commit": "27af2114b453f93beb420c2ebbb3f2ab097078e8",
-        "first_run": 34804798801,
-        "first_run_issue": "NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE_YAML_NULL_MATRIX_VALUE",
-        "technical_repair_commit": "b1410793104f511a3daf199285c0e0ce9c2fc308",
-        "production_head": "b1410793104f511a3daf199285c0e0ce9c2fc308",
-        "authoritative_run": 34804823837,
-        "jobs": {"external":103854517728,"factor1":103854517736,"factor2":103854517848,"null":103854517905},
-        "scientific_result": null
+        "status":"BLOCKED",
+        "prereg_commit":"c0e19fd4c4b76c75bd7fa5d44ad134131d043fbd",
+        "implementation_commit":"27af2114b453f93beb420c2ebbb3f2ab097078e8",
+        "first_run":34804798801,
+        "first_run_issue":"NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE_YAML_NULL_MATRIX_VALUE",
+        "yaml_repair_commit":"b1410793104f511a3daf199285c0e0ce9c2fc308",
+        "invalid_green_run":34804823837,
+        "invalid_green_classification":"IMPLEMENTATION_VALIDATION_FAIL_PRE_SCIENCE_AUTHORITY_EVIDENCE_SCOPE_TOO_PERMISSIVE",
+        "validation_repair_commit":"a2443d483fa8e981b0482203fead6c18600f26c8",
+        "validation_repair_note_commit":"a385f2ec22eba17f3340e3f1043c35bc9f83b3eb",
+        "production_head":"7ea3e3f8fd894197dee7023742426e347e859954",
+        "authoritative_run":34804915740,
+        "jobs":{"null":103854787314,"factor1":103854787466,"external":103854787479,"factor2":103854787506,"aggregate":103854902730},
+        "artifacts":{"null":{"id":10332092914,"digest":"sha256:ff227258b42f5a8cea036ef55dc3f6995e1761dd0b19813fb18991ede96624e4"},"factor1":{"id":10332533245,"digest":"sha256:2d2da1c0edfc2b64115630da9022ef4011d18baafed9f3232628f1a139bc1479"},"external":{"id":10332588189,"digest":"sha256:15779186fee83e8c744f0df590c171611ef442523cae16e74a30835a70c7922a"},"factor2":{"id":10332262311,"digest":"sha256:35659141571854df5a1057bb84355905e4c907e9ec7568e8038c9b97666636c7"},"aggregate":{"id":10332833015,"digest":"sha256:d13f91e7b922ff5b81eb9213cddfb5189c63165c9c2daf36bc93eba3d99fa7a4"}},
+        "classification":"RC006_EQ27_SOURCE_LABEL_DOMAIN_BLOCKED",
+        "blocked_lanes":["factor1","factor2"],
+        "unresolved_labels":["j^+_2","j^-_1","j^+_1","j^-_2"],
+        "report_commit":"09ee60bae60b90af3c6741f2fb00b1d646704e42",
+        "bounded_numerical_summation_scalar_lift_authorized":false
+      },
+      "iter035": {
+        "status":"RUNNING",
+        "prereg_commit":"865aa1901a54620b0cd296efd338268492caf787",
+        "implementation_commit":"87b4e23b8e9bb915bd8e328464102bb6ccfa7240",
+        "production_head":"ab1d30ef5446825d87ca07df00ba21129a401fd8",
+        "authoritative_run":34805066706,
+        "jobs":{"B":103855234205,"D":103855234346,"C":103855234413,"A":103855234468},
+        "scientific_result":null
       },
       "eq29_amplitude_authorized": false,
       "one_step_tnr_authorized": false,
       "bridge_credit": false,
-      "next_gate": "CONSUME_ITER034_RAW_ARTIFACTS_AND_AGGREGATE; ONLY PASS AUTHORIZES A SEPARATE BOUNDED NUMERICAL SUMMATION_SCALAR_LIFT"
+      "next_gate": "CONSUME_ITER035_EXACT_SOURCE_AUTHORITY_LANES_AND_AGGREGATE; ONLY PASS MAY AUTHORIZE_A_SEPARATE_BOUNDED_LABEL_INSTANTIATION_CONSISTENCY_GATE"
     },
     "BH004_BH004B": {"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","refinement_map_derived":false},
@@ -88,18 +70,11 @@
     "LORENTZIAN_DELTA4": {"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
   "active_compute": [
-    {"run":34804823837,"job":103854517728,"status":"in_progress","purpose":"ITER034 external prefactor label/domain authority"},
-    {"run":34804823837,"job":103854517736,"status":"in_progress","purpose":"ITER034 factor1 sum-label/domain authority"},
-    {"run":34804823837,"job":103854517848,"status":"in_progress","purpose":"ITER034 factor2 sum-label/domain authority"},
-    {"run":34804823837,"job":103854517905,"status":"in_progress","purpose":"ITER034 frozen authority null controls"}
+    {"run":34805066706,"job":103855234205,"status":"in_progress","purpose":"ITER035 indexed-label inheritance authority"},
+    {"run":34805066706,"job":103855234413,"status":"in_progress","purpose":"ITER035 finite representation/admissibility domain authority"},
+    {"run":34805066706,"job":103855234346,"status":"queued","purpose":"ITER035 provenance/null authority controls"},
+    {"run":34805066706,"job":103855234468,"status":"queued","purpose":"ITER035 simplicity-map definition inventory"}
   ],
-  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":4,"avoidable_idle":false,"reason":"Four independent ITER034 authority lanes are active; numerical lift is dependent and forbidden until terminal classification."},
-  "authoritative_recovery_order": [
-    "recovery/state.json",
-    "recovery/CURRENT_FRONT.md",
-    "prereg/ITER034_RC006_EQ27_SOURCE_LABEL_DOMAIN_AUTHORITY_2026-09-14.md",
-    "results/ITER033_RC006_EQ27_SOURCE_SUMMATION_SCALAR_STRUCTURE_PASS_2026-09-14.md",
-    "results/ITER032_RC006_EQ27_TWO_FACTOR_BOUNDED_NETWORK_ASSEMBLY_PASS_2026-09-14.md",
-    "docs/CONSTITUTION.md"
-  ]
+  "idle_capacity": {"scientifically_useful_jobs_queued":2,"scientifically_useful_jobs_in_progress":2,"avoidable_idle":false,"reason":"Four independent exact-source ITER035 lanes are active/queued; dependent numerical lift remains forbidden."},
+  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER035_RC006_INDEXED_SIMPLICITY_MAP_SOURCE_AUTHORITY_2026-09-14.md","results/ITER034_RC006_EQ27_SOURCE_LABEL_DOMAIN_BLOCKED_2026-09-14.md","results/ITER033_RC006_EQ27_SOURCE_SUMMATION_SCALAR_STRUCTURE_PASS_2026-09-14.md","docs/CONSTITUTION.md"]
 }
