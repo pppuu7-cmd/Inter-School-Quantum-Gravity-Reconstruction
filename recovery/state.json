@@ -3,13 +3,13 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITER061_TERMINAL_PASS_RC008_RESTRICTED_RECONSTRUCTION_PREREG_ALLOWED",
-  "iteration_completion_percent": 100,
+  "active_iteration": "ITER063_RC008_HELDOUT_NONRETUNED_TRANSPORT_SELECTOR_RUNNING",
+  "iteration_completion_percent": 20,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
-    "amplitude_refinement_cross_realization_validation": 49,
+    "amplitude_refinement_cross_realization_validation": 50,
     "candidate_theory_construction": 0,
-    "overall_scientific_programme": 49
+    "overall_scientific_programme": 50
   },
   "claim_locks": {
     "known_schools_fail": false,
@@ -20,147 +20,67 @@
     "full_eq27_amplitude_derived": false
   },
   "frontier": {
-    "RC006": {
-      "status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
-      "bridge_credit": false
-    },
+    "RC006": {"status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED", "bridge_credit": false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
       "status": "FOUR_CLASS_BOUNDED_TRANSPORT_PASS_REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_ROUTE_INFRASTRUCTURE_SATURATED",
       "source_refinement_map_qualified": false,
       "refinement_map_derived": false,
-      "iter054": {
-        "status": "SCIENTIFIC_PASS",
-        "classification": "LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_VALIDATED_SCOPED",
-        "authoritative_run": 34821111285
-      },
-      "iter055": {
-        "status": "SCIENTIFIC_PASS",
-        "classification": "LORENTZIAN_RECOUPLING_MINIPANEL_TRANSPORT_PASS_SCOPED",
-        "authoritative_run": 34821443455,
-        "report_commit": "586ff3cd107a3c62166ab53c0f1ac9cfffa6c977"
-      },
-      "iter056": {
-        "status": "SCOPED_BLOCKED",
-        "classification": "LORENTZIAN_REFINEMENT_MAP_SOURCE_AUTHORITY_BLOCKED",
-        "authoritative_run": 34822881473,
-        "report_commit": "f6724bdf2377f4661fdf78c5920f5e38034323ab"
-      },
-      "iter057": {
-        "status": "SCOPED_BLOCKED",
-        "classification": "LORENTZIAN_REFINEMENT_MAP_CITED_AUTHORITY_BLOCKED",
-        "authoritative_run": 34823253593,
-        "report_commit": "9adf888c7abe76f841a23597462251fbbebf34f0"
-      },
-      "iter058": {
-        "status": "SCOPED_BLOCKED",
-        "classification": "LORENTZIAN_REFINEMENT_TRANSFER_SECOND_HOP_BLOCKED",
-        "authoritative_run": 34823516850,
-        "report_commit": "63847888c8ff02f1782b5e252b9dff8a60fd85a0"
-      },
-      "iter059": {
-        "status": "TERMINAL_INFRASTRUCTURE_FAIL_ATTEMPT6_HTTP429_PRE_SCIENCE",
-        "classification": "INFRASTRUCTURE_FAIL_DISCOVERY",
-        "prereg_commit": "c80a38a78e0ce99633dc9738281ab5a46bbd5b87",
-        "production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b",
-        "authoritative_run": 34835772221,
-        "run_attempt": 6,
-        "attempt6_target_job": 104048033247,
-        "attempt6_target_status": "FAILED_PRE_SCIENCE_HTTP429",
-        "attempt6_aggregate_job": 104049232944,
-        "attempt6_aggregate_artifact": {
-          "id": 10357280571,
-          "digest": "sha256:9ab1f4be8109f0ccc1554e15ca7ece46693b22b2a43e4a19fab4d36b228eb78c"
-        },
-        "new_candidate_ids_from_surviving_lanes": [
-          "1107.2633"
-        ],
-        "candidate_already_qualified_blocked": true,
-        "report_commit": "7124ab84d2b0157d979a0f2067bad40917429e41",
-        "scientific_null_authorized": false,
-        "identical_transport_rerun_authorized": false
-      },
-      "iter060": {
-        "status": "SCOPED_BLOCKED",
-        "classification": "SCOPED_BLOCKED_NO_EXPLICIT_REFINEMENT_MAP",
-        "candidate": "arXiv:1107.2633",
-        "authoritative_run": 34835559911,
-        "aggregate_artifact": {
-          "id": 10344285407,
-          "digest": "sha256:e5b88e4fc9b0bdab73c0fa4a371acd800be5ac18f1b88b0a5887275193ff3244"
-        },
-        "source_sha256": "d46522e8f605202fb0bd1be7b13d4fe197133521597507a11d3bba2ecc64c564",
-        "distinct_coarse_fine": false,
-        "explicit_refinement_map": false,
-        "refinement_map_derived": false,
-        "bridge_credit": false,
-        "report_commit": "d089cc48717fa0b0f893f71af9859ea10fe12780"
-      },
       "bridge_credit": false
     },
-    "BH004_BH004B": {
-      "status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
-      "bridge_credit": false
-    },
+    "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
     "RC008": {
-      "status": "COMPANION_REFINEMENT_COMPLEX_GLUING_AUTHORITY_PASS_RESTRICTED_RECONSTRUCTION_PREREG_ALLOWED",
+      "status": "RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_PASS_HELDOUT_TRANSPORT_RUNNING",
       "scope": "SYMMETRY_RESTRICTED_RIEMANNIAN_EPRL_FK_QUANTUM_CUBOID",
       "source_refinement_complex_gluing_qualified": true,
-      "restricted_coarse_fine_reconstruction_prereg_allowed": true,
-      "restricted_coarse_fine_amplitude_reproduced": false,
+      "restricted_coarse_fine_amplitude_reproduced": true,
       "alpha_fixed_point_reproduced": false,
       "full_eprl_refinement_derived": false,
       "lorentzian_refinement_derived": false,
       "iter061": {
         "status": "SCIENTIFIC_PASS",
         "classification": "RC008_COMPANION_REFINEMENT_COMPLEX_GLUING_AUTHORITY_COMPLETE",
-        "prereg_commit": "daebb8faeef53624c0fa2c45d51a27a151c0928a",
-        "initial_implementation_commit": "200f9b1cad97750764914e914a21bf90cb07656d",
-        "workflow_commit": "f32f10c44ad7b5e2abdd7ae02ac18f5db0a0c106",
-        "run1": 34868725240,
-        "run1_terminal": "INVALID_IMPLEMENTATION_SOURCE_REFERENCE_METADATA_REGEX_FALSE_NEGATIVE",
-        "run1_report_commit": "4799a4265e207d31bbefd722fe03d5f6219f7808",
-        "parser_only_repair_commit": "89bfafca666a306400a4b619181d005207abc957",
         "authoritative_run": 34869227590,
-        "aggregate_job": 104060814468,
-        "aggregate_artifact": {
-          "id": 10357629198,
-          "digest": "sha256:b3521aacdb952c45e74feaaae29a7fcbe3e6aa5a2f9c0d2489185f0d1ecf4273"
-        },
-        "normalized_source_sha256": "2a0ffc7259c3167783dc11c63e78cfe100066ad9e515c4204f705d63d5df9673",
-        "all_six_lanes_pass": true,
-        "null_controls_detected": "5/5",
-        "manual_source_audit": "PASS",
+        "aggregate_artifact": 10357629198,
         "report_commit": "b7dc77c0ca8fe3e3cd9d3893b3e3b89659b4382c"
+      },
+      "iter062b": {
+        "status": "SCIENTIFIC_PASS",
+        "classification": "SCIENTIFIC_PASS_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_SCOPED",
+        "prereg_commit": "6fa9eb40d45be8facc952716bde83c57e962469d",
+        "implementation_commit": "8039a7e8a17aa2b62baead26452425971367ae9c",
+        "production_head": "3f4b1c89d5183cde99ae6f7cdfa9efe06ae6d829",
+        "authoritative_run": 34874113741,
+        "aggregate_job": 104077252124,
+        "aggregate_artifact": {"id": 10359819990, "digest": "sha256:fd62c82a618b6ded0e4ab0013610f00a33a70551e9d3f76ab1188d1c2f44493b"},
+        "transport": {"B0": "PASS_CROSSING", "B1": "PASS_CROSSING", "B2": "PASS_CROSSING", "B3": "CONVERGED_NO_CROSSING"},
+        "report_commit": "19dbebcdcd32a3c2d1292a343d4e74a08a4ca362"
+      },
+      "iter063": {
+        "status": "RUNNING",
+        "classification": "PENDING_TERMINAL_ARTIFACTS",
+        "prereg_commit": "04dacfba44f2a59efb882dbe162cc5161c7e7795",
+        "implementation_commits": ["a30bd8a3b4b06d61506411a18dd3d48dd2825318", "8b248e50c19ae8829af98f00c74cf98acf0892df"],
+        "production_head": "a6fa3c4d11b0b34298b3c3ac3e934721db757639",
+        "authoritative_run": 34874671586,
+        "scientifically_useful_jobs_queued": 7,
+        "scientifically_useful_jobs_in_progress": 0
       },
       "bridge_credit": false
     },
-    "RC009": {
-      "status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"
-    },
-    "LORENTZIAN_DELTA4": {
-      "status": "SATURATED_NEGATIVE_SCOPED",
-      "bridge_credit": false
-    }
+    "RC009": {"status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"},
+    "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
-  "active_compute": [],
-  "idle_capacity": {
-    "scientifically_useful_jobs_queued": 0,
-    "scientifically_useful_jobs_in_progress": 0,
-    "avoidable_idle": false
-  },
-  "next_gate": "PREREGISTER_RC008_RESTRICTED_HYPERCUBOID_COARSE_FINE_AMPLITUDE_RECONSTRUCTION",
-  "next_gate_rationale": "ITER061 closed the exact RC008 source-authority blocker for the restricted fixed-boundary quantum-cuboid coarse/fine construction. The next admissible test is now an independently preregistered source-faithful executable reconstruction of that restricted amplitude/observable comparison; it must not be promoted to full EPRL/FK refinement or bridge credit.",
+  "active_compute": [{"iteration": "ITER063", "run": 34874671586, "status": "queued", "jobs": 7}],
+  "idle_capacity": {"scientifically_useful_jobs_queued": 7, "scientifically_useful_jobs_in_progress": 0, "avoidable_idle": false},
+  "next_gate": "CONSUME_ITER063_RAW_ARTIFACTS_AND_CLASSIFY_AGAINST_FROZEN_TRANSPORT_SELECTOR_PREDICATES",
+  "next_gate_rationale": "ITER062B is a scoped numerical reconstruction PASS with B0/B1/B2 robust crossings and preserved B3 converged no-crossing. ITER063 prospectively freezes independent seeds, symmetry controls and four new anisotropic held-out boundaries without retuning.",
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "prereg/ITER063_RC008_HELDOUT_NONRETUNED_TRANSPORT_SELECTOR_2026-09-14.md",
+    "results/ITER062B_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_2026-09-14.md",
+    "prereg/ITER062B_RC008_RESTRICTED_HYPERCUBOID_COARSE_FINE_NUMERICAL_RECONSTRUCTION_2026-09-14.md",
     "results/ITER061_RC008_COMPANION_REFINEMENT_COMPLEX_GLUING_AUTHORITY_2026-09-14.md",
-    "results/ITER061_RUN1_INVALID_IMPLEMENTATION_REFERENCE_METADATA_REGEX_2026-09-14.md",
-    "prereg/ITER061_RC008_COMPANION_REFINEMENT_COMPLEX_GLUING_AUTHORITY_2026-09-14.md",
-    "results/ITER059_ATTEMPT6_INFRASTRUCTURE_FAILURE_2026-09-14.md",
-    "results/ITER006_RC008_REFINEMENT_SOURCE_CLOSURE_BLOCKED.md",
-    "results/ITER006_RC008_STATE_SUM_GLUING_STRUCTURE_BLOCKED.md",
-    "results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md",
-    "realizations/RC-008_QUANTUM_CUBOID_HYPERCUBOID_RENORMALIZATION.md",
     "docs/CONSTITUTION.md"
   ]
 }
