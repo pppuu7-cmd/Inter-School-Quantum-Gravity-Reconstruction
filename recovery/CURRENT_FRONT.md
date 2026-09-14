@@ -8,80 +8,57 @@ Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness: **50%*
 
 RC006 numerical retry remains unauthorized. RC009 remains scoped blocked on its tested reduced isotemporal route. Lorentzian Delta4 negative results remain preserved. RC008 corrected crossing remains source-blocked on an explicit incidence-aware global physical measure. BH004/BH004B remains source-blocked on a source-faithful quantum amplitude/refinement transport. No full EPRL/FK refinement, Lorentzian refinement, q-deformed bridge derivation or candidate-theory construction is authorized. Forbidden claims remain `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, `FULL_QG`, `UNIVERSAL_COMMON_PARENT_FOUND`.
 
-## Durable structure through ITER070
+## Established typed structure
 
-The former atlas coordinate `composition/refinement` is too coarse. At least three typed operations remain distinct:
+The former atlas coordinate `composition/refinement` remains split into at least `C_seq` (CDT temporal/state-sum composition), `C_tensor` (HaPPY tensor/isometric contraction) and `C_scale_flow` (FRG/EAA theory-space scale flow). ITER068/070 rejected their strong physical identification. ITER071 established a common spectral-dimension definition across CDT and QEG/FRG, but ITER073–074 localized an unresolved independent physical-scale normalization blocker.
 
-- `C_seq` — CDT sequential temporal/state-sum composition;
-- `C_tensor` — HaPPY subsystem/tensor contraction/isometric encoding;
-- `C_scale_flow` — FRG/EAA regulator-dependent theory-space scale flow.
+## ITER075 — terminal effective-action observable comparison
 
-ITER068 and ITER070 rejected strong physical equivalence among these operations while retaining only forgetful algebraic/evolution kernels. No bridge credit followed.
+**`FAIL_SCOPED_PHYSICAL_EFFECTIVE_ACTION_EQUIVALENCE_REJECTED`** with retained **`COMMON_DE_SITTER_MINISUPERSPACE_FUNCTIONAL_STRUCTURE_ONLY`**.
 
-## Spectral observable branch — ITER071–074
+Authoritative run `34895709898`; aggregate job/artifact `104149123835` / `10369105991`, digest `sha256:986836da406e10a20134154689f47c880a78505c3b12d5e8f4874cccbcbe0799`; prereg `543f43be4a8ffa31578d3e9b0f01fca34751e491`; source audit `35d202e6bf3da2bd8394a20331ddfcfaa32ae912`; critic `41ec1560b9a0c939a334180cd65d24168cab557a`; terminal result `8753736b1d015fc7d4e98952e2b9aad4e0860de7`.
 
-ITER071: **`PASS_SCOPED_COMMON_DEFINITION_DIFFERENT_REALIZATION`**. CDT and QEG/FRG share the spectral-dimension observable definition, but not the same realization or independently fixed 4D pointwise comparator.
+The common de-Sitter/minisuperspace form does not preserve CDT proper-time/state-sum semantics and FRG RG-scale/regulator/background semantics simultaneously.
 
-ITER072: **`PASS_SCOPED_CDT_DIFFUSION_SCALE_CALIBRATED_CONTINUUM_OPEN`**. CDT has relative spectral scale calibration and a scoped semiclassical absolute lattice ruler; continuum limit and UV fixed point are not terminally established.
+## ITER076 — terminal coupling-parameter-map authority
 
-ITER073: **`BLOCKED_INDEPENDENT_PHYSICAL_SCALE_NORMALIZATION`**. A mutually reliable independently normalized 4D FRG/CDT physical-scale crosswalk is not source-qualified.
+Preregistration `75a2c52a4a03180cd562261d2dfd3aa30f6c19a7`; workflow head `b5fedb498b1663948097f8ac2b2a64b6e12245ad`; authoritative run `34895920464`; source audit `34c5c5d894f3d6f9166c640506a741e6ddd39dd2`; terminal result `ad15527272664d4efc66ba547a6b5745c67c471b`; aggregate job/artifact `104149859894` / `10369231191`, digest `sha256:0dd67edde30f399dea0c8a93dcad23578c15a1c16848bb55681c6cc793464327`.
 
-ITER074: **`PASS_SCOPED_REGULAR_STEP_GEOMETRY_ONLY`** with mandatory lock **`INDEPENDENT_4D_WALK_DISTANCE_OBSERVABLE = NOT_ESTABLISHED`**. Full-4D CDT nearest-neighbour diffusion and independent geodesic-distance observables are source-qualified, but no independent `<r^2(sigma)>`, diffusion radius or scale-dependent full-4D `D_w(sigma)` for the same spectral walker is qualified. ITER073 remains closed/blocking.
+**`SCOPED_BLOCKED_NO_EXPLICIT_COUPLING_MAP_AUTHORITY`**.
 
-Authoritative ITER074 provenance: prereg `6ed0ba6a07d28c2fa44c66bc03caff1db4da1a2e`; source audit `3a0eb0714cf17c2294a601c734c98fba627b1847`; critic `9b4cca52601bc29c18df59be1cba605570e7ef73`; original terminal result `75502b348d4c5c9be37e4b531b5143baa36d7038`; supplemental durable note `5128c86d90f28f5193ed457694a6ad614d92c20c`.
+All five frozen exact-PDF lanes completed technically. The source stack separately qualifies CDT bare/effective gravitational parameters and FRG/QEG dimensionless running couplings. arXiv:1110.5224 supplies a genuine direct comparison, but it obtains FRG trajectory initial conditions by fitting the target CDT spectral-dimension curve. Therefore the prospectively frozen **`SPECTRAL_FIT_CONTROL` triggers**: this is a target-fitted cross-framework trajectory, not a source-derived mapping from `(kappa_0, Delta, a, k_1, G/a^2, ...)` to `(g_k, lambda_k)`.
 
-## ITER075 — terminal FRG/CDT volume-profile/effective-action authority
+Retained positives:
 
-Preregistration: `543f43be4a8ffa31578d3e9b0f01fca34751e491`.
-Workflow head: `b9dfa82125e6cd19e685b08db1fb85c3e874283b`.
-Authoritative run: `34895709898`.
-Source audit: `35d202e6bf3da2bd8394a20331ddfcfaa32ae912`.
-Critic: `41ec1560b9a0c939a334180cd65d24168cab557a`.
-Terminal result: `8753736b1d015fc7d4e98952e2b9aad4e0860de7`.
-Aggregate job/artifact: `104149123835` / `10369105991`, digest `sha256:986836da406e10a20134154689f47c880a78505c3b12d5e8f4874cccbcbe0799`.
+- `CDT_INTERNAL_G_OVER_A2_EFFECTIVE_CALIBRATION = QUALIFIED_SCOPED`;
+- `FRG_DIMENSIONLESS_RUNNING_COUPLINGS = QUALIFIED`;
+- `CROSS_FRAMEWORK_SPECTRAL_TRAJECTORY_FIT = QUALIFIED_TARGET_FITTED`.
 
-**`FAIL_SCOPED_PHYSICAL_EFFECTIVE_ACTION_EQUIVALENCE_REJECTED`**.
+Missing object: **`SOURCE_DERIVED_CDT_TO_FRG_COUPLING_MAP = NOT_ESTABLISHED`**. No `a^{-1}=k`, bare/effective swap, threshold relaxation or post-result retuning was introduced.
 
-Retained positive sub-result:
+## Active ITER077 — curvature-observable identity authority
 
-**`COMMON_DE_SITTER_MINISUPERSPACE_FUNCTIONAL_STRUCTURE_ONLY`**.
+Preregistration `f15c7e53d241533d371416b3c748fbf5d3748d7e`; workflow/production head `1cc2ed8342083c4d969ae16bc0305b9ac006ff83`; authoritative run `34896247267`.
 
-The CDT stack source-qualifies a measured/reconstructed de-Sitter spatial-volume profile, discrete proper-time dependence, reduced transfer matrix and minisuperspace/effective action. The FRG/QEG stack source-qualifies EAA/self-consistent-background de-Sitter geometry with explicit RG-scale, cutoff and background-field semantics.
+Frozen source stack:
 
-The frozen sources do **not** provide a non-forgetful map preserving domain/codomain, CDT proper time versus FRG RG scale, state-sum versus regulator/functional-integral measure, full/reduced state meaning and observables. Shared de-Sitter or Einstein-Hilbert/minisuperspace functional form is therefore only a structural motif, not bridge evidence.
+- CDT: `2006.06263`, `1905.08669`;
+- FRG/QEG: `1801.00162`, `2203.08003`.
 
-No retuning occurred. Green CI was not counted as scientific PASS.
+Frozen question: does full-4D CDT quantum Ricci curvature and FRG/QEG curvature/effective-background curvature define the same source-defined observable under a typed map, or only share curvature/de-Sitter language?
 
-## Active ITER076 — FRG/CDT coupling-parameter map authority
+Mandatory controls include curvature-name identity, four-sphere-shape identity, geodesic-probe-scale/RG-scale substitution, Monte-Carlo ensemble/background substitution, Ricci-scalar/quantum-Ricci substitution, target fitting and regulator erasure.
 
-Preregistration: `75a2c52a4a03180cd562261d2dfd3aa30f6c19a7`.
-Workflow/production head: `b5fedb498b1663948097f8ac2b2a64b6e12245ad`.
-Authoritative run: `34895920464`.
-
-Frozen sources:
-
-- `1203.3591` — cross-framework nonperturbative-QG review;
-- `1110.5224` — RG view on Monte-Carlo spectral data;
-- `0807.4481` — CDT semiclassical effective-action/Newton-scale extraction;
-- `1403.5940` — CDT reduced transfer-matrix effective action;
-- `1202.2274` — QEG/FRG running-coupling authority.
-
-Frozen question: is there an explicit source-defined mapping from CDT lattice/bare/effective parameters such as `(kappa_0, Delta, a, G_eff/a^2, effective-action coefficients)` to FRG/QEG dimensionless running couplings such as `(g_k, lambda_k)` while keeping scale identification, regulator/lattice dependence, normalization/measure and observable semantics explicit?
-
-Mandatory failure controls: fixed-point-language similarity, spectral-fit circularity, symbol-`G` identity, unsupported `a^{-1}=k`, bare/effective swaps, de-Sitter coefficient retuning and regulator erasure.
-
-At recovery update, run `34895920464` is queued with five scientifically useful source lanes. No duplicate compute is authorized.
+At the last Actions check, run `34896247267` was queued. This supplies four scientifically useful independent source lanes and satisfies anti-idle without repeating ITER075/076.
 
 ## Exact next gate
 
-**Consume ITER076 raw exact-PDF artifacts and aggregate, then perform the preregistered manual typed coupling-map audit.**
-
-PASS requires explicit equations and domain/codomain, not qualitative comparison. If no such map is present, classify source-scoped BLOCKED rather than inventing a cross-framework scale/coupling substitution.
+**Consume ITER077 exact-PDF artifacts and aggregate, then perform the preregistered manual typed curvature-observable audit.** Green CI alone cannot receive gate credit.
 
 ## Readiness
 
-ITER074: **100% terminal PASS_SCOPED with negative walk-distance lock**.
-ITER075: **100% terminal FAIL_SCOPED with common functional motif retained**.
-ITER076: **≈15% — preregistered and launched**.
+ITER075: **100% terminal FAIL_SCOPED; common functional motif retained**.
+ITER076: **100% terminal source-blocked on explicit coupling map**.
+ITER077: **≈15% — preregistered and launched**.
 
 Overall scientific programme: **50% (Δ0)**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
