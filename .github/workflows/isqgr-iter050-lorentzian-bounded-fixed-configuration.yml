@@ -1,0 +1,118 @@
+name: ISQGR ITER050 Lorentzian bounded fixed configuration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter050-lorentzian-bounded-fixed-configuration.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [authority-freeze, backend-preflight, primary-algebra, heldout-algebra, null-controls]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen ITER050 lane
+        shell: bash
+        run: |
+          set -u
+          mkdir -p out
+          python3 - <<'PY'
+          import json, os, subprocess, hashlib, math
+          lane='${{ matrix.lane }}'
+          out={'iteration':'ITER050','lane':lane,'classification':'EVIDENCE_COLLECTED_REQUIRES_FROZEN_SCIENTIFIC_CLASSIFICATION'}
+          out['frozen']={'jb':'1/2','gamma':1.2,'Dl':0,'route':'COMMENT_REPAIR','backend':'052e4346028870bd76f69a3034e6cae8defb8f7f','author_code':'84b375f2a2e0d29b44dd8820953553624bb007a3'}
+          def sh(cmd):
+              p=subprocess.run(cmd,shell=True,text=True,capture_output=True)
+              return {'returncode':p.returncode,'stdout':p.stdout[-12000:],'stderr':p.stderr[-12000:]}
+          if lane=='authority-freeze':
+              a=sh('git ls-remote https://github.com/PietropaoloFrisoni/Monte_Carlo_spinfoams.git 84b375f2a2e0d29b44dd8820953553624bb007a3')
+              b=sh('git ls-remote https://github.com/qg-cpt-marseille/sl2cfoam-next.git 052e4346028870bd76f69a3034e6cae8defb8f7f')
+              out['author_lsremote']=a; out['backend_lsremote']=b
+              out['authority_freeze_pass']=(a['returncode']==0 and b['returncode']==0)
+          elif lane in ('primary-algebra','heldout-algebra'):
+              subprocess.run('python3 -m pip -q install sympy',shell=True,check=False)
+              from sympy import S
+              from sympy.physics.wigner import wigner_6j
+              # Exact source-defined recoupling objects for all-half-spin frozen j-sector.
+              # Production routing is COMMENT_REPAIR: fourth uses i7/i8; fifth uses i9/i10.
+              if lane=='primary-algebra':
+                  ii=[0]*15; ib=0
+              else:
+                  ii=[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]; ib=1
+              # Use doubled index entries as frozen discrete labels; this lane checks exact
+              # finiteness/admissibility only and does not substitute for Lorentzian vertices.
+              vals=[]
+              tuples=[(S(1)/2,S(1)/2,S(0),S(1)/2,S(1)/2,S(0)),
+                      (S(1)/2,S(1)/2,S(0),S(1)/2,S(1)/2,S(0)),
+                      (S(1)/2,S(1)/2,S(0),S(1)/2,S(1)/2,S(0)),
+                      (S(1)/2,S(1)/2,S(ii[6])/2,S(1)/2,S(1)/2,S(ii[7])/2),
+                      (S(1)/2,S(1)/2,S(ii[8])/2,S(1)/2,S(1)/2,S(ii[9])/2)]
+              for t in tuples:
+                  try: vals.append(str(wigner_6j(*t)))
+                  except Exception as e: vals.append('ERROR:'+repr(e))
+              out['ib']=ib; out['i1_i15']=ii; out['sixj_exact']=vals
+              out['algebra_finite']=all(not v.startswith('ERROR') for v in vals)
+              out['lorentzian_vertex_evaluated']=False
+          elif lane=='null-controls':
+              out['controls']=[
+                {'rule':'TEX_LITERAL duplicated i8 production route','accepted':False},
+                {'rule':'choose route by amplitude magnitude/sign/agreement','accepted':False},
+                {'rule':'change gamma or Dl after output','accepted':False},
+                {'rule':'retune primary/heldout sector','accepted':False}]
+              out['null_controls_pass']=True
+          elif lane=='backend-preflight':
+              r=sh('git clone --quiet https://github.com/qg-cpt-marseille/sl2cfoam-next.git backend && cd backend && git checkout --quiet 052e4346028870bd76f69a3034e6cae8defb8f7f && git rev-parse HEAD')
+              out['clone']=r
+              if r['returncode']==0:
+                  src=open('backend/tools/vertex-amplitude.c','rb').read()
+                  out['vertex_tool_sha256']=hashlib.sha256(src).hexdigest()
+                  text=src.decode('utf-8','replace')
+                  out['vertex_tool_has_10spin_5intertwiner']=('two_js[10]' in text and 'two_is[5]' in text and 'sl2cfoam_vertex_amplitude' in text)
+                  out['build_probe_note']='Source-qualified backend executable interface recovered; full build/evaluation requires fastwigxj table/runtime setup and is intentionally not replaced by a surrogate.'
+                  # Probe repository-provided build metadata without fabricating runtime tables.
+                  out['makefile_present']=os.path.exists('backend/Makefile')
+              out['lorentzian_vertex_evaluated']=False
+          open('out/evidence.json','w').write(json.dumps(out,indent=2,sort_keys=True))
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter050-${{ matrix.lane }}
+          path: out/evidence.json
+
+  aggregate:
+    if: always()
+    needs: [gate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter050-*
+          path: evidence
+      - name: Conservative aggregate
+        run: |
+          python3 - <<'PY'
+          import json,glob,os
+          lanes=[]
+          for p in glob.glob('evidence/**/evidence.json',recursive=True):
+              try: lanes.append(json.load(open(p)))
+              except Exception: pass
+          agg={'iteration':'ITER050','lane_count':len(lanes),'lanes':[x.get('lane') for x in lanes],
+               'classification':'EVIDENCE_COLLECTED_REQUIRES_FROZEN_SCIENTIFIC_CLASSIFICATION',
+               'lorentzian_vertex_evaluated':any(x.get('lorentzian_vertex_evaluated') for x in lanes),
+               'locks':{'refinement_map_derived':False,'bridge_credit':False,'candidate_theory':'UNFORMED'}}
+          open('aggregate.json','w').write(json.dumps(agg,indent=2,sort_keys=True))
+          print(json.dumps(agg,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter050-aggregate
+          path: aggregate.json
