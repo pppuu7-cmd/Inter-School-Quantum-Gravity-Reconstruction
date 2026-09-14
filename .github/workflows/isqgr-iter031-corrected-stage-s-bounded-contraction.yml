@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
 
+# Recovery trigger after authority-domain checker repair; frozen science unchanged.
 jobs:
   lane:
     strategy:
