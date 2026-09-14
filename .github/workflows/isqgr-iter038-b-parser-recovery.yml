@@ -1,0 +1,21 @@
+name: ISQGR ITER038 B parser recovery
+on:
+  push:
+    branches: [ main ]
+    paths: ['.github/workflows/isqgr-iter038-b-parser-recovery.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  lane-B:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          rm -rf out/iter038
+          python3 code/iter038/central_coupling_domain_authority.py --lane B
+      - run: |
+          mkdir -p lane_out
+          cp out/iter038/evidence.json lane_out/evidence.json
+          cat lane_out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with: {name: iter038-B-parser-recovery, path: lane_out/, if-no-files-found: error, retention-days: 90}
