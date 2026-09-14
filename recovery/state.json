@@ -34,13 +34,15 @@
         "report_commit": "63847888c8ff02f1782b5e252b9dff8a60fd85a0"
       },
       "iter059": {
-        "status": "RUNNING",
+        "status": "RUNNING_AFTER_TRANSIENT_INFRASTRUCTURE_429",
         "classification": null,
         "scientific_objective": "prospective metadata-only discovery of new Lorentzian-EPRL-compatible refinement/coarse-graining authority after fixed cited chain saturation",
         "prereg_commit": "c80a38a78e0ce99633dc9738281ab5a46bbd5b87",
         "implementation_commit": "5ee7fdc6f65594656f130c1c5e223d0390bda686",
         "production_head": "369f366c2c81f186c72c8e0f3a1eaea1e82511d3",
-        "authoritative_run": 34823751928
+        "authoritative_run": 34823751928,
+        "infra_event": {"classification": "INFRASTRUCTURE_FAIL_PRE_SCIENCE", "cause": "HTTP_429_ARXIV_METADATA_ENDPOINT", "failed_jobs": [103910999198, 103910999228, 103910999231, 103910999361], "successful_null_job": 103910999053, "successful_null_artifact": {"id": 10339278252, "digest": "sha256:c782087855a7097a9a9015462d46d08569260ce0595f37c933f08ddc74cbf215"}, "stale_partial_aggregate_artifact": {"id": 10338604250, "digest": "sha256:3af3b97889bd444e98d2f1fbf814ee4a0169dc6148e32e41d42b57aa67e3c19e"}},
+        "retry_jobs": [103915277099, 103915277287, 103915277359, 103915277417]
       },
       "bridge_credit": false
     },
@@ -49,9 +51,9 @@
     "RC009": {"status": "SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
-  "active_compute": [{"iteration": "ITER059", "run": 34823751928, "production_head": "369f366c2c81f186c72c8e0f3a1eaea1e82511d3", "jobs": [103910999053, 103910999198, 103910999228, 103910999231, 103910999361]}],
-  "idle_capacity": {"scientifically_useful_jobs_queued": 2, "scientifically_useful_jobs_in_progress": 3, "avoidable_idle": false},
-  "next_gate": "CONSUME_ITER059_RAW_DISCOVERY_ARTIFACTS_AND_AGGREGATE_DEDUPLICATE_NEW_CANDIDATES_AGAINST_FROZEN_RULE",
+  "active_compute": [{"iteration": "ITER059", "run": 34823751928, "production_head": "369f366c2c81f186c72c8e0f3a1eaea1e82511d3", "jobs": [103915277099, 103915277287, 103915277359, 103915277417]}],
+  "idle_capacity": {"scientifically_useful_jobs_queued": 4, "scientifically_useful_jobs_in_progress": 0, "avoidable_idle": false},
+  "next_gate": "CONSUME_ITER059_RETRY_RAW_DISCOVERY_ARTIFACTS_AND_FRESH_AGGREGATE_DEDUPLICATE_NEW_CANDIDATES_AGAINST_FROZEN_RULE",
   "next_gate_after_iter059_positive": "FREEZE_EXACT_NEW_SOURCE_IDS_IN_SEPARATE_SOURCE_QUALIFICATION_GATE_BEFORE_SOURCE_LEVEL_INTERPRETATION",
   "next_gate_after_iter059_saturated": "PRESERVE_REFINEMENT_MAP_AUTHORITY_BLOCKER_AND_REASSESS_OTHER_INDEPENDENT_PHASE1_BRANCHES",
   "authoritative_recovery_order": ["recovery/state.json", "recovery/CURRENT_FRONT.md", "prereg/ITER059_LORENTZIAN_REFINEMENT_OPEN_AUTHORITY_DISCOVERY_2026-09-14.md", "results/ITER058_LORENTZIAN_REFINEMENT_TRANSFER_SECOND_HOP_BLOCKED_2026-09-14.md", "results/ITER057_LORENTZIAN_REFINEMENT_MAP_CITED_AUTHORITY_BLOCKED_2026-09-14.md", "results/ITER056_LORENTZIAN_REFINEMENT_MAP_SOURCE_AUTHORITY_BLOCKED_2026-09-14.md", "docs/CONSTITUTION.md"]
