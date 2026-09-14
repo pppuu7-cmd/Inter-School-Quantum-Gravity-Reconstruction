@@ -5,6 +5,7 @@ on:
     paths: ['.github/workflows/isqgr-iter038-b-parser-recovery.yml']
   workflow_dispatch:
 permissions: {contents: read}
+# B-only technical recovery after TeX-alignment parser repair; frozen science unchanged.
 jobs:
   lane-B:
     runs-on: ubuntu-24.04
