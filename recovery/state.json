@@ -3,22 +3,25 @@
   "repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date":"2026-09-14",
   "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration":"ITERATION_049_LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_RUNNING",
-  "iteration_completion_percent":20,
+  "active_iteration":"ITERATION_050_LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_RUNNING",
+  "iteration_completion_percent":30,
   "candidate_theory_status":"UNFORMED",
   "readiness_percent":{"amplitude_refinement_cross_realization_validation":49,"candidate_theory_construction":0,"overall_scientific_programme":49},
   "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"full_eq27_amplitude_derived":false},
   "frontier":{
     "RC006":{"status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","bridge_credit":false},
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"AUTHOR_CODE_ROUTING_RECONCILIATION_RUNNING","source_refinement_map_qualified":true,"refinement_map_derived":false,"zero_face_collapse_status":"BLOCKED_UNCHANGED","iter047":{"status":"SCIENTIFIC_PASS","classification":"LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS","authoritative_run":34808646324,"report_commit":"d477c5514e4c6156ce96187cbe75f27c40cb2b6d"},"iter048":{"status":"SCOPED_BLOCKED","classification":"LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY","original_run":34811518934,"rawtex_run":34811727020,"rawtex_job":103874254568,"rawtex_artifact":{"id":10334723630,"digest":"sha256:191262f0c2a6d5c5b3ac6f1036caacd6808735c4bc38ecc73c45da49b2c53cb9"},"main_tex_sha256":"bff93f3a7857658264a04eb23521bb935a68eccb7760b284589ff5ec4073f063","report_commit":"851d0665305cd7d379f758b2b4f4a320d85691ae"},"iter049":{"status":"RUNNING","prereg_commit":"e0e87f1f87afe9e8fe0a3795cc8b0408991d8683","production_head":"946d427f2821971c3342f2ff5831b2cdeae79dc9","authoritative_run":34811866640,"jobs":{"code_routing":103874660015,"routing_null":103874660170,"tex_code_crosswalk":103874660187,"notebook_callgraph":103874660292},"scientific_result":null},"bridge_credit":false},
-    "BH004_BH004B":{"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},"RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},"RC009":{"status":"SCOPED_BLOCKED"},"LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"BOUNDED_FIXED_CONFIGURATION_CONTRACTION_RUNNING","source_refinement_map_qualified":true,"refinement_map_derived":false,"zero_face_collapse_status":"BLOCKED_UNCHANGED","iter047":{"status":"SCIENTIFIC_PASS","classification":"LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS","authoritative_run":34808646324,"report_commit":"d477c5514e4c6156ce96187cbe75f27c40cb2b6d"},"iter048":{"status":"SCOPED_BLOCKED","classification":"LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY","rawtex_run":34811727020,"rawtex_job":103874254568,"rawtex_artifact":{"id":10334723630,"digest":"sha256:191262f0c2a6d5c5b3ac6f1036caacd6808735c4bc38ecc73c45da49b2c53cb9"},"report_commit":"851d0665305cd7d379f758b2b4f4a320d85691ae"},"iter049":{"status":"SCIENTIFIC_PASS","classification":"LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS","authoritative_run":34811866640,"production_head":"946d427f2821971c3342f2ff5831b2cdeae79dc9","selected_route":"COMMENT_REPAIR","report_commit":"5d3d480196c0525701996b56a799034a7f498778"},"iter050":{"status":"RUNNING","prereg_commit":"61908806492f5053c83cf45a50ea54bc5905797b","implementation_commit":"f9758afda5291661b1edf8115247a3d155e8e9ff","dependency_repair_commit":"0158a25ef6f96236d3dc783e922bfebe4e88a360","pre_science_infra_run":34815874165,"authoritative_run":34815939847,"scientific_result":null},"bridge_credit":false},
+    "BH004_BH004B":{"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},
+    "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
+    "RC009":{"status":"SCOPED_BLOCKED"},
+    "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
   "active_compute":[
-    {"run":34811866640,"job":103874660015,"status":"queued","purpose":"ITER049 author-code routing evidence"},
-    {"run":34811866640,"job":103874660170,"status":"in_progress","purpose":"ITER049 routing null controls"},
-    {"run":34811866640,"job":103874660187,"status":"in_progress","purpose":"ITER049 exact TeX to author-code crosswalk"},
-    {"run":34811866640,"job":103874660292,"status":"in_progress","purpose":"ITER049 EPRL vertex-renormalization notebook callgraph"}
+    {"run":34815939847,"job":103886506015,"status":"in_progress","purpose":"ITER050 backend executable preflight"},
+    {"run":34815939847,"job":103886506165,"status":"in_progress","purpose":"ITER050 primary exact recoupling algebra"},
+    {"run":34815939847,"job":103886506189,"status":"in_progress","purpose":"ITER050 held-out exact recoupling algebra"},
+    {"run":34815939847,"job":103886506281,"status":"in_progress","purpose":"ITER050 authority freeze"}
   ],
-  "idle_capacity":{"scientifically_useful_jobs_queued":1,"scientifically_useful_jobs_in_progress":3,"recent_terminal_consumed":7,"avoidable_idle":false},
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER049_LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_2026-09-14.md","results/ITER048_LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_2026-09-14.md","results/ITER047_LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS_2026-09-14.md","docs/CONSTITUTION.md"]
+  "idle_capacity":{"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":4,"recent_terminal_consumed":8,"avoidable_idle":false},
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER050_LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_2026-09-14.md","results/ITER049_LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS_2026-09-14.md","results/ITER048_LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_2026-09-14.md","docs/CONSTITUTION.md"]
 }
