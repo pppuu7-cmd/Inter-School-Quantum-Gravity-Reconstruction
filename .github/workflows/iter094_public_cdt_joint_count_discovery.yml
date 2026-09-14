@@ -1,0 +1,156 @@
+name: ITER094 public CDT joint-count data discovery
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter094_public_cdt_joint_count_discovery.yml'
+  workflow_dispatch:
+
+jobs:
+  inventory:
+    name: inventory-${{ matrix.slug }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: tryggth/CDT
+            slug: tryggth-CDT
+          - repo: acgetchell/CDT-plusplus
+            slug: acgetchell-CDT-plusplus
+          - repo: sedadenboer/CDT
+            slug: sedadenboer-CDT
+          - repo: raylee/CDT
+            slug: raylee-CDT
+    steps:
+      - name: Checkout ISQGR
+        uses: actions/checkout@v4
+      - name: Clone frozen candidate
+        env:
+          TARGET_REPO: ${{ matrix.repo }}
+        run: |
+          set -euo pipefail
+          git clone --depth 1 "https://github.com/${TARGET_REPO}.git" target
+          git -C target rev-parse HEAD | tee target_commit.txt
+      - name: Frozen inventory scan
+        env:
+          TARGET_REPO: ${{ matrix.repo }}
+          TARGET_SLUG: ${{ matrix.slug }}
+        run: |
+          python - <<'PY'
+          import os, re, json, hashlib
+          from pathlib import Path
+
+          root=Path('target')
+          repo=os.environ['TARGET_REPO']
+          slug=os.environ['TARGET_SLUG']
+          commit=Path('target_commit.txt').read_text().strip()
+          path_terms=re.compile(r'(n[_-]?0|n[_-]?41|n[_-]?32|kappa[_-]?[04]|delta|volume|timeseries|time[-_ ]?series|trajectory|measurement|output|data)', re.I)
+          content_terms={
+            'N0': re.compile(r'\bN[_ ]?0\b|\bvertices\b', re.I),
+            'N41': re.compile(r'\bN[_ ]?41\b|\(4\s*,\s*1\)|41[-_ ]?simplex', re.I),
+            'N32': re.compile(r'\bN[_ ]?32\b|\(3\s*,\s*2\)|32[-_ ]?simplex', re.I),
+            'kappa0': re.compile(r'kappa[_ ]?0|κ[_ ]?0', re.I),
+            'kappa4': re.compile(r'kappa[_ ]?4|κ[_ ]?4', re.I),
+            'Delta': re.compile(r'\bdelta\b|\bDelta\b|Δ'),
+            'fixing': re.compile(r'volume[-_ ]?fix|target[-_ ]?volume|gaussian.{0,40}volume', re.I),
+            'trajectory': re.compile(r'time[-_ ]?series|trajectory|measurement|monte.?carlo|sweep', re.I),
+          }
+          binary_ext={'.pdf','.png','.jpg','.jpeg','.gif','.zip','.gz','.bz2','.xz','.7z','.so','.o','.a','.bin','.h5','.hdf5','.npy','.npz'}
+          records=[]
+          total_files=0
+          for p in root.rglob('*'):
+            if not p.is_file() or '/.git/' in p.as_posix():
+              continue
+            total_files += 1
+            rel=p.relative_to(root).as_posix()
+            size=p.stat().st_size
+            rec={'path':rel,'size':size,'path_hit':bool(path_terms.search(rel)),'binary':p.suffix.lower() in binary_ext,'terms':[],'sha256':None}
+            try:
+              data=p.read_bytes()
+              rec['sha256']=hashlib.sha256(data).hexdigest()
+              if not rec['binary'] and size <= 5_000_000:
+                text=data.decode('utf-8',errors='ignore')
+                rec['terms']=[k for k,rx in content_terms.items() if rx.search(text)]
+            except Exception as e:
+              rec['error']=repr(e)
+            if rec['path_hit'] or rec['terms']:
+              records.append(rec)
+
+          # Plausible data products are intentionally only candidates for manual scientific audit.
+          data_ext={'.csv','.tsv','.dat','.txt','.json','.jsonl','.npy','.npz','.h5','.hdf5'}
+          plausible=[]
+          for r in records:
+            ext=Path(r['path']).suffix.lower()
+            ts=set(r['terms'])
+            if ext in data_ext and ({'N0','N41','N32'} <= ts or len({'N0','N41','N32'} & ts)>=2 or r['path_hit']):
+              plausible.append(r)
+          out={
+            'gate':'ITER094_PUBLIC_CDT_JOINT_COUNT_DATA_DISCOVERY',
+            'repository':repo,
+            'commit':commit,
+            'total_files':total_files,
+            'matched_records':records,
+            'plausible_data_candidates':plausible,
+            'automatic_scientific_verdict':'MANUAL_AUDIT_REQUIRED',
+            'note':'Code variables, low-dimensional outputs, fixtures, and marginal summaries do not satisfy PASS.'
+          }
+          Path('out').mkdir(exist_ok=True)
+          Path(f'out/{slug}.json').write_text(json.dumps(out,indent=2,ensure_ascii=False))
+          with Path(f'out/{slug}.md').open('w') as f:
+            f.write(f'# ITER094 inventory — {repo}\n\n')
+            f.write(f'Commit: `{commit}`\n\nTotal files: {total_files}\nMatched records: {len(records)}\nPlausible data candidates: {len(plausible)}\n\n')
+            for r in plausible[:200]:
+              f.write(f"- `{r['path']}` size={r['size']} terms={','.join(r['terms'])} sha256={r.get('sha256')}\n")
+          print(json.dumps({'repo':repo,'commit':commit,'matched':len(records),'plausible':len(plausible)},indent=2))
+          PY
+      - name: Upload exact inventory artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter094-${{ matrix.slug }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 30
+
+  aggregate:
+    name: aggregate-iter094
+    needs: inventory
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download inventory artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: iter094-*
+          path: artifacts
+          merge-multiple: true
+      - name: Aggregate without scientific auto-pass
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rows=[]
+          for p in sorted(Path('artifacts').glob('*.json')):
+            d=json.loads(p.read_text())
+            rows.append({
+              'repository':d['repository'],'commit':d['commit'],'total_files':d['total_files'],
+              'matched_records':len(d['matched_records']),
+              'plausible_data_candidates':len(d['plausible_data_candidates'])
+            })
+          out={
+            'gate':'ITER094_PUBLIC_CDT_JOINT_COUNT_DATA_DISCOVERY',
+            'repositories':rows,
+            'scientific_classification':'PENDING_MANUAL_ARTIFACT_AUDIT',
+            'green_ci_is_not_scientific_pass':True
+          }
+          Path('aggregate.json').write_text(json.dumps(out,indent=2))
+          print(json.dumps(out,indent=2))
+          PY
+      - name: Upload aggregate
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter094-aggregate
+          path: aggregate.json
+          if-no-files-found: error
+          retention-days: 30
