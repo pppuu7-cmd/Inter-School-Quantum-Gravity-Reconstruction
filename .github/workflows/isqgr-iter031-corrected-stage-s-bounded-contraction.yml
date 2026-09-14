@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - name: Install numerical dependency
+        run: python3 -m pip install --user numpy
       - name: Run frozen ITER031 lane
         run: |
           rm -rf out/iter031
