@@ -8,94 +8,137 @@ Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness: **50%*
 
 RC006 numerical retry remains unauthorized. RC009 remains scoped blocked on its tested reduced isotemporal route. Lorentzian Delta4 negative results remain preserved. RC008 corrected crossing remains source-blocked on an explicit incidence-aware global physical measure. No full EPRL/FK refinement, Lorentzian refinement, q-deformed bridge derivation or candidate-theory construction is authorized. Forbidden claims remain `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, `FULL_QG`, `UNIVERSAL_COMMON_PARENT_FOUND`.
 
-## ITER066 — terminal causal-set refinement authority block
+## Typed-operation results through ITER070
 
-**`SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT`**.
+Earlier gates established that the former atlas coordinate `composition/refinement` is too coarse:
 
-Causal-set quantum measure/amplitude objects and a classical CSG cosmological-renormalisation map are source-qualified, but the frozen stack lacks a source-defined quantum scale/refinement transport acting on the QSG quantum object. The classical map cannot be transplanted onto the quantum object without a new bridge assumption.
+- `C_seq` — CDT sequential temporal/state-sum composition, source-qualified in ITER067;
+- `C_tensor` — HaPPY subsystem/tensor contraction and isometric encoding; ITER068 rejected physical type-equivalence with `C_seq`, retaining only a forgetful algebraic kernel;
+- `C_scale_flow` — FRG/EAA regulator-dependent theory-space scale flow, source-qualified in ITER069 with no exact finite source-defined physical composition law in the frozen stack;
+- ITER070 rejected a strong FRG/CDT operation-level identification. The only common object was generic ordered evolution after erasing regulator/state-space/time semantics.
 
-## ITER067 — terminal RC002 CDT composition authority
+No typed-operation bridge credit followed.
 
-**`PASS_SCOPED / STRUCTURAL_MAP_ESTABLISHED_SCOPED`**.
+## ITER071 — terminal FRG/CDT spectral observable identity
 
-The regulated full-state CDT transfer-matrix package is source-qualified: automorphism-weighted state space, one-step sandwich amplitude, exact intermediate-state semigroup/gluing law and the qualified `T_N^2` positivity/Hamiltonian package. Preferred discrete proper time and the distinction between full-state and reduced-volume transfer objects remain structural qualifiers.
+Preregistration: `bd42843d2dbb6203b3d1513b079107499ce631d2`.
+Source authority: `3582bcca11dcfa4eca279cc2b266213712de48b3`.
+Critic: `0e26ac63d1ea947c219394ee7cbcdeac6f32cafc`.
+Terminal result: `4b907ada70c25e536b6c9cce1a89835bf1fb4ab7`.
 
-## ITER068 — terminal CDT / HaPPY type discrimination
+**`PASS_SCOPED / COMMON_DEFINITION_DIFFERENT_REALIZATION`**.
 
-Preregistration: `a50779bcd93ba34546b16751d61245ad45e6ee01`.
-Terminal result: `c7b8cdf9b03b7c89a2f4f664f988682996fa4aac`.
+For the first time in this sequence, a non-forgetful cross-school commonality was established at the observable level. CDT and QEG/FRG both define spectral dimension through
 
-**`FAIL_SCOPED / PHYSICAL_COMPOSITION_TYPE_EQUIVALENCE_REJECTED`**.
+`diffusion/heat operator -> normalized return probability -> -2 d log P / d log(diffusion duration)`.
 
-Retained positive sub-result: **`COMMON_ALGEBRAIC_KERNEL_ONLY`**.
+The realization differs: CDT samples random walks on Euclideanized triangulations and ensemble-averages; QEG represents a metric expectation using scale-dependent effective metrics/Laplacians. Diffusion time is neither CDT proper time nor FRG RG time.
 
-The exact CDT operation and the HaPPY tensor/QEC operation can both be represented abstractly by linear maps/tensor contraction, but the commonization is forgetful. Their state spaces, normalization/measure, dynamics, causal semantics and observable meanings are not source-defined equivalents.
+Mandatory lock:
 
-This established the first mandatory split:
+**`SAME_OBSERVABLE_POINTWISE_4D_COMPARATOR = NOT_YET_AUTHORIZED`**.
 
-- `C_seq` — sequential temporal/state-sum composition in CDT;
-- `C_tensor` — subsystem/tensor contraction and isometric encoding in HaPPY.
+## ITER072 — terminal CDT spectral-diffusion scale authority
 
-No bridge credit followed.
+Preregistration: `3cc0751629f6c3cf3eb2ba5bb89c1fcccbef439e`.
+Metadata correction: `bfb8f7fab32f5bdf021c61e6ffc6b6adc397ad99`.
+Source authority: `c341d4191c9db02af027b80d997ac622f9c7dcc1`.
+Critic: `57de6150d6ffe0f681ed8daf8c0dfd58f766f310`.
+Terminal result: `4c1ace6de4fe4911033fcb0c27380b33355cd0b7`.
 
-## ITER069 — terminal RC003 FRG scale-operation authority
+**`PASS_SCOPED / CDT_DIFFUSION_SCALE_CALIBRATED_CONTINUUM_OPEN`**.
 
-Preregistration: `c938f74feed0e1aae729cdafea05a3d6e5d70227`.
-Extraction/CI: `89aab44905ebc8406bf65711c384a39576c9ad5b`, run `34889707865`.
-Source authority: `2a851fab018fbf72d49c895b14a41d68d2804624`.
-Adversarial critic: `8639ccacef0f54c1bd5cc773ca19a3560d088a98`.
-Terminal result: `37ee6cb2e4754588d9715e73cc31931a20b430da`.
-RC003 realization update: `4735746bd2fbf1b0968362af78951098b9f68177`.
+4D CDT has a source-defined internal scale calibration stronger than the ITER071 frozen source alone exposed:
 
-**`PASS_SCOPED / FRG_SCALE_OPERATION_QUALIFIED`**.
+- relative spectral rescaling through `sigma/a_rel^2` and fitted `a_rel` across bare-coupling points;
+- an independent semiclassical/de-Sitter volume-fluctuation calibration of `a_abs` in Planck units;
+- trend-level agreement between the independent estimators with model, anisotropy and finite-size assumptions retained.
 
-Mandatory qualifier:
+Locks:
 
-**`FINITE_SOURCE_DEFINED_COMPOSITION_LAW = NOT_ESTABLISHED_IN_FROZEN_STACK`**.
+- `CONTINUUM_LIMIT_ESTABLISHED = false`;
+- `UV_FIXED_POINT_ESTABLISHED = false`;
+- `ABSOLUTE_LATTICE_SCALE_AUTHORITY = true_scoped_semiclassical`.
 
-The frozen EAA/FRG stack source-qualifies the exact Wetterich flow object, its theory-space domain/codomain, explicit regulator dependence and gravity background/gauge/ghost structure. Fixed points and RG trajectories remain theory-space/scale-flow objects rather than physical state/geometric refinement maps.
+Current CDT evidence for a UV critical path is positive but not promoted to a terminal continuum theorem.
 
-The qualified operation is:
+## ITER073 — terminal FRG/CDT physical-scale crosswalk
 
-- `C_scale_flow` — regulator-dependent continuum coarse-graining / theory-space flow of effective actions.
+Preregistration: `8082e08b2b5349b53b5ffbf20a4676a2e57bf859`.
+Source authority: `dc604f6881f81fb12d4e1f6aab5ae62b0f75251c`.
+Critic: `384f01d4b6656aece95b9819582999315885029c`.
+Terminal result: `257d4d90ce4726859fdca8f49c2db885e15290ae`.
 
-The frozen sources do not supply an exact finite source-defined physical composition/semigroup law that would identify this operation with CDT gluing, HaPPY contraction, EPRL refinement or causal-set refinement. RG time is not promoted to proper time.
+**`BLOCKED_INDEPENDENT_PHYSICAL_SCALE_NORMALIZATION`**.
 
-## Active structural fact
+The common observable and within-theory scale objects do not yet assemble into an independently normalized four-dimensional crosswalk. Exact blocker factorization:
 
-The former atlas coordinate `C = composition/refinement` is now demonstrably too coarse. At least three source-qualified operation types must be kept separate:
+1. CDT has relative `a^2` diffusion scaling and a conditional absolute lattice ruler, but the full absolute stochastic dual-step normalization in the Planckian quantum regime is not source-qualified;
+2. QEG separates heat-kernel time, Laplacian/RG mode resolution and anomalous walk distance; a universal `k = 1/sqrt(T)` rule would erase the source object;
+3. the strongest published direct QEG/CDT fit in the frozen stack is three-dimensional and selects the QEG trajectory by fitting the target CDT spectral curve;
+4. a mutually reliable 4D physical-scale window therefore cannot yet be fixed independently.
 
-1. `C_seq` — temporal/state-sum sequential composition;
-2. `C_tensor` — subsystem/tensor contraction/isometric encoding;
-3. `C_scale_flow` — regulator-dependent EAA/theory-space scale flow.
+This is **BLOCKED**, not a no-go theorem.
 
-In addition, causal-set QSG currently has a quantum measure/amplitude object without a source-qualified quantum refinement transport in the frozen authority stack.
+## ITER074 — terminal CDT 4D walk-distance authority
 
-A surviving common-parent hypothesis must therefore be typed and multi-operation. Any claimed embedding must preserve or derive domain/codomain, measure/normalization/regulator structure, gauge/quotient structure, dynamics, causal/time semantics, observables and scale/refinement meaning. Generic associativity, linearity, contraction or the words `coarse graining` are not bridge evidence.
+Preregistration: `6ed0ba6a07d28c2fa44c66bc03caff1db4da1a2e`.
+Source authority: `3a0eb0714cf17c2294a601c734c98fba627b1847`.
+Critic: `9b4cca52601bc29c18df59be1cba605570e7ef73`.
+Terminal result: `75502b348d4c5c9be37e4b531b5143baa36d7038`.
+
+**`PASS_SCOPED / REGULAR_STEP_GEOMETRY_ONLY`**.
+
+Mandatory lock:
+
+**`INDEPENDENT_4D_WALK_DISTANCE_OBSERVABLE = NOT_ESTABLISHED`**.
+
+The full 4D CDT stack qualifies:
+
+- the nearest-neighbour spacetime diffusion process used for `D_s`;
+- ordinary/regular `sqrt(sigma)` step-distance semantics as a narrow lattice interpretation;
+- independent full-4D discrete geodesic/Hausdorff/shortest-loop distance observables.
+
+It does **not** qualify an independently measured `<r^2(sigma)>`, diffusion radius or scale-dependent `D_w(sigma)` for the same spacetime random walk in the Planckian regime. Generic fractal identities, spatial-slice measurements, geodesic-loop searches, reduced multigraphs and QEG walk laws cannot be used to fill the object.
+
+Therefore:
+
+**`ITER073_REOPENED = false`**.
+
+## New structural fact at the active front
+
+ISQGR now has a useful three-level hierarchy that must remain separate:
+
+1. **typed operation identity** — generally negative across CDT/HaPPY/FRG;
+2. **observable identity** — positive for spectral dimension across CDT and QEG/FRG;
+3. **independently normalized cross-theory physical-scale identity** — still blocked for the spectral branch.
+
+A visually good or percent-level `D_s` curve fit is therefore not bridge evidence unless its physical scale and comparator trajectory are fixed independently of the target curve.
+
+Repeated spectral curve fitting without a new independent 4D CDT walk observable is now low-information.
 
 ## Exact next scientific gate
 
-**`PREREGISTER_ITER070_FRG_CDT_SCALE_TIME_TYPE_DISCRIMINATION`**
+**`PREREGISTER_ITER075_FRG_CDT_VOLUME_PROFILE_EFFECTIVE_ACTION_OBSERVABLE_AUTHORITY`**
 
-The next gate should compare the newly qualified `C_scale_flow` with the strongest already-qualified dynamical composition object, CDT `C_seq`.
+The next gate should switch to an independent observable family rather than continue repairing the same spectral normalization.
 
-Frozen question: does there exist a non-forgetful typed invariant or explicit embedding relating FRG scale flow and CDT temporal composition while preserving domain/codomain, regulator or state-sum measure, dynamics, time/scale semantics and observables?
+Frozen research target to preregister:
 
-Mandatory failure controls:
+- CDT: source-qualified four-dimensional de-Sitter three-volume profile and reconstructed effective minisuperspace/transfer-matrix action;
+- QEG/FRG: the closest source-qualified scale-dependent background geometry / scale-factor / effective-action object.
 
-- `RG_TIME_PROPER_TIME_SWAP_CONTROL`;
-- `REGULATOR_ERASURE_CONTROL`;
-- `FULL_REDUCED_STATE_SWAP_CONTROL`;
-- `FIXED_POINT_REFINEMENT_SWAP_CONTROL`;
-- `OBSERVABLE_ERASURE_CONTROL`.
+First question: are these genuinely the same reduced observable/effective-action object under an explicit typed map, or only similar de-Sitter/minisuperspace functional forms after different reductions and parameter fits?
 
-A positive result could only establish a typed common-structure candidate, not a QG bridge. A negative result would further constrain H0 toward a genuinely multi-operation parent rather than a single composition law.
+Mandatory controls should include state-sum/effective-action reduction, proper-time/RG-scale substitution, Euclidean/Lorentzian interpretation, fitted-parameter circularity, full-vs-reduced operator substitution and normalization/measure erasure.
+
+A positive result could authorize only a scoped same-observable/effective-action comparator. It would not establish microscopic equivalence or bridge credit.
 
 ## Readiness
 
-ITER066: **100% terminal source-blocked in scope**.
-ITER067: **100% terminal PASS_SCOPED**.
-ITER068: **100% terminal FAIL_SCOPED with algebraic kernel retained**.
-ITER069: **100% terminal PASS_SCOPED for distinct `C_scale_flow`**.
+ITER071: **100% terminal definition-level PASS_SCOPED**.
+ITER072: **100% terminal CDT scale-calibration PASS_SCOPED, continuum open**.
+ITER073: **100% terminal source-blocked on independent 4D physical normalization**.
+ITER074: **100% terminal regular-step geometry PASS_SCOPED; independent 4D walk law absent in frozen stack**.
 
 Overall scientific programme: **50% (Δ0)**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
