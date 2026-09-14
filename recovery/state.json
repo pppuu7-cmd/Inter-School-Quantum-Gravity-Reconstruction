@@ -3,9 +3,9 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_027_TERMINAL_INVALID_IMPLEMENTATION",
-  "iteration_completion_percent": 100,
-  "iteration_completion_scope": "ITER027 executed the frozen primary/heldout primitive controls but did not instantiate the source-pinned Eq.(27) topology; scientific terminal classification INVALID_IMPLEMENTATION. A new topology-faithful prospective successor is required.",
+  "active_iteration": "ITERATION_028_PREREGISTERED_NOT_EXECUTED",
+  "iteration_completion_percent": 0,
+  "iteration_completion_scope": "ITER028 topology-faithful Eq.(27) component contraction is prospectively frozen. No ITER028 implementation or substantive result has been executed yet.",
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -24,7 +24,7 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ27_TOPOLOGY_IMPLEMENTATION_INVALID",
+      "status": "EQ27_TOPOLOGY_FAITHFUL_SUCCESSOR_PREREGISTERED",
       "iter023": {
         "prereg_commit": "f236741ce6b76050b40ed9fc5ef52998048a8c35",
         "implementation_commit": "b3ac56b8dec57873d2e59c72c57c30b64f1f46b3",
@@ -39,10 +39,6 @@
         "run": 34786045133,
         "terminal_commit": "831d566555dc1e21ae84e5b0bd69ddb0e336f690",
         "classification": "RC006_GRAPHICAL_QBAR_COMPONENT_FAIL",
-        "R_pass": true,
-        "braid_pass": true,
-        "adversarial_pass": true,
-        "qbar_dual_pass": false,
         "report": "results/ITER024_RC006_GRAPHICAL_DUAL_BRAID_2026-09-14.md"
       },
       "iter024B_cited_authority_parser": {
@@ -89,34 +85,14 @@
       "iter027": {
         "prereg_commit": "d07fd121f0abeb34396bb4f2bc4028070fed0e12",
         "implementation_commit": "fcb17f980caa82fd7a1a1482a523084125915d53",
-        "initial_workflow_head": "95073389c83cf45851bb44473f972c89af6d3564",
         "initial_run": 34791069641,
         "initial_run_classification": "INFRASTRUCTURE_FAIL_PRE_SCIENCE_MISSING_MPMATH",
         "control_only_repair_commit": "b59fbc7a53ec2dda697826beb07550201052cd71",
         "production_head": "b59fbc7a53ec2dda697826beb07550201052cd71",
         "run": 34792339154,
-        "jobs": {
-          "authority_domain": 103818770258,
-          "component_translation": 103818770467,
-          "bounded_contraction": 103818770439,
-          "null_controls": 103818770400,
-          "aggregate": 103818814261
-        },
-        "artifacts": {
-          "authority_domain": 10327933057,
-          "component_translation": 10328319002,
-          "bounded_contraction": 10328109395,
-          "null_controls": 10328775999,
-          "aggregate": 10328698059
-        },
+        "aggregate_artifact": 10328698059,
         "aggregate_digest": "sha256:fe1369502a90c617e601d7d45a3d7620010dd516b24174b3191117b013e20411",
         "raw_aggregate_classification": "RC006_EQ27_COMPONENT_CONTRACTION_BLOCKED_AUTHORITY",
-        "raw_lane_pass": {
-          "authority_domain": false,
-          "component_translation": true,
-          "bounded_contraction": true,
-          "null_controls": true
-        },
         "scientific_classification": "INVALID_IMPLEMENTATION_RC006_EQ27_TOPOLOGY_NOT_INSTANTIATED",
         "implementation_findings": {
           "authority_self_scanner_false_positive": true,
@@ -137,12 +113,30 @@
         "report": "results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md",
         "report_commit": "cad509649420b79a46b4c8e08616865e35673a0f"
       },
+      "iter028": {
+        "status": "PREREGISTERED_NOT_EXECUTED",
+        "prereg": "prereg/ITER028_RC006_EQ27_TOPOLOGY_FAITHFUL_CONTRACTION_2026-09-14.md",
+        "prereg_commit": "73246639c6710ab3e7228c3e5f0f11ae654f32b7",
+        "target_source": "1609.02429v2",
+        "target_source_sha256": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
+        "eq27_source_snippet_sha256": "88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d",
+        "stage_s_required": true,
+        "post_stage_parallel_lanes": [
+          "network_einsum_contraction",
+          "explicit_index_reference_contraction",
+          "appendixE_source_reduction",
+          "q1_instrumentation_sentinel",
+          "source_number_normalization_sentinel",
+          "topology_breaking_adversarial_controls"
+        ],
+        "scientific_result": null
+      },
       "eq27_component_reconstruction_prereg_allowed": true,
       "iter012_retry_authorized": false,
       "eq29_amplitude_authorized": false,
       "one_step_tnr_authorized": false,
       "bridge_credit": false,
-      "next_gate": "PREREGISTER_TOPOLOGY_FAITHFUL_EQ27_COMPONENT_CONTRACTION_SUCCESSOR"
+      "next_gate": "IMPLEMENT_ITER028_STAGE_S_AND_PARALLEL_LANES_WITHOUT_CONTRACT_CHANGE"
     },
     "BH004_BH004B": {
       "status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
@@ -168,16 +162,17 @@
     "scientifically_useful_jobs_queued": 0,
     "scientifically_useful_jobs_in_progress": 0,
     "avoidable_idle": false,
-    "reason": "ITER027 is terminal INVALID_IMPLEMENTATION. A topology-faithful Eq.(27) successor requires a new prospective preregistration; no silent post-result patch is authorized."
+    "reason": "ITER028 scientific contract is frozen prospectively; implementation/execution is intentionally deferred to the next gate execution so no second substantive scientific gate is run in the same research pass."
   },
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "prereg/ITER028_RC006_EQ27_TOPOLOGY_FAITHFUL_CONTRACTION_2026-09-14.md",
     "results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md",
     "prereg/ITER027_RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_2026-09-14.md",
     "results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md",
     "results/ITER021_RC006_EQ27_COMPONENT_TRANSLATION_2026-09-14.md",
-    "results/ITER024_025_AB_PROVENANCE_RECONCILIATION_2026-09-14.md",
+    "prereg/ITER021_RC006_EQ27_COMPONENT_RECONSTRUCTION_2026-09-14.md",
     "sources/ITER025_RC006_QBAR_R_AUTHORITY.md",
     "docs/INTERFACE_ATLAS_V0_1.md",
     "docs/CONSTITUTION.md"
