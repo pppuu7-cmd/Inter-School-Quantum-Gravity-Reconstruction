@@ -1,0 +1,111 @@
+name: ISQGR ITER049 author code routing reconciliation
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/isqgr-iter049-author-code-routing.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [code-routing, notebook-callgraph, tex-code-crosswalk, routing-null]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen ITER049 structural lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out work
+          git clone -q https://github.com/PietropaoloFrisoni/Monte_Carlo_spinfoams.git work/ref
+          git -C work/ref checkout -q 84b375f2a2e0d29b44dd8820953553624bb007a3
+          test "$(git -C work/ref rev-parse HEAD)" = '84b375f2a2e0d29b44dd8820953553624bb007a3'
+          find work/ref -type f -not -path '*/.git/*' -print0 | sort -z | xargs -0 sha256sum > out/reference_file_hashes.txt
+          lane='${{ matrix.lane }}'
+          LANE="$lane" python3 - <<'PY'
+          import json,os,pathlib,re
+          root=pathlib.Path('work/ref'); lane=os.environ['LANE']
+          files=[p for p in root.rglob('*') if p.is_file() and '.git' not in p.parts]
+          texts=[]
+          for p in files:
+              if p.suffix.lower() not in {'.jl','.py','.ipynb','.md','.txt','.c','.h','.csv'}: continue
+              try:t=p.read_text(errors='replace')
+              except:continue
+              texts.append((p,t))
+          patterns=['rCDl','rCDr','rbl','rbr','i8','i9','i_8','i_9','6j','wigner','vertex_renormal','5-1','5_1','sl2cfoam']
+          hits=[]
+          for p,t in texts:
+              lo=t.lower()
+              if 'vertex' not in lo and '5-1' not in lo and '5_1' not in lo and 'rcdl' not in lo and 'rcdr' not in lo: continue
+              for pat in patterns:
+                  start=0
+                  while True:
+                      q=lo.find(pat.lower(),start)
+                      if q<0:break
+                      hits.append({'file':str(p.relative_to(root)),'pattern':pat,'offset':q,'excerpt':t[max(0,q-1200):min(len(t),q+2400)]})
+                      start=q+1
+                      if len(hits)>1200:break
+                  if len(hits)>1200:break
+              if len(hits)>1200:break
+          if lane=='code-routing':
+              rel=[h for h in hits if h['pattern'] in {'rCDl','rCDr','rbl','rbr','i8','i9','i_8','i_9','6j','wigner'}]
+              out={'lane':lane,'reference_head':'84b375f2a2e0d29b44dd8820953553624bb007a3','routing_hits':rel[:600],'hit_count':len(rel),'classification':'AUTHOR_CODE_ROUTING_EVIDENCE_COLLECTED_REQUIRES_FROZEN_CLASSIFICATION'}
+          elif lane=='notebook-callgraph':
+              nb=[]
+              for p,t in texts:
+                  lo=t.lower()
+                  if ('vertex renormal' in lo or '5-1' in lo or '5_1' in lo) and p.suffix.lower() in {'.ipynb','.jl','.py'}:
+                      refs=sorted(set(re.findall(r'[A-Za-z0-9_./-]+\.(?:jl|py|csv|h5|jld2)',t)))
+                      nb.append({'file':str(p.relative_to(root)),'references':refs[:200],'sl2cfoam':('sl2cfoam' in lo),'monte_carlo':('monte' in lo and 'carlo' in lo)})
+              out={'lane':lane,'reference_head':'84b375f2a2e0d29b44dd8820953553624bb007a3','relevant_code_notebooks':nb,'classification':'CALLGRAPH_EVIDENCE_COLLECTED_REQUIRES_FROZEN_CLASSIFICATION'}
+          elif lane=='tex-code-crosswalk':
+              names=['rbl','rbr','rCDl','rCDr','rIul','rIur','rIu','rIbl','rIbr']
+              found={n:[] for n in names}
+              for p,t in texts:
+                  for n in names:
+                      if n.lower() in t.lower(): found[n].append(str(p.relative_to(root)))
+              out={'lane':lane,'frozen_tex_crosswalk':{'rbl':'i7','rbr':'i8','rCDl':'i9','rCDr':'i10','rIul':'i11','rIur':'i12','rIu':'i13','rIbl':'i14','rIbr':'i15'},'implementation_occurrences':found,'classification':'TEX_CODE_CROSSWALK_EVIDENCE_COLLECTED_REQUIRES_FROZEN_CLASSIFICATION'}
+          else:
+              controls=[
+                {'rule':'choose routing by amplitude agreement','accepted':False},
+                {'rule':'choose routing by sign','accepted':False},
+                {'rule':'choose routing by fitted normalization','accepted':False},
+                {'rule':'silently replace source i8 with i9 without author-code authority','accepted':False}]
+              out={'lane':lane,'controls':controls,'null_pass':all(not x['accepted'] for x in controls),'classification':'ROUTING_NULL_PASS'}
+          pathlib.Path('out/evidence.json').write_text(json.dumps(out,indent=2,ensure_ascii=False)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter049-${{ matrix.lane }}
+          path: out/
+
+  aggregate:
+    needs: gate
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter049-*
+          path: all
+      - name: Conservative aggregate
+        run: |
+          python3 - <<'PY'
+          import pathlib,json
+          ev=[]
+          for p in pathlib.Path('all').rglob('evidence.json'):
+              try: ev.append(json.loads(p.read_text()))
+              except: pass
+          pathlib.Path('aggregate.json').write_text(json.dumps({'iteration':'ITER049','lanes':[x.get('lane') for x in ev],'classification':'EVIDENCE_COLLECTED_REQUIRES_FROZEN_SCIENTIFIC_CLASSIFICATION','locks':{'refinement_map_derived':False,'bridge_credit':False,'candidate_theory':'UNFORMED'}},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter049-aggregate
+          path: aggregate.json
