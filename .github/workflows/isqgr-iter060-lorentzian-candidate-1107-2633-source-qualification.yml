@@ -1,0 +1,71 @@
+name: ISQGR ITER060 Lorentzian candidate 1107.2633 source qualification
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr-iter060-lorentzian-candidate-1107-2633-source-qualification.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane:
+          - exact-source
+          - refinement-language
+          - object-match
+          - null-controls
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen qualification lane
+        run: |
+          mkdir -p out
+          python3 code/iter060/qualify_1107_2633.py --lane '${{ matrix.lane }}' --out out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter060-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: qualification
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter060-*
+          path: evidence
+      - name: Aggregate frozen source qualification
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          rows={}
+          for p in pathlib.Path('evidence').rglob('evidence.json'):
+            x=json.loads(p.read_text()); rows[x['lane']]=x
+          req=['exact-source','refinement-language','object-match','null-controls']
+          missing=[k for k in req if k not in rows]
+          infra=missing or any(rows.get(k,{}).get('retrieval_pass') is not True for k in req)
+          om=rows.get('object-match',{})
+          if infra: cls='INFRASTRUCTURE_FAIL_PRE_SCIENCE'
+          elif om.get('qualifies') is True: cls='LORENTZIAN_REFINEMENT_SOURCE_AUTHORITY_PASS_SCOPED'
+          elif om.get('classification')=='SCOPED_BLOCKED_NO_EXPLICIT_REFINEMENT_MAP': cls='SCOPED_BLOCKED_NO_EXPLICIT_REFINEMENT_MAP'
+          else: cls='SCIENTIFIC_FAIL_AS_REFINEMENT_AUTHORITY_SCOPED'
+          hashes=sorted(set(v.get('source_sha256') for v in rows.values() if v.get('source_sha256')))
+          out={'iteration':'ITER060','candidate':'arXiv:1107.2633','classification':cls,'missing':missing,
+               'source_hashes':hashes,'bridge_credit':False,'refinement_map_derived':False,
+               'candidate_theory':'UNFORMED','candidate_theory_percent':0,
+               'next_gate_if_pass':'PREREGISTER_EXACT_MAP_EXTRACTION_WITHOUT_NUMERICAL_RETUNING',
+               'next_gate_if_blocked':'PRESERVE_NEGATIVE_AUTHORITY_RESULT_AND_CONTINUE_ONLY_INDEPENDENT_ITER059_DISCOVERY_OR_OTHER_PHASE1_FRONT'}
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)); print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter060-aggregate
+          path: aggregate/aggregate.json
+          if-no-files-found: error
