@@ -3,7 +3,7 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITER055_LORENTZIAN_RECOUPLING_MINIPANEL_TRANSPORT",
+  "active_iteration": "ITER056_LORENTZIAN_REFINEMENT_MAP_SOURCE_AUTHORITY",
   "iteration_completion_percent": 20,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
@@ -20,69 +20,158 @@
     "full_eq27_amplitude_derived": false
   },
   "frontier": {
-    "RC006": {"status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED", "bridge_credit": false},
+    "RC006": {
+      "status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
+      "bridge_credit": false
+    },
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "BOUNDED_FIXED_SUMMAND_PASS_RECOUPLING_MINIPANEL_RUNNING",
-      "source_refinement_map_qualified": true,
+      "status": "FOUR_CLASS_BOUNDED_FIXED_SUMMAND_TRANSPORT_PASS_REFINEMENT_MAP_AUTHORITY_RUNNING",
+      "source_refinement_map_qualified": false,
       "refinement_map_derived": false,
       "zero_face_collapse_status": "BLOCKED_UNCHANGED",
-      "iter047": {"status": "SCIENTIFIC_PASS", "classification": "LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS", "authoritative_run": 34808646324, "report_commit": "d477c5514e4c6156ce96187cbe75f27c40cb2b6d"},
-      "iter048": {"status": "SCOPED_BLOCKED", "classification": "LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY", "rawtex_run": 34811727020, "rawtex_job": 103874254568, "rawtex_artifact": {"id": 10334723630, "digest": "sha256:191262f0c2a6d5c5b3ac6f1036caacd6808735c4bc38ecc73c45da49b2c53cb9"}, "report_commit": "851d0665305cd7d379f758b2b4f4a320d85691ae"},
-      "iter049": {"status": "SCIENTIFIC_PASS", "classification": "LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS", "authoritative_run": 34811866640, "production_head": "946d427f2821971c3342f2ff5831b2cdeae79dc9", "selected_route": "COMMENT_REPAIR", "report_commit": "5d3d480196c0525701996b56a799034a7f498778"},
-      "iter050": {"status": "INVALID_IMPLEMENTATION", "classification": "LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED", "green_actions_run": 34815939847, "report_commit": "51cd9302f25f642fdb0ed85539fb7421bdbba213"},
-      "iter051": {"status": "PASS", "classification": "LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS", "authoritative_run": 34818301950, "production_head": "52150ba71882c04091edbfac16e6f55ca0d244fe", "smoke_amplitude": 1.34499311005e-9, "runtime_artifact": {"id": 10336669907, "digest": "sha256:f357f01e2aa370db20701bbced8cf7f6d03d6c43751ba5399584dd343820454b"}, "report_commit": "16c8934ae7074f5c29aa20af3ded0a73dbfb0bdf"},
-      "iter052": {"status": "PASS", "classification": "LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_AUTHORITY_PASS", "authoritative_run": 34819214900, "production_head": "20b87fbcf7b049c700796daaf4380de4d79cdc5b", "report_commit": "21dc48666d59a10150f2df0d181c3f5ee54331ec"},
-      "iter053": {"status": "PASS", "classification": "LORENTZIAN_PHASE_WEIGHT_AUTHORITY_PASS_BOUNDARY_PHASE_QUALIFIED", "prereg_commit": "64e21b96eb968e6cafb77903f589bae380a15540", "implementation_commit": "4fd6cc6ff7a1ac5306cf2afa627f28348e066b74", "production_head": "4fc286f657f7a6378cbc78a3fe4665ca392f4a6b", "authoritative_run": 34820237071, "amplitude_values_used": false, "standard_lorentzian_mu_weight": 1, "paper_to_author_boundary_phase": "(-1)^(2*jb)", "frozen_sector_boundary_conversion": -1, "rc006_alpha_firewall": true, "aggregate_artifact": {"id": 10338081973, "digest": "sha256:6bf6c97c9b8dd6f5d704893e71e9e1ec7472c5d5670cfddf36d0409b83fb8266"}, "report_commit": "d4e8fd0ec11038bee8f40446070697fbe9302c90"},
+      "iter047": {
+        "status": "SCIENTIFIC_PASS",
+        "classification": "LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS",
+        "authoritative_run": 34808646324,
+        "report_commit": "d477c5514e4c6156ce96187cbe75f27c40cb2b6d"
+      },
+      "iter048": {
+        "status": "SCOPED_BLOCKED",
+        "classification": "LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY",
+        "rawtex_run": 34811727020,
+        "rawtex_job": 103874254568,
+        "rawtex_artifact": {
+          "id": 10334723630,
+          "digest": "sha256:191262f0c2a6d5c5b3ac6f1036caacd6808735c4bc38ecc73c45da49b2c53cb9"
+        },
+        "report_commit": "851d0665305cd7d379f758b2b4f4a320d85691ae"
+      },
+      "iter049": {
+        "status": "SCIENTIFIC_PASS",
+        "classification": "LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS",
+        "authoritative_run": 34811866640,
+        "production_head": "946d427f2821971c3342f2ff5831b2cdeae79dc9",
+        "selected_route": "COMMENT_REPAIR",
+        "report_commit": "5d3d480196c0525701996b56a799034a7f498778"
+      },
+      "iter050": {
+        "status": "INVALID_IMPLEMENTATION",
+        "classification": "LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED",
+        "green_actions_run": 34815939847,
+        "report_commit": "51cd9302f25f642fdb0ed85539fb7421bdbba213"
+      },
+      "iter051": {
+        "status": "PASS",
+        "classification": "LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS",
+        "authoritative_run": 34818301950,
+        "production_head": "52150ba71882c04091edbfac16e6f55ca0d244fe",
+        "smoke_amplitude": 1.34499311005e-9,
+        "runtime_artifact": {
+          "id": 10336669907,
+          "digest": "sha256:f357f01e2aa370db20701bbced8cf7f6d03d6c43751ba5399584dd343820454b"
+        },
+        "report_commit": "16c8934ae7074f5c29aa20af3ded0a73dbfb0bdf"
+      },
+      "iter052": {
+        "status": "PASS",
+        "classification": "LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_AUTHORITY_PASS",
+        "authoritative_run": 34819214900,
+        "production_head": "20b87fbcf7b049c700796daaf4380de4d79cdc5b",
+        "report_commit": "21dc48666d59a10150f2df0d181c3f5ee54331ec"
+      },
+      "iter053": {
+        "status": "PASS",
+        "classification": "LORENTZIAN_PHASE_WEIGHT_AUTHORITY_PASS_BOUNDARY_PHASE_QUALIFIED",
+        "authoritative_run": 34820237071,
+        "production_head": "4fc286f657f7a6378cbc78a3fe4665ca392f4a6b",
+        "report_commit": "d4e8fd0ec11038bee8f40446070697fbe9302c90"
+      },
       "iter054": {
         "status": "SCIENTIFIC_PASS",
         "classification": "LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_VALIDATED_SCOPED",
-        "prereg_commit": "39b33c127342e6b12150228bfd91b3e37e967683",
-        "implementation_commit": "5b295ed5cf5c9416a77661bccb7fb9140a6b573d",
-        "production_head": "1fd40c077cc25dd12573f683fb457b7180f63e46",
         "authoritative_run": 34821111285,
-        "aggregate_job": 103902785578,
-        "aggregate_artifact": {"id": 10337904083, "digest": "sha256:0dbc02a599838b22f0a8985cb73057beb18d4b3bc7f490e7bc6630472a9e0130"},
-        "primary_A_author": -1.4084786761527471e-43,
-        "primary_A_paper": 1.4084786761527471e-43,
-        "heldout_A_author": 7.318669885380604e-43,
-        "heldout_A_paper": -7.318669885380604e-43,
-        "AB_reproducibility": "PASS_ZERO_DIFFERENCE",
+        "production_head": "1fd40c077cc25dd12573f683fb457b7180f63e46",
+        "aggregate_artifact": {
+          "id": 10337904083,
+          "digest": "sha256:0dbc02a599838b22f0a8985cb73057beb18d4b3bc7f490e7bc6630472a9e0130"
+        },
         "report_commit": "5802c5c6b243ee553fb842d641cb329b2b54d8bd"
       },
       "iter055": {
-        "status": "RUNNING_QUEUED",
-        "classification": null,
+        "status": "SCIENTIFIC_PASS",
+        "classification": "LORENTZIAN_RECOUPLING_MINIPANEL_TRANSPORT_PASS_SCOPED",
         "source_map_commit": "457f06952c29c5d7b0462a27f2fd068ee7f1bf29",
         "source_map_blob": "370d21534b1d6529f189a55073bd0bbd481a4784",
         "prereg_commit": "0d96a7c9f4c4fbb07a5001b0c3586e90bee1e8f0",
         "implementation_commit": "4cdd16bb046b0e17e0de6a48b4da4672ec58f8bb",
         "production_head": "82f2d33cebdec0e8bcaee165a7150cf5884eb0a0",
         "authoritative_run": 34821443455,
-        "scientific_objective": "held-out transport for remaining recoupling classes 1->0 and 1->1 without retuning"
+        "aggregate_job": 103903853005,
+        "aggregate_artifact": {
+          "id": 10337969589,
+          "digest": "sha256:a5d6f4de322db0163ef2824164636dc94c93e8480f4641743aedd74ae3f421cc"
+        },
+        "R10_A_author": -3.422603183002116e-41,
+        "R10_A_paper": 3.422603183002116e-41,
+        "R11_A_author": 1.5185788242379515e-40,
+        "R11_A_paper": -1.5185788242379515e-40,
+        "AB_reproducibility": "PASS_ZERO_DIFFERENCE",
+        "report_commit": "586ff3cd107a3c62166ab53c0f1ac9cfffa6c977"
       },
-      "fixed_sector_call_map": {"status": "OUTCOME_INDEPENDENT_FROZEN", "blob": "1af32d358747f333a04531d27af1e03b9a0bd038", "commit": "201c412f738bad82a79a349dd76a45cf8dbd2f77"},
+      "iter056": {
+        "status": "RUNNING",
+        "classification": null,
+        "scientific_objective": "qualify explicit source-defined fine object, coarse object, and refinement/coarse-graining map before any coarse-fine numerical comparison",
+        "external_repository": "PietropaoloFrisoni/Monte_Carlo_spinfoams",
+        "external_commit": "84b375f2a2e0d29b44dd8820953553624bb007a3",
+        "external_tree": "5ded1505fbb148b8ab336027a509f942d9565176",
+        "primary_notebook": "notebooks/julia/5-1_move_EPRL_analysis.ipynb",
+        "primary_notebook_blob": "bd1a55c0e95b98244df02e049346ba8b7488797a",
+        "prereg_commit": "55160b6b48194d4d8ef2698bcf1b04dd3c038800",
+        "implementation_commit": "05f2660b37d7cf21f006cdeff086ea9fb5b697bb",
+        "production_head": "f8f6c04e2c525110eb860350923922a5ca182d73",
+        "authoritative_run": 34822881473
+      },
       "bridge_credit": false
     },
-    "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
-    "RC008": {"status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
-    "RC009": {"status": "SCOPED_BLOCKED"},
-    "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
+    "BH004_BH004B": {
+      "status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
+      "bridge_credit": false
+    },
+    "RC008": {
+      "status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"
+    },
+    "RC009": {
+      "status": "SCOPED_BLOCKED"
+    },
+    "LORENTZIAN_DELTA4": {
+      "status": "SATURATED_NEGATIVE_SCOPED",
+      "bridge_credit": false
+    }
   },
   "active_compute": [
-    {"iteration": "ITER055", "run": 34821443455, "production_head": "82f2d33cebdec0e8bcaee165a7150cf5884eb0a0", "jobs": [103903711742,103903711986,103903712030,103903712059,103903712074,103903712098,103903712138]}
+    {
+      "iteration": "ITER056",
+      "run": 34822881473,
+      "production_head": "f8f6c04e2c525110eb860350923922a5ca182d73",
+      "jobs": [103908231806, 103908232001, 103908232021, 103908232089, 103908232165]
+    }
   ],
-  "idle_capacity": {"scientifically_useful_jobs_queued": 7, "scientifically_useful_jobs_in_progress": 0, "avoidable_idle": false},
-  "next_gate": "CONSUME_ITER055_RAW_ARTIFACTS_AND_AGGREGATE_AGAINST_FROZEN_PREREG",
-  "next_gate_after_iter055_pass": "PROSPECTIVELY_FREEZE_SOURCE_FAITHFUL_REFINEMENT_MAP_OR_COARSE_FINE_OBJECT_TEST_ONLY_IF_EXPLICIT_MAP_AND_BOTH_OBJECTS_ARE_PINNED",
+  "idle_capacity": {
+    "scientifically_useful_jobs_queued": 0,
+    "scientifically_useful_jobs_in_progress": 5,
+    "avoidable_idle": false
+  },
+  "next_gate": "CONSUME_ITER056_RAW_ARTIFACTS_AND_AGGREGATE_AGAINST_FROZEN_PREREG",
+  "next_gate_after_iter056_pass": "PROSPECTIVELY_PREREGISTER_COARSE_FINE_NUMERICAL_OBJECT_TEST_USING_ONLY_SOURCE_PINNED_MAP_AND_OBJECTS",
+  "next_gate_after_iter056_blocked": "PRESERVE_REFINEMENT_MAP_BLOCKER_AND_DO_NOT_INFER_OR_FIT_MAP_FROM_AMPLITUDE_OUTPUTS",
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "prereg/ITER056_LORENTZIAN_REFINEMENT_MAP_SOURCE_AUTHORITY_2026-09-14.md",
+    "results/ITER055_LORENTZIAN_RECOUPLING_MINIPANEL_TRANSPORT_PASS_2026-09-14.md",
     "prereg/ITER055_LORENTZIAN_RECOUPLING_MINIPANEL_TRANSPORT_2026-09-14.md",
-    "sources/ITER055_LORENTZIAN_RECOUPLING_MINIPANEL_CALL_MAP.json",
     "results/ITER054_LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_PASS_2026-09-14.md",
-    "results/ITER053_LORENTZIAN_PHASE_WEIGHT_AUTHORITY_PASS_2026-09-14.md",
-    "results/ITER052_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_PASS_2026-09-14.md",
-    "results/ITER051_LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS_2026-09-14.md",
     "docs/CONSTITUTION.md"
   ]
 }
