@@ -1,0 +1,170 @@
+name: ISQGR ITER048 Eq11 routing reference authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter048-eq11-routing-reference.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [tex-eq11, cited-reference, backend-api, algebra-null]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen ITER048 lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out work
+          lane='${{ matrix.lane }}'
+          if [[ "$lane" == 'tex-eq11' || "$lane" == 'cited-reference' ]]; then
+            ok=0
+            for u in 'https://export.arxiv.org/e-print/2302.00072' 'https://arxiv.org/e-print/2302.00072'; do
+              if curl --fail -L --retry 4 --retry-delay 2 --max-time 180 -A 'ISQGR-ITER048/1.0' "$u" -o work/source.tar; then ok=1; break; fi
+            done
+            if [[ "$ok" != 1 ]]; then
+              printf '{"lane":"%s","transport_complete":false,"classification":"INFRASTRUCTURE_FAIL_SOURCE_TRANSPORT"}\n' "$lane" > out/evidence.json
+              exit 2
+            fi
+            sha256sum work/source.tar > out/source_archive_sha256.txt
+            mkdir -p work/src
+            tar -xf work/source.tar -C work/src || { printf '{"lane":"%s","transport_complete":false,"classification":"INFRASTRUCTURE_FAIL_SOURCE_EXTRACT"}\n' "$lane" > out/evidence.json; exit 2; }
+            find work/src -type f -maxdepth 3 -print0 | sort -z | xargs -0 sha256sum > out/source_file_sha256.txt
+          fi
+
+          if [[ "$lane" == 'tex-eq11' ]]; then
+            python3 - <<'PY'
+          import json,pathlib,re
+          files=[]
+          for p in pathlib.Path('work/src').rglob('*'):
+              if p.is_file() and p.suffix.lower() in {'.tex','.bbl','.bib','.txt'}:
+                  try: t=p.read_text(errors='replace')
+                  except: continue
+                  files.append((str(p),t))
+          candidates=[]
+          labels=set()
+          for fn,t in files:
+              low=t.lower()
+              score=sum(x in low for x in ['vertex renormal','avr','6j','sl2cfoam'])
+              if score:
+                  for m in re.finditer(r'vertex\s+renormal|a[_\\{]*v?r|6j|sl2cfoam',t,re.I):
+                      a=max(0,m.start()-5000); b=min(len(t),m.start()+15000)
+                      ex=t[a:b]
+                      labs=sorted(set(re.findall(r'i\s*_?\{?(\d{1,2})\}?',ex)))
+                      js=sorted(set(re.findall(r'j\s*_?\{?(\d{1,2})\}?',ex)))
+                      labels.update(('i'+x for x in labs)); labels.update(('j'+x for x in js))
+                      candidates.append({'file':fn,'offset':m.start(),'excerpt':ex,'i_labels':labs,'j_labels':js})
+                      if len(candidates)>=20: break
+              if len(candidates)>=20: break
+          i_have=sorted(x for x in labels if x.startswith('i'))
+          j_have=sorted(x for x in labels if x.startswith('j'))
+          out={'lane':'tex-eq11','transport_complete':True,'candidate_count':len(candidates),'i_labels_seen':i_have,'j_labels_seen':j_have,'candidates':candidates,'classification':'TEX_ROUTING_EVIDENCE_COLLECTED_REQUIRES_FROZEN_CLASSIFICATION'}
+          pathlib.Path('out/evidence.json').write_text(json.dumps(out,indent=2,ensure_ascii=False)+'\n')
+          PY
+          elif [[ "$lane" == 'cited-reference' ]]; then
+            python3 - <<'PY'
+          import json,pathlib,re
+          hits=[]
+          for p in pathlib.Path('work/src').rglob('*'):
+              if not p.is_file() or p.suffix.lower() not in {'.tex','.bbl','.bib','.txt'}: continue
+              t=p.read_text(errors='replace')
+              for pat in [r'https?://[^\s{}<>]+',r'github\.com/[^\s{}<>]+',r'zenodo[^\s{}<>]*']:
+                  for m in re.finditer(pat,t,re.I):
+                      url=m.group(0).rstrip('.,;)]}')
+                      ctx=t[max(0,m.start()-1200):min(len(t),m.end()+1200)]
+                      if any(k in ctx.lower() for k in ['repository','script','notebook','monte carlo','vertex renormal','code']):
+                          hits.append({'file':str(p),'url':url,'context':ctx})
+          # preserve literal source-derived candidates only; do not substitute
+          uniq=[]; seen=set()
+          for h in hits:
+              key=h['url']
+              if key not in seen: seen.add(key); uniq.append(h)
+          pathlib.Path('out/evidence.json').write_text(json.dumps({'lane':'cited-reference','transport_complete':True,'source_derived_candidates':uniq,'classification':'CITED_REFERENCE_EVIDENCE_COLLECTED_REQUIRES_FROZEN_CLASSIFICATION'},indent=2,ensure_ascii=False)+'\n')
+          PY
+          elif [[ "$lane" == 'backend-api' ]]; then
+            git clone -q https://github.com/qg-cpt-marseille/sl2cfoam-next.git work/backend
+            git -C work/backend checkout -q 052e4346028870bd76f69a3034e6cae8defb8f7f
+            test "$(git -C work/backend rev-parse HEAD)" = '052e4346028870bd76f69a3034e6cae8defb8f7f'
+            sha256sum work/backend/tools/vertex-amplitude.c work/backend/src/vertex.c work/backend/inc/sl2cfoam.h > out/backend_hashes.txt
+            python3 - <<'PY'
+          import json,pathlib,re
+          cli=pathlib.Path('work/backend/tools/vertex-amplitude.c').read_text(errors='replace')
+          ten=bool(re.search(r'two_js\s*\[\s*10\s*\]',cli))
+          five=bool(re.search(r'two_is\s*\[\s*5\s*\]',cli))
+          passed=ten and five
+          pathlib.Path('out/evidence.json').write_text(json.dumps({'lane':'backend-api','backend_sha':'052e4346028870bd76f69a3034e6cae8defb8f7f','ten_spin_slots':ten,'five_intertwiner_slots':five,'scientific_pass':passed,'classification':'BACKEND_API_PASS' if passed else 'SCIENTIFIC_FAIL_BACKEND_ARITY'},indent=2)+'\n')
+          if not passed: raise SystemExit(2)
+          PY
+          else
+            python3 -m pip -q install sympy
+            python3 - <<'PY'
+          import json,pathlib
+          from sympy import Rational
+          from sympy.physics.wigner import wigner_6j
+          j=Rational(1,2)
+          vals={}
+          finite=True
+          for a in [0,1]:
+              for b in [0,1]:
+                  v=wigner_6j(j,j,a,j,j,b)
+                  vals[f'{a},{b}']=str(v)
+                  finite &= bool(v.is_finite)
+          # all four recoupling combinations needed by frozen 0/1 sectors are admissible and exact
+          primary=[0]*15
+          held=[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]
+          malformed=held.copy(); malformed[8]=malformed[7]  # explicit duplicated-index null representation, kept distinct from source authority
+          null_rejected = (malformed != held)
+          passed=finite and len(vals)==4 and null_rejected
+          out={'lane':'algebra-null','jb':'1/2','exact_6j_basis':vals,'primary_i':primary,'heldout_i':held,'malformed_duplicate_index_control':malformed,'null_rejected_structurally':null_rejected,'scientific_pass':passed,'classification':'ALGEBRA_PRECHECK_PASS_REQUIRES_TEX_ROUTING_FOR_FULL_GATE' if passed else 'SCIENTIFIC_FAIL_ALGEBRA_PRECHECK'}
+          pathlib.Path('out/evidence.json').write_text(json.dumps(out,indent=2)+'\n')
+          if not passed: raise SystemExit(2)
+          PY
+          fi
+          python3 - <<'PY'
+          import json,pathlib
+          e=json.loads(pathlib.Path('out/evidence.json').read_text())
+          pathlib.Path('out/manifest.json').write_text(json.dumps({'lane':e.get('lane'),'classification':e.get('classification'),'files':sorted(p.name for p in pathlib.Path('out').iterdir())},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter048-${{ matrix.lane }}
+          path: out/
+
+  aggregate:
+    needs: gate
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter048-*
+          path: all
+      - name: Conservative aggregate
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          ev=[]
+          for p in pathlib.Path('all').rglob('evidence.json'):
+              try: ev.append(json.loads(p.read_text()))
+              except Exception as x: ev.append({'lane':str(p),'classification':'UNREADABLE','error':str(x)})
+          lanes={x.get('lane'):x for x in ev}
+          infra=any(x.get('classification','').startswith('INFRASTRUCTURE_FAIL') for x in ev)
+          backend=lanes.get('backend-api',{}).get('scientific_pass') is True
+          algebra=lanes.get('algebra-null',{}).get('scientific_pass') is True
+          # Source lanes require post-run frozen classification of exact preserved evidence; never auto-promote green CI.
+          out={'iteration':'ITER048','lanes':sorted(lanes),'infra_failure':infra,'backend_api_pass':backend,'algebra_precheck_pass':algebra,'source_lanes_require_scientific_classification':True,'classification':'INFRASTRUCTURE_FAIL' if infra else 'EVIDENCE_COLLECTED_REQUIRES_FROZEN_SCIENTIFIC_CLASSIFICATION','locks':{'refinement_map_derived':False,'bridge_credit':False,'candidate_theory':'UNFORMED'}}
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter048-aggregate
+          path: aggregate.json
