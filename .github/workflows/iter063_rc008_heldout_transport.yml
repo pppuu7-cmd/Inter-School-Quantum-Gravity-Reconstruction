@@ -1,0 +1,70 @@
+name: ITER063 RC008 held-out non-retuned transport selector
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter063_rc008_heldout_transport.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  calibration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy
+      - name: Frozen inherited calibration
+        run: python code/iter063/transport.py --mode calibration --out out/calibration.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter063-calibration
+          path: out/calibration.json
+          if-no-files-found: warn
+
+  boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        boundary: [P1, P2, H1, H2, H3, H4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy
+      - name: Frozen held-out boundary reconstruction
+        run: python code/iter063/transport.py --mode boundary --boundary '${{ matrix.boundary }}' --out 'out/${{ matrix.boundary }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter063-${{ matrix.boundary }}
+          path: out/${{ matrix.boundary }}.json
+          if-no-files-found: warn
+
+  aggregate:
+    needs: [calibration, boundary]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter063-*
+          path: artifacts
+          merge-multiple: true
+      - name: Apply frozen ITER063 predicates
+        run: python code/iter063/aggregate.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter063-aggregate
+          path: aggregate/summary.json
+          if-no-files-found: error
