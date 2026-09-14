@@ -1,0 +1,113 @@
+name: ISQGR ITER055 Lorentzian recoupling minipanel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter055-recoupling-minipanel.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: isqgr-iter055-recoupling-minipanel
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  controls:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [map-and-symbolic-controls, null-controls]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - if: matrix.lane == 'map-and-symbolic-controls'
+        run: python3 -m pip install --user 'sympy==1.13.3'
+      - run: python3 code/iter055/minipanel.py --lane '${{ matrix.lane }}' --out out/evidence.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter055-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: warn
+
+  runtime-and-replicas:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [runtime-identity, R10-A, R10-B, R11-A, R11-B]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y libgmp10 libmpfr6 libmpc3 libopenblas0-pthread libquadmath0
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter051-runtime-build
+          path: build
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 34818301950
+      - run: |
+          set -euo pipefail
+          test -f build/runtime_bundle.tar.gz
+          mkdir runtime
+          tar -xzf build/runtime_bundle.tar.gz -C runtime
+      - env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/runtime/lib:${{ github.workspace }}/runtime/ext/wigxjpf/lib:${{ github.workspace }}/runtime/ext/fastwigxj/lib
+        run: python3 code/iter055/minipanel.py --lane '${{ matrix.lane }}' --runtime runtime --out out/evidence.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter055-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: warn
+
+  aggregate:
+    needs: [controls, runtime-and-replicas]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter055-*
+          path: evidence
+          merge-multiple: false
+        continue-on-error: true
+      - run: |
+          python3 - <<'PY'
+          import json,pathlib
+          rows=[]
+          for p in pathlib.Path('evidence').rglob('evidence.json'):
+            try: rows.append(json.loads(p.read_text()))
+            except: pass
+          by={r.get('lane'):r for r in rows}
+          req=['map-and-symbolic-controls','null-controls','runtime-identity','R10-A','R10-B','R11-A','R11-B']
+          missing=[x for x in req if x not in by]; repro={}
+          if missing: cls='INVALID_IMPLEMENTATION'
+          elif not by['runtime-identity'].get('pass'): cls='BLOCKED_RUNTIME_TRANSPORT'
+          elif not by['map-and-symbolic-controls'].get('pass') or not by['null-controls'].get('pass'): cls='BLOCKED_SOURCE_OBJECT'
+          elif not all(by[x].get('pass') for x in ['R10-A','R10-B','R11-A','R11-B']): cls='LORENTZIAN_RECOUPLING_MINIPANEL_EXECUTION_FAIL'
+          else:
+            ok=True
+            for sec in ['R10','R11']:
+              a=by[sec+'-A']; b=by[sec+'-B']; ls=[]
+              for x,y in zip(a['local_vertices'],b['local_vertices']):
+                tol=1e-15+1e-10*max(abs(x),abs(y)); q=abs(x-y)<=tol; ls.append({'A':x,'B':y,'abs_diff':abs(x-y),'tol':tol,'pass':q}); ok &= q
+              aa=a['A_author']; ab=b['A_author']; ta=1e-60+1e-10*max(abs(aa),abs(ab)); qa=abs(aa-ab)<=ta; ok &= qa
+              pa=a['A_paper']; pb=b['A_paper']; tp=1e-60+1e-10*max(abs(pa),abs(pb)); qp=abs(pa-pb)<=tp; ok &= qp
+              repro[sec]={'local':ls,'author':{'A':aa,'B':ab,'abs_diff':abs(aa-ab),'tol':ta,'pass':qa},'paper':{'A':pa,'B':pb,'abs_diff':abs(pa-pb),'tol':tp,'pass':qp}}
+            cls='LORENTZIAN_RECOUPLING_MINIPANEL_TRANSPORT_PASS_SCOPED' if ok else 'LORENTZIAN_RECOUPLING_MINIPANEL_REPRODUCIBILITY_FAIL'
+          out={'iteration':'ITER055','classification':cls,'missing':missing,'lane_pass':{k:bool(v.get('pass')) for k,v in by.items()},'reproducibility':repro,'green_ci_not_scientific_predicate':True,'claim_locks':{'refinement_map_derived':False,'bridge_credit':False,'candidate_theory':'UNFORMED','candidate_theory_percent':0}}
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter055-aggregate
+          path: aggregate.json
