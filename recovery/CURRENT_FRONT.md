@@ -12,76 +12,96 @@ RC006 numerical retry remains unauthorized. No Eq.(27), Eq.(29), Lambda, one-ste
 
 ITER047 remains SCIENTIFIC PASS — `LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS`, run `34808646324`.
 
-ITER048 remains terminal **SCOPED BLOCKED — `LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY`**. It is not retrofitted.
+ITER048 remains historical **SCOPED BLOCKED — `LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY`** and is not retrofitted.
 
-ITER049 remains terminal **SCIENTIFIC PASS — `LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS`**, run `34811866640`. Its exact scope is the disputed recoupling route; it selects `COMMENT_REPAIR` without amplitude fitting.
+ITER049 remains **SCIENTIFIC PASS — `LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS`** in its exact scoped fifth-6j routing question.
 
-ITER050 remains terminal **INVALID_IMPLEMENTATION — `LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED`**. No five-vertex Lorentzian value exists from it.
+ITER050 remains **INVALID_IMPLEMENTATION — `LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED`**. No five-vertex Lorentzian value exists from it.
 
-ITER051 remains terminal **PASS — `LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS`**, run `34818301950`. Exact pinned `sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f` is buildable/executable with source-required tables; two independent frozen smoke processes both returned `1.34499311005e-09`, exact difference zero. This is runtime-only and not a five-vertex result.
+ITER051 remains **PASS — `LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS`**, run `34818301950`: exact pinned `sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f` builds and its own single-vertex executable reproducibly returns the frozen low-spin value `1.34499311005e-09` in two independent processes.
 
-## ITER052 terminal PASS — local vertex argument crosswalk
+ITER052 remains **PASS — `LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_AUTHORITY_PASS`**, run `34819214900`: exact author-code local `(i1,...,i5)` mappings, Wigner recoupling pairs, backend tensor-axis order and global degree-2 incidence closure are source-qualified without amplitude fitting.
 
-Preregistration: `prereg/ITER052_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_2026-09-14.md`, commit `a3f494374b491110525bee30af7ee1fa581a8fd6`.
+## ITER053 terminal PASS — phase/weight authority
 
-Implementation: `code/iter052/local_vertex_crosswalk.py`, commit `f276e4d00a1a0bd63a129913d737318534125cb6`.
+Preregistration final commit: `64e21b96eb968e6cafb77903f589bae380a15540`.
 
-Authoritative run: **`34819214900`**, production head **`20b87fbcf7b049c700796daaf4380de4d79cdc5b`**.
+Implementation commit: `4fd6cc6ff7a1ac5306cf2afa627f28348e066b74`.
+
+Production head: `4fc286f657f7a6378cbc78a3fe4665ca392f4a6b`.
+
+Authoritative run: **`34820237071`**.
 
 Terminal classification:
 
-**`PASS — LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_AUTHORITY_PASS`**.
+**`PASS — LORENTZIAN_PHASE_WEIGHT_AUTHORITY_PASS_BOUNDARY_PHASE_QUALIFIED`**.
 
-All five independent source/structure lanes PASS: `tex-authority`, `author-code`, `backend-axis`, `graph-incidence`, `null-controls`. No Lorentzian amplitude value was used or computed.
+All five independent lanes PASS: paper authority, author code, backend normalization, symbolic crosswalk and adversarial null controls. No Lorentzian amplitude value was used by this gate.
 
-### Source-qualified executable original local argument mapping
+### Face-weight identity
 
-Before Wigner-6j basis change, the pinned authors' executable implementation fixes:
+Paper `A_f=(2j+1)^mu`; author code multiplies `dfj^weight`; exact BF control uses first power. The source-qualified identification is:
 
-- up `(ib,i4,i11,i12,i1)`;
-- left `(ib,i6,i14,i13,i3)`;
-- bottom-left `(ib,i8,i15,i11,i5)`;
-- bottom-right `(ib,i10,i12,i14,i7)`;
-- right `(ib,i2,i13,i15,i9)`.
+**`weight = mu`, standard Lorentzian `mu=weight=1`**.
 
-The five executable Wigner-6j basis-change pairs are:
+Historical RC006 `alpha` belongs to the reduced-Euclidean `SU(2)_k x SU(2)_k` q-dimension family and is not imported into the Lorentzian front.
 
-`(i1→i2), (i3→i4), (i5→i6), (i7→i8), (i9→i10)`.
+### Edge-dimension identity
 
-After pre-contraction, the local lists become:
+Pinned backend 15j/B4 source places square-root external intertwiner dimensions inside each vertex. Author-code Wigner recouplings supply square-root dimensions for each left/right recoupling pair. Under the ITER052 incidence graph, every global `i1...i15` has total dimension exponent exactly **1**. Thus the paper factor `prod(2i+1)` is already reconstructed. A second manual edge product would double-count and is forbidden.
 
-- up `(ib,i4,i11,i12,i2)`;
-- left `(ib,i6,i14,i13,i4)`;
-- bottom-left `(ib,i8,i15,i11,i6)`;
-- bottom-right `(ib,i10,i12,i14,i8)`;
-- right `(ib,i2,i13,i15,i10)`.
+### Exact phase identity
 
-The pinned backend independently confirms tensor-axis order `(i5,i4,i3,i2,i1)` and the ordered `(i1,...,i5)` physical-intertwiner single-amplitude API before doubled-label conversion.
+For the author executable fixed-summand convention,
 
-### New exact structural fact
+`E_author - chi_paper = 10*jb + 4*(j1+j3+j6+j7+j10)`.
 
-Across the five **original** executable local vertex lists plus the five Wigner-6j pairs, every global `i1...i15` has degree exactly **2**. This provides a source-topological closure certificate for the fixed-summand incidence graph.
+For half-integer labels this gives the exact boundary-only conversion
 
-Literal Eq.(11) fails this invariant: `i9` has degree 0 and multiple labels have degree 1 or 3. Repairing only the fifth 6j to `(i9,i10)` still fails global degree-2 closure. A degree-preserving left-slot swap is separately rejected by the exact ordered author-code signature, proving the gate is not merely a graph-counting fit.
+**`phase_author / phase_paper = (-1)^(2*jb)`**.
 
-Artifacts include aggregate `10337417876`, digest `sha256:c435fd981b6b67cb20187a971f6a528b26c8ba14b0a3e4823025e58ca5a1e8c5`.
+No residual bulk spin/intertwiner dependence remains. For the frozen numerical sectors `jb=1/2`, paper and author conventions differ by exactly `-1`.
 
-Durable report: `results/ITER052_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_PASS_2026-09-14.md`, commit `21dc48666d59a10150f2df0d181c3f5ee54331ec`.
+The boundary phase is retained explicitly; no silent sign repair is allowed.
+
+### Null controls
+
+- RC006 `alpha=mu` import rejected;
+- second manual edge-dimension product rejected;
+- omitted recoupling phase detected;
+- omitted `df_phase` detected on the prospectively frozen S2 point;
+- all correct panel points reduce to the boundary-only factor.
+
+Aggregate artifact `10338081973`, digest `sha256:6bf6c97c9b8dd6f5d704893e71e9e1ec7472c5d5670cfddf36d0409b83fb8266`.
+
+Durable result: `results/ITER053_LORENTZIAN_PHASE_WEIGHT_AUTHORITY_PASS_2026-09-14.md`, commit `d4e8fd0ec11038bee8f40446070697fbe9302c90`.
+
+## Frozen outcome-independent sector call map
+
+`sources/ITER053_FIXED_SECTOR_BACKEND_CALL_MAP.json`, blob `1af32d358747f333a04531d27af1e03b9a0bd038` was created before any successor amplitude execution.
+
+It fixes exact global→local spin/intertwiner calls for the primary and held-out sectors, including correct backend doubled-label conversion. No amplitude value is stored in that source record.
 
 ## Exact next admissible gate
 
-Do **not** evaluate a five-vertex amplitude yet. The remaining upstream object is the exact phase/weight convention.
+A new prospectively frozen **bounded five-vertex fixed-configuration numerical gate** is now authorized.
 
-Prospectively freeze a **Lorentzian five-vertex phase/weight authority gate** comparing without amplitude fitting:
+It must use only:
 
-1. exact Eq.(11) `(-1)^chi`, face factors and intertwiner dimension factors;
-2. the source's explicit reduction of `chi`;
-3. author code `dfj`, `df_phase`, five local sign factors and `face_weights_vec` exponent semantics;
-4. the relation, if any, between project historical `alpha` notation and the paper/code face-weight parameter.
+- ITER051 exact pinned runtime/backend;
+- ITER052 original local vertex argument mapping and Wigner pairs;
+- ITER053 `mu=weight=1`, no additional manual edge-dimension product;
+- `sources/ITER053_FIXED_SECTOR_BACKEND_CALL_MAP.json`;
+- physical `i=0 -> two_i=0`, physical `i=1 -> two_i=2`;
+- `gamma=1.2`, `Dl=0`, inherited primary/held-out configurations.
 
-Only after that authority gate PASS may a new bounded primary/held-out five-vertex summand gate be preregistered using ITER051 runtime, ITER052 argument mapping and correct doubled labels (`i=0→two_i=0`, `i=1→two_i=2`).
+Before any output, freeze the reporting convention. Recommended production convention: **`AUTHOR_EXECUTABLE_CONVENTION`**. A paper Eq.(11) value may be reported only as the prospectively declared conversion `A_paper=(-1)^(2jb) A_author`; here that is `A_paper=-A_author`.
+
+Parallel execution should use independent primary and held-out processes, preferably replicated A/B for reproducibility, plus runtime identity, recoupling/source controls and null controls. One aggregate verdict only.
 
 ## Persistent locks
+
+Even a bounded-summand PASS will not establish an unbounded ten-face sum, shell convergence, coarse↔fine equality or a refinement map.
 
 `refinement_map_derived=false`; `bridge_credit=false`; candidate theory `0 / UNFORMED`.
 
