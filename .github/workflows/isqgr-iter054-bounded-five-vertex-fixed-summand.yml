@@ -1,0 +1,153 @@
+name: ISQGR ITER054 bounded five-vertex fixed summand
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter054-bounded-five-vertex-fixed-summand.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: isqgr-iter054-bounded-five-vertex-fixed-summand
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  controls:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [authority-object, recoupling-controls, null-controls]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install exact-symbolic dependency
+        if: matrix.lane == 'recoupling-controls'
+        run: python3 -m pip install --user 'sympy==1.13.3'
+      - name: Pin backend source for authority lane
+        if: matrix.lane == 'authority-object'
+        run: |
+          set -euo pipefail
+          git clone --quiet https://github.com/qg-cpt-marseille/sl2cfoam-next.git backend-source
+          git -C backend-source checkout --quiet 052e4346028870bd76f69a3034e6cae8defb8f7f
+          test "$(git -C backend-source rev-parse HEAD)" = 052e4346028870bd76f69a3034e6cae8defb8f7f
+      - name: Execute frozen control lane
+        run: |
+          set -euo pipefail
+          extra=()
+          if [ '${{ matrix.lane }}' = authority-object ]; then extra=(--source-dir backend-source); fi
+          python3 code/iter054/fixed_summand.py --lane '${{ matrix.lane }}' "${extra[@]}" --out out/evidence.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter054-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: warn
+
+  runtime-and-replicas:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [runtime-identity, primary-A, primary-B, heldout-A, heldout-B]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install frozen runtime libraries
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            libgmp10 libmpfr6 libmpc3 libopenblas0-pthread libquadmath0
+      - name: Transport exact ITER051 runtime artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: iter051-runtime-build
+          path: build
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 34818301950
+      - name: Verify transported artifact and unpack exact runtime
+        run: |
+          set -euo pipefail
+          test -f build/runtime_bundle.tar.gz
+          test -f build/runtime_manifest.json
+          mkdir runtime
+          tar -xzf build/runtime_bundle.tar.gz -C runtime
+          python3 - <<'PY'
+          import json,pathlib
+          m=json.loads(pathlib.Path('build/runtime_manifest.json').read_text())
+          assert m['backend_commit']=='052e4346028870bd76f69a3034e6cae8defb8f7f'
+          assert m['build_flags']=={'BLAS':'system','OMP':'0','ADD_CFLAGS':''}
+          PY
+      - name: Execute frozen runtime/substantive lane
+        env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/runtime/lib:${{ github.workspace }}/runtime/ext/wigxjpf/lib:${{ github.workspace }}/runtime/ext/fastwigxj/lib
+        run: |
+          set -euo pipefail
+          python3 code/iter054/fixed_summand.py --lane '${{ matrix.lane }}' --runtime runtime --out out/evidence.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter054-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: warn
+
+  aggregate:
+    needs: [controls, runtime-and-replicas]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter054-*
+          path: evidence
+          merge-multiple: false
+        continue-on-error: true
+      - name: Frozen aggregate and A/B reproducibility
+        env:
+          CONTROLS_RESULT: ${{ needs.controls.result }}
+          RUNTIME_RESULT: ${{ needs.runtime-and-replicas.result }}
+        run: |
+          python3 - <<'PY'
+          import json,math,os,pathlib
+          rows=[]
+          for p in pathlib.Path('evidence').rglob('evidence.json'):
+            try: rows.append(json.loads(p.read_text()))
+            except Exception: pass
+          by={r.get('lane'):r for r in rows}
+          req=['authority-object','recoupling-controls','null-controls','runtime-identity','primary-A','primary-B','heldout-A','heldout-B']
+          missing=[x for x in req if x not in by]
+          classification=None; repro={}
+          if missing:
+            classification='INVALID_IMPLEMENTATION'
+          elif not by['runtime-identity'].get('pass'):
+            classification='LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_BLOCKED_RUNTIME_TRANSPORT'
+          elif not all(by[x].get('pass') for x in ['authority-object','recoupling-controls','null-controls']):
+            classification='LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_BLOCKED_SOURCE_OBJECT'
+          elif not all(by[x].get('pass') for x in ['primary-A','primary-B','heldout-A','heldout-B']):
+            classification='LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_EXECUTION_FAIL'
+          else:
+            allok=True
+            for sec in ['primary','heldout']:
+              a=by[sec+'-A']; b=by[sec+'-B']; loc=[]
+              for x,y in zip(a['local_vertices'],b['local_vertices']):
+                tol=1e-15+1e-10*max(abs(x),abs(y)); loc.append({'A':x,'B':y,'abs_diff':abs(x-y),'tol':tol,'pass':abs(x-y)<=tol})
+              aa=float(a['A_author']); ab=float(b['A_author']); ta=1e-60+1e-10*max(abs(aa),abs(ab))
+              pa=float(a['A_paper']); pb=float(b['A_paper']); tp=1e-60+1e-10*max(abs(pa),abs(pb))
+              ok=all(q['pass'] for q in loc) and abs(aa-ab)<=ta and abs(pa-pb)<=tp
+              repro[sec]={'local':loc,'author':{'A':aa,'B':ab,'abs_diff':abs(aa-ab),'tol':ta,'pass':abs(aa-ab)<=ta},'paper':{'A':pa,'B':pb,'abs_diff':abs(pa-pb),'tol':tp,'pass':abs(pa-pb)<=tp},'pass':ok}
+              allok &= ok
+            classification='LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_VALIDATED_SCOPED' if allok else 'LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_REPRODUCIBILITY_FAIL'
+          out={'iteration':'ITER054','classification':classification,'missing':missing,'lane_pass':{k:bool(v.get('pass')) for k,v in by.items()},'reproducibility':repro,'green_ci_not_scientific_predicate':True,'frozen_science_unchanged':True,'claim_locks':{'refinement_map_derived':False,'bridge_credit':False,'candidate_theory':'UNFORMED','candidate_theory_percent':0}}
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter054-aggregate
+          path: aggregate.json
