@@ -1,0 +1,74 @@
+name: ISQGR ITER046 runtime-loader recovery
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter046-loader-recovery.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  numerical_loader_recovery:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build pinned backend and run frozen amplitudes with loader path repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential m4 lzip libquadmath0 libomp-dev libgmp-dev libmpfr-dev libmpc-dev libgsl-dev libopenblas-dev wget
+          git clone -q https://github.com/qg-cpt-marseille/sl2cfoam-next.git backend
+          git -C backend checkout -q 052e4346028870bd76f69a3034e6cae8defb8f7f
+          test "$(git -C backend rev-parse HEAD)" = '052e4346028870bd76f69a3034e6cae8defb8f7f'
+          mkdir -p backend/ext
+          cd backend/ext
+          curl --fail -L --retry 5 --retry-delay 2 https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -o wigxjpf.tar.gz
+          tar -xzf wigxjpf.tar.gz && mv wigxjpf-1.13 wigxjpf
+          make -C wigxjpf -j2
+          curl --fail -L --retry 5 --retry-delay 2 https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz -o fastwigxj.tar.gz
+          tar -xzf fastwigxj.tar.gz && mv fastwigxj-1.4.1 fastwigxj
+          make -C fastwigxj -j2
+          cd ..
+          mkdir -p data_sl2cfoam
+          ext/fastwigxj/bin/hash_js --max-E-3j=20 /dev/null data_sl2cfoam/table_20.3j
+          ext/fastwigxj/bin/hash_js --max-E-6j=20 /dev/null data_sl2cfoam/table_20.6j
+          make BLAS=system OMP=0 lib
+          make BLAS=system OMP=0 tools
+          export LD_LIBRARY_PATH="$PWD/lib:${LD_LIBRARY_PATH:-}"
+          primary1=$(bin/vertex-amplitude "$PWD/data_sl2cfoam" 1.2 2,2,2,2,2,2,2,2,2,2 0,0,0,0,0 0 | tail -n1)
+          primary2=$(bin/vertex-amplitude "$PWD/data_sl2cfoam" 1.2 2,2,2,2,2,2,2,2,2,2 0,0,0,0,0 0 | tail -n1)
+          held1=$(bin/vertex-amplitude "$PWD/data_sl2cfoam" 1.2 2,2,2,2,2,2,2,2,2,2 2,2,2,2,2 0 | tail -n1)
+          held2=$(bin/vertex-amplitude "$PWD/data_sl2cfoam" 1.2 2,2,2,2,2,2,2,2,2,2 2,2,2,2,2 0 | tail -n1)
+          cd ..
+          PRIMARY1="$primary1" PRIMARY2="$primary2" HELD1="$held1" HELD2="$held2" python3 - <<'PY'
+          import json,math,os
+          vals={k:float(os.environ[k]) for k in ['PRIMARY1','PRIMARY2','HELD1','HELD2']}
+          finite=all(math.isfinite(x) for x in vals.values())
+          ptol=1e-12*max(1.0,abs(vals['PRIMARY1']))
+          htol=1e-12*max(1.0,abs(vals['HELD1']))
+          prep=abs(vals['PRIMARY1']-vals['PRIMARY2']) <= ptol
+          hrep=abs(vals['HELD1']-vals['HELD2']) <= htol
+          passed=finite and prep and hrep
+          out={
+            'lane':'numerical-primary-heldout-loader-recovery',
+            'repair_scope':'runtime loader path only via LD_LIBRARY_PATH; build ordering/backend/science/inputs unchanged',
+            'backend_sha':'052e4346028870bd76f69a3034e6cae8defb8f7f',
+            'gamma':1.2,'two_j':[2]*10,'Dl':0,'primary_two_i':[0]*5,'heldout_two_i':[2]*5,
+            'values':vals,'finite':finite,'primary_repeat_tol':ptol,'heldout_repeat_tol':htol,
+            'primary_repeat_pass':prep,'heldout_repeat_pass':hrep,'scientific_pass':passed,
+            'classification':'NUMERICAL_SMOKE_PASS' if passed else 'SCIENTIFIC_NUMERICAL_FAIL',
+            'inherited_control_artifacts_from_run':34808304690,
+            'refinement_map_derived':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out,indent=2))
+          if not passed: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter046-loader-recovery
+          path: out/
+          if-no-files-found: warn
+          retention-days: 90
