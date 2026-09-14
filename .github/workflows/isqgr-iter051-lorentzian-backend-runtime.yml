@@ -75,7 +75,8 @@ jobs:
           ./ext/fastwigxj/bin/hash_js --max-E-3j=50 /dev/null ./data_sl2cfoam/table_50.3j
           ./ext/fastwigxj/bin/hash_js --max-E-6j=40 /dev/null ./data_sl2cfoam/table_40.6j
 
-          make -j2 BLAS=system OMP=0 tools
+          make -j1 BLAS=system OMP=0 lib
+          make -j1 BLAS=system OMP=0 tools
           test -x bin/vertex-amplitude
           test -f lib/libsl2cfoam.so
 
