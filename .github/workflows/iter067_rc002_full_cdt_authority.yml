@@ -1,0 +1,57 @@
+name: ITER067 RC002 full CDT transfer matrix authority
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter067_rc002/**'
+      - '.github/workflows/iter067_rc002_full_cdt_authority.yml'
+  workflow_dispatch:
+
+jobs:
+  source:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - source: 'hep-th/0105267v1'
+            label: 'hep-th-0105267v1'
+          - source: '1205.3791v1'
+            label: '1205.3791v1'
+          - source: '1302.2210v1'
+            label: '1302.2210v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests pypdf
+      - name: Frozen exact-PDF source audit
+        run: python code/iter067_rc002/source_gate.py --source '${{ matrix.source }}' --out 'out/${{ matrix.label }}.json'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter067-${{ matrix.label }}
+          path: out/${{ matrix.label }}.json
+          if-no-files-found: error
+  aggregate:
+    needs: source
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter067-*
+          path: inputs
+          merge-multiple: true
+      - name: Frozen aggregate source classifier
+        shell: python
+        run: |
+          import glob,json,pathlib
+          rows=[json.load(open(p)) for p in glob.glob('inputs/*.json')]
+          infra=[r.get('source') for r in rows if r.get('classification')=='INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION']
+          out={'iteration':'ITER067','classification':'INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION' if infra else 'SOURCE_CANDIDATES_REQUIRE_MANUAL_EQUATION_AUDIT','sources':[r.get('source') for r in rows],'infrastructure_fail_sources':infra,'gate_credit':False,'bridge_credit':False,'claim_lock':'green CI is not scientific PASS; manual equation-level audit against prereg required'}
+          pathlib.Path('out').mkdir(); pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter067-aggregate
+          path: out/summary.json
