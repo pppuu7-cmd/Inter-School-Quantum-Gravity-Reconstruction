@@ -3,8 +3,8 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_031_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_RUNNING",
-  "iteration_completion_percent": 25,
+  "active_iteration": "ITERATION_031_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_TERMINAL_PASS",
+  "iteration_completion_percent": 100,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -23,7 +23,7 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ27_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_RUNNING",
+      "status": "EQ27_BOUNDED_COMPONENT_CONTRACTION_CORRECTED_STAGE_S_PASS",
       "iter028": {"run": 34794113275, "classification": "RC006_EQ27_SOURCE_GRAPH_COMPONENT_MAP_BLOCKED", "retrofit_authorized": false},
       "iter029": {"run": 34794237347, "job": 103824140071, "artifact": 10328987132, "artifact_digest": "sha256:b6114041c61b2bfe3c21403a24afe641882af042aeba6ed05ca64cc7367ef721", "classification": "RC006_EQ27_SOURCE_SEMANTICS_RECONCILED_SCOPED", "report_commit": "a072c04b11ee947515cac4e1dcdd09dd25ba04c6"},
       "iter030": {
@@ -40,25 +40,38 @@
         "bounded_numerical_contraction_authorized": true
       },
       "iter031": {
-        "status": "IN_PROGRESS_AFTER_DEPENDENCY_ONLY_REPAIRS",
+        "status": "PASS",
         "prereg_commit": "38333cb3e5a912eb7e6be8b6e997dcb94d366279",
         "implementation_commit": "045a25241b37912199794385e6b4cd89b1f37b4f",
-        "initial_production_head": "08cad425efe828fb1fd8431c0ece927138889493",
         "initial_run": 34801076904,
         "initial_classification": "NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE_MISSING_NUMPY",
         "first_repair_commit": "38610cb655314328f74be0a9383ff9125abbf9fd",
         "first_recovery_run": 34801143752,
         "first_recovery_classification": "NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE_MISSING_MPMATH",
         "second_repair_commit": "523405f835757101659a259d2a50b7c452c7d084",
-        "authoritative_run": 34801212245,
-        "jobs": {"null-controls":103844104789,"bounded-contraction":103844104851,"authority-domain":103844104861,"component-translation":103844104877},
-        "scientific_result": null
+        "false_positive_run": 34801212245,
+        "false_positive_classification": "NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE_AUTHORITY_CHECKER_FALSE_POSITIVE",
+        "authority_checker_repair_commit": "408405dca93bf4a8390bd33c49617e15b0b4634b",
+        "production_head": "40616a4bf6cffc3138cda0587dbe63bc381dbd20",
+        "authoritative_run": 34804179870,
+        "jobs": {"null-controls":103852648035,"authority-domain":103852648280,"bounded-contraction":103852648328,"component-translation":103852648330,"aggregate":103852685845},
+        "artifacts": {
+          "null-controls": {"id":10332057066,"digest":"sha256:fd5f57f2c98e6208793fc0dde09de83e402c15812a4460f5b9811968e8e2a78e"},
+          "authority-domain": {"id":10332691210,"digest":"sha256:1ead0892d8cbf2ef154061b138e2b7f9c350ea92948050f03ae35bab917f3586"},
+          "bounded-contraction": {"id":10332132992,"digest":"sha256:3adffa9cfdf1b8248d51ffa3b7d9a3685cf49b1379f8afa59a377d1896121c5d"},
+          "component-translation": {"id":10332866622,"digest":"sha256:8ee94e7a6962501e8eb4010a71b50683add8e14091a66e5e6332026b0f8fed33"},
+          "aggregate": {"id":10332821665,"digest":"sha256:d690afd7ac1f3cd09c6c88df8361df1d24455b26f1e66f6d4ea5230c41366ccb"}
+        },
+        "classification": "RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_CORRECTED_STAGE_S_PASS",
+        "report_commit": "3b2f8274647831965a3e06f13fb40072cef08e38",
+        "two_factor_network_assembly_authorized": true,
+        "full_eq27_amplitude_claimed": false
       },
       "iter012_retry_authorized": false,
       "eq29_amplitude_authorized": false,
       "one_step_tnr_authorized": false,
       "bridge_credit": false,
-      "next_gate": "CONSUME_ITER031_AUTHORITATIVE_RUN_RAW_LANES_AND_AGGREGATE_AGAINST_FROZEN_PREREG_WITHOUT_RETUNING"
+      "next_gate": "PREREGISTER_AND_RUN_SOURCE_FAITHFUL_BOUNDED_TWO_FACTOR_EQ27_NETWORK_ASSEMBLY_WITH_PRIMARY_HELDOUT_AND_FROZEN_NULLS"
     },
     "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS", "refinement_map_derived": false},
@@ -66,19 +79,14 @@
     "RC009": {"status": "SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
-  "active_compute": [
-    {"run":34801212245,"job":103844104789,"status":"in_progress","purpose":"ITER031 frozen null controls"},
-    {"run":34801212245,"job":103844104851,"status":"in_progress","purpose":"ITER031 bounded-contraction primary+heldout"},
-    {"run":34801212245,"job":103844104861,"status":"in_progress","purpose":"ITER031 authority-domain"},
-    {"run":34801212245,"job":103844104877,"status":"in_progress","purpose":"ITER031 component-translation primary+heldout"}
-  ],
-  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":4,"avoidable_idle":false,"reason":"Four independent prospectively frozen ITER031 lanes are in progress after dependency-only infrastructure repairs; no duplicate batch is admissible."},
+  "active_compute": [],
+  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":true,"reason":"ITER031 is terminal PASS and prospectively authorizes a distinct two-factor network-assembly successor; successor must be preregistered before launch."},
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER031_RC006_EQ27_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_PASS_2026-09-14.md",
     "prereg/ITER031_RC006_EQ27_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_2026-09-14.md",
     "results/ITER030_RC006_EQ27_CORRECTED_STAGE_S_PASS_2026-09-14.md",
-    "prereg/ITER030_RC006_EQ27_CORRECTED_STAGE_S_2026-09-14.md",
     "docs/CONSTITUTION.md"
   ]
 }
