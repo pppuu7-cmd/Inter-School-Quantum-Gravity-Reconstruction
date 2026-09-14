@@ -114,7 +114,7 @@ def predicate_source_identity(text: str) -> Tuple[Dict[str, bool], Dict[str, Any
     title_pat = r"Coarse Graining Spin Foam Quantum Gravity\s*[—–-]\s*A Review"
     author_pat = r"Sebastian\s+Steinhaus"
     target_pat = r"Hypercuboidal renormalization in spin foam quantum gravity"
-    target_meta_pat = r"Phys\.?\s*Rev\.?\s*D\.?\s*\(?2017\)?\s*95\s*[:;,]?\s*126006"
+    target_meta_pat = r"Phys\s*Rev\s*D\s*\.?\s*\(\s*2017\s*\)\s*95\s*:\s*126006"
     cuboid = window(text, r"setup for coarse graining in the quantum cuboid model", 300, 1100)
     checks = {
         "companion_title": bool(search(text, title_pat)),
