@@ -6,6 +6,7 @@ Frozen preregistration commit: `543f43be4a8ffa31578d3e9b0f01fca34751e491`
 Workflow launch: `b9dfa82125e6cd19e685b08db1fb85c3e874283b`
 Workflow/prereg binding: `b63bc64935d2c9968ef953192af61bf59d6c8953`
 Authoritative extraction run: `34895738205`
+Terminal result commit already present when this late audit was reconciled: `8753736b1d015fc7d4e98952e2b9aad4e0860de7`
 
 ## Frozen source stack
 
@@ -25,11 +26,15 @@ The successful CI run preserved all four source candidates. Per preregistration,
 
 The frozen stack source-qualifies a genuine recurrent **de-Sitter / Einstein-Hilbert / minisuperspace functional motif** across the two programmes, but does not source-qualify a non-forgetful typed correspondence between the CDT reduced volume-history object and the FRG EAA/effective-background object.
 
-The correct scoped classification supported by the frozen stack is therefore:
+The already-terminal scientific classification is therefore retained as authoritative:
 
-**`PASS_SCOPED_COMMON_FUNCTIONAL_FORM_ONLY`**.
+**`FAIL_SCOPED_PHYSICAL_EFFECTIVE_ACTION_EQUIVALENCE_REJECTED`**
 
-This is stronger than visual shape coincidence but weaker than a physical effective-action equivalence.
+with retained positive sub-result:
+
+**`COMMON_DE_SITTER_MINISUPERSPACE_FUNCTIONAL_STRUCTURE_ONLY`**.
+
+The positive residual is the same scientific content that the late audit initially labelled `PASS_SCOPED_COMMON_FUNCTIONAL_FORM_ONLY`; this file is reconciled to the earlier terminal classification to avoid competing verdict labels.
 
 ## A — CDT observable/action definition
 
@@ -99,7 +104,7 @@ Erasing both structures would leave only a generic reduced action form and is fo
 
 ## F — dynamical/effective-action equivalence
 
-**COMMON FUNCTIONAL FORM ONLY; STRONG EQUIVALENCE NOT ESTABLISHED.**
+**COMMON FUNCTIONAL FORM ONLY; STRONG EQUIVALENCE REJECTED IN THE FROZEN SCOPE.**
 
 Both source stacks connect positive-cosmological-constant gravity with de Sitter/four-sphere effective geometry and Einstein-Hilbert/minisuperspace-type dynamics.
 
@@ -115,7 +120,7 @@ What the frozen stack does **not** supply is a single source-defined term-by-ter
 - operational interpretation of the action;
 - regulator/projection structure.
 
-Therefore the commonality is physically meaningful as a recurrent reduced functional motif, but not source-qualified as equality of effective actions.
+Therefore the commonality is retained as a reduced functional motif, not a source-qualified physical effective-action equivalence.
 
 ## G — observable correspondence
 
@@ -149,7 +154,11 @@ Keeping these structures visible prevents the common functional motif from being
 
 ## Source-authority classification
 
-**`PASS_SCOPED_COMMON_FUNCTIONAL_FORM_ONLY`**
+**`FAIL_SCOPED_PHYSICAL_EFFECTIVE_ACTION_EQUIVALENCE_REJECTED`**
+
+Retained positive sub-result:
+
+**`COMMON_DE_SITTER_MINISUPERSPACE_FUNCTIONAL_STRUCTURE_ONLY`**.
 
 Established in scope:
 
@@ -174,4 +183,4 @@ It is reserved for a separately preregistered successor gate.
 
 ## Claim ceiling
 
-ITER075 establishes only a common reduced functional motif. It creates no bridge credit, no microscopic equivalence, no universal parent and no candidate theory.
+ITER075 rejects physical effective-action equivalence in the frozen scope while retaining a common reduced functional motif. It creates no bridge credit, no microscopic equivalence, no universal parent and no candidate theory.
