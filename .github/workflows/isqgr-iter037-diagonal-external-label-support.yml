@@ -1,0 +1,81 @@
+name: ISQGR ITER037 diagonal external label support
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter037-diagonal-external-label-support.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [A, B, C, D]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen ITER037 lane
+        run: |
+          rm -rf out/iter037
+          python3 code/iter037/diagonal_external_label_support.py --lane '${{ matrix.lane }}'
+      - name: Preserve evidence
+        run: |
+          mkdir -p lane_out
+          cp out/iter037/evidence.json lane_out/evidence.json
+          cat lane_out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter037-${{ matrix.lane }}
+          path: lane_out/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter037-*
+          path: downloaded_iter037
+      - name: Aggregate frozen classes
+        run: |
+          python3 - <<'PY'
+          import glob,json,os
+          aliases={'external-label-scope':'A','diagonal-admissibility':'B','diagonal-internal-j-support':'C','null-controls':'D'}
+          rows=[]
+          for p in sorted(glob.glob('downloaded_iter037/**/evidence.json',recursive=True)):
+              with open(p) as f: rows.append(json.load(f))
+          by={aliases.get(r.get('lane'),r.get('lane')):r for r in rows}
+          expected=['A','B','C','D']
+          missing=[x for x in expected if x not in by]
+          infra=[x for x,r in by.items() if r.get('infrastructure_failure')]
+          blocked=[x for x,r in by.items() if not r.get('pass',False) and not r.get('infrastructure_failure') and str(r.get('classification','')).startswith('BLOCKED')]
+          failed=[x for x,r in by.items() if not r.get('pass',False) and not r.get('infrastructure_failure') and x not in blocked]
+          if missing or infra:
+              cls='NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE'; sp=False
+          elif blocked:
+              cls='RC006_DIAGONAL_EXTERNAL_LABEL_SOURCE_SUPPORT_BLOCKED'; sp=False
+          elif failed:
+              cls='RC006_DIAGONAL_EXTERNAL_LABEL_SOURCE_SUPPORT_FAIL'; sp=False
+          else:
+              cls='RC006_DIAGONAL_EXTERNAL_LABEL_SOURCE_SUPPORT_PASS'; sp=True
+          out={'classification':cls,'scientific_pass':sp,'lanes':by,'missing':missing,'infrastructure_lanes':infra,'blocked_lanes':blocked,'failed_lanes':failed,
+               'claim_locks_preserved':True,'full_eq27_amplitude_derived':False,'eq29_amplitude_authorized':False,'one_step_tnr_authorized':False,'bridge_credit':False}
+          os.makedirs('out_iter037_aggregate',exist_ok=True)
+          with open('out_iter037_aggregate/aggregate.json','w') as f: json.dump(out,f,indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter037-aggregate
+          path: out_iter037_aggregate/
+          if-no-files-found: error
+          retention-days: 90
