@@ -8,89 +8,74 @@ Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness: **50%*
 
 RC006 numerical retry remains unauthorized. RC009 remains scoped blocked. Lorentzian Delta4 negative results remain preserved. RC008 remains source-blocked on an explicit global physical measure. BH004/BH004B remains source-blocked on a source-faithful amplitude/refinement transport. Genuine multi-vertex Lorentzian EPRL refinement remains unresolved/saturated on the current authority route. Forbidden claims remain `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, `FULL_QG`, `UNIVERSAL_COMMON_PARENT_FOUND`.
 
-## CDT↔FRG direct frontier through ITER090
+## CDT↔FRG direct frontier — latest chain
 
-### ITER084 — exact local spatial graph normalization
+### ITER090
 
-Terminal commit `b0706e5b503729f4b77549abac7d7c2d0b2c2ab3`.
+`PASS_SCOPED_ONE_PARAMETER_FIXED_VOLUME_IDENTIFIABILITY_NOGO`, terminal `f774611a2400b0ebabe69876f9b4007efe29134a`.
 
-Classification: **`PASS_SCOPED_EXACT_LOCAL_TPFA_COEFFICIENT_CONTINUUM_CONVERGENCE_OPEN`**.
+Within the frozen fixed-volume EH minisuperspace action, coupling dependence is rank one through `g_k lambda_k`; fixed-volume cumulants cannot separate `g_k` and `lambda_k`.
 
-Finite-regulator cell-centred normalization:
+### ITER091
 
-`-Delta_FV = (9/a^2)(4I-A)`,
+`PASS_SCOPED_BARE_VOLUME_RESPONSE_RENORMALIZED_MAP_OPEN`, terminal `271fea3e9e521344df11c6c1b71a093ea5c7a1f0`.
 
-`z_CDT = 9 lambda_graph/a^2`.
+Changing ensemble restores a genuine bare total-volume source direction, but no source-defined renormalized map to FRG `lambda_k` is known.
 
-The local multiplicative graph-normalization ambiguity is closed. Global CDT continuum spectral convergence remains open.
+### ITER092
 
-### ITER085 — FRG regulator probe typing
+`SOURCE_SUPPORTS_MIXED_PSEUDOCRITICAL_SHIFT_NOT_INDEPENDENT_COSMOLOGICAL_DIRECTION`, terminal `44ebd688d500ca0d0863ed52c930e3ddd64ea6df`, retrospective credit 0.
 
-Prereg `c5abaa46cdc5a32801b469fb195e4aa2e8d455f1`; source authority `ff5c24e32e9757fd533edd0878b11e73e4d8f67b`; adversarial `f91f9b83b6b15f73bee106547e3e160288643b42`; terminal `c5580d4b9c4c5c842dbab6b5f3b59bb29a1ab55a`.
+Published `K_4` and `Delta` pseudocritical shifts scale together; a scalar `K_4` exponent does not isolate a pure cosmological eigendirection.
 
-Classification: **`PASS_SCOPED_BACKGROUND_SPATIAL_THRESHOLD_ROUTE_PRODUCTION_COVARIANT_OPEN`**.
+### ITER093
 
-Background-spatial Litim route authorizes
+`PASS_SCOPED_FORMAL_RESPONSE_MATRIX_DATA_AUTHORITY_OPEN`, terminal `7cfcc82037a7d2695a8c00a152b8b6c1752d5833`.
 
-`x_CDT(k)=9 lambda_graph/(a^2 k^2)`
+Exact CDT-internal response object:
 
-and threshold `k_thr=3 sqrt(lambda_graph)/a` as a regulator-probe scale. The 2023 production fluctuation flow instead uses covariant support `q0^2+z_sp<k^2`; a CDT spatial mode alone is not a full production eigenmode.
+`F_ij = Cov(A_i,A_j)`, with `A=(-N_0, N_41-6N_0, N_4)` and `N_4=N_41+N_32`.
 
-### ITER086 — canonical lowest-gap-at-cutoff hypothesis rejected
+Published scalar summaries do not expose the matched off-diagonal connected covariances needed to evaluate it.
 
-Prereg `f54bb3238eb1a52923230537256e973936d82ec2`; terminal `fc1f962e0ec9087f8f58b3cc35e723c761a490ca`.
+### ITER094
 
-Classification: **`FAIL_SCOPED_CANONICAL_GAP_SCALE_INCOMPATIBLE`**.
+`DISCOVERY_SATURATED_NO_PUBLIC_DATA_IN_FROZEN_SET`.
 
-The frozen hypothesis `k^2=z_1` for the lowest nonzero spatial mode fails a held-out self-consistent de-Sitter check. In the direct source convention `z_1/k^2=lambda_k/3`, so threshold equality forces `lambda_k=3`; even a standard-radius normalization rescue would force an order-one value outside the intended EH flow domain. No mode switching or target rescue is authorized.
+Prereg `c6c9d1b71a033306b0ec19cb6027b19a2d6b8492`; production head `35c812381b33f22eac3f45dbb9ab9f9d13c2f2e1`; run `34906684974`; aggregate job `104184934584`; artifact `10373135110`; digest `sha256:94ff118b234c8d31a9b4f4ee1369d0415d7be8de8dcefc92a8fd1ba2dedc040c`; terminal result `a115755e6f5e6b7b1318d7287af7f93495c52531`.
 
-### ITER087 — absolute reduced-radius→gap normalization remains open
+Frozen public GitHub candidates contained only low-dimensional/test fixtures or no plausible production data; no 3+1 matched `N_0,N_41,N_32` dataset was found.
 
-Prereg `6f24c0c3004c2b423815695ce42b636147003960`; terminal `e733dd7497b40d6bb1a9309dccb25622882cd8a0`.
+### ITER095
 
-Classification: **`PASS_SCOPED_RELATIVE_SCALING_ONLY_ABSOLUTE_COEFFICIENT_OPEN`**.
+`DISCOVERY_SATURATED_NO_PUBLIC_ARCHIVE_DATA_IN_FROZEN_PROVIDERS`.
 
-The direct reduced papers intentionally suppress simplex-volume/counting factors sufficient for scaling but insufficient for an absolute spatial-gap coefficient. `N_4`, `N_41`, `sum N_3`, blob volume and `N_32/N_41` cannot be interchanged absolutely. Relative spatial-volume scaling remained testable.
+Prereg `1f5ab92f5d54656c48a9a349065c29c752caa712`; production head `a27f5fc882cd7bacfd423028f64c4a358dd74e26`; run `34907330487`; aggregate job `104187038668`; artifact `10373451111`; digest `sha256:750cdd65e7b435bdc6ade8be4e3f69732b10e9ed726c148964406984e98f20e3`; terminal result `afafa79d954327920db079a5f55ec411fb2d42e5`.
 
-### ITER088 — published spatial gap scaling rejects round-S3 law in accessible CdS
+Zenodo, DataCite and Figshare frozen searches completed. Genuine CDT paper/software records were found, but no public 3+1 joint primitive-count Monte-Carlo dataset satisfying ITER093 requirements survived manual audit.
 
-Retrospective protocol `385f70a3c24f3f4dc39a5ba8e2380516786ad5d7`; source authority `152d258b9919f1958beb80206d776363e7d4a9cd`; terminal `e0c3df0a9e899ecde82426f2310f466d479a70a8`.
+## Active gate — ITER096
 
-Classification: **`SOURCE_REJECTS_ROUND_S3_IR_SCALING_ACCESSIBLE_CDS`**. Prospective validation credit: **0** by protocol.
+`PRIMARY_CDT_PAPER_ANCILLARY_DATA_AUTHORITY`.
 
-Published low-mode fits obey `<lambda_n>=A_n V_S^(-2/d_eff)` with `d_eff≈1.6`, not round-`S3` `d=3`. The gap still closes as volume grows. This cleanly separates the global de-Sitter volume sector from nonconstant spatial spectral geometry at accessible finite regulator.
+Prereg `d47f08eafcb6eaf50e54a8ed1ca02af843be38e9`; production head `d219bd3683e613ce1154eca79c3782b292eb0224`; authoritative run `34907499223`.
 
-### ITER089 — global covariance is not an independent second coupling observable
+Frozen exact arXiv source lanes:
 
-Prereg `ba4b6733cec302925f537ed0e9dde2e0d7fe315e`; source authority `bd74562cc07a0a62b9658524014c5c173b6a3ae2`; terminal `fc39e0a1725a5776f13cb51e0769116f122eb420`.
+- `1704.04373`;
+- `1802.10434`;
+- `2002.01051`;
+- `1904.05755`;
+- `2510.02159`.
 
-Classification: **`FAIL_SCOPED_COVARIANCE_REDUNDANT_WITH_REDUCED_ACTION_PARAMETERS`**.
-
-`C=P^{-1}` with `P` the Hessian of the same reduced action. Covariance/transfer-matrix spectra strongly validate the minisuperspace action but reuse the same `Gamma` + shape information. Lattice effective-action `lambda` is not source-mapped to FRG `lambda_k`. Stable large-volume subleading continuum coupling authority was not found.
-
-### ITER090 — fixed-volume EH minisuperspace identifiability no-go
-
-Prereg `a5b68cad14d102824777d349be904bba94c19c34`; source authority `f3fdf4662f0423730c95811e0b99d02a94ea77e0`; adversarial `3665de31680b67e298f6f030a6652c422acb09ce`; terminal `f774611a2400b0ebabe69876f9b4007efe29134a`.
-
-Classification: **`PASS_SCOPED_ONE_PARAMETER_FIXED_VOLUME_IDENTIFIABILITY_NOGO`**.
-
-For the source-defined self-consistent Einstein-Hilbert minisuperspace action at fixed four-volume,
-
-`S[v_3] = -sqrt(6)/(4 g_k lambda_k) I[v_3]`.
-
-The complete coupling dependence represented by this reduced action has rank one: `p_k=g_k lambda_k`. Therefore covariance eigenmodes and higher cumulants of the same fixed-volume global variable cannot separate `g_k` and `lambda_k` within this truncation. This is scoped to the frozen effective action; it does not cover variable-volume ensembles, measure effects outside the action, local observables or higher-operator truncations.
-
-## Exact next gate — ITER091
-
-Audit the **variable-total-volume / cosmological-response route** as the cleanest global escape from ITER090.
-
-Required distinction: CDT bare `kappa_4`/critical `kappa_4^c` and Gaussian volume-fixing source are not FRG renormalized `lambda_k`. The gate must establish whether a source-defined volume susceptibility/Legendre response supplies an independent renormalized cosmological direction, or whether it remains bare/source-convention data with no typed FRG map.
-
-A PASS may only authorize a new second-observable candidate. No unique FRG trajectory, fixed point, bridge credit or candidate theory follows.
+The audit inventories exact source/ancillary payloads and availability/link language. PASS still requires matched 3+1 `N_0,N_41,N_32` Monte-Carlo samples plus coupling and volume-fixing metadata. Figures, TeX tables, scalar summaries and low-dimensional examples do not qualify.
 
 ## Readiness
 
-ITER085–ITER090: terminal.
+ITER094 and ITER095: terminal discovery saturation on their frozen surfaces.
+ITER096: **~15%** after preregistration, implementation and launch.
 Overall scientific programme: **50% (Δ0)**.
 Candidate theory: **0% / UNFORMED**.
 Bridge credit: **0**.
+
+Exact next admissible action: consume all terminal ITER096 raw source-inventory artifacts and aggregate, manually classify against the frozen gate, then only if a qualifying ancillary dataset exists preregister an ITER093 response-matrix computation.
