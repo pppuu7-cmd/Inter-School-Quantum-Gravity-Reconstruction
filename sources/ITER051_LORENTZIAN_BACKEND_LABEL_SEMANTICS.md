@@ -24,7 +24,7 @@ Thus the physical intertwiner range advances in unit spin steps. For the frozen 
 
 `wigner_6j(1/2,1/2,a,1/2,1/2,b)`, `a,b in {0,1}`.
 
-### Pinned Lorentzian backend standalone tool
+### Pinned Lorentzian backend standalone tool and Julia wrapper
 
 `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f`
 
@@ -45,7 +45,22 @@ before calling
 sl2cfoam_vertex_amplitude(two_js, two_is, Dl);
 ```
 
-Therefore this standalone C interface uses doubled labels.
+The same pinned backend's `julia/SL2Cfoam.jl` independently fixes both admissibility and conversion semantics. It defines the allowed 4-valent recoupling range by
+
+```julia
+imin = max(abs(j1-j2), abs(j3-j4))
+imax = min(j1+j2, j3+j4)
+```
+
+and converts Julia physical spin values to the C library with
+
+```julia
+ctwo(j) = trunc(Cint, twice(j))
+```
+
+For `(j1,j2,j3,j4)=(1/2,1/2,1/2,1/2)`, the wrapper therefore gives the admissible physical intertwiner range `i=0..1`, and sends it to the C library as doubled labels `two_i=0..2` in steps of two.
+
+This also proves that the frozen ITER051 smoke choice with all physical `i=0` is inside the backend's admissible domain before any amplitude value is inspected.
 
 ## Exact conversion rule
 
@@ -55,7 +70,7 @@ When the same source physical labels are sent through `bin/vertex-amplitude`:
 - physical `i=0` -> `two_i=0`;
 - physical `i=1` -> `two_i=2`.
 
-Do **not** divide the ITER048/ITER049 physical `0/1` intertwiner labels by two. Do **not** pass physical `i=1` as C CLI `two_i=1`; that would represent physical `i=1/2`, i.e. a different object.
+Do **not** divide the ITER048/ITER049 physical `0/1` intertwiner labels by two. Do **not** pass physical `i=1` as C CLI `two_i=1`; that would represent physical `i=1/2`, i.e. a different object and is not in the physical all-`j=1/2` recoupling range used here.
 
 ## Consequence for ITER050 history
 
@@ -69,4 +84,4 @@ No conversion may be selected after inspecting amplitude values.
 
 ## Claim ceiling
 
-This record establishes only interface/label identity. It does not establish a Lorentzian amplitude value, a five-vertex contraction, convergence, a refinement map, bridge credit or a candidate theory.
+This record establishes only interface/label identity and frozen-smoke domain admissibility. It does not establish a Lorentzian amplitude value, a five-vertex contraction, convergence, a refinement map, bridge credit or a candidate theory.
