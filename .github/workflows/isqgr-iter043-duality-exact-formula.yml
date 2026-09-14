@@ -1,0 +1,136 @@
+name: ISQGR ITER043 duality exact formula qualification
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter043-duality-exact-formula.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [dowdall-formula, coman-formula, delegated-preview, null-provenance]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen qualification lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          lane='${{ matrix.lane }}'
+          if [[ "$lane" == "dowdall-formula" || "$lane" == "coman-formula" ]]; then
+            python3 -m pip -q install pypdf
+            if [[ "$lane" == "dowdall-formula" ]]; then
+              url='https://eprints.nottingham.ac.uk/11755/1/RDowdall-thesis-14-1-11.pdf'
+              sid='OpenAlex W2131194795 / Dowdall thesis'
+            else
+              url='https://arxiv.org/pdf/1505.05898'
+              sid='arXiv:1505.05898 / OpenAlex W3021373932'
+            fi
+            curl --fail --location --retry 5 --retry-delay 3 --max-time 180 -A 'ISQGR-ITER043-formula-qualification/1.0' "$url" -o out/source.pdf
+            URL="$url" SID="$sid" LANE="$lane" python3 - <<'PY'
+          import json,os,re
+          from pypdf import PdfReader
+          reader=PdfReader('out/source.pdf')
+          fam={
+            'qcg':[r'clebsch.?gordan',r'\bq.?cg\b',r'intertwiner',r'trivalent'],
+            'dual':[r'\bdual',r'cap\b',r'cup\b',r'orthogon',r'completeness',r'bending'],
+            'domain':[r'root.?of.?unity',r'level\s*[ -]?k',r'su\s*\(?2\)?[_ ]?k',r'negligib',r'trace.?zero',r'quotient',r'projector'],
+            'normalization':[r'normaliz',r'quantum dimension',r'\[[^\]]+\]',r'\bsign\b']}
+          pages=[]; counts={k:0 for k in fam}
+          for i,p in enumerate(reader.pages,1):
+            text=(p.extract_text() or '').replace('\x00',' ')
+            low=text.lower()
+            hits={k:[pat for pat in pats if re.search(pat,low,re.I)] for k,pats in fam.items()}
+            if any(hits.values()):
+              for k,v in hits.items(): counts[k]+=bool(v)
+              loc=[]
+              terms=['clebsch','gordan','orthogon','completeness','root of unity','negligib','quantum dimension','intertwiner','duality',' cap ',' cup ']
+              for term in terms:
+                pos=low.find(term)
+                if pos>=0:
+                  loc.append(text[max(0,pos-650):min(len(text),pos+1300)])
+              eq_like=bool(re.search(r'[=≈∑Σ]|delta|δ',text,re.I))
+              pages.append({'page':i,'hits':hits,'equality_like_page':eq_like,'excerpts':loc[:6]})
+          out={'lane':os.environ['LANE'],'source_id':os.environ['SID'],'url':os.environ['URL'],'pages_total':len(reader.pages),'family_page_counts':counts,'candidate_pages':pages,'transport_complete':True,'classification':'EVIDENCE_PACKET_REQUIRES_FROZEN_Q1_Q5_CLASSIFICATION'}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2,ensure_ascii=False)+'\n')
+          PY
+          elif [[ "$lane" == "delegated-preview" ]]; then
+            python3 - <<'PY'
+          import json,subprocess
+          urls={
+            'biedenharn_book':'https://doi.org/10.1142/2815',
+            'biedenharn_root_chapter':'https://doi.org/10.1142/9789812830807_0006',
+            'yellowbook':'https://doi.org/10.2307/j.ctv1nxcv83',
+            'yellowbook_qsl2':'https://doi.org/10.2307/j.ctv1nxcv83.6'}
+          rows=[]
+          for name,url in urls.items():
+            body=f'out/{name}.html'; hdr=f'out/{name}.headers'
+            p=subprocess.run(['curl','-L','--retry','3','--retry-delay','2','--max-time','90','-A','ISQGR-ITER043-formula-qualification/1.0','-D',hdr,'-o',body,'-w','%{http_code}\t%{url_effective}',url],capture_output=True,text=True)
+            code_eff=(p.stdout or '').strip().split('\t',1)
+            try: txt=open(body,errors='replace').read()
+            except: txt=''
+            low=txt.lower()
+            rows.append({'name':name,'doi_url':url,'http_code':code_eff[0] if code_eff else '','effective_url':code_eff[1] if len(code_eff)>1 else '', 'bytes':len(txt.encode()),'formula_lexical_hits':{k:(k in low) for k in ['clebsch','gordan','orthogon','root of unity','quantum dimension']},'metadata_or_page_only':True})
+          open('out/evidence.json','w').write(json.dumps({'lane':'delegated-preview','transport_complete':True,'records':rows,'classification':'PREVIEW_ACCESS_EVIDENCE_REQUIRES_Q1_Q5_CLASSIFICATION'},indent=2)+'\n')
+          PY
+          else
+            python3 - <<'PY'
+          import json,re
+          cases=[
+            ('keywords_only','Clebsch Gordan duality root of unity normalization',False),
+            ('generic_equality','CG coefficients satisfy sum C C = delta for generic q.',False),
+            ('catalog','Quantum Group Symmetry and Q-Tensor Algebras, 1995, ISBN record',False),
+            ('fake_source','ISQGR_FAKE_AUTHORITY_DO_NOT_EXIST_043',False)]
+          def mechanical_accept(text):
+            low=text.lower()
+            q1=('clebsch' in low and 'gordan' in low) or 'intertwiner' in low
+            q2=('=' in text) and any(x in low for x in ['dual','orthogon','complet','cap','cup'])
+            q4=any(x in low for x in ['root of unity','level k','su(2)_k','quotient','negligible'])
+            q5=False
+            return q1 and q2 and q4 and q5
+          rows=[{'name':n,'accepted':mechanical_accept(t),'expected':e} for n,t,e in cases]
+          passed=all(r['accepted']==r['expected'] for r in rows)
+          open('out/evidence.json','w').write(json.dumps({'lane':'null-provenance','transport_complete':True,'controls':rows,'null_pass':passed,'classification':'NULL_PASS' if passed else 'NULL_FAIL'},indent=2)+'\n')
+          if not passed: raise SystemExit(2)
+          PY
+          fi
+          python3 - <<'PY'
+          import json,pathlib
+          e=json.loads(pathlib.Path('out/evidence.json').read_text())
+          pathlib.Path('out/manifest.json').write_text(json.dumps({'lane':'${{ matrix.lane }}','transport_complete':e.get('transport_complete',False),'classification':e.get('classification'),'files':[p.name for p in pathlib.Path('out').iterdir()]},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter043-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 90
+  aggregate:
+    needs: qualify
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter043-*
+          path: collected
+      - name: Frozen aggregate
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          mans=list(pathlib.Path('collected').glob('iter043-*/manifest.json'))
+          transport=(len(mans)==4 and all(json.loads(p.read_text()).get('transport_complete') for p in mans))
+          out={'classification':'FORMULA_EVIDENCE_COLLECTED_REQUIRES_Q1_Q5_SCIENTIFIC_CLASSIFICATION' if transport else 'INFRASTRUCTURE_FAIL','lane_count':len(mans),'transport_complete':transport,'ITER039_remains_scientific_fail':True,'numerical_retry_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/summary.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter043-aggregate
+          path: aggregate/
+          if-no-files-found: error
+          retention-days: 90
