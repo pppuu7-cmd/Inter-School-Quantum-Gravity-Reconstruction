@@ -41,13 +41,10 @@ def run_lane(lane, tex, source_hash):
         return {**base,"pass":True,"classification":"PASS_SOURCE_IDENTITY"}
 
     if lane=="vertex-kernel-closure":
-        # Conservative: require an explicit equality defining a hatted amplitude, alpha dependence,
-        # and a source definition/use of the dimension factor rather than supplying either externally.
         hatted=[b for b in eqs if re.search(r"hat\s*\{?\\mathcal\s*\{?A",b,re.I)]
         hat_ok,hat_def=explicit_definition(hatted,[r"hat",r"mathcal",r"alpha"])
         dw_blocks=[b for b in eqs if re.search(r"d[_^]?\s*\{?W|mathrm\{dim\}|2j\+1",b,re.I)]
         dw_ok=bool(dw_blocks) or bool(re.search(r"d[_^]?\s*\{?W\s*\}?.{0,120}=",tex,re.I|re.S))
-        # Require an asymptotic/dressed-amplitude dependency to be explicit somewhere in source.
         asym_ok=bool(re.search(r"asymptot|stationary phase|large[- ]?j|large spin",tex,re.I))
         ok=hat_ok and dw_ok and asym_ok
         return {**base,"pass":ok,"classification":"PASS_VERTEX_KERNEL_CLOSURE" if ok else "BLOCKED_VERTEX_KERNEL_DEPENDENCY","hat_definition_found":hat_ok,"dimension_factor_found":dw_ok,"asymptotic_dependency_found":asym_ok,"hat_definition":hat_def,"contexts":contexts(tex,[r"hat\s*\{?\\mathcal.{0,1000}?alpha",r"d[_^]?\s*\{?W",r"asymptot|stationary phase"])}
@@ -68,8 +65,6 @@ def run_lane(lane, tex, source_hash):
 
     if lane=="gluing-index-closure":
         b=(labelled(tex,"Eq:RenormalizedAmplitude") or [""])[0]
-        # Frozen minimum for executable incidence: 24 internal variables, six coarse faces,
-        # sixteen refined vertices, and delta/constraint relation from fine faces to each coarse face.
         checks={
             "internal_count_24":bool(re.search(r"d\s*\^\s*\{?24\}?\s*j|d\^\{24\}j",b)),
             "sixteen_vertices":bool(re.search(r"prod.*v\s*=\s*1.*16|prod.*16",b,re.S)),
@@ -103,7 +98,7 @@ def run_lane(lane, tex, source_hash):
             ("remove_24_measure", re.sub(r"d\s*\^\s*\{?24\}?\s*j|d\^\{24\}j","d^{23}j",rb,count=1), lambda x: bool(re.search(r"d\s*\^\s*\{?24\}?\s*j|d\^\{24\}j",x))),
             ("remove_coarse_fine_constraint", re.sub(r"\\prod_F.*?\\prod_{v",r"\\prod_{v",rb,count=1,flags=re.S), lambda x: bool(re.search(r"J[_\\].*sum.*f.*subset.*F.*j",x,re.S))),
             ("remove_normalization", re.sub(r"\\frac\s*\{1\}\s*\{N[^}]*\}","1",rb,count=1), lambda x: bool(re.search(r"N[_\\].*J|frac\s*\{?1\}?\s*\{?N",x,re.S))),
-            ("variance_to_mean", re.sub(r"\\Big\(.*?\\Big\)\^2","\\mathcal{V}_1",ob,count=1,flags=re.S), lambda x: bool(re.search(r"\^2|squared",x,re.I))),
+            ("variance_to_mean", re.sub(r"\\Big\(.*?\\Big\)\^2",lambda m: r"\mathcal{V}_1",ob,count=1,flags=re.S), lambda x: bool(re.search(r"\^2|squared",x,re.I))),
         ]
         for name,mut,pred in tests:
             detected=not pred(mut)
@@ -119,6 +114,5 @@ def main():
     a=ap.parse_args(); raw=Path(a.source).read_bytes(); tex=raw.decode("utf-8",errors="replace"); h=sha256_bytes(raw)
     res=run_lane(a.lane,tex,h); Path(a.out).write_text(json.dumps(res,indent=2,sort_keys=True)+"\n")
     print(json.dumps(res,indent=2,sort_keys=True))
-    # Scientific BLOCKED is data, not CI failure. Only identity mismatch exits non-zero because predicates cannot be trusted.
     if res.get("classification")=="SOURCE_IDENTITY_MISMATCH": raise SystemExit(2)
 if __name__=="__main__": main()
