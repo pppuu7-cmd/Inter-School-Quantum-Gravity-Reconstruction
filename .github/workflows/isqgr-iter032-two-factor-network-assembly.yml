@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
 
+# Recovery trigger after authority TeX-regex parser repair; frozen preregistration unchanged.
 jobs:
   lane:
     strategy:
