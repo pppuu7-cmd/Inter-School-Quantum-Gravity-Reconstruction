@@ -1,0 +1,50 @@
+name: ISQGR ITER038 central coupling domain authority
+on:
+  push:
+    branches: [ main ]
+    paths: ['.github/workflows/isqgr-iter038-central-coupling-domain-authority.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  lane:
+    strategy:
+      fail-fast: false
+      matrix: {lane: [A, B, C, D]}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          rm -rf out/iter038
+          python3 code/iter038/central_coupling_domain_authority.py --lane '${{ matrix.lane }}'
+      - run: |
+          mkdir -p lane_out
+          cp out/iter038/evidence.json lane_out/evidence.json
+          cat lane_out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with: {name: 'iter038-${{ matrix.lane }}', path: lane_out/, if-no-files-found: error, retention-days: 90}
+  aggregate:
+    needs: lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {pattern: 'iter038-*', path: downloaded_iter038}
+      - run: |
+          python3 - <<'PY'
+          import glob,json,os
+          al={'topology-authority':'A','finite-k-domain-authority':'B','central-domain-enumeration':'C','null-controls':'D'}
+          rs=[json.load(open(p)) for p in sorted(glob.glob('downloaded_iter038/**/evidence.json',recursive=True))]
+          by={al.get(r.get('lane'),r.get('lane')):r for r in rs}; ex=list('ABCD')
+          miss=[x for x in ex if x not in by]; infra=[x for x,r in by.items() if r.get('infrastructure_failure')]
+          block=[x for x,r in by.items() if not r.get('pass',False) and not r.get('infrastructure_failure') and str(r.get('classification','')).startswith('BLOCKED')]
+          fail=[x for x,r in by.items() if not r.get('pass',False) and not r.get('infrastructure_failure') and x not in block]
+          if miss or infra: cls='NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE'; sp=False
+          elif block: cls='RC006_EQ27_CENTRAL_COUPLING_DOMAIN_AUTHORITY_BLOCKED'; sp=False
+          elif fail: cls='RC006_EQ27_CENTRAL_COUPLING_DOMAIN_AUTHORITY_FAIL'; sp=False
+          else: cls='RC006_EQ27_CENTRAL_COUPLING_DOMAIN_AUTHORITY_PASS'; sp=True
+          out={'classification':cls,'scientific_pass':sp,'lanes':by,'missing':miss,'infrastructure_lanes':infra,'blocked_lanes':block,'failed_lanes':fail,'full_eq27_amplitude_derived':False,'eq29_amplitude_authorized':False,'one_step_tnr_authorized':False,'bridge_credit':False,'claim_locks_preserved':True}
+          os.makedirs('agg',exist_ok=True); json.dump(out,open('agg/aggregate.json','w'),indent=2,sort_keys=True); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with: {name: iter038-aggregate, path: agg/, if-no-files-found: error, retention-days: 90}
