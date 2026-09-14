@@ -3,9 +3,8 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_028_TERMINAL_BLOCKED",
-  "iteration_completion_percent": 100,
-  "iteration_completion_scope": "ITER028 Stage S executed under the frozen preregistration and terminalized before numerical lanes because the exact source inventory did not satisfy the frozen four-graphical-block predicate.",
+  "active_iteration": "ITERATION_029_SOURCE_SEMANTICS_RECONCILIATION_RUNNING",
+  "iteration_completion_percent": 20,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -24,22 +23,11 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ27_SOURCE_GRAPH_SEMANTICS_RECONCILIATION_REQUIRED",
-      "iter026": {
-        "run": 34789873827,
-        "classification": "RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_VALIDATED",
-        "report": "results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md"
-      },
-      "iter027": {
-        "prereg_commit": "d07fd121f0abeb34396bb4f2bc4028070fed0e12",
-        "run": 34792339154,
-        "scientific_classification": "INVALID_IMPLEMENTATION_RC006_EQ27_TOPOLOGY_NOT_INSTANTIATED",
-        "report": "results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md",
-        "report_commit": "cad509649420b79a46b4c8e08616865e35673a0f"
-      },
+      "status": "EQ27_SOURCE_SEMANTICS_RECONCILIATION_RUNNING",
+      "iter026": {"run": 34789873827, "classification": "RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_VALIDATED"},
+      "iter027": {"run": 34792339154, "scientific_classification": "INVALID_IMPLEMENTATION_RC006_EQ27_TOPOLOGY_NOT_INSTANTIATED", "report_commit": "cad509649420b79a46b4c8e08616865e35673a0f"},
       "iter028": {
         "status": "TERMINAL_BLOCKED",
-        "prereg": "prereg/ITER028_RC006_EQ27_TOPOLOGY_FAITHFUL_CONTRACTION_2026-09-14.md",
         "prereg_commit": "73246639c6710ab3e7228c3e5f0f11ae654f32b7",
         "implementation_commit": "a56829c6beeee273d410c5dc87a7234aa76daef4",
         "production_head": "3661564138585ad990761371e8a2d1e980719433",
@@ -47,22 +35,28 @@
         "job": 103823792085,
         "artifact": 10329326228,
         "artifact_digest": "sha256:9d077dfe52a76033c6061de872e6068cdea1980f55ceda0bf8e25c976d4f7c03",
-        "graph_dictionary_digest": "sha256:c6ced1ae5348d6ff57571b7007c50b061a3296b4ee75b2e584c2a0dfaf482216",
         "classification": "RC006_EQ27_SOURCE_GRAPH_COMPONENT_MAP_BLOCKED",
         "source_provenance_pass": true,
-        "fresh_archive_sha256": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
-        "fresh_eq27_sha256": "88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d",
         "mechanical_tikz_block_count": 2,
         "frozen_required_graphical_block_count": 4,
-        "post_stage_numeric_lanes_authorized": false,
         "report": "results/ITER028_RC006_EQ27_STAGE_S_SOURCE_GRAPH_MAP_BLOCKED_2026-09-14.md",
         "report_commit": "c9b783f9dedef67011bb3f54b45159d92f99a6e0"
+      },
+      "iter029": {
+        "status": "QUEUED",
+        "prereg": "prereg/ITER029_RC006_EQ27_SOURCE_SEMANTICS_RECONCILIATION_2026-09-14.md",
+        "prereg_commit": "fd3db7bc95a17dd3265e0ec7431a452df0503935",
+        "implementation_commit": "ab42e0adf64ef47878c8f410542c8e4d7769583c",
+        "production_head": "fab8522ca1e0b5ac36bff8255e04252f295b91c9",
+        "run": 34794237347,
+        "job": 103824140071,
+        "scientific_result": null
       },
       "iter012_retry_authorized": false,
       "eq29_amplitude_authorized": false,
       "one_step_tnr_authorized": false,
       "bridge_credit": false,
-      "next_gate": "PREREGISTER_SOURCE_SEMANTICS_RECONCILIATION_OF_TWO_TIKZ_ENVIRONMENTS_VS_HISTORICAL_FOUR_GRAPHICAL_SUBFACTORS"
+      "next_gate": "CONSUME_ITER029_RAW_ARTIFACT_AND_CLASSIFY_AGAINST_FROZEN_SEMANTICS_RECONCILIATION_GATE"
     },
     "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS", "refinement_map_derived": false},
@@ -70,22 +64,20 @@
     "RC009": {"status": "SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
-  "active_compute": [],
+  "active_compute": [{"run":34794237347,"job":103824140071,"status":"queued","purpose":"ITER029 source-semantics reconciliation"}],
   "idle_capacity": {
-    "scientifically_useful_jobs_queued": 0,
+    "scientifically_useful_jobs_queued": 1,
     "scientifically_useful_jobs_in_progress": 0,
-    "avoidable_idle": true,
-    "reason": "ITER028 is terminal. A new prospectively preregistered source-semantics reconciliation audit is admissible and should be started without altering ITER028."
+    "avoidable_idle": false,
+    "reason": "The next dependent reconciliation gate is queued; a competing Eq.(27) computation would violate dependency ordering."
   },
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "prereg/ITER029_RC006_EQ27_SOURCE_SEMANTICS_RECONCILIATION_2026-09-14.md",
     "results/ITER028_RC006_EQ27_STAGE_S_SOURCE_GRAPH_MAP_BLOCKED_2026-09-14.md",
     "prereg/ITER028_RC006_EQ27_TOPOLOGY_FAITHFUL_CONTRACTION_2026-09-14.md",
-    "results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md",
-    "results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md",
     "results/ITER021_RC006_EQ27_COMPONENT_TRANSLATION_2026-09-14.md",
-    "docs/INTERFACE_ATLAS_V0_1.md",
     "docs/CONSTITUTION.md"
   ]
 }
