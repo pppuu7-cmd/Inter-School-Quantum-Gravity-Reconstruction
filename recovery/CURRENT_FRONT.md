@@ -6,54 +6,46 @@ Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness: **50%*
 
 ## Persistent locks
 
-RC006 numerical retry remains unauthorized. RC009 remains scoped blocked on its tested reduced isotemporal route. Lorentzian Delta4 negative results remain preserved. RC008 corrected crossing remains source-blocked on an explicit incidence-aware global physical measure. BH004/BH004B remains source-blocked on a source-faithful quantum amplitude/refinement transport. No full EPRL/FK refinement, Lorentzian refinement, q-deformed bridge derivation or candidate-theory construction is authorized. Forbidden claims remain `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, `FULL_QG`, `UNIVERSAL_COMMON_PARENT_FOUND`.
+RC006 numerical retry remains unauthorized. RC009 remains scoped blocked. Lorentzian Delta4 negative results remain preserved. RC008 remains source-blocked on an explicit global physical measure. BH004/BH004B remains source-blocked on a source-faithful amplitude/refinement transport. Genuine multi-vertex Lorentzian EPRL refinement remains unresolved/saturated on the current authority route. Forbidden claims remain `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`, `FULL_QG`, `UNIVERSAL_COMMON_PARENT_FOUND`.
 
-## Established direct CDT↔FRG frontier
+## ITER082 — terminal
 
-ITER078 established an explicit **reduced** minisuperspace/action parameter crosswalk, including a scoped map from `(N_4, omega, Gamma)` to reduced FRG quantities and the combination `lambda_k g_k`. This is not full theory equivalence.
+Preregistration `457ec94f4afab5c28c01851a8dbfd06ff6be91ad`; production head `251f3ef0bf6ded8ef10dfdbde285320603fe1ee5`; authoritative run `34901587377`; aggregate artifact `10370828341`, digest `sha256:f3d48bbb6417c505877835cdf37b493d838f2a12eaad00548631c873c8bfe672`; source authority `2b325c9453f36692aad80c908606d58dab2c8083`; terminal result `cd46b06946da7b20ee9d401d6854fe1142b8c810`.
 
-ITER079 established a scoped continuum relation among CDT lattice spacing, geometric correlation length and FRG scale variables, while explicitly retaining `OPERATIONAL_CDT_XI_TO_FRG_K_MAP = NOT_ESTABLISHED`.
+Classification: **`PASS_SCOPED_FOLIATED_OPERATOR_CANDIDATE_MAP_NORMALIZATION_OPEN`**.
 
-ITER080 then tested a held-out spectral observable and closed terminal as **`SCOPED_BLOCKED_UNDERDETERMINED_FRG_TRAJECTORY_FROM_REDUCED_MAP`**. The reduced map does not determine the separate `(g_k,lambda_k)`, a unique RG trajectory, or an independently normalized `k`, so no target-independent finite-scale spectral prediction follows.
+The important positive result is that frozen foliated-FRG source `2306.10408` explicitly permits a regulator based on the spatial-hypersurface Laplacian `-sigma_bar^{ij} Dbar_i Dbar_j`, so FRG does contain a genuinely spatial coarse-graining operator of the right broad mathematical type. This is stronger than the earlier 3D-slice/4D-spacetime comparison.
 
-## ITER081 — terminal independent-observable discovery
+The hard blocker moves downstream: no frozen source derives the CDT dual-graph Laplacian ↔ continuum ADM spatial-Laplacian domain/normalization map, and no cross-framework rule authorizes `lambda_CDT = k^2` or an unfixed proportionality. Thus ITER082 is a scoped structural PASS, not a scale bridge; bridge credit remains zero.
 
-Preregistration `57511d4110e33bbfbd978aef9a41840eda2b2895`; source authority `c9111e106d747d353db68f72d852d998dd691893`; terminal result `820ba5a48aac7f19e8fecd15394abfe78f57e91b`.
+## Active parallel fronts
 
-Classification: **`PASS_SCOPED_SPATIAL_LAPLACIAN_SCALE_CANDIDATE_ONLY`**.
+### ITER083A — graph ↔ continuum spatial-Laplacian normalization
 
-The low-lying Laplace-Beltrami spectrum on CDT spatial slices is independently measured relative to the ITER078 reduced volume/action sector, has inverse-length-squared scale meaning and exhibits critical behavior. This makes it a high-information held-out comparator candidate.
+Prereg `d6fcecc6a5f73eb00136ae0c55bf263218dcd489`; production head `0658e7558c44faad658db1ead4d4ce941dfef496`; authoritative run `34901855352`.
 
-Mandatory type lock remains: CDT uses a **3D spatial-slice operator**, while the previously qualified FRG spectral geometry uses a **4D running spacetime operator**. No source-defined slicing/embedding, eigenvalue normalization or `lambda_CDT <-> k^2` rule has yet been established.
+Frozen sources: `1804.02294`, `1903.00430`, `1912.11311`, `2306.10408`.
 
-Secondary retained candidate: `RELATIONAL_CURVATURE_SECONDARY_CANDIDATE_REQUIRES_TYPED_MAP`.
+Question: does the source stack actually fix the conversion between dimensionless CDT graph eigenvalues and the continuum ADM spatial-Laplacian eigenvalues, including the role of lattice spacing and finite-volume/continuum scaling, without target-fitted normalization?
 
-## Active ITER082 — CDT spatial Laplacian ↔ FRG mode-scale authority
+### ITER083B — QRC ↔ relational scalar typed map
 
-Preregistration commit: **`457ec94f4afab5c28c01851a8dbfd06ff6be91ad`**.
-Production head: **`251f3ef0bf6ded8ef10dfdbde285320603fe1ee5`**.
-Authoritative Actions run: **`34901587377`**.
+Prereg `35265caa1c73fc0510152562578fc15fcbdb277d`; production head `03cd537a1a97349a0d5c68abbc7b7a9c8b6dabf9`; authoritative run `34901885759`.
 
-Frozen source lanes:
+Frozen sources: `2006.06263`, `2112.02118`, `2203.08003`, `2604.05641`.
 
-- CDT: `1903.00430`, `1912.11311`;
-- covariant FRG spectral geometry: `2203.08003`;
-- foliated/ADM FRG comparators: `2306.10408`, `2402.01260`.
+Question: is there a source-derived finite-radius/local-composite map from CDT quantum Ricci curvature to the FRG relational scalar-curvature observable? Background-curvature substitution, de-Sitter shape matching and scale-fitting are forbidden.
 
-The gate requires an explicit source-defined spatial operator, slicing/domain map, graph↔continuum normalization, and mode↔`k` rule. A foliation by itself is not an operator crosswalk. `lambda_CDT = k^2` by dimensional analogy, target-fitted proportionality constants, mode-index retuning and erased lapse/anisotropy dependence are forbidden.
+At the latest authoritative check there are approximately **2 scientifically useful jobs in progress and 1 queued** across the two independent fronts; already-completed source lanes await dependent aggregate/manual audit and are not counted as running science.
 
-At the last authoritative job check: **4 scientifically useful jobs in progress, 1 queued**. No saturated old calculation is being repeated.
+## Exact next gate
 
-## Exact next scientific gate
-
-Consume all terminal ITER082 raw exact-PDF artifacts and aggregate, then perform the prospectively frozen manual equation-level audit against predicates A-H and the mandatory controls.
-
-Possible classifications are frozen in the preregistration. Green CI alone is not scientific PASS. If the foliated FRG literature contains only ADM variables/foliation but no explicit source-defined spatial spectral regulator/operator correspondence to the CDT slice Laplacian, the correct result is `SCOPED_BLOCKED_NO_SPATIAL_OPERATOR_CROSSWALK_AUTHORITY`, not an inferred bridge.
+Consume terminal artifacts for ITER083A and ITER083B, classify infrastructure separately, then perform the frozen manual equation-level audits. Green CI alone is not scientific PASS. No numerical bridge calculation is authorized unless one of these source gates supplies the exact missing mathematical map prospectively.
 
 ## Readiness
 
-ITER080: **100% terminal BLOCKED**.
 ITER081: **100% terminal PASS_SCOPED candidate discovery**.
-ITER082: **~25% active** (preregistration + implementation + launch; scientific adjudication pending).
+ITER082: **100% terminal PASS_SCOPED spatial-FRG operator candidate; normalization open**.
+ITER083A/B: **~20% active parallel authority gates**.
 
 Overall scientific programme: **50% (Δ0)**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
