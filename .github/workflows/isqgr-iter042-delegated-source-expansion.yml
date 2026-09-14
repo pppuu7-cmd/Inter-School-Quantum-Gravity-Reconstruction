@@ -1,0 +1,75 @@
+name: ISQGR ITER042 delegated duality authority source expansion
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter042-delegated-source-expansion.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  discovery:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [books-crossref, books-openlibrary, root-openalex, dual-openalex]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen discovery lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          case '${{ matrix.lane }}' in
+            books-crossref)
+              curl --fail --retry 4 --retry-delay 2 --max-time 60 -A 'ISQGR-ITER042-source-discovery/1.0' --get 'https://api.crossref.org/works' --data-urlencode 'query.bibliographic=Quantum Group Symmetry and q-Tensor Algebras Biedenharn Lohe 1995' --data-urlencode 'rows=10' > out/biedenharn.json
+              curl --fail --retry 4 --retry-delay 2 --max-time 60 -A 'ISQGR-ITER042-source-discovery/1.0' --get 'https://api.crossref.org/works' --data-urlencode 'query.bibliographic=The Classical and Quantum 6j-symbols Carter Flath Saito 1995' --data-urlencode 'rows=10' > out/yellowbook.json
+              ;;
+            books-openlibrary)
+              curl --fail --retry 4 --retry-delay 2 --max-time 60 -A 'ISQGR-ITER042-source-discovery/1.0' --get 'https://openlibrary.org/search.json' --data-urlencode 'q=Quantum Group Symmetry and q-Tensor Algebras' --data-urlencode 'limit=10' > out/biedenharn.json
+              curl --fail --retry 4 --retry-delay 2 --max-time 60 -A 'ISQGR-ITER042-source-discovery/1.0' --get 'https://openlibrary.org/search.json' --data-urlencode 'q=The Classical and Quantum 6j-symbols' --data-urlencode 'limit=10' > out/yellowbook.json
+              ;;
+            root-openalex)
+              curl --fail --retry 4 --retry-delay 2 --max-time 60 -A 'ISQGR-ITER042-source-discovery/1.0' --get 'https://api.openalex.org/works' --data-urlencode 'search=SU(2)_k root of unity negligible morphisms quotient fusion category R matrix' --data-urlencode 'per-page=25' > out/root_candidates.json
+              ;;
+            dual-openalex)
+              curl --fail --retry 4 --retry-delay 2 --max-time 60 -A 'ISQGR-ITER042-source-discovery/1.0' --get 'https://api.openalex.org/works' --data-urlencode 'search=quantum Clebsch Gordan root of unity duality cap cup normalization orthogonality' --data-urlencode 'per-page=25' > out/dual_candidates.json
+              ;;
+          esac
+          python3 - <<'PY'
+          import json,pathlib
+          rows=[]
+          for p in pathlib.Path('out').glob('*.json'):
+              d=json.loads(p.read_text())
+              rows.append({'file':p.name,'top_keys':list(d)[:12],'bytes':p.stat().st_size})
+          pathlib.Path('out/manifest.json').write_text(json.dumps({'lane':'${{ matrix.lane }}','transport_complete':True,'files':rows,'classification':'DISCOVERY_EVIDENCE_ONLY_REQUIRES_QUALIFICATION'},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter042-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 90
+  aggregate:
+    needs: discovery
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter042-*
+          path: collected
+      - run: |
+          python3 - <<'PY'
+          import json,pathlib
+          mans=list(pathlib.Path('collected').glob('iter042-*/manifest.json'))
+          out={'classification':'DISCOVERY_EVIDENCE_COLLECTED_REQUIRES_EXACT_FORMULA_QUALIFICATION' if len(mans)==4 else 'INFRASTRUCTURE_FAIL','lane_count':len(mans),'numerical_retry_authorized':False,'ITER039_remains_scientific_fail':True,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/summary.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter042-aggregate
+          path: aggregate/
+          if-no-files-found: error
+          retention-days: 90
