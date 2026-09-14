@@ -1,0 +1,96 @@
+name: ISQGR ITER053 phase weight authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter053/**'
+      - 'prereg/ITER053_LORENTZIAN_PHASE_WEIGHT_AUTHORITY_2026-09-14.md'
+      - 'sources/ITER053_PHASE_WEIGHT_DATA.json'
+      - '.github/workflows/isqgr-iter053-phase-weight-authority.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: isqgr-iter053-phase-weight-authority
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [paper-authority, author-code, backend-normalization, symbolic-crosswalk, null-controls]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen source/structure lane
+        run: python code/iter053/phase_weight_authority.py --lane '${{ matrix.lane }}'
+      - name: Upload raw evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter053-${{ matrix.lane }}
+          path: out/iter053/evidence.json
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter053-*
+          path: evidence
+      - name: Frozen aggregate classification
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          rows=[]
+          for p in pathlib.Path('evidence').glob('**/evidence.json'):
+              rows.append(json.loads(p.read_text()))
+          expected={'paper-authority','author-code','backend-normalization','symbolic-crosswalk','null-controls'}
+          got={r.get('lane') for r in rows}
+          passes={r.get('lane'):bool(r.get('pass')) for r in rows}
+          infra=[r for r in rows if r.get('infrastructure_failure')]
+          failures=[r.get('failure_class') for r in rows if not r.get('pass') and r.get('failure_class')]
+          amp_used=any(bool(r.get('amplitude_values_used')) for r in rows)
+          if got != expected or infra:
+              cls='INVALID_PROVENANCE'
+          elif amp_used:
+              cls='INVALID_IMPLEMENTATION'
+          elif all(passes.get(x,False) for x in expected):
+              cls='LORENTZIAN_PHASE_WEIGHT_AUTHORITY_PASS_BOUNDARY_PHASE_QUALIFIED'
+          elif 'LORENTZIAN_PHASE_WEIGHT_BLOCKED_SOURCE_NORMALIZATION' in failures:
+              cls='LORENTZIAN_PHASE_WEIGHT_BLOCKED_SOURCE_NORMALIZATION'
+          elif 'LORENTZIAN_PHASE_WEIGHT_BLOCKED_PHASE_CONVENTION' in failures:
+              cls='LORENTZIAN_PHASE_WEIGHT_BLOCKED_PHASE_CONVENTION'
+          elif 'LORENTZIAN_PHASE_WEIGHT_STRUCTURAL_FAIL' in failures:
+              cls='LORENTZIAN_PHASE_WEIGHT_STRUCTURAL_FAIL'
+          elif 'INVALID_PROVENANCE' in failures:
+              cls='INVALID_PROVENANCE'
+          else:
+              cls='INVALID_IMPLEMENTATION'
+          out={
+            'iteration':'ITER053',
+            'classification':cls,
+            'evidence_count':len(rows),
+            'lane_pass':passes,
+            'amplitude_values_used':amp_used,
+            'claim_locks':{
+              'refinement_map_derived':False,
+              'bridge_credit':False,
+              'candidate_theory':'UNFORMED'
+            }
+          }
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter053-aggregate
+          path: aggregate.json
