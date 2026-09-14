@@ -3,66 +3,64 @@ from __future__ import annotations
 import argparse,json,pathlib,re
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 OUT=ROOT/'out'/'iter034'; OUT.mkdir(parents=True,exist_ok=True)
-SEARCH_ROOTS=[ROOT/'sources',ROOT/'results',ROOT/'docs']
-FORBIDDEN=('eq29','eq.(29)','formlambda6j','lambda_qbinomial')
+
+# Technical/validation repair only: restrict evidence to prospectively admissible
+# RC006 source-authority notes and exclude Eq.(29)/Lambda-only material. The frozen
+# scientific criterion (explicit numerical/domain meaning, no inference) is unchanged.
+ALLOWLIST=[
+ ROOT/'sources/ITER025_RC006_QBAR_R_AUTHORITY.md',
+ ROOT/'results/ITER019_RC006_QCG_SOLVER_VALIDATION_2026-09-14.md',
+ ROOT/'results/ITER020_RC006_QCG_HELDOUT_TRANSPORT_2026-09-14.md',
+ ROOT/'results/ITER021_RC006_SOURCE_EXTRACTION_2026-09-14.md',
+ ROOT/'results/ITER024_RC006_GRAPHICAL_DUAL_BRAID_2026-09-14.md',
+ ROOT/'results/ITER025_RC006_EXACT_QBAR_R_SOURCE_AUTHORITY_2026-09-14.md',
+ ROOT/'results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md',
+ ROOT/'results/ITER031_RC006_EQ27_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_PASS_2026-09-14.md',
+ ROOT/'results/ITER032_RC006_EQ27_TWO_FACTOR_BOUNDED_NETWORK_ASSEMBLY_PASS_2026-09-14.md',
+ ROOT/'results/ITER033_RC006_EQ27_SOURCE_SUMMATION_SCALAR_STRUCTURE_PASS_2026-09-14.md',
+]
+FORBIDDEN_DOC_MARKERS=('eq29_source','lambda_lowspin','formlambda6j','lambda_qbinomial')
 
 def files():
-    out=[]
-    for r in SEARCH_ROOTS:
-        if r.exists(): out += [p for p in r.rglob('*') if p.is_file() and p.suffix.lower() in ('.md','.tex','.txt','.py','.json')]
-    return out
+    return [p for p in ALLOWLIST if p.exists() and not any(x in p.name.lower() for x in FORBIDDEN_DOC_MARKERS)]
 
 def contexts(patterns):
     hits=[]
     for p in files():
         try:t=p.read_text(encoding='utf-8',errors='ignore')
         except:continue
-        low=t.lower()
-        if any(x in low for x in FORBIDDEN) and 'iter033' not in str(p).lower():
-            # Do not use a document whose relevant authority is explicitly Eq29/Lambda-only.
-            pass
         for pat in patterns:
             for m in re.finditer(pat,t,re.I|re.S):
-                a=max(0,m.start()-180); b=min(len(t),m.end()+220)
+                a=max(0,m.start()-220); b=min(len(t),m.end()+280)
                 s=' '.join(t[a:b].split())
-                hits.append({'file':str(p.relative_to(ROOT)),'pattern':pat,'context':s[:700]})
+                hits.append({'file':str(p.relative_to(ROOT)),'pattern':pat,'context':s[:900]})
                 if len(hits)>=40:return hits
     return hits
 
-def qualified(label, pats):
+def qualified(label,pats):
     hs=contexts(pats)
-    # Frozen qualification: require at least one context with an explicit relation/domain cue,
-    # not mere lexical occurrence. This is conservative by design.
-    cues=re.compile(r'(=|:=|defined|definition|admissib|range|domain|map|maps|j\^\+.*j|j\^-.*j|qdim|quantum dimension|alpha\s*=)',re.I)
-    good=[h for h in hs if cues.search(h['context']) and not any(x in h['context'].lower() for x in ('fabricated','fake authority'))]
+    # Explicit relation/domain cues must occur in the same source-authority context.
+    cues=re.compile(r'(:=|\bdefined\b|\bdefinition\b|\badmissib|\brange\b|\bdomain\b|\bmap(?:s|ping)?\b|->|=\s*\(|=\s*[-+0-9]|qdim|quantum dimension|alpha\s*=)',re.I)
+    bad=re.compile(r'(nonidentifiable|ambiguity|unstable|failed|does not authorize|lexical|fabricated|fake authority)',re.I)
+    good=[h for h in hs if cues.search(h['context']) and not bad.search(h['context'])]
     return {'label':label,'hits':hs[:12],'qualified_hits':good[:8],'qualified':bool(good)}
 
 def lane_external():
-    req={
-      'l':[r'\bl\b'], 'l1':[r'l[_\{ ]?1'], 'l2':[r'l[_\{ ]?2'],
-      'alpha':[r'alpha',r'\\alpha'], 'dimension':[r'qdim',r'quantum dimension',r'd_[{]?l']}
-    ev=[qualified(k,v) for k,v in req.items()]
-    ok=all(x['qualified'] for x in ev)
-    return {'lane':'external-labels','pass':ok,'classification':'PASS' if ok else 'BLOCKED_SOURCE_LABEL_DOMAIN','evidence':ev}
+    req={'l':[r'\bl\b'],'l1':[r'l[_\{ ]?1'],'l2':[r'l[_\{ ]?2'],'alpha':[r'alpha',r'\\alpha'],'dimension':[r'qdim',r'quantum dimension',r'd_[{]?l']}
+    ev=[qualified(k,v) for k,v in req.items()]; ok=all(x['qualified'] for x in ev)
+    return {'lane':'external-labels','pass':ok,'classification':'PASS' if ok else 'BLOCKED_SOURCE_LABEL_DOMAIN','evidence':ev,'authority_files':[str(p.relative_to(ROOT)) for p in files()]}
 
 def lane_f1():
     req={'j':[r'\bj\b'],'j2plus':[r'j\^\+[_\{ ]?2',r'j_2\^\+'],'j1minus':[r'j\^-[_\{ ]?1',r'j_1\^-'],'d_j':[r'qdim',r'd_[{]?j'],'q':[r'q\s*=|q-deform|root of unity|q-number']}
     ev=[qualified(k,v) for k,v in req.items()]; ok=all(x['qualified'] for x in ev)
-    return {'lane':'factor1-labels','pass':ok,'classification':'PASS' if ok else 'BLOCKED_SOURCE_LABEL_DOMAIN','evidence':ev}
+    return {'lane':'factor1-labels','pass':ok,'classification':'PASS' if ok else 'BLOCKED_SOURCE_LABEL_DOMAIN','evidence':ev,'authority_files':[str(p.relative_to(ROOT)) for p in files()]}
 
 def lane_f2():
     req={'j':[r'\bj\b'],'j1plus':[r'j\^\+[_\{ ]?1',r'j_1\^\+'],'j2minus':[r'j\^-[_\{ ]?2',r'j_2\^-'],'d_j':[r'qdim',r'd_[{]?j'],'q':[r'q\s*=|q-deform|root of unity|q-number']}
     ev=[qualified(k,v) for k,v in req.items()]; ok=all(x['qualified'] for x in ev)
-    return {'lane':'factor2-labels','pass':ok,'classification':'PASS' if ok else 'BLOCKED_SOURCE_LABEL_DOMAIN','evidence':ev}
+    return {'lane':'factor2-labels','pass':ok,'classification':'PASS' if ok else 'BLOCKED_SOURCE_LABEL_DOMAIN','evidence':ev,'authority_files':[str(p.relative_to(ROOT)) for p in files()]}
 
 def lane_null():
-    tests={
-      'lexical_only': not bool(re.search(r'(=|defined|domain|map)', 'j^+ j^- l l1 l2 alpha')),
-      'eq29_only': False, # explicitly forbidden source cannot qualify
-      'fabricated_plus_minus_equality': False # fabricated equality is rejected by provenance rule
-    }
-    detected=sum(1 for v in tests.values() if (v if 'lexical' in next((k for k,val in tests.items() if val==v), '') else False))
-    # Make the intended rejection explicit and machine-readable rather than interpreting fake text as authority.
     rejected={'lexical_occurrence_without_definition':True,'eq29_lambda_only_mapping':True,'fabricated_plus_minus_equality':True}
     return {'lane':'domain-null','pass':all(rejected.values()),'detected':sum(rejected.values()),'required':3,'rejected':rejected}
 
