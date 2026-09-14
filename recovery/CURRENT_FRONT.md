@@ -6,52 +6,49 @@ Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains
 
 ## RC006 remains source-BLOCKED
 
-ITER039 remains SCIENTIFIC FAIL. ITER041 remains source-BLOCKED on expanded-domain dual/cap/cup normalization. ITER042 is authoritatively **`DELEGATED_AUTHORITY_SOURCE_EXPANSION_BLOCKED`**, run `34806737112`, result commit `70a8ccd7f88c9ff98a4d0b5c7cfb8996039f71f6`. The later conflicting reinterpretation was voided in commit `269e63e5e41a7f811eee4a11d3ae5aeee967014d`.
+ITER039 remains SCIENTIFIC FAIL. ITER041 remains source-BLOCKED on expanded-domain dual/cap/cup normalization. ITER042 remains authoritatively `DELEGATED_AUTHORITY_SOURCE_EXPANSION_BLOCKED`, run `34806737112`, result commit `70a8ccd7f88c9ff98a4d0b5c7cfb8996039f71f6`. ITER043 has no scientific effect: run `34807715146` was pre-science infrastructure failure on a superseded premise. No RC006 numerical retry is authorized.
 
-ITER043 has **no scientific effect**: run `34807715146` was `INFRASTRUCTURE_FAIL PRE-SCIENCE` and the gate premise was superseded by the pre-existing ITER042 durable result. Result commit `55cb2f9d8b6f08cddee62c4056210d0aa7222ca5`. No RC006 numerical retry is authorized.
+## Lorentzian multi-vertex front — source map qualified
 
-## ITER044 — substantive source-scoped PASS
+ITER044 is terminal source-scoped SCIENTIFIC PASS — `LORENTZIAN_MULTIVERTEX_REFINEMENT_MAP_SOURCE_QUALIFIED_SCOPED`, authoritative run `34807867688`, result commit `1cb98a15d356dc1ec69f1cae42984ac3bd069a82`.
 
-Terminal classification: **`LORENTZIAN_MULTIVERTEX_REFINEMENT_MAP_SOURCE_QUALIFIED_SCOPED`**.
+The frozen sources explicitly provide a 4D 1→5 Pachner refinement / 5→1 vertex-renormalization route with a genuine multi-vertex Lorentzian EPRL amplitude object. This is not merely a cutoff or a fixed two-vertex diagram. The historical zero-spin face-collapse shortcut remains separately BLOCKED.
 
-- prereg `6c26b2b87e7fa21cfc040ef17a8eb2a0cbc88937`
-- production `7d1c024fd52d5cb792c3d8e3bc839f9bcce69768`
-- authoritative run `34807867688`
-- jobs: semantic-null `103863161250`; Monte-Carlo/source `103863161435`; radiative `103863161537`; dipole `103863161561`; aggregate `103863249258`
-- artifacts: semantic-null `10333752084` (`sha256:337ba7fd350ff0563b277074552dff10bf85be13414d669659e0715ca9ec637d`); Monte-Carlo `10334200311` (`sha256:32e7104c9e4d9d34227d60d7bcfc5a03d2f489a1018b0962a17c24df4439acd1`); radiative `10333742127` (`sha256:14b36dcc9a9ed07759e6883c98e662c898fe49c473b6749160eccbd8d4ad4f48`); dipole `10334065586` (`sha256:23b2a8ec9e92a3250c1237ab145789fa9c7540c7604b8b66c8341fbd68b543bc`); aggregate `10333686368` (`sha256:b3ca0235374f579423505815ba1477d9604fcc87563c0105bfff0453531d621e`)
-- durable result commit `1cb98a15d356dc1ec69f1cae42984ac3bd069a82`
+`source_refinement_map_qualified=true`; `refinement_map_derived=false`; bridge credit remains zero.
 
-The frozen source panel source-qualifies genuine connected multi-vertex Lorentzian EPRL amplitudes and, critically, an explicit 4D **1→5 Pachner refinement**: a 4-simplex expanded into five 4-simplices. The corresponding 5→1 vertex-renormalization object is explicitly treated with five vertices and internal bulk sums. This satisfies the preregistered source-map predicate; it is stronger than merely observing two vertices, a cutoff profile, or a divergence.
+## ITER045 — implementation readiness PASS
 
-The historical **zero-spin face-collapse shortcut remains BLOCKED**. No source-explicit amplitude-preserving zero-face deletion identity was found, and it is not inferred from the new Pachner route.
+Terminal classification: **`LORENTZIAN_1TO5_IMPLEMENTATION_READINESS_PASS`**.
 
-Set `source_refinement_map_qualified=true`, but keep **`refinement_map_derived=false`** until source-faithful implementation/validation closes. No bridge credit is earned by ITER044 alone.
+- prereg `459792b5dcd3675c84eff324bbc2ae3512488472`
+- original production `40d4b2b5b039c6d48b309b2c54bda91c6dabea02`
+- original run `34808101073`
+- PASS artifacts: topology `10333528151` (`sha256:b472dc9ed86ad7b798b0560bf7d0ccf107820fb2c01564c83c09a5851c10679f`); backend `10333308561` (`sha256:860e8c0bf6d4b6c4f731835f809befc1676ea2a8a8b08543ef25c4459568cf72`); state-space `10333642689` (`sha256:740b3fddf1514bc32186af5a847dcaf774d159c8cee9b68653d9ffcf127a5a9a`)
+- topology-null original failure was a harness bug: duplicate input was deduplicated before testing. Duplicate-detection-only repair commit `0548ac3838a99351b79a40249f6c7c8f04408c60`; recovery run/job `34808180748 / 103864077510`; artifact `10333697665`, digest `sha256:2b9feddf8681366c11468a0a9563751cccc1b0a48bf8c14b84ac574a4ad8b63b`; all four frozen malformed controls rejected.
+- durable result commit `d35026e641a87e602d270d4ff227a4f82d1ca617`.
 
-## Active ITER045 — 1→5 implementation readiness
+Algorithmic 1→5 construction reproduces 5 refined 4-simplices, 10 internal tetrahedra, 10 internal triangles and 10 boundary triangles. The official Lorentzian EPRL backend is pinned at `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f`.
 
-The next gate was frozen before implementation. Official backend is pinned to `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f`.
+## Active ITER046 — pinned numerical vertex smoke
 
-ITER045 independently checks:
+ITER046 was prospectively frozen before computation. It does **not** test a full five-vertex contraction yet. It first validates that the exact pinned backend can execute non-retuned Lorentzian EPRL vertex amplitudes on primary and held-out boundary-intertwiner tuples.
 
-1. algorithmic 1→5 incidence/topology (expected 5 refined 4-simplices, 10 internal tetrahedra/dual edges, 10 internal triangles/dual faces, 10 boundary triangles);
-2. pinned backend provenance/API for Lorentzian EPRL vertex tensors with ten spins plus Immirzi/shell controls;
-3. raw ten-bulk-face state-space growth at frozen half-integer cutoffs without amplitude-derived pruning;
-4. malformed/disconnected topology null controls.
+Frozen numerical inputs: `gamma=1.2`, all ten `j=1`, `Dl=0`; primary five intertwiners `i=0`, held-out five intertwiners `i=1`; each evaluated twice. Acceptance uses only successful execution, finite real values and deterministic repeatability. No sign, magnitude or ratio target exists.
 
-- prereg commit `459792b5dcd3675c84eff324bbc2ae3512488472`
-- production head `40d4b2b5b039c6d48b309b2c54bda91c6dabea02`
-- authoritative run `34808101073`
-- jobs: topology `103863841052`; backend `103863841282`; state-space `103863841319`; topology-null `103863841448`
-- latest snapshot: **4 in_progress / 0 queued**, avoidable idle false.
+Parallel independent lanes also validate the five-vertex face-incidence map, exact backend source/API provenance and semantic null controls.
 
-A PASS authorizes only a separately preregistered bounded Lorentzian vertex/contraction validation. It does not authorize a full ten-face sum, coarse↔fine equality, bridge derivation, or zero-face deletion.
+- prereg `f648ceff1082b98f44b8e1715e530c529862de62`
+- production head `86eac7ecd3eeb069b414c6dfd6a74edf0b5f840b`
+- authoritative run `34808304690`
+- jobs: vertex-face-map `103864431152`; numerical primary+held-out `103864431259`; backend-source-control `103864431342`; semantic-null `103864431377`.
+- latest snapshot: semantic-null already terminal PASS; **3 scientifically useful jobs in_progress / 0 queued**, avoidable idle false.
 
 ## Exact next action
 
-Consume all ITER045 raw artifacts and aggregate against the frozen predicates. If readiness passes, preregister a bounded numerical Lorentzian EPRL successor using the exact pinned backend and source topology. Any backend or topology failure must remain BLOCKED/INFRASTRUCTURE as appropriate; do not alter the 1→5 topology or choose cutoffs after seeing amplitude values.
+Consume all ITER046 raw artifacts and aggregate. If the build/transport prevents the exact pinned backend from running, classify infrastructure failure and repair only build/transport. If exact backend execution occurs, apply N1–N5 without amplitude-target fitting. Only terminal `LORENTZIAN_PINNED_VERTEX_NUMERICAL_SMOKE_PASS` authorizes a separately preregistered bounded multi-vertex assembly/contraction gate.
 
 ## Persistent locks
 
-Eq.(29)/Lambda, one-step TNR, full Eq.(27) amplitude and candidate-theory construction remain unauthorized. BH004/BH004B remains scoped-negative; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
+Full ten-face summation, coarse↔fine amplitude equality, Eq.(29)/Lambda, one-step TNR, full Eq.(27), bridge derivation and candidate-theory construction remain unauthorized. BH004/BH004B remains scoped-negative; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
 
-Still false: `full_eq27_amplitude_derived`, `eq29_amplitude_authorized`, `one_step_tnr_authorized`, `bridge_credit`, `candidate_theory_authorized`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `BRIDGE_DERIVED`.
+Still false: `refinement_map_derived`, `bridge_credit`, `candidate_theory_authorized`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `BRIDGE_DERIVED`.
