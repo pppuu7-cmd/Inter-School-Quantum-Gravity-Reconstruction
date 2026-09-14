@@ -28,11 +28,16 @@ def A():
  ok=bool(hits)
  return {'lane':'topology-authority','pass':ok,'classification':'PASS' if ok else 'BLOCKED_CENTRAL_TOPOLOGY_AUTHORITY','contexts':hits[:8]}
 def B():
- s=source(); t=s['text']; pats=[r'j_1\+j_2\+j_3\s*\\leq\s*k',r'admissible representations',r'j_\\text\{max\}\s*=\s*\\frac\{k\}\{2\}',r'j_\{\\text\{max\}\}']
+ s=source(); t=s['text']
+ # Technical parser repair only: TeX eqnarray places alignment '&' around relation symbols.
+ sum_rule=r'j_1\s*\+\s*j_2\s*\+\s*j_3\s*&?\s*\\leq\s*&?\s*k'
+ triangle=r'j_I\s*\+\s*j_K\s*&?\s*\\geq\s*&?\s*j_L'
+ cutoff=r'j_\{?\\text\{max\}\}?\s*=\s*\\frac\{k\}\{2\}'
+ pats=[sum_rule,triangle,r'admissible representations',cutoff]
  hits=[]
  for p in pats:
   for m in re.finditer(p,t,re.I|re.S): hits.append(' '.join(t[max(0,m.start()-500):min(len(t),m.end()+700)].split())[:2200])
- ok=bool(re.search(r'j_1\+j_2\+j_3\s*\\leq\s*k',t)) and bool(re.search(r'admissible representations',t,re.I))
+ ok=bool(re.search(sum_rule,t,re.I|re.S)) and bool(re.search(triangle,t,re.I|re.S)) and bool(re.search(r'admissible representations',t,re.I)) and bool(re.search(cutoff,t,re.I|re.S))
  return {'lane':'finite-k-domain-authority','pass':ok,'classification':'PASS' if ok else 'BLOCKED_FINITE_K_DOMAIN_AUTHORITY','contexts':hits[:12]}
 def C():
  rows=[]; ok=True
