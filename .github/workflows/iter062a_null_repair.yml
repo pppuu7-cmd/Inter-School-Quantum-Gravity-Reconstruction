@@ -1,0 +1,83 @@
+name: ITER062A parser-only null repair
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter062a_null_repair.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+env:
+  PARENT_RUN: '34872500144'
+
+jobs:
+  repaired-null:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter062a-source
+          path: source
+          run-id: ${{ env.PARENT_RUN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run unchanged frozen adversarial predicates with parser-only quoting repair
+        run: |
+          mkdir -p out
+          python code/iter062a/closure.py --lane adversarial-null --source source/QuantumCuboidsLong_article.tex --out out/adversarial-null.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter062a-adversarial-null-repaired
+          path: out/adversarial-null.json
+          if-no-files-found: error
+
+  repaired-aggregate:
+    needs: repaired-null
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter062a-*
+          path: parent
+          merge-multiple: true
+          run-id: ${{ env.PARENT_RUN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter062a-adversarial-null-repaired
+          path: repair
+      - name: Aggregate parent scientific lanes plus repaired null
+        run: |
+          python - <<'PY'
+          import glob,json,os
+          expected=['dependency-source-identity','vertex-kernel-closure','renormalized-amplitude-closure','gluing-index-closure','observable-closure','adversarial-null']
+          rows={}
+          for p in glob.glob('parent/**/*.json',recursive=True)+glob.glob('repair/**/*.json',recursive=True):
+            try:
+              d=json.load(open(p))
+              if 'lane' in d: rows[d['lane']]=d
+            except Exception as e: print('skip',p,e)
+          missing=[x for x in expected if x not in rows]
+          if missing:
+            classification='INFRASTRUCTURE_FAIL_PRE_SCIENCE'; scientific_pass=False
+          else:
+            null_ok=rows['adversarial-null'].get('pass') is True and rows['adversarial-null'].get('detected')==rows['adversarial-null'].get('total')
+            all_science=all(rows[x].get('pass') is True for x in expected[:-1])
+            scientific_pass=all_science and null_ok
+            classification='SCIENTIFIC_PASS_RC008_RESTRICTED_AMPLITUDE_KERNEL_SOURCE_CLOSED' if scientific_pass else 'SCOPED_BLOCKED_RC008_RESTRICTED_AMPLITUDE_KERNEL_INCOMPLETE_SOURCE_OBJECT'
+          summary={'parent_run':int(os.environ['PARENT_RUN']),'repair_head':'${{ github.sha }}','classification':classification,'scientific_pass':scientific_pass,'missing':missing,'lanes':rows,'claim_locks':{'bridge_credit':False,'candidate_theory':'UNFORMED','full_eprl_refinement':False,'lorentzian_refinement':False}}
+          os.makedirs('aggregate',exist_ok=True)
+          open('aggregate/summary.json','w').write(json.dumps(summary,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(summary,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter062a-repaired-aggregate
+          path: aggregate/summary.json
+          if-no-files-found: error
