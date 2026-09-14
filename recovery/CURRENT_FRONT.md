@@ -2,43 +2,32 @@
 
 Date: 2026-09-14.
 
-Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains **49%**; this is not a correctness probability. Bridge credit remains zero.
+Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains **49%**. Bridge credit remains zero.
 
-## ITER031 terminal result
+## Terminal closed gates
 
-ITER031 is terminal **SCIENTIFIC PASS — `RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_CORRECTED_STAGE_S_PASS`**.
+ITER031: **SCIENTIFIC PASS — `RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_CORRECTED_STAGE_S_PASS`**. Authoritative run `34804179870`, aggregate job `103852685845`, aggregate artifact `10332821665`, digest `sha256:d690afd7ac1f3cd09c6c88df8361df1d24455b26f1e66f6d4ea5230c41366ccb`, result commit `3b2f8274647831965a3e06f13fb40072cef08e38`.
 
-Authoritative production head: `40616a4bf6cffc3138cda0587dbe63bc381dbd20`; run `34804179870`; aggregate job `103852685845`; aggregate artifact `10332821665`; digest `sha256:d690afd7ac1f3cd09c6c88df8361df1d24455b26f1e66f6d4ea5230c41366ccb`; result-note commit `3b2f8274647831965a3e06f13fb40072cef08e38`.
+ITER032: **SCIENTIFIC PASS — `RC006_EQ27_TWO_FACTOR_BOUNDED_NETWORK_ASSEMBLY_PASS`**. Prereg `bda9c7c12a2f2e4886d4734b9d1835119a700491`; implementation `a369586e5d05b04e757f36468e58aaba00cb1253`; regex-only repair `43ed319f0047a3a71c9eed8962902c7b25ac97d5`; authoritative production head `e1c472ae48f9aeb0aae8419404f1f6382a37b045`; run `34804537344`; aggregate job `103853724474`; aggregate artifact `10333010977`, digest `sha256:9a36150c1efac2f20f3763088a80fdb9fc849232f6e64044776efd68ffd21f5a`; result commit `29e8b1cd197433eefa027231e44bbd5b5853765f`. Max factor residual `8.671119018262734e-16`; max two-factor residual `5.55287100034665e-16`; nulls 3/3. This remains bounded factorized composition, not a full Eq.(27) amplitude.
 
-All four frozen lanes pass without held-out retuning. Max source-qbar identity residual `0.0`; qbar-intertwiner `3.6860685022878984e-15`; dual contraction `5.551115123125783e-16`; R-inverse `7.27366312472434e-15`. Null controls satisfy the prospectively frozen 2/3 criterion.
+ITER033: **SCIENTIFIC PASS — `RC006_EQ27_SOURCE_SUMMATION_SCALAR_STRUCTURE_PASS`**. Prereg `d49e51f6fd75613c0ef32d0aea4c98f25f8ff18e`; implementation `c77af1903a9f647abe5ab2e1121b20142bcfa8a3`; production head `580088bdff30de000519a95665f69e9518c0b9d1`; run `34804648187`; jobs null `103854004300`, segmentation `103854004389`, scalar `103854004403`, binding `103854004437`, aggregate `103854032782`; aggregate artifact `10332517828`, digest `sha256:bd46e0c451957c4d0dbc640e6b85390d7882f6f2bd76a897fc0a66f158bf36cd`; result commit `ce4e18848d0846231dc393a91653079cca0ea5b1`. Exact source now uniquely isolates two sums plus the external prefactor `(-1)^(...) (d_l1 d_l2)^alpha d_l`; 3/3 syntax nulls rejected. This is source-structure authority only, not numerical full-amplitude evaluation.
 
-Run `34801212245` remains separately classified as `NUMERICAL/INFRASTRUCTURE FAIL PRE-SCIENCE — AUTHORITY CHECKER FALSE POSITIVE`; no result or threshold was altered to turn it into a PASS.
+## Active ITER034
 
-## ITER032 prospectively frozen and active
+`ITER034_RC006_EQ27_SOURCE_LABEL_DOMAIN_AUTHORITY` is prospectively frozen before numerical summation/scalar evaluation. Prereg commit `c0e19fd4c4b76c75bd7fa5d44ad134131d043fbd`; implementation `27af2114b453f93beb420c2ebbb3f2ab097078e8`.
 
-Successor: **`ITER032_RC006_EQ27_TWO_FACTOR_NETWORK_ASSEMBLY`**.
+First run `34804798801` exposed a pre-science YAML-only defect: unquoted matrix value `null` became an empty lane. This is **INFRASTRUCTURE FAIL for that lane only**, not scientific evidence. Repair commit `b1410793104f511a3daf199285c0e0ce9c2fc308` quotes `"null"` and changes no scientific predicate.
 
-- preregistration commit: `bda9c7c12a2f2e4886d4734b9d1835119a700491`
-- implementation commit: `a369586e5d05b04e757f36468e58aaba00cb1253`
-- production/workflow head: `5f624a8a9f08a1aa75b3031e954cba2e66bcd859`
-- authoritative run: **34804399944**
+Authoritative recovery run: **34804823837**, production head `b1410793104f511a3daf199285c0e0ce9c2fc308`. Current jobs: external `103854517728`, factor1 `103854517736`, factor2 `103854517848`, null `103854517905`; at the latest snapshot all four are in progress.
 
-The gate is deliberately bounded and factorized: before numerical composition, Lane A must mechanically confirm the byte-pinned Eq.(27) source contains two distinct bracketed multiplicative graph factors with separate sums. The numerical lanes then use only the already validated ITER031 bounded primitive, deterministic adjacent-row pairing, primary `k={6,10,12}`, held-out `k={7,9,11}`, `alpha=0`, and the unchanged `5e-8` bounded threshold. It is explicitly not a full Eq.(27) amplitude/TNR claim.
-
-Four independent lanes were launched with `fail-fast:false`:
-- source-factorization authority job `103853284855`;
-- independent factor reconstruction job `103853284954`;
-- two-factor bounded assembly job `103853284982`;
-- frozen adversarial nulls job `103853285020`.
-
-At the launch snapshot these were **4 queued / 0 in_progress**, so avoidable idle is false. No duplicate batch is admissible.
+Exact scientific question: whether every Eq.(27) source label needed for the explicit two sum weights and external prefactor has a source-qualified numerical/domain meaning without importing Eq.(29)/Lambda or fitting notation to output. Missing mappings are BLOCKED, not scientific FAIL.
 
 ## Exact next action
 
-Consume all raw ITER032 lane artifacts and the dependent aggregate against the frozen preregistration. Source-factorization ambiguity is BLOCKED, not scientific FAIL. A numerical threshold breach after valid authority is SCIENTIFIC FAIL and may not be repaired by retuning. Only a frozen ITER032 PASS may authorize a new separately preregistered gate toward the remaining source summation/scalar structure; Eq.(29)/Lambda and one-step TNR remain forbidden.
+Consume all four ITER034 raw artifacts and the dependent aggregate against the frozen preregistration. Only `RC006_EQ27_SOURCE_LABEL_DOMAIN_AUTHORITY_PASS` may authorize a separately preregistered bounded numerical summation/scalar lift. If any required label/domain remains unqualified, preserve `RC006_EQ27_SOURCE_LABEL_DOMAIN_BLOCKED`; do not infer it post hoc.
 
-## Other fronts / locks
+## Locks / other fronts
 
-ITER028 remains terminal BLOCKED and is not retrofitted. BH004/BH004B remains scoped-negative; genuine multivertex Lorentzian EPRL refinement remains source-blocked; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
+ITER028 remains terminal BLOCKED. BH004/BH004B remains scoped-negative; genuine multivertex Lorentzian EPRL refinement remains source-blocked; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
 
-Still false: `iter012_retry_authorized`, `eq29_amplitude_authorized`, `one_step_tnr_authorized`, `bridge_credit`, `candidate_theory_authorized`, `preferred_alpha_found`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `UNIVERSAL_BRIDGE_FOUND`, `full_eq27_amplitude_derived`.
+Still false: `full_eq27_amplitude_derived`, `eq29_amplitude_authorized`, `one_step_tnr_authorized`, `bridge_credit`, `candidate_theory_authorized`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `UNIVERSAL_BRIDGE_FOUND`.
