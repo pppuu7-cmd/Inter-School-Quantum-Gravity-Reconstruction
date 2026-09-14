@@ -1,0 +1,27 @@
+name: ISQGR ITER041 D control recovery
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter041-d-control-recovery.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lane-D:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          rm -rf out/iter041
+          python3 code/iter041/root_unity_primitive_domain_source_audit.py --lane D
+      - run: |
+          mkdir -p lane_out
+          cp out/iter041/evidence.json lane_out/evidence.json
+          cat lane_out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter041-D-control-recovery
+          path: lane_out/
+          if-no-files-found: error
+          retention-days: 90
