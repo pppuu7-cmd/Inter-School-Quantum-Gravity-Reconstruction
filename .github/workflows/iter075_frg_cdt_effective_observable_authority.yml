@@ -1,4 +1,5 @@
 name: ITER075 FRG CDT effective observable authority
+# frozen prereg: 543f43be4a8ffa31578d3e9b0f01fca34751e491
 on:
   push:
     branches: [main]
