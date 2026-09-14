@@ -41,7 +41,7 @@ jobs:
           curl --fail -L --retry 4 --retry-delay 2 \
             -o wigxjpf-1.13.tar.gz \
             https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz
-          sha256sum wigxjpf-1.13.tar.gz | tee ../../out/wigxjpf_archive_sha256.txt
+          sha256sum wigxjpf-1.13.tar.gz | tee ../../../out/wigxjpf_archive_sha256.txt
           tar -xf wigxjpf-1.13.tar.gz
           if [ -d wigxjpf-1.13 ]; then mv wigxjpf-1.13 wigxjpf; fi
           test -d wigxjpf
@@ -50,19 +50,19 @@ jobs:
           curl --fail -L --retry 4 --retry-delay 2 \
             -o fastwigxj-1.4.1.tar.gz \
             https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz
-          sha256sum fastwigxj-1.4.1.tar.gz | tee ../../out/fastwigxj_archive_sha256.txt
+          sha256sum fastwigxj-1.4.1.tar.gz | tee ../../../out/fastwigxj_archive_sha256.txt
           tar -xf fastwigxj-1.4.1.tar.gz
           if [ -d fastwigxj-1.4.1 ]; then mv fastwigxj-1.4.1 fastwigxj; fi
           test -d fastwigxj
 
           set +e
-          make -C fastwigxj -j2 > ../../out/fastwigxj_build.log 2>&1
+          make -C fastwigxj -j2 > ../../../out/fastwigxj_build.log 2>&1
           fwrc=$?
           set -e
-          echo "$fwrc" > ../../out/fastwigxj_initial_rc.txt
+          echo "$fwrc" > ../../../out/fastwigxj_initial_rc.txt
           if [ "$fwrc" -ne 0 ]; then
             echo 'FASTWIGXJ_INITIAL_BUILD_FAILED_DOCUMENTED_9J_REPAIR_NOT_YET_APPLIED' >&2
-            cat ../../out/fastwigxj_build.log >&2
+            cat ../../../out/fastwigxj_build.log >&2
             exit "$fwrc"
           fi
 
@@ -76,7 +76,7 @@ jobs:
           test -f lib/libsl2cfoam.so
 
           export LD_LIBRARY_PATH="$PWD/lib:$PWD/ext/wigxjpf/lib:$PWD/ext/fastwigxj/lib:${LD_LIBRARY_PATH:-}"
-          ldd bin/vertex-amplitude | tee ../out/vertex_amplitude_ldd.txt
+          ldd bin/vertex-amplitude | tee ../../out/vertex_amplitude_ldd.txt
 
           python3 - <<'PY'
           import hashlib,json,pathlib,subprocess
@@ -102,10 +102,10 @@ jobs:
             'compiler':subprocess.check_output(['gcc','--version'],text=True).splitlines()[0],
             'build_pass':True
           }
-          pathlib.Path('../out/runtime_manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          pathlib.Path('../../out/runtime_manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
           PY
 
-          tar -czf ../out/runtime_bundle.tar.gz \
+          tar -czf ../../out/runtime_bundle.tar.gz \
             bin/vertex-amplitude lib \
             ext/wigxjpf/lib ext/fastwigxj/lib \
             data_sl2cfoam
@@ -150,7 +150,7 @@ jobs:
           export LD_LIBRARY_PATH="$PWD/runtime/lib:$PWD/runtime/ext/wigxjpf/lib:$PWD/runtime/ext/fastwigxj/lib:${LD_LIBRARY_PATH:-}"
           lane='${{ matrix.lane }}'
           python3 - "$lane" <<'PY'
-          import hashlib,json,math,pathlib,re,subprocess,sys
+          import hashlib,json,math,pathlib,subprocess,sys
           lane=sys.argv[1]
           root=pathlib.Path('runtime')
           manifest=json.loads(pathlib.Path('runtime_manifest.json').read_text())
@@ -222,7 +222,7 @@ jobs:
           CHECKS_RESULT: ${{ needs.checks.result }}
         run: |
           python3 - <<'PY'
-          import json,math,os,pathlib
+          import json,os,pathlib
           rows=[]
           for p in pathlib.Path('evidence').rglob('evidence.json'):
               try: rows.append(json.loads(p.read_text()))
