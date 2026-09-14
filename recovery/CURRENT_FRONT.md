@@ -14,58 +14,86 @@ ITER047 remains SCIENTIFIC PASS — `LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS`, r
 
 ITER048 remains terminal **SCOPED BLOCKED — `LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY`**. It is not retrofitted.
 
-ITER049 remains terminal **SCIENTIFIC PASS — `LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS`**, run `34811866640`. The pinned authors' executable path uniquely selects `COMMENT_REPAIR`: fourth Wigner-6j uses `rbl/rbr`; fifth uses `rCDl/rCDr`, hence `i9` rather than the duplicated Eq.(11) `i8`, without amplitude fitting.
+ITER049 remains terminal **SCIENTIFIC PASS — `LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS`**, run `34811866640`. The pinned authors' executable path selects `COMMENT_REPAIR` for the disputed recoupling route: fourth Wigner-6j uses `rbl/rbr`; fifth uses `rCDl/rCDr`, hence `i9` rather than the duplicated displayed Eq.(11) `i8`, without amplitude fitting.
 
-## ITER050 terminal INVALID_IMPLEMENTATION
+ITER050 remains terminal **INVALID_IMPLEMENTATION — `LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED`**. Its green Actions run never evaluated a Lorentzian vertex and did not instantiate the frozen five-vertex summand. Durable report commit `51cd9302f25f642fdb0ed85539fb7421bdbba213`.
 
-Preregistration commit: `61908806492f5053c83cf45a50ea54bc5905797b`.
-
-The corrected Actions run `34815939847` was infrastructure-green, but raw artifacts and implementation audit show the preregistered scientific object was never executed. The workflow implemented `primary-algebra`/`heldout-algebra` diagnostics instead of the frozen `primary-summand`/`heldout-summand`; `lorentzian_vertex_evaluated=false`; no five Lorentzian vertices, phase/weights or bounded five-vertex summand were evaluated.
-
-The held-out algebra lane also incorrectly divided frozen integer intertwiner labels `0/1` by two, whereas ITER048 had already qualified the exact basis `wigner_6j(1/2,1/2,a,1/2,1/2,b)` with `a,b in {0,1}`. Its triangle errors are therefore implementation artifacts, not negative physics.
-
-Terminal classification:
-
-**`INVALID_IMPLEMENTATION — LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED`**.
-
-Durable report commit: `51cd9302f25f642fdb0ed85539fb7421bdbba213`.
-
-No fixed-configuration Lorentzian summand value exists from ITER050.
-
-## Active ITER051 — exact pinned backend runtime executability
+## ITER051 terminal PASS — pinned Lorentzian backend runtime
 
 Preregistration: `prereg/ITER051_LORENTZIAN_PINNED_BACKEND_RUNTIME_EXECUTABILITY_2026-09-14.md`, commit `f013d4800a306ce4c1d9838d2a63c781c16f864d`.
 
-Frozen backend: `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f` using the backend's own documented Ubuntu dependency/table path, `BLAS=system`, `OMP=0`, unchanged default Y-map, source-named `wigxjpf-1.13` and `fastwigxj-1.4.1`, and the backend's own `bin/vertex-amplitude` executable.
+Authoritative run: **`34818301950`** at production head **`52150ba71882c04091edbfac16e6f55ca0d244fe`**.
 
-Frozen smoke point before execution:
+Terminal classification:
+
+**`PASS — LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS`**.
+
+The exact pinned backend `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f` was successfully built in the hosted Ubuntu environment using:
+
+- source-named `wigxjpf-1.13`, archive SHA256 `90ab9bfd495978ad1fdcbb436e274d6f4586184ae290b99920e5c978d64b3e6a`;
+- source-named `fastwigxj-1.4.1`, archive SHA256 `0a4171c18dfd0ad5689c9456c873a9edd7a2a2af8e15805e880b800e8f766550`;
+- `.3j` table with `max-E-3j=50`;
+- `.6j` table with `max-E-6j=40`;
+- `BLAS=system`, `OMP=0`, no Y-map override.
+
+No fastwigxj 9j repair was required or applied.
+
+Frozen smoke point:
 - `gamma=1.2`;
-- ten doubled spins `1,1,1,1,1,1,1,1,1,1`;
-- five doubled intertwiners `0,0,0,0,0`;
+- ten `two_j=1` = physical `j=1/2`;
+- five `two_i=0` = physical `i=0`;
 - `Dl=0`.
 
-Stage A builds exact backend + source-required `.3j/.6j` tables. Only if Stage A passes do four independent Stage-B lanes run in parallel: `vertex-smoke-A`, `vertex-smoke-B`, `runtime-identity`, `negative-control`. The two smoke processes must agree within the prospectively frozen reproducibility tolerance.
+Two independent processes launched the backend's own `bin/vertex-amplitude` executable and both returned exactly
 
-### Run 1 pre-science infrastructure failure
+**`1.34499311005e-09`**
 
-Run `34817480937` stopped immediately after transporting `wigxjpf-1.13.tar.gz`: after changing directory to `work/backend/ext`, the workflow addressed the repository evidence folder with one too few `..` components. No dependency compilation, table generation, backend build or vertex evaluation occurred.
+with return code zero, finite output and exact runtime identity. Absolute A/B difference = `0.0`, well below the prospectively frozen reproducibility tolerance.
 
-Classification: `INFRASTRUCTURE_FAIL_PRE_SCIENCE — OUTPUT_PATH_ORCHESTRATION_ONLY`. Durable note commit: `9736be6cffd08ec5f06591917f0022ebf210eda7`.
+Runtime identity and negative-control lanes PASS. Changed gamma, changed Dl, changed spin tuple and deliberately wrong binary identity were rejected.
 
-The control-only repair changes only evidence/output relative paths. Scientific contract, backend/dependency versions, build flags, tables, smoke point, tolerance and verdict criteria are unchanged. Repair commit: `426c053fe826d4d2cace74622785d63543804948`.
+Key frozen runtime hashes:
+- `bin/vertex-amplitude`: `b4f8f536645b3fe6bc55830040f624140eefca02a3b960b9940b2564a7876e26`;
+- `lib/libsl2cfoam.so`: `a539c968afde2a7ec397b2fa7184f9dd036042b82ff2ec5d8026c2b6881b71fc`;
+- `.3j` table: `73d9170de4f04b776923106c5c6ea1bbb70cf2e62a14d24b83cda31194567e6e`;
+- `.6j` table: `de1a29d0252c3c1ebf51b96d7fdebe7f21587ee65dcbc3864070774c14704b72`.
 
-Authoritative recovery run: **`34817642670`**. At the last recovery sync its `build-runtime` job `103891696203` was queued.
+Build artifact `10336669907`, digest `sha256:f357f01e2aa370db20701bbced8cf7f6d03d6c43751ba5399584dd343820454b`; aggregate artifact `10337373597`, digest `sha256:842a9868229de381de47ede61556bb2efe274b986ec3eed75e3e070ed9a63016`.
 
-## Exact next action
+Durable terminal report: `results/ITER051_LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS_2026-09-14.md`, commit `16c8934ae7074f5c29aa20af3ded0a73dbfb0bdf`.
 
-Consume run `34817642670` only after terminal evidence exists. Do not use partial vertex values.
+### Interpretation ceiling
 
-- If build reaches the source-documented recent-GCC fastwigxj 9j-only failure, the ITER051 prereg prospectively permits only that exact 9j-only infrastructure repair, because the pinned backend does not use 9j.
-- If some other exact dependency/table/runtime object cannot be realized, terminalize the exact infrastructure/dependency blocker; do not substitute a surrogate amplitude.
-- If Stage A and all Stage-B lanes pass, manually audit raw artifacts before scientific PASS. Only then may a new separately preregistered bounded five-vertex retry be opened, restoring the correct ITER048 `0/1` SU(2) label semantics and actually calling the pinned Lorentzian backend.
+This proves executable runtime availability and reproducibility for one prospectively frozen local Lorentzian vertex smoke configuration only. It is not a five-vertex result and earns no bridge credit.
+
+## New local-vertex argument source blocker
+
+During ITER051, an outcome-independent source audit found a mapping issue that is invisible in the all-zero smoke sector but material in the old alternating `0/1` held-out sector.
+
+Durable record: `sources/ITER051_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK.md`, commit `b918058a35cbaf66456aa57b19576104c4d8c2f3`.
+
+Exact arXiv Eq.(11) local vertex intertwiner argument lists and the pinned authors' executable `vertex_compute` local range comments/code-name mapping differ in several slots, not only the already-known displayed fifth-6j `i8/i9` inconsistency. Examples include the up local fifth slot (`i2` literal Eq.(11) versus executable `rBCl=i1`) and analogous left/right recoupling-basis differences.
+
+These discrepancies may reflect a basis/orientation recoupling between the displayed formula and executable implementation. They must not be guessed or selected from amplitude agreement.
+
+The exact backend doubled-label semantics are separately source-qualified in `sources/ITER051_LORENTZIAN_BACKEND_LABEL_SEMANTICS.md`: physical `j=1/2 -> two_j=1`, physical `i=0 -> two_i=0`, physical `i=1 -> two_i=2`.
+
+## Exact next admissible gate
+
+The next primary scientific/source gate is **not yet another numerical five-vertex contraction**.
+
+Prospectively freeze and execute a **`LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK` authority gate** that reconciles without amplitude fitting:
+
+1. the five literal Eq.(11) local `A_v` intertwiner lists;
+2. the exact source comment mapping `rBCl=i1 ... rIbr=i15`;
+3. the pinned authors' executable `vertex_compute` local range comments and tensor-axis order;
+4. each Wigner-6j pre-contraction from left to right recoupling basis;
+5. the pinned `sl2cfoam-next` `(i1,...,i5)` / doubled-label API.
+
+Only after that crosswalk closes may a repaired bounded primary/held-out five-vertex summand gate be preregistered and run with the now-validated runtime backend.
 
 ## Persistent locks
 
 `refinement_map_derived=false`; `bridge_credit=false`; candidate theory `0 / UNFORMED`.
 
-Full unbounded ten-face summation, shell convergence, coarse↔fine amplitude equality, zero-face deletion, Eq.(29)/Lambda, one-step TNR, full Eq.(27), bridge derivation and candidate-theory construction remain unauthorized. Still false: `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`.
+Still unauthorized: unbounded ten-face summation, shell convergence, coarse↔fine amplitude equality, zero-face deletion, full Eq.(27), Eq.(29)/Lambda, one-step TNR, bridge derivation, candidate-theory construction, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`.
