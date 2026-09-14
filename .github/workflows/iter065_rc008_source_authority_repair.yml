@@ -1,0 +1,68 @@
+name: ITER065 RC008 source authority repair
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter065_rc008_source_authority_repair.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source_authority:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        source: ['1508.07961','1605.07649','1701.02311','1804.00023']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Minimal transport dependency repair only
+        run: python -m pip install --disable-pip-version-check numpy requests pypdf
+      - name: Frozen exact-PDF source authority extraction
+        run: python code/iter065/gate.py --mode source --source '${{ matrix.source }}' --out 'out/source-${{ matrix.source }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter065-source-repair-${{ matrix.source }}
+          path: out/source-${{ matrix.source }}.json
+          if-no-files-found: warn
+
+  aggregate_source:
+    needs: [source_authority]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter065-source-repair-*
+          path: artifacts
+          merge-multiple: true
+      - name: Frozen source-only classification
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rows=[json.loads(p.read_text()) for p in sorted(Path('artifacts').glob('*.json'))]
+          frozen={'1508.07961','1605.07649','1701.02311','1804.00023'}
+          ids={r.get('arxiv_id') for r in rows}
+          infra=ids!=frozen or any(r.get('classification')=='INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION' for r in rows)
+          candidates=sorted(r['arxiv_id'] for r in rows if r.get('classification')=='SOURCE_AUTHORITY_CANDIDATE_PRESENT')
+          if infra: c='INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION'
+          elif candidates: c='SOURCE_AUTHORITY_CANDIDATE_PRESENT_REQUIRES_MANUAL_EQUATION_AUDIT'
+          else: c='SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY'
+          out={'iteration':'ITER065','classification':c,'source_ids_seen':sorted(x for x in ids if x),'candidate_source_ids':candidates,'gate_credit':False,'claim_lock':'manual equation audit required before any global-measure qualification'}
+          Path('aggregate').mkdir(exist_ok=True); Path('aggregate/source_summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter065-source-repair-aggregate
+          path: aggregate/source_summary.json
+          if-no-files-found: error
