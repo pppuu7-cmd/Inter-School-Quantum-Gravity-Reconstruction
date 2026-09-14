@@ -3,8 +3,8 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITER064_RC008_PERMUTATION_SEED_STABILITY_DIAGNOSTIC_RUNNING",
-  "iteration_completion_percent": 15,
+  "active_iteration": "ITER064_TERMINAL_INVALID_DIAGNOSTIC_INFERENCE",
+  "iteration_completion_percent": 100,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
     "amplitude_refinement_cross_realization_validation": 50,
@@ -16,62 +16,107 @@
     "new_theory_required": false,
     "new_physics_found": false,
     "bridge_derived": false,
-    "candidate_theory_authorized": false
+    "candidate_theory_authorized": false,
+    "full_eprl_refinement_derived": false,
+    "lorentzian_refinement_derived": false
   },
   "frontier": {
-    "RC006": {"status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED", "bridge_credit": false},
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status": "REFINEMENT_AUTHORITY_UNRESOLVED", "refinement_map_derived": false, "bridge_credit": false},
-    "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
+    "RC006": {
+      "status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
+      "bridge_credit": false
+    },
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
+      "status": "REFINEMENT_AUTHORITY_UNRESOLVED",
+      "refinement_map_derived": false,
+      "bridge_credit": false
+    },
+    "BH004_BH004B": {
+      "status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
+      "bridge_credit": false
+    },
     "RC008": {
-      "status": "RESTRICTED_RECONSTRUCTION_PASS_SELECTOR_INVALID_DIAGNOSTIC_RUNNING",
+      "status": "SOURCE_KERNEL_CLOSED_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_UNRESOLVED",
       "scope": "SYMMETRY_RESTRICTED_RIEMANNIAN_EPRL_FK_QUANTUM_CUBOID",
-      "restricted_coarse_fine_amplitude_reproduced": true,
-      "full_eprl_refinement_derived": false,
-      "lorentzian_refinement_derived": false,
+      "iter061_source_authority": "SCIENTIFIC_PASS",
+      "iter062a_kernel_source_closure": "SCIENTIFIC_PASS",
+      "restricted_coarse_fine_amplitude_reproduced": false,
       "iter062b": {
-        "status": "SCIENTIFIC_PASS",
-        "classification": "SCIENTIFIC_PASS_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_SCOPED",
+        "workflow_classification": "SCIENTIFIC_PASS_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_SCOPED",
+        "manual_terminal_status": "SUPERSEDED_INVALID_SCIENTIFIC_INFERENCE_SOURCE_MEASURE_MAPPING_UNRESOLVED",
         "authoritative_run": 34874113741,
-        "aggregate_artifact": {"id": 10359819990, "digest": "sha256:fd62c82a618b6ded0e4ab0013610f00a33a70551e9d3f76ab1188d1c2f44493b"},
-        "report_commit": "19dbebcdcd32a3c2d1292a343d4e74a08a4ca362"
+        "aggregate_job": 104077252124,
+        "aggregate_artifact": {
+          "id": 10359819990,
+          "digest": "sha256:fd62c82a618b6ded0e4ab0013610f00a33a70551e9d3f76ab1188d1c2f44493b"
+        },
+        "primary_crossing": "B0_0.50_TO_0.55",
+        "crossing_endpoint_alpha_0_50_converged": false,
+        "source_global_measure_mapping_qualified": false,
+        "historical_report_commit": "19dbebcdcd32a3c2d1292a343d4e74a08a4ca362",
+        "manual_audit_commit": "5f1cc5f980d1d8b49d7755148ab82ee1ebef5d10",
+        "gate_credit": false
       },
       "iter063": {
         "status": "INVALID_IMPLEMENTATION_OR_SELECTOR_GATE",
         "classification": "INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL",
-        "prereg_commit": "04dacfba44f2a59efb882dbe162cc5161c7e7795",
-        "production_head": "a6fa3c4d11b0b34298b3c3ac3e934721db757639",
         "authoritative_run": 34874671586,
-        "aggregate_job": 104078941713,
-        "aggregate_artifact": {"id": 10360430809, "digest": "sha256:a59a92d11b4d439b25eb17a380c03298dfe606186fa7fbd5187c4483c8ef3d00"},
-        "observations": {"P1": "CONVERGED_NO_CROSSING", "P2": "CONVERGED_NO_CROSSING", "H1": "CONVERGED_CROSSING", "H2": "CONVERGED_CROSSING", "H3": "CONVERGED_NO_CROSSING", "H4": "CONVERGED_CROSSING"},
-        "report_commit": "d0c35b572bd803b841d0a6917676fcbaf809dbfe",
+        "aggregate_artifact": {
+          "id": 10360430809,
+          "digest": "sha256:a59a92d11b4d439b25eb17a380c03298dfe606186fa7fbd5187c4483c8ef3d00"
+        },
         "gate_credit": false
       },
       "iter064": {
-        "status": "RUNNING",
-        "classification": "PENDING_DIAGNOSTIC_ARTIFACTS",
+        "workflow_classification": "DIAGNOSTIC_PASS_PERMUTATION_CROSSING_STABLE",
+        "manual_terminal_status": "INVALID_DIAGNOSTIC_INFERENCE_CROSSING_ENDPOINT_NONCONVERGED",
         "prereg_commit": "aa2179c06bbbc3d54fbd917e1809e335839d30ed",
-        "implementation_commits": ["03e0118bafdd0a1c3d05a383a160f506b5ea2b8e", "35680dd447cb997793d0bd1c2eeab79eb67582ef"],
         "production_head": "be911ba4e7a847049f4882fbe615d0f25774b3ad",
         "authoritative_run": 34874915843,
-        "scientifically_useful_jobs_queued": 3,
-        "scientifically_useful_jobs_in_progress": 0
+        "aggregate_job": 104079838227,
+        "aggregate_artifact": {
+          "id": 10361141304,
+          "digest": "sha256:f248f9146222a411d04b3b74359650f89ff81ce77e9fcb5083cb3a5220376bf8"
+        },
+        "crossings": {
+          "B2": [0.50, 0.55],
+          "P1": [0.50, 0.55],
+          "P2": [0.50, 0.55]
+        },
+        "alpha_0_50_fine_ess_pass": false,
+        "alpha_0_50_fine_cv_pass": false,
+        "narrow_structural_observation": "ITER063 permutation discrepancy is seed_QMC_sensitive",
+        "gate_credit": false,
+        "manual_audit_commit": "5f1cc5f980d1d8b49d7755148ab82ee1ebef5d10"
       },
+      "global_geometric_measure_topology_qualified": false,
+      "full_eprl_refinement_derived": false,
+      "lorentzian_refinement_derived": false,
       "bridge_credit": false
     },
-    "RC009": {"status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"},
-    "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
+    "RC009": {
+      "status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"
+    },
+    "LORENTZIAN_DELTA4": {
+      "status": "SATURATED_NEGATIVE_SCOPED",
+      "bridge_credit": false
+    }
   },
-  "active_compute": [{"iteration": "ITER064", "run": 34874915843, "status": "queued", "jobs": 3}],
-  "idle_capacity": {"scientifically_useful_jobs_queued": 3, "scientifically_useful_jobs_in_progress": 0, "avoidable_idle": false},
-  "next_gate": "CONSUME_ITER064_PERMUTATION_SEED_STABILITY_ARTIFACTS",
-  "next_gate_rationale": "ITER063 cannot receive scientific credit because its preregistered spatial-permutation selector controls failed despite nominal numerical convergence. ITER064 prospectively distinguishes seed/QMC instability from an integrated permutation mismatch without changing the frozen science.",
+  "active_compute": [],
+  "idle_capacity": {
+    "scientifically_useful_jobs_queued": 0,
+    "scientifically_useful_jobs_in_progress": 0,
+    "avoidable_idle": false
+  },
+  "next_gate": "PREREGISTER_RC008_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY",
+  "next_gate_rationale": "ITER062B and ITER064 crossings rely on alpha=0.50 where fine ESS/CV or level convergence fails, while the executable also applies the one-hypercuboid Delta_FP locally to every cell without a source-qualified derivation of the global glued-complex pullback measure. Exact global measure topology is now the upstream blocker; another numerical crossing rerun is lower information.",
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER064_RC008_CROSSING_CONVERGENCE_AND_GLOBAL_MEASURE_MANUAL_AUDIT_2026-09-14.md",
     "prereg/ITER064_RC008_PERMUTATION_SEED_STABILITY_DIAGNOSTIC_2026-09-14.md",
     "results/ITER063_RC008_HELDOUT_TRANSPORT_SELECTOR_INVALID_2026-09-14.md",
     "results/ITER062B_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_2026-09-14.md",
+    "results/ITER062A_RC008_RESTRICTED_AMPLITUDE_KERNEL_SOURCE_CLOSED_2026-09-14.md",
     "docs/CONSTITUTION.md"
   ]
 }
