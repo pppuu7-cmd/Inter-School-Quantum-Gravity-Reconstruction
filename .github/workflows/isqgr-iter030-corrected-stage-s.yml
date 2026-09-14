@@ -1,0 +1,53 @@
+name: ISQGR ITER030 corrected Eq27 Stage S
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter030/**'
+      - '.github/workflows/isqgr-iter030-corrected-stage-s.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lane:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [A, B, C, D]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute frozen lane ${{ matrix.lane }}
+        run: python3 code/iter030/corrected_stage_s.py --lane '${{ matrix.lane }}' --out 'out_iter030_${{ matrix.lane }}'
+      - name: Show lane evidence
+        run: cat 'out_iter030_${{ matrix.lane }}/lane_${{ matrix.lane }}.json'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter030-lane-${{ matrix.lane }}
+          path: out_iter030_${{ matrix.lane }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter030-lane-*
+          path: downloaded_iter030
+      - name: Aggregate frozen scientific classes
+        run: python3 code/iter030/corrected_stage_s.py --aggregate downloaded_iter030 --out out_iter030_aggregate
+      - name: Show aggregate
+        run: cat out_iter030_aggregate/aggregate.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter030-aggregate
+          path: out_iter030_aggregate/
+          if-no-files-found: error
+          retention-days: 90
