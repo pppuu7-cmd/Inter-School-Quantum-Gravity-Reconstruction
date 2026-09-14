@@ -1,72 +1,21 @@
 {
-  "project": "Inter-School Quantum Gravity Reconstruction",
-  "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
-  "date": "2026-09-14",
-  "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_036_EPRL_MAP_LABEL_INSTANTIATION_CONSISTENCY_RUNNING",
-  "iteration_completion_percent": 20,
-  "candidate_theory_status": "UNFORMED",
-  "claim_locks": {
-    "known_schools_fail": false,
-    "new_theory_required": false,
-    "new_physics_found": false,
-    "bridge_derived": false,
-    "rqir_promotion_authorized": false,
-    "kmqgb_promotion_authorized": false,
-    "universal_bridge_found": false,
-    "candidate_theory_authorized": false,
-    "full_eq27_amplitude_derived": false
-  },
-  "readiness_percent": {
-    "amplitude_refinement_cross_realization_validation": 49,
-    "candidate_theory_construction": 0,
-    "overall_scientific_programme": 49
-  },
-  "frontier": {
-    "RC006": {
-      "status": "EPRL_MAP_LABEL_INSTANTIATION_CONSISTENCY_RUNNING",
-      "iter031": {"status":"PASS","classification":"RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_CORRECTED_STAGE_S_PASS","authoritative_run":34804179870,"aggregate_job":103852685845,"aggregate_artifact":10332821665,"aggregate_digest":"sha256:d690afd7ac1f3cd09c6c88df8361df1d24455b26f1e66f6d4ea5230c41366ccb","report_commit":"3b2f8274647831965a3e06f13fb40072cef08e38"},
-      "iter032": {"status":"PASS","prereg_commit":"bda9c7c12a2f2e4886d4734b9d1835119a700491","implementation_commit":"a369586e5d05b04e757f36468e58aaba00cb1253","technical_repair_commit":"43ed319f0047a3a71c9eed8962902c7b25ac97d5","production_head":"e1c472ae48f9aeb0aae8419404f1f6382a37b045","authoritative_run":34804537344,"aggregate_job":103853724474,"aggregate_artifact":10333010977,"aggregate_digest":"sha256:9a36150c1efac2f20f3763088a80fdb9fc849232f6e64044776efd68ffd21f5a","classification":"RC006_EQ27_TWO_FACTOR_BOUNDED_NETWORK_ASSEMBLY_PASS","report_commit":"29e8b1cd197433eefa027231e44bbd5b5853765f"},
-      "iter033": {"status":"PASS","prereg_commit":"d49e51f6fd75613c0ef32d0aea4c98f25f8ff18e","implementation_commit":"c77af1903a9f647abe5ab2e1121b20142bcfa8a3","production_head":"580088bdff30de000519a95665f69e9518c0b9d1","authoritative_run":34804648187,"aggregate_job":103854032782,"aggregate_artifact":10332517828,"aggregate_digest":"sha256:bd46e0c451957c4d0dbc640e6b85390d7882f6f2bd76a897fc0a66f158bf36cd","classification":"RC006_EQ27_SOURCE_SUMMATION_SCALAR_STRUCTURE_PASS","report_commit":"ce4e18848d0846231dc393a91653079cca0ea5b1"},
-      "iter034": {"status":"BLOCKED","prereg_commit":"c0e19fd4c4b76c75bd7fa5d44ad134131d043fbd","implementation_commit":"27af2114b453f93beb420c2ebbb3f2ab097078e8","authoritative_run":34804915740,"aggregate_job":103854902730,"aggregate_artifact":10332833015,"aggregate_digest":"sha256:d13f91e7b922ff5b81eb9213cddfb5189c63165c9c2daf36bc93eba3d99fa7a4","classification":"RC006_EQ27_SOURCE_LABEL_DOMAIN_BLOCKED","report_commit":"09ee60bae60b90af3c6741f2fb00b1d646704e42"},
-      "iter035": {
-        "status":"PASS",
-        "prereg_commit":"865aa1901a54620b0cd296efd338268492caf787",
-        "implementation_commit":"87b4e23b8e9bb915bd8e328464102bb6ccfa7240",
-        "production_head":"ab1d30ef5446825d87ca07df00ba21129a401fd8",
-        "authoritative_run":34805066706,
-        "jobs":{"A":103855234468,"B":103855234205,"C":103855234413,"D":103855234346,"aggregate":103855261464},
-        "artifacts":{"A":{"id":10333007703,"digest":"sha256:6cf5c8e03813de82a10fa930c7d61bcf91d6349d82ae0363bb2fbb6183585763"},"B":{"id":10333112005,"digest":"sha256:352681adc04b19535b3094cc0ef09779da93a5a83ccf47bda4ff30f88fa7df2e"},"C":{"id":10332372427,"digest":"sha256:8c8803223db6f167960ac5e1cdab01cec671863733d55bbc958044b2aa19bf8c"},"D":{"id":10332583403,"digest":"sha256:99514e1e1fa57beb488399a288a6a38ac3613e52721f2a29f60c180388fb9d2b"},"aggregate":{"id":10332861829,"digest":"sha256:da69480c7864f0b99185a03622e26d107bfa2af18d2257ed28df869426b842e6"}},
-        "classification":"RC006_INDEXED_SIMPLICITY_MAP_SOURCE_AUTHORITY_PASS",
-        "report_commit":"bc14b296cae425a599c693130a5a4941a5cf0f24",
-        "bounded_label_instantiation_consistency_authorized":true
-      },
-      "iter036": {
-        "status":"RUNNING",
-        "prereg_commit":"be603f7b288a60b0feb76d3bfc723523f6723754",
-        "implementation_commit":"d9350854500b2d31c53f08fdbc325908909d9ef0",
-        "production_head":"862736b45047cadef8f696e79e15815f67dd559b",
-        "authoritative_run":34805398376,
-        "jobs":{"B":103856182955,"C":103856183065,"D":103856183071,"A":103856183212},
-        "scientific_result":null
-      },
-      "eq29_amplitude_authorized": false,
-      "one_step_tnr_authorized": false,
-      "bridge_credit": false,
-      "next_gate": "CONSUME_ITER036_RAW_LANES_AND_AGGREGATE; ONLY PASS MAY AUTHORIZE_A_SEPARATE_BOUNDED_NUMERICAL_EQ27_SUMMATION_SCALAR_LIFT"
-    },
-    "BH004_BH004B": {"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","refinement_map_derived":false},
-    "RC008": {"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
-    "RC009": {"status":"SCOPED_BLOCKED"},
-    "LORENTZIAN_DELTA4": {"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
-  },
-  "active_compute": [
-    {"run":34805398376,"job":103856182955,"status":"queued","purpose":"ITER036 map integrality/cutoff primary-heldout consistency"},
-    {"run":34805398376,"job":103856183065,"status":"in_progress","purpose":"ITER036 indexed Eq27 exponent instantiation"},
-    {"run":34805398376,"job":103856183071,"status":"in_progress","purpose":"ITER036 algebraic null controls"},
-    {"run":34805398376,"job":103856183212,"status":"in_progress","purpose":"ITER036 source-listed finite-k gamma case extraction"}
-  ],
-  "idle_capacity": {"scientifically_useful_jobs_queued":1,"scientifically_useful_jobs_in_progress":3,"avoidable_idle":false,"reason":"Four independent prospectively frozen ITER036 lanes are active/queued; numerical Eq27 summation/scalar lift is dependent and forbidden until terminal classification."},
-  "authoritative_recovery_order": ["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER036_RC006_EPRL_MAP_LABEL_INSTANTIATION_CONSISTENCY_2026-09-14.md","results/ITER035_RC006_INDEXED_SIMPLICITY_MAP_SOURCE_AUTHORITY_PASS_2026-09-14.md","results/ITER034_RC006_EQ27_SOURCE_LABEL_DOMAIN_BLOCKED_2026-09-14.md","docs/CONSTITUTION.md"]
+  "project":"Inter-School Quantum Gravity Reconstruction",
+  "repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
+  "date":"2026-09-14",
+  "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
+  "active_iteration":"ITERATION_037_DIAGONAL_EXTERNAL_LABEL_SOURCE_SUPPORT_RUNNING",
+  "iteration_completion_percent":20,
+  "candidate_theory_status":"UNFORMED",
+  "readiness_percent":{"amplitude_refinement_cross_realization_validation":49,"candidate_theory_construction":0,"overall_scientific_programme":49},
+  "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"full_eq27_amplitude_derived":false},
+  "frontier":{"RC006":{
+    "status":"DIAGONAL_EXTERNAL_LABEL_SOURCE_SUPPORT_RUNNING_AFTER_ITER036_PANEL_BLOCKER",
+    "iter035":{"status":"PASS","prereg_commit":"865aa1901a54620b0cd296efd338268492caf787","implementation_commit":"87b4e23b8e9bb915bd8e328464102bb6ccfa7240","production_head":"ab1d30ef5446825d87ca07df00ba21129a401fd8","authoritative_run":34805066706,"jobs":{"A":103855234468,"B":103855234205,"C":103855234413,"D":103855234346,"aggregate":103855261464},"aggregate_artifact":10332861829,"aggregate_digest":"sha256:da69480c7864f0b99185a03622e26d107bfa2af18d2257ed28df869426b842e6","classification":"RC006_INDEXED_SIMPLICITY_MAP_SOURCE_AUTHORITY_PASS","report_commit":"bc14b296cae425a599c693130a5a4941a5cf0f24"},
+    "iter036":{"status":"BLOCKED","prereg_commit":"be603f7b288a60b0feb76d3bfc723523f6723754","implementation_commit":"d9350854500b2d31c53f08fdbc325908909d9ef0","production_head":"862736b45047cadef8f696e79e15815f67dd559b","authoritative_run":34805398376,"jobs":{"B":103856182955,"C":103856183065,"D":103856183071,"A":103856183212,"aggregate":103856219007},"artifacts":{"B":{"id":10333200104,"digest":"sha256:1ca4b58653f480e9776ad114b1e60babb2f8729b44e2afbb595c4f3107b1f121"},"C":{"id":10332158139,"digest":"sha256:535cc85c7cc1b967a14c2e0cd0add1537837da6462c34d1730833d6d4ec44633"},"D":{"id":10332703718,"digest":"sha256:e948045e6a2f88c1a45c19196cb1d402def7376c1d09be43a4c82847286e52f4"},"A":{"id":10332953277,"digest":"sha256:0cd59fd2bcd89e63b447660e3c926c6c2e0e1935eb8427a7b4600a434a55a81c"},"aggregate":{"id":10332364237,"digest":"sha256:e1c567700838c12ab742cb32f68c68b770f7453d023eb54ee800b4277e47c1d7"}},"classification":"RC006_EPRL_MAP_LABEL_INSTANTIATION_CONSISTENCY_BLOCKED","blocker":"BLOCKED_PANEL_SUPPORT_PRIMARY_TESTED_0_HELDOUT_TESTED_1","report_commit":"b8054d7e8a416096fb91c3fb7f88780aca517905","numerical_eq27_summation_scalar_lift_authorized":false},
+    "iter037":{"status":"RUNNING","prereg_commit":"8b9a3b7d97afcf5fafb1cd6ece8d300b43652619","implementation_commit":"0a9c787c1d95937f9052c0a0b36b8b3f4ddaca3e","production_head":"bbad8c8acfcee52b856c5a977f2caf64a31770d4","authoritative_run":34805544176,"jobs":{"B":103856600497,"D":103856600592,"C":103856600613,"A":103856600629},"scientific_result":null},
+    "eq29_amplitude_authorized":false,"one_step_tnr_authorized":false,"bridge_credit":false,"next_gate":"CONSUME_ITER037_RAW_LANES_AND_AGGREGATE; ONLY_SOURCE_SUPPORT_PASS_MAY_AUTHORIZE_A_NEW_DIAGONAL_PANEL_CONSISTENCY_GATE"
+  },"BH004_BH004B":{"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},"MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","refinement_map_derived":false},"RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},"RC009":{"status":"SCOPED_BLOCKED"},"LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}},
+  "active_compute":[{"run":34805544176,"job":103856600497,"status":"in_progress","purpose":"ITER037 diagonal admissibility"},{"run":34805544176,"job":103856600592,"status":"in_progress","purpose":"ITER037 frozen nulls"},{"run":34805544176,"job":103856600613,"status":"in_progress","purpose":"ITER037 diagonal internal-j support"},{"run":34805544176,"job":103856600629,"status":"queued","purpose":"ITER037 external-label scope authority"}],
+  "idle_capacity":{"scientifically_useful_jobs_queued":1,"scientifically_useful_jobs_in_progress":3,"avoidable_idle":false},
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER037_RC006_DIAGONAL_EXTERNAL_LABEL_SOURCE_SUPPORT_2026-09-14.md","results/ITER036_RC006_EPRL_MAP_LABEL_INSTANTIATION_CONSISTENCY_BLOCKED_2026-09-14.md","results/ITER035_RC006_INDEXED_SIMPLICITY_MAP_SOURCE_AUTHORITY_PASS_2026-09-14.md","docs/CONSTITUTION.md"]
 }
