@@ -1,0 +1,90 @@
+name: ITER062A source-set implementation repair
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter062a_source_set_repair.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+env:
+  PARENT_RUN: '34872500144'
+  PRIMARY_SHA: b7e0690f32cb7cc56f4e64cf5d1f7bc9da54405ed7275d28d4d97a35a148a8ee
+
+jobs:
+  primary-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Fetch exact frozen arXiv 1508.07961 primary TeX
+        run: |
+          python - <<'PY'
+          import io,os,tarfile,time,urllib.request,hashlib
+          urls=['https://export.arxiv.org/e-print/1508.07961','https://arxiv.org/e-print/1508.07961','https://export.arxiv.org/src/1508.07961']
+          expected=os.environ['PRIMARY_SHA']; last=None
+          for attempt in range(6):
+            for url in urls:
+              try:
+                req=urllib.request.Request(url,headers={'User-Agent':'ISQGR-source-audit/1.0 (scientific reproducibility)'})
+                with urllib.request.urlopen(req,timeout=45) as r: data=r.read()
+                c=[]
+                try:
+                  with tarfile.open(fileobj=io.BytesIO(data),mode='r:*') as tf:
+                    for m in tf.getmembers():
+                      if m.isfile() and m.name.endswith('QuantumCuboids_article.tex'): c.append(tf.extractfile(m).read())
+                except tarfile.TarError:
+                  if b'Eq:4Volume' in data: c=[data]
+                for raw in c:
+                  sh=hashlib.sha256(raw).hexdigest(); print(url,sh,len(raw))
+                  if sh==expected:
+                    open('QuantumCuboids_article.tex','wb').write(raw); open('primary_meta.txt','w').write(f'url={url}\nsha256={sh}\n'); raise SystemExit(0)
+                last=f'no exact-hash candidate from {url}'
+              except SystemExit: raise
+              except Exception as e: last=f'{url}: {type(e).__name__}: {e}'; print(last)
+            time.sleep(min(20,2**attempt))
+          raise RuntimeError('PRIMARY_SOURCE_ACQUISITION_PRE_SCIENCE_FAIL: '+str(last))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter062a-primary-source-repair
+          path: |
+            QuantumCuboids_article.tex
+            primary_meta.txt
+          if-no-files-found: error
+
+  repaired-lanes:
+    needs: primary-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [vertex-kernel-closure, observable-closure]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter062a-source
+          path: dependency
+          run-id: ${{ env.PARENT_RUN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter062a-primary-source-repair
+          path: primary
+      - name: Re-run unchanged frozen predicate over complete preregistered source set
+        run: |
+          mkdir -p out
+          python code/iter062a/source_set_repair.py \
+            --lane '${{ matrix.lane }}' \
+            --dependency dependency/QuantumCuboidsLong_article.tex \
+            --primary primary/QuantumCuboids_article.tex \
+            --out 'out/${{ matrix.lane }}.json'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter062a-${{ matrix.lane }}-sourceset-repaired
+          path: out/*.json
+          if-no-files-found: error
