@@ -4,68 +4,75 @@ Date: 2026-09-14.
 
 Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains **49%**; this is not a correctness probability.
 
-## Reconciled lineage through ITER026
+## Reconciled lineage through ITER027
 
-The historical ITER024/025 label collision is resolved by logical A/B aliases in `results/ITER024_025_AB_PROVENANCE_RECONCILIATION_2026-09-14.md`; historical files and commits remain unchanged.
+The historical ITER024/025 A/B collision remains resolved by `results/ITER024_025_AB_PROVENANCE_RECONCILIATION_2026-09-14.md`.
 
-- ITER024A: graphical dual/braid execution, terminal `RC006_GRAPHICAL_QBAR_COMPONENT_FAIL`; R/braid controls PASS, qbar dual FAIL.
-- ITER024B: cited-authority parser, terminal `INVALID_IMPLEMENTATION` despite green CI because its code did not implement the frozen cited-source audit.
-- ITER025A: inverse-parameter/reversed-order source-normalized qbar construction, run `34786242013`, terminal `RC006_QBAR_CUP_INDEPENDENT_FAIL`; construction and 4-valent lanes PASS, cup and held-out lanes FAIL at high/root-boundary spins.
-- ITER025B: exact source audit, run `34788769863`, terminal `RC006_EXACT_QBAR_R_SOURCE_AUTHORITY_COMPLETE`; exact source chain fixes ordered q<->qbar component identity and R/R^-1 crossing convention.
+- ITER025B established exact source authority for ordered q<->qbar components and R/R^-1 crossing.
+- ITER026 prospectively executed the direct-source qbar identity and terminalized `PASS — RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_VALIDATED` across domain, algebra, cup, four-valent and adversarial lanes.
+- This authorized only a separately preregistered bounded Eq.(27) component translation/contraction.
 
-ITER025B source authority did not erase ITER025A executable failure. That conflict motivated the prospectively frozen ITER026 direct-source execution gate.
+## ITER027 terminal INVALID_IMPLEMENTATION
 
-## ITER026 terminal PASS
+Preregistration: `prereg/ITER027_RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_2026-09-14.md`, prereg commit `d07fd121f0abeb34396bb4f2bc4028070fed0e12`.
 
-Preregistration: `prereg/ITER026_RC006_DIRECT_SOURCE_QBAR_IDENTITY_EXECUTION_2026-09-14.md`, commit `17dd87a110645b2a7ca6cc22df52569758502a70`.
+Implementation commit: `fcb17f980caa82fd7a1a1482a523084125915d53`.
 
-Implementation: `code/iter026/direct_source_qbar_identity.py`, commit `caf988b3313a9c7cf5f7c6b409e6eb3ef99f0215`.
+Initial run `34791069641` failed before science because the workflow omitted the `mpmath` dependency required by the frozen q-CG backend. This is a pure infrastructure failure. A control-only repair added `mpmath` without changing the frozen scientific contract; repair / authoritative execution head: `b59fbc7a53ec2dda697826beb07550201052cd71`.
 
-The new primitive constructs qbar directly from the exact source identity
+Corrected run `34792339154` completed. All four independent matrix lanes executed and raw artifacts were preserved.
 
-`{}_q C^{j1 j2 j3}_{m1 m2 m3} = (-1)^(j1+j2-j3) {}_{bar q} C^{j1 j2 j3}_{-m1,-m2,-m3}`
+Raw lane outcomes:
 
-using magnetic-index reversal with no m1/m2 swap, and uses target B2 only to fix the prospectively allowed residual singlet `+-1` q-CG gauge. It does not solve qbar independently at inverse q and does not apply per-channel post-hoc repair.
+- `component-translation`: local primitive controls PASS; `max_source_identity=0.0`, `max_qbar_intertwiner=3.839616566770844e-15`.
+- `bounded-contraction`: local duality/braid controls PASS; `max_dual_contraction=8.671119018262734e-16`, `max_R_inverse=7.224267142543843e-15`, held-out k=7,9,11 not retuned, `full_eq27_amplitude_claimed=false`.
+- `null-controls`: PASS under frozen 2/3 rule; legacy inverse-qbar and R/R^-1-swap controls give O(1) residuals, while the chosen wrong-magnetic-order control is insensitive (`0.0`).
+- `authority-domain`: raw `pass=false`, but this is an implementation false positive because the scanner searches the whole implementation file for forbidden strings that are literally present in its own blacklist definitions. `missing=[]`.
 
-A first orchestration attempt, run `34789842824`, is terminal `INVALID_IMPLEMENTATION_PRE_SCIENCE`: unquoted YAML `null` prevented the five-lane matrix contract from being instantiated. No scientific outputs from that run were inspected or used. Only the YAML literal was repaired; the scientific contract was unchanged.
+The raw aggregate therefore emitted `RC006_EQ27_COMPONENT_CONTRACTION_BLOCKED_AUTHORITY`. That raw classification is retained for provenance but is **not** the scientific terminal verdict.
 
-Authoritative corrected run: `34789873827`, production head `d6a457f364feefd3fd4523ab84e09f8803590f3c`.
+### Decisive contract mismatch
 
-Terminal classification:
+ITER021 source-pinned the exact Eq.(27) topology: four graphical blocks, two internal sums, two closed `l` loops, and both primed/unprimed `J^+/J^-` channel pairs.
 
-**`PASS — RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_VALIDATED`**.
+The ITER027 production code does not instantiate that topology. It operates on generic admissible triples and evaluates direct qbar/intertwiner identities, local dual contraction `F @ D`, local braid inverse `R^-1 @ R`, and local null controls. It does **not** encode or contract:
 
-All five prospectively frozen lanes PASS:
+- the two source-defined closed `l` loops;
+- the internal `j`, `j_i^+`, `j_i^-`, `J^+`, `J^-` network;
+- primed/unprimed channel wiring;
+- the four Eq.(27) graphical blocks and their exact component connectivity.
 
-- `domain`: all exact source hashes/locators present; 55/55 cup cases retained across k=6,7,9,10,11,12; all eight ITER025A counterexamples retained; source-domain/root-boundary audit PASS.
-- `algebra`: max source-identity residual `0.0`; max qbar intertwiner residual `1.5594956288365066e-12` vs `5e-9`; max B2 residual `2.3525204118543076e-15` vs `2e-9`; no inverse-parameter construction and no post-hoc channel repair.
-- `cup`: 55/55 PASS; global max residual `2.3525204118543076e-15` vs `2e-9`.
-- `four`: primary plus held-out k=7,9,11 PASS; global max residual `8.052062385546474e-13` vs `5e-8`.
-- `null`: all 3/3 wrong structural controls detected with residuals `0.8342035043686545`, `1.4322826978446357`, `1.0111494534766454`.
+Therefore the code tests necessary validated primitives but not the frozen Eq.(27) contraction object.
 
-Most importantly, all eight old high/root-boundary cup counterexamples now pass at approximately `1e-15`, while the frozen legacy ITER025A comparator in the same null lane continues to reproduce the old O(1) failures. Therefore the earlier failures are localized to the legacy inverse-parameter/reversed-order construction/gauge choice, not to an intrinsic breakdown of the audited source qbar duality over the tested root-of-unity simple-object range.
+Terminal scientific classification:
 
-Durable report: `results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md`.
+**`INVALID_IMPLEMENTATION — RC006_EQ27_TOPOLOGY_NOT_INSTANTIATED`**.
 
-## New structural fact
+Durable report: `results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md`, commit `cad509649420b79a46b4c8e08616865e35673a0f`.
 
-For this RC-006 realization, the explicit q<->qbar source identity is not merely a phase convention. It acts as a representation/basis identification required for global consistency between q-CG, cap/cup duality, qbar intertwining and 4-valent graphical composition. Independently solving the qbar intertwiner at inverse q can satisfy internal equations while landing in a basis/gauge that is globally incompatible with the source graphical calculus.
+Recovery state updated at commit `f02fa60670bcb8afa905bdef2535c786a81fcfe6`.
 
-This fact is scoped to the audited reduced Euclidean `SU(2)_k x SU(2)_k` realization. It is not yet bridge evidence.
+This is not a physical FAIL of RC006, not a source-authority BLOCKED result, and not bridge evidence. The local primitive PASSes remain useful controls but cannot be promoted to Eq.(27) PASS.
 
-## Authorization consequence
+## Exact next admissible gate
 
-`eq27_component_reconstruction_prereg_allowed=true`.
+Create a **new prospectively preregistered topology-faithful Eq.(27) successor**. Do not silently patch ITER027 after observing its outputs.
 
-The exact next admissible scientific gate is a **new separately preregistered bounded Eq.(27) component translation/contraction** using only:
+Before substantive execution the successor must freeze and encode:
 
-- the validated q-CG solver;
-- source-gauged cap/cup primitives;
-- ITER026 source-direct qbar primitive;
-- source-qualified R/R^-1 crossing convention;
-- the already source-pinned Eq.(27) graph topology.
+1. the exact source-pinned Eq.(27) graph as a machine-readable component dictionary;
+2. every external/internal tensor leg and its index order;
+3. both closed `l` loops;
+4. all internal `j`, `j_i^\pm`, `J^\pm`, primed/unprimed channels;
+5. exact admissibility and summation ranges;
+6. source-authorized placement of q-CG, cap/cup, direct-source qbar and R/R^-1 primitives;
+7. alpha=0/source normalization without post-hoc rescaling;
+8. primary and held-out k/spin panels;
+9. an independently known positive contraction control;
+10. topology-breaking negative controls: edge/channel swap, loop removal or miswire, and R/R^-1 crossing swap;
+11. an explicit PASS/FAIL/BLOCKED/INVALID predicate on the Eq.(27)-topology contraction itself.
 
-Before any contraction is evaluated, freeze exact tensor-leg ordering, internal channels, k/spin panel, normalization, R placements, positive controls, negative controls and PASS/FAIL/BLOCKED/INVALID criteria.
+Only after this successor terminalizes may Eq.(27) be called validated or failed in bounded scope.
 
 ## Locks
 
