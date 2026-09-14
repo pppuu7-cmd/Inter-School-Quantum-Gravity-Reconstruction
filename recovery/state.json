@@ -3,8 +3,8 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITER059_FAILED_ONLY_RERUN_ATTEMPT6_WITH_ITER060_TERMINAL_BLOCKER",
-  "iteration_completion_percent": 70,
+  "active_iteration": "ITER059_TERMINAL_INFRASTRUCTURE_FAIL_RC008_NEXT_GATE_SELECTED",
+  "iteration_completion_percent": 100,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
     "amplitude_refinement_cross_realization_validation": 49,
@@ -22,7 +22,7 @@
   "frontier": {
     "RC006": {"status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED", "bridge_credit": false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "FOUR_CLASS_BOUNDED_TRANSPORT_PASS_OPEN_REFINEMENT_AUTHORITY_DISCOVERY_RETRY_RUNNING_WITH_1107_2633_SOURCE_BLOCKED",
+      "status": "FOUR_CLASS_BOUNDED_TRANSPORT_PASS_REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_ROUTE_INFRASTRUCTURE_SATURATED",
       "source_refinement_map_qualified": false,
       "refinement_map_derived": false,
       "iter054": {"status": "SCIENTIFIC_PASS", "classification": "LORENTZIAN_BOUNDED_FIVE_VERTEX_FIXED_SUMMAND_VALIDATED_SCOPED", "authoritative_run": 34821111285},
@@ -31,26 +31,23 @@
       "iter057": {"status": "SCOPED_BLOCKED", "classification": "LORENTZIAN_REFINEMENT_MAP_CITED_AUTHORITY_BLOCKED", "authoritative_run": 34823253593, "report_commit": "9adf888c7abe76f841a23597462251fbbebf34f0"},
       "iter058": {"status": "SCOPED_BLOCKED", "classification": "LORENTZIAN_REFINEMENT_TRANSFER_SECOND_HOP_BLOCKED", "authoritative_run": 34823516850, "report_commit": "63847888c8ff02f1782b5e252b9dff8a60fd85a0"},
       "iter059": {
-        "status": "RUNNING_FAILED_ONLY_RERUN_ATTEMPT6_AFTER_ATTEMPT5_HTTP429_PRE_SCIENCE",
-        "classification": "INFRASTRUCTURE_FAIL_DISCOVERY_PARTIAL",
+        "status": "TERMINAL_INFRASTRUCTURE_FAIL_ATTEMPT6_HTTP429_PRE_SCIENCE",
+        "classification": "INFRASTRUCTURE_FAIL_DISCOVERY",
         "prereg_commit": "c80a38a78e0ce99633dc9738281ab5a46bbd5b87",
         "original_implementation_commit": "5ee7fdc6f65594656f130c1c5e223d0390bda686",
         "transport_repair_commit": "de36e6dbfc1c4b575f95a6f1f7b31a8744a2de7a",
-        "current_production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b",
+        "production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b",
         "authoritative_run": 34835772221,
         "run_attempt": 6,
-        "attempt5_target_job": 104025417356,
-        "attempt5_target_status": "FAILED_PRE_SCIENCE_HTTP429",
-        "attempt5_aggregate_job": 104026737223,
-        "attempt5_aggregate_artifact": {"id": 10353877344, "digest": "sha256:27ac1f026e19295ada6fc28123e0b26ae7b5b6709a95c239d5cfedf7c9f8b209"},
-        "attempt5_new_candidate_ids": ["1107.2633"],
-        "attempt5_candidate_already_qualified_blocked": true,
-        "attempt5_report_commit": "8a812bd9236cf12e049a5079ec351868626330fa",
         "attempt6_target_job": 104048033247,
-        "attempt6_target_status": "IN_PROGRESS",
-        "attempt6_reinstantiated_non_target_jobs": [104048033734, 104048034370, 104048035078, 104048069073],
-        "attempt6_non_target_repeats_counted_as_new_science": false,
-        "frozen_queries_and_scoring_unchanged": true
+        "attempt6_target_status": "FAILED_PRE_SCIENCE_HTTP429",
+        "attempt6_aggregate_job": 104049232944,
+        "attempt6_aggregate_artifact": {"id": 10357280571, "digest": "sha256:9ab1f4be8109f0ccc1554e15ca7ece46693b22b2a43e4a19fab4d36b228eb78c"},
+        "new_candidate_ids_from_surviving_lanes": ["1107.2633"],
+        "candidate_already_qualified_blocked": true,
+        "report_commit": "7124ab84d2b0157d979a0f2067bad40917429e41",
+        "scientific_null_authorized": false,
+        "identical_transport_rerun_authorized": false
       },
       "iter060": {
         "status": "SCOPED_BLOCKED",
@@ -72,28 +69,27 @@
       "bridge_credit": false
     },
     "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
-    "RC008": {"status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
-    "RC009": {"status": "SCOPED_BLOCKED"},
+    "RC008": {"status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED", "next_gate_selected": "COMPANION_REFINEMENT_COMPLEX_AND_GLUING_AUTHORITY"},
+    "RC009": {"status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"},
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
-  "active_compute": [
-    {"iteration": "ITER059", "run": 34835772221, "run_attempt": 6, "production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b", "jobs_in_progress": [104048033247]}
-  ],
+  "active_compute": [],
   "idle_capacity": {
     "scientifically_useful_jobs_queued": 0,
-    "scientifically_useful_jobs_in_progress": 1,
+    "scientifically_useful_jobs_in_progress": 0,
     "avoidable_idle": false
   },
-  "next_gate": "CONSUME_ATTEMPT6_EPRL_REFINEMENT_MAP_RAW_OUTPUT; DO_NOT ALTER FROZEN SCIENCE",
-  "next_gate_after_iter059_positive": "FREEZE_ANY_OTHER_EXACT_NEW_SOURCE_IDS_IN_SEPARATE_SOURCE_QUALIFICATION_GATE_BEFORE_INTERPRETATION",
-  "next_gate_after_iter059_saturated": "PRESERVE_REFINEMENT_MAP_AUTHORITY_BLOCKER_AND_REASSESS_OTHER_INDEPENDENT_PHASE1_BRANCHES",
+  "next_gate": "PREREGISTER_RC008_COMPANION_REFINEMENT_COMPLEX_AND_GLUING_AUTHORITY",
+  "next_gate_rationale": "RC008 has source-qualified amplitude formula dependencies, stationary-phase Hessian kernel, and 4-volume refinement prerequisite; the exact remaining blocker is explicit coarse/refined complex and gluing authority. RC009 reduced isotemporal route is scoped-negative and the repeated ITER059 transport route is infrastructure-saturated.",
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
-    "results/ITER059_ATTEMPT5_INFRASTRUCTURE_FAILURE_2026-09-14.md",
+    "results/ITER059_ATTEMPT6_INFRASTRUCTURE_FAILURE_2026-09-14.md",
     "results/ITER060_LORENTZIAN_CANDIDATE_1107_2633_SOURCE_QUALIFICATION_2026-09-14.md",
-    "prereg/ITER060_LORENTZIAN_CANDIDATE_1107_2633_SOURCE_QUALIFICATION_2026-09-14.md",
-    "prereg/ITER059_LORENTZIAN_REFINEMENT_OPEN_AUTHORITY_DISCOVERY_2026-09-14.md",
+    "results/ITER006_RC008_REFINEMENT_SOURCE_CLOSURE_BLOCKED.md",
+    "results/ITER006_RC008_STATE_SUM_GLUING_STRUCTURE_BLOCKED.md",
+    "results/ITER006_RC008_SOURCE_FORMULA_QUALIFICATION.md",
+    "realizations/RC-008_QUANTUM_CUBOID_HYPERCUBOID_RENORMALIZATION.md",
     "docs/CONSTITUTION.md"
   ]
 }
