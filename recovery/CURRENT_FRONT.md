@@ -10,32 +10,39 @@ ITER039 remains SCIENTIFIC FAIL; ITER041/042 remain source-BLOCKED. Authoritativ
 
 ## Lorentzian multi-vertex front
 
-ITER044 is terminal source-scoped SCIENTIFIC PASS — `LORENTZIAN_MULTIVERTEX_REFINEMENT_MAP_SOURCE_QUALIFIED_SCOPED`, run `34807867688`, result commit `1cb98a15d356dc1ec69f1cae42984ac3bd069a82`. The frozen panel source-qualifies the 4D 1→5 Pachner / 5→1 vertex-renormalization route. Zero-spin face-collapse remains separately BLOCKED. `refinement_map_derived=false`.
+ITER044: source-scoped SCIENTIFIC PASS — `LORENTZIAN_MULTIVERTEX_REFINEMENT_MAP_SOURCE_QUALIFIED_SCOPED`, run `34807867688`, result commit `1cb98a15d356dc1ec69f1cae42984ac3bd069a82`. The source panel explicitly qualifies the 4D 1→5 Pachner / 5→1 vertex-renormalization route. Zero-spin face-collapse remains separately BLOCKED.
 
-ITER045 is terminal SCIENTIFIC PASS — `LORENTZIAN_1TO5_IMPLEMENTATION_READINESS_PASS`, original run `34808101073`, null-control recovery run `34808180748`, result commit `d35026e641a87e602d270d4ff227a4f82d1ca617`.
+ITER045: SCIENTIFIC PASS — `LORENTZIAN_1TO5_IMPLEMENTATION_READINESS_PASS`, original run `34808101073`, technical null-control recovery `34808180748`, result commit `d35026e641a87e602d270d4ff227a4f82d1ca617`.
 
-## Active ITER046 — pinned numerical vertex smoke, infrastructure recovery only
+ITER046: SCIENTIFIC PASS — `LORENTZIAN_PINNED_VERTEX_NUMERICAL_SMOKE_PASS`. Exact backend `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f` executed the prospectively frozen primary and held-out tuples. Authoritative recovery run/job `34808487683 / 103864955774`; artifact `10333568519`, digest `sha256:aee4671294bc669d57a63d14276f5ec70187f4d4aeaa0be953d331b740e2585e`. Primary amplitude repeated as `6.68473838546e-11`; held-out repeated as `1.77486269381e-10`; both finite and within frozen repeat tolerance. Result commit `81b354c578e9bbbe27776baefeed79f70a6a3eaf`.
 
-Frozen backend: `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f`.
-Frozen inputs: `gamma=1.2`; ten `j=1`; `Dl=0`; primary five `i=0`; held-out five `i=1`; each evaluated twice. N1–N5 test execution, finite real output and deterministic repeatability only; no amplitude target exists.
+This validates the executable local Lorentzian EPRL vertex only. `refinement_map_derived=false`; bridge credit remains zero.
 
-The original run `34808304690` produced three terminal control PASS artifacts:
-- semantic null `10334041954`, `sha256:d3dd2c1691e52672897e798add45f0ce96f3542b56799f4089e91a91136af31c`
-- vertex-face map `10333498333`, `sha256:dfc5e769515fca0a036284cca9892a8fe70c80d3ef7b6d59042b4e809ed15094`
-- backend-source control `10333199568`, `sha256:98025c30ff53a8c3c0f26e75630e8d5d8355b82bd13b45f2f22874e0ee17ac88`
+## Active ITER047 — 5→1 assembly authority
 
-Its numerical lane failed **pre-science** during parallel test linking, before any amplitude evaluation. Build-order-only repair commit `3b770691c33385cf10a6007d260db6f589d5dac0`, recovery run/job `34808387189 / 103864666854`, successfully built the pinned library and CLI but then failed **pre-science** because the runtime loader could not locate `libsl2cfoam.so`.
+Before attempting a five-vertex contraction, ITER047 prospectively freezes the missing assembly layer: exact source formula/weights/sums, global→local backend argument map, and independent shell transport.
 
-No scientific predicate has failed. The second technical repair changes only runtime `LD_LIBRARY_PATH`:
-- loader repair commit `e7e41d348296d49ccd565befbd20b4ab0a77778a`
-- authoritative recovery run `34808487683`
-- job `103864955774`
-- latest snapshot: **1 scientifically useful job in_progress / 0 queued**; avoidable idle false.
+Frozen source panel: arXiv `2302.00072`, arXiv `1803.00835`, and exact backend SHA above. A bare product of five local vertices is explicitly rejected as the full amplitude unless all source-required face/edge factors and internal sums are present.
+
+Parallel lanes:
+- `formula-2302`: exact 5→1/vertex-renormalization formula authority;
+- `formula-1803`: independent 1→5 amplitude/topology authority;
+- `backend-map-shell`: deterministic global→local face/tetrahedron map plus non-retuned `Dl=1` primary/held-out transport;
+- `assembly-null`: frozen false-claim controls.
+
+Provenance:
+- prereg commit `87ca4ffc54ac061288c1d9ad5db6e1559a273b5b`
+- production head `2adacb08693365cf6eba0fdf4605e772d5f38b70`
+- authoritative run `34808646324`
+- jobs: backend-map-shell `103865407445`; formula-2302 `103865407524`; formula-1803 `103865407527`; assembly-null `103865407568`.
+- latest snapshot: assembly-null terminal PASS; **3 scientifically useful jobs in_progress / 0 queued**, avoidable idle false.
 
 ## Exact next action
 
-Consume terminal run `34808487683`. If the exact pinned executable reaches the four frozen calls, classify N1–N5 from raw values without sign/magnitude/ratio fitting. If it still fails before amplitude evaluation, only a minimal transport/runtime repair is allowed. Only terminal `LORENTZIAN_PINNED_VERTEX_NUMERICAL_SMOKE_PASS` authorizes a separately preregistered bounded multi-vertex assembly/contraction gate.
+Consume the three remaining raw ITER047 artifacts plus aggregate. Source evidence must identify all required internal summation/weight classes and normalization needed for a bounded fixed-cutoff five-vertex implementation; missing/ambiguous factors remain BLOCKED. `Dl=1` transport is judged only by execution/finiteness/repeatability and cannot be promoted to shell convergence or refinement evidence.
+
+Only terminal `LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS` authorizes a separately preregistered bounded fixed-cutoff multi-vertex contraction.
 
 ## Persistent locks
 
-Full ten-face summation, coarse↔fine amplitude equality, Eq.(29)/Lambda, one-step TNR, full Eq.(27), bridge derivation and candidate-theory construction remain unauthorized. Still false: `refinement_map_derived`, `bridge_credit`, `candidate_theory_authorized`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `BRIDGE_DERIVED`.
+Full ten-face unbounded summation, coarse↔fine amplitude equality, Eq.(29)/Lambda, one-step TNR, full Eq.(27), bridge derivation and candidate-theory construction remain unauthorized. Still false: `refinement_map_derived`, `bridge_credit`, `candidate_theory_authorized`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `BRIDGE_DERIVED`.
