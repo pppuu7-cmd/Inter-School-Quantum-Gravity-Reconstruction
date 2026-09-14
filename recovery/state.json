@@ -3,18 +3,19 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-15",
   "phase": "PHASE_1_CDT_FRG_IDENTIFIABILITY_FRONTIER",
-  "active_iteration": "ITER095_PUBLIC_ARCHIVE_CDT_JOINT_COUNT_DATA_DISCOVERY",
+  "active_iteration": "ITER096_PRIMARY_CDT_PAPER_ANCILLARY_DATA_AUTHORITY",
   "iteration_completion_percent": 15,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {"amplitude_refinement_cross_realization_validation":50,"candidate_theory_construction":0,"overall_scientific_programme":50},
   "claim_locks": {"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"full_eprl_refinement_derived":false,"lorentzian_refinement_derived":false,"universal_common_parent_found":false},
   "cdt_frg_direct_frontier": {
     "iter090":{"status":"TERMINAL","classification":"PASS_SCOPED_ONE_PARAMETER_FIXED_VOLUME_IDENTIFIABILITY_NOGO","terminal_result_commit":"f774611a2400b0ebabe69876f9b4007efe29134a","bridge_credit":false},
-    "iter091":{"status":"TERMINAL","classification":"PASS_SCOPED_BARE_VOLUME_RESPONSE_RENORMALIZED_MAP_OPEN","terminal_result_commit":"15cc2bad9f3948014d2dd24fd6ac89592671a08f","bridge_credit":false},
-    "iter092":{"status":"TERMINAL","classification":"SOURCE_SUPPORTS_MIXED_PSEUDOCRITICAL_SHIFT_NOT_INDEPENDENT_COSMOLOGICAL_DIRECTION","terminal_result_commit":"2de2727b65b023b8d65963dcc6180912973659f9","bridge_credit":false,"prospective_validation_credit":0},
+    "iter091":{"status":"TERMINAL","classification":"PASS_SCOPED_BARE_VOLUME_RESPONSE_RENORMALIZED_MAP_OPEN","terminal_result_commit":"271fea3e9e521344df11c6c1b71a093ea5c7a1f0","bridge_credit":false},
+    "iter092":{"status":"TERMINAL","classification":"SOURCE_SUPPORTS_MIXED_PSEUDOCRITICAL_SHIFT_NOT_INDEPENDENT_COSMOLOGICAL_DIRECTION","terminal_result_commit":"44ebd688d500ca0d0863ed52c930e3ddd64ea6df","bridge_credit":false,"prospective_validation_credit":0},
     "iter093":{"status":"TERMINAL","classification":"PASS_SCOPED_FORMAL_RESPONSE_MATRIX_DATA_AUTHORITY_OPEN","terminal_result_commit":"7cfcc82037a7d2695a8c00a152b8b6c1752d5833","response_object":"F_ij = Cov(A_i,A_j), A=(-N0,N41-6N0,N4)","bridge_credit":false},
     "iter094":{"status":"TERMINAL","classification":"DISCOVERY_SATURATED_NO_PUBLIC_DATA_IN_FROZEN_SET","prereg_commit":"c6c9d1b71a033306b0ec19cb6027b19a2d6b8492","production_head":"35c812381b33f22eac3f45dbb9ab9f9d13c2f2e1","run_id":34906684974,"aggregate_job":104184934584,"aggregate_artifact":10373135110,"aggregate_digest":"sha256:94ff118b234c8d31a9b4f4ee1369d0415d7be8de8dcefc92a8fd1ba2dedc040c","terminal_result_commit":"a115755e6f5e6b7b1318d7287af7f93495c52531","bridge_credit":false},
-    "iter095":{"status":"RUNNING_OR_QUEUED","prereg_commit":"1f5ab92f5d54656c48a9a349065c29c752caa712","production_head":"a27f5fc882cd7bacfd423028f64c4a358dd74e26","run_id":34907330487,"frozen_providers":["zenodo","datacite","figshare"],"bridge_credit":false}
+    "iter095":{"status":"TERMINAL","classification":"DISCOVERY_SATURATED_NO_PUBLIC_ARCHIVE_DATA_IN_FROZEN_PROVIDERS","prereg_commit":"1f5ab92f5d54656c48a9a349065c29c752caa712","production_head":"a27f5fc882cd7bacfd423028f64c4a358dd74e26","run_id":34907330487,"aggregate_job":104187038668,"aggregate_artifact":10373451111,"aggregate_digest":"sha256:750cdd65e7b435bdc6ade8be4e3f69732b10e9ed726c148964406984e98f20e3","terminal_result_commit":"afafa79d954327920db079a5f55ec411fb2d42e5","bridge_credit":false},
+    "iter096":{"status":"QUEUED","prereg_commit":"d47f08eafcb6eaf50e54a8ed1ca02af843be38e9","production_head":"d219bd3683e613ce1154eca79c3782b292eb0224","run_id":34907499223,"frozen_arxiv_ids":["1704.04373","1802.10434","2002.01051","1904.05755","2510.02159"],"bridge_credit":false}
   },
   "frontier": {
     "RC006":{"status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","bridge_credit":false},
@@ -24,8 +25,8 @@
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED","bridge_credit":false},
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
-  "idle_capacity":{"scientifically_useful_jobs_queued":3,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false},
-  "next_gate":"CONSUME_ITER095_PROVIDER_ARTIFACTS_AND_MANUALLY_AUDIT_AGAINST_FROZEN_PASS_CONDITIONS",
-  "next_gate_rationale":"ITER094 saturated the frozen GitHub repository set. ITER095 independently searches frozen public research-data providers. Only a qualifying 3+1 joint primitive-count data product can authorize a response-matrix computation; green CI alone cannot.",
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER094_PUBLIC_CDT_JOINT_COUNT_DATA_DISCOVERY_2026-09-15.md","prereg/ITER095_PUBLIC_ARCHIVE_CDT_JOINT_COUNT_DATA_DISCOVERY.md","results/ITER093_BARE_COUPLING_RESPONSE_MATRIX_SCALING_FIELD_AUTHORITY_2026-09-15.md","results/ITER092_RETROSPECTIVE_KAPPA4_PSEUDOCRITICAL_SCALING_EIGENDIRECTION_ADJUDICATION_2026-09-15.md","results/ITER091_VARIABLE_VOLUME_COSMOLOGICAL_RESPONSE_AUTHORITY_2026-09-15.md","docs/CONSTITUTION.md"]
+  "idle_capacity":{"scientifically_useful_jobs_queued":5,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false},
+  "next_gate":"CONSUME_ITER096_EXACT_ARXIV_SOURCE_ARTIFACTS_AND_MANUALLY_AUDIT_ANCILLARY_AVAILABILITY",
+  "next_gate_rationale":"ITER094-095 saturated repository/archive metadata discovery. ITER096 directly audits five primary 3+1 CDT source packages, including the 2026 ML study that consumed 4D Monte-Carlo data, for ancillary/public joint-count evidence. Green CI alone cannot pass the gate.",
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER096_PRIMARY_CDT_PAPER_ANCILLARY_DATA_AUTHORITY.md","results/ITER095_PUBLIC_ARCHIVE_CDT_JOINT_COUNT_DATA_DISCOVERY_2026-09-15.md","results/ITER094_PUBLIC_CDT_JOINT_COUNT_DATA_DISCOVERY_2026-09-15.md","results/ITER093_BARE_COUPLING_RESPONSE_MATRIX_SCALING_FIELD_AUTHORITY_2026-09-15.md","results/ITER092_RETROSPECTIVE_KAPPA4_PSEUDOCRITICAL_SCALING_EIGENDIRECTION_ADJUDICATION_2026-09-15.md","results/ITER091_VARIABLE_VOLUME_COSMOLOGICAL_RESPONSE_AUTHORITY_2026-09-15.md","docs/CONSTITUTION.md"]
 }
