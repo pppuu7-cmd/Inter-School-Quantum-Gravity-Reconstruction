@@ -12,18 +12,18 @@ permissions:
 
 env:
   PARENT_RUN: '34872500144'
-  PRIMARY_SHA: b7e0690f32cb7cc56f4e64cf5d1f7bc9da54405ed7275d28d4d97a35a148a8ee
+  PRIMARY_SHA: ba973b02a05688c2b122c95a111b70b0fe03a126fac399b073725574afc7358b
 
 jobs:
   primary-source:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - name: Fetch exact frozen arXiv 1508.07961 primary TeX
+      - name: Fetch exact ITER006-validated arXiv 1508.07961 primary TeX
         run: |
           python - <<'PY'
           import io,os,tarfile,time,urllib.request,hashlib
-          urls=['https://export.arxiv.org/e-print/1508.07961','https://arxiv.org/e-print/1508.07961','https://export.arxiv.org/src/1508.07961']
+          urls=['https://export.arxiv.org/e-print/1508.07961v2','https://arxiv.org/e-print/1508.07961v2','https://export.arxiv.org/e-print/1508.07961','https://arxiv.org/e-print/1508.07961']
           expected=os.environ['PRIMARY_SHA']; last=None
           for attempt in range(6):
             for url in urls:
