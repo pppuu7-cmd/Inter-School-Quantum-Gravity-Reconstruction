@@ -1,0 +1,53 @@
+name: ITER064 RC008 permutation seed stability diagnostic
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter064_rc008_permutation_seed_diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        boundary: [B2, P1, P2]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy
+      - name: Frozen high-statistics permutation/seed diagnostic
+        run: python code/iter064/diagnostic.py --boundary '${{ matrix.boundary }}' --out 'out/${{ matrix.boundary }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter064-${{ matrix.boundary }}
+          path: out/${{ matrix.boundary }}.json
+          if-no-files-found: warn
+
+  aggregate:
+    needs: [boundary]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter064-*
+          path: artifacts
+          merge-multiple: true
+      - name: Apply frozen ITER064 diagnostic predicates
+        run: python code/iter064/aggregate.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter064-aggregate
+          path: aggregate/summary.json
+          if-no-files-found: error
