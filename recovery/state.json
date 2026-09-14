@@ -4,7 +4,7 @@
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
   "active_iteration": "ITERATION_031_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_RUNNING",
-  "iteration_completion_percent": 20,
+  "iteration_completion_percent": 25,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -40,22 +40,25 @@
         "bounded_numerical_contraction_authorized": true
       },
       "iter031": {
-        "status": "QUEUED_AFTER_INFRASTRUCTURE_REPAIR",
+        "status": "IN_PROGRESS_AFTER_DEPENDENCY_ONLY_REPAIRS",
         "prereg_commit": "38333cb3e5a912eb7e6be8b6e997dcb94d366279",
         "implementation_commit": "045a25241b37912199794385e6b4cd89b1f37b4f",
         "initial_production_head": "08cad425efe828fb1fd8431c0ece927138889493",
         "initial_run": 34801076904,
         "initial_classification": "NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE_MISSING_NUMPY",
-        "repair_commit": "38610cb655314328f74be0a9383ff9125abbf9fd",
-        "authoritative_run": 34801143752,
-        "jobs": {"authority-domain":103843905093,"bounded-contraction":103843905182,"null-controls":103843905197,"component-translation":103843905269},
+        "first_repair_commit": "38610cb655314328f74be0a9383ff9125abbf9fd",
+        "first_recovery_run": 34801143752,
+        "first_recovery_classification": "NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE_MISSING_MPMATH",
+        "second_repair_commit": "523405f835757101659a259d2a50b7c452c7d084",
+        "authoritative_run": 34801212245,
+        "jobs": {"null-controls":103844104789,"bounded-contraction":103844104851,"authority-domain":103844104861,"component-translation":103844104877},
         "scientific_result": null
       },
       "iter012_retry_authorized": false,
       "eq29_amplitude_authorized": false,
       "one_step_tnr_authorized": false,
       "bridge_credit": false,
-      "next_gate": "CONSUME_ITER031_RECOVERY_RUN_RAW_LANES_AND_AGGREGATE_AGAINST_FROZEN_PREREG_WITHOUT_RETUNING"
+      "next_gate": "CONSUME_ITER031_AUTHORITATIVE_RUN_RAW_LANES_AND_AGGREGATE_AGAINST_FROZEN_PREREG_WITHOUT_RETUNING"
     },
     "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS", "refinement_map_derived": false},
@@ -64,12 +67,12 @@
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
   "active_compute": [
-    {"run":34801143752,"job":103843905093,"status":"queued","purpose":"ITER031 authority-domain"},
-    {"run":34801143752,"job":103843905182,"status":"queued","purpose":"ITER031 bounded-contraction primary+heldout"},
-    {"run":34801143752,"job":103843905197,"status":"queued","purpose":"ITER031 frozen null controls"},
-    {"run":34801143752,"job":103843905269,"status":"queued","purpose":"ITER031 component-translation primary+heldout"}
+    {"run":34801212245,"job":103844104789,"status":"in_progress","purpose":"ITER031 frozen null controls"},
+    {"run":34801212245,"job":103844104851,"status":"in_progress","purpose":"ITER031 bounded-contraction primary+heldout"},
+    {"run":34801212245,"job":103844104861,"status":"in_progress","purpose":"ITER031 authority-domain"},
+    {"run":34801212245,"job":103844104877,"status":"in_progress","purpose":"ITER031 component-translation primary+heldout"}
   ],
-  "idle_capacity": {"scientifically_useful_jobs_queued":4,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"Four independent prospectively frozen ITER031 lanes are queued after a dependency-only infrastructure repair; no duplicate batch is admissible."},
+  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":4,"avoidable_idle":false,"reason":"Four independent prospectively frozen ITER031 lanes are in progress after dependency-only infrastructure repairs; no duplicate batch is admissible."},
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
