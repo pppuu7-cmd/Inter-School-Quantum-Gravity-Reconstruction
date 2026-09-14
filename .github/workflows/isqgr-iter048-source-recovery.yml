@@ -1,0 +1,106 @@
+name: ISQGR ITER048 source extraction recovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter048-source-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [tex-eq11, cited-reference]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover frozen source lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out work/src
+          lane='${{ matrix.lane }}'
+          ok=0
+          for u in 'https://export.arxiv.org/e-print/2302.00072' 'https://arxiv.org/e-print/2302.00072'; do
+            if curl --fail -L --retry 4 --retry-delay 2 --max-time 180 -A 'ISQGR-ITER048-recovery/1.0' "$u" -o work/source.tar; then ok=1; break; fi
+          done
+          test "$ok" = 1 || { printf '{"lane":"%s","classification":"INFRASTRUCTURE_FAIL_SOURCE_TRANSPORT"}\n' "$lane" > out/evidence.json; exit 2; }
+          sha256sum work/source.tar > out/source_archive_sha256.txt
+          tar -xf work/source.tar -C work/src
+          find work/src -type f -print0 | sort -z | xargs -0 sha256sum > out/source_file_sha256.txt
+
+          if [[ "$lane" == 'tex-eq11' ]]; then
+            python3 - <<'PY'
+          import json,pathlib,re
+          regions=[]
+          il=set(); jl=set()
+          for p in pathlib.Path('work/src').rglob('*'):
+              if not p.is_file() or p.suffix.lower() not in {'.tex','.txt','.bbl','.bib'}: continue
+              t=p.read_text(errors='replace')
+              # Eq.(11) contains repeated Wigner-6j objects; search all such source regions, not early intro hits.
+              marks=list(re.finditer(r'\\W(?:six|Six)|\\begin\{Bmatrix\}|vertex\s+renormal',t,re.I))
+              for m in marks:
+                  ex=t[max(0,m.start()-12000):min(len(t),m.start()+26000)]
+                  ii=set(re.findall(r'\bi\s*_\s*\{\s*(\d{1,2})\s*\}',ex)) | set(re.findall(r'\bi_(\d{1,2})\b',ex))
+                  jj=set(re.findall(r'\bj\s*_\s*\{\s*(\d{1,2})\s*\}',ex)) | set(re.findall(r'\bj_(\d{1,2})\b',ex))
+                  if len(ii)>=10 or len(jj)>=8 or ex.count('\\Wsix')>=3:
+                      il |= ii; jl |= jj
+                      regions.append({'file':str(p),'offset':m.start(),'i_labels':sorted(ii,key=int),'j_labels':sorted(jj,key=int),'excerpt':ex})
+          want_i={str(x) for x in range(1,16)}; want_j={str(x) for x in range(1,11)}
+          complete=(want_i <= il and want_j <= jl and len(regions)>0)
+          out={'lane':'tex-eq11','transport_complete':True,'regions':regions[:12],
+               'i_labels_seen':sorted(il,key=int),'j_labels_seen':sorted(jl,key=int),
+               'all_i_1_15':want_i <= il,'all_j_1_10':want_j <= jl,
+               'parser_complete':complete,
+               'classification':'EXACT_TEX_ROUTING_EVIDENCE_COLLECTED_REQUIRES_FROZEN_CLASSIFICATION' if complete else 'TECHNICAL_PARSER_INCOMPLETE'}
+          pathlib.Path('out/evidence.json').write_text(json.dumps(out,indent=2,ensure_ascii=False)+'\n')
+          if not complete: raise SystemExit(2)
+          PY
+          else
+            python3 - <<'PY'
+          import json,pathlib,re
+          hits=[]
+          for p in pathlib.Path('work/src').rglob('*'):
+              if not p.is_file() or p.suffix.lower() not in {'.tex','.bbl','.bib','.txt'}: continue
+              t=p.read_text(errors='replace')
+              for m in re.finditer(r'https?://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',t):
+                  ctx=t[max(0,m.start()-1800):min(len(t),m.end()+1800)]
+                  if 'PaperRepo' in ctx or ('monte carlo' in ctx.lower() and 'spin foam' in ctx.lower()):
+                      hits.append({'file':str(p),'url':m.group(0).rstrip('.,;)]}'),'context':ctx})
+          uniq=[]; seen=set()
+          for h in hits:
+              if h['url'] not in seen: seen.add(h['url']); uniq.append(h)
+          pathlib.Path('out/source_candidates.json').write_text(json.dumps(uniq,indent=2,ensure_ascii=False)+'\n')
+          if len(uniq)!=1:
+              pathlib.Path('out/evidence.json').write_text(json.dumps({'lane':'cited-reference','transport_complete':True,'source_candidates':uniq,'classification':'CITED_REFERENCE_AMBIGUOUS_OR_MISSING'},indent=2)+'\n')
+              raise SystemExit(2)
+          pathlib.Path('work/reference_url.txt').write_text(uniq[0]['url']+'\n')
+          PY
+            url=$(cat work/reference_url.txt)
+            git clone -q "$url" work/reference
+            head=$(git -C work/reference rev-parse HEAD)
+            printf '%s\n' "$head" > out/reference_head.txt
+            find work/reference -type f -not -path '*/.git/*' | sed 's#work/reference/##' | sort > out/reference_files.txt
+            grep -RniE 'vertex[ _-]?renormal|sl2cfoam|monte[ _-]?carlo|5.?1|1.?5|Pachner' work/reference --exclude-dir=.git --include='*.jl' --include='*.py' --include='*.ipynb' --include='*.md' --include='*.txt' --include='*.c' --include='*.h' > out/relevant_hits.txt || true
+            URL="$url" HEAD="$head" python3 - <<'PY'
+          import json,os,pathlib
+          files=pathlib.Path('out/reference_files.txt').read_text().splitlines()
+          hits=pathlib.Path('out/relevant_hits.txt').read_text(errors='replace').splitlines()
+          code=[x for x in files if x.endswith(('.jl','.py','.ipynb','.c','.h'))]
+          relevant=[x for x in hits if 'vertex' in x.lower() or 'renormal' in x.lower() or 'sl2cfoam' in x.lower()]
+          passed=bool(code) and bool(relevant)
+          out={'lane':'cited-reference','transport_complete':True,'literal_source_url':os.environ['URL'],'reference_head':os.environ['HEAD'],'code_file_count':len(code),'relevant_hit_count':len(relevant),'relevant_hits':relevant[:200],'scientific_pass_candidate':passed,'classification':'CITED_REFERENCE_EXECUTABLE_EVIDENCE_COLLECTED_REQUIRES_FROZEN_CLASSIFICATION' if passed else 'CITED_REFERENCE_MATERIAL_BLOCKED'}
+          pathlib.Path('out/evidence.json').write_text(json.dumps(out,indent=2,ensure_ascii=False)+'\n')
+          if not passed: raise SystemExit(2)
+          PY
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter048-recovery-${{ matrix.lane }}
+          path: out/
