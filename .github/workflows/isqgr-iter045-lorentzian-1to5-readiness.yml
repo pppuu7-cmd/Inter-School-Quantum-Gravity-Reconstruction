@@ -1,0 +1,155 @@
+name: ISQGR ITER045 Lorentzian 1-to-5 implementation readiness
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter045-lorentzian-1to5-readiness.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  readiness:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [topology-incidence, backend-provenance, state-space, topology-null]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen readiness lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          lane='${{ matrix.lane }}'
+          if [[ "$lane" == "topology-incidence" ]]; then
+            python3 - <<'PY'
+          import itertools,json
+          orig=range(5); c=5
+          refined=[tuple(sorted((c,)+tuple(v for v in orig if v!=omit))) for omit in orig]
+          all_tets={tuple(sorted(x)) for s in refined for x in itertools.combinations(s,4)}
+          internal_tets=sorted(t for t in all_tets if c in t)
+          boundary_tets=sorted(t for t in all_tets if c not in t)
+          all_tri={tuple(sorted(x)) for s in refined for x in itertools.combinations(s,3)}
+          internal_tri=sorted(t for t in all_tri if c in t)
+          boundary_tri=sorted(t for t in all_tri if c not in t)
+          adjacency=[]
+          for i,j in itertools.combinations(range(5),2):
+            inter=tuple(sorted(set(refined[i])&set(refined[j])))
+            adjacency.append({'i':i,'j':j,'intersection':inter,'tetrahedron':len(inter)==4})
+          counts={'refined_4simplices':len(refined),'internal_tetrahedra':len(internal_tets),'internal_triangles':len(internal_tri),'boundary_triangles':len(boundary_tri)}
+          passed=counts=={'refined_4simplices':5,'internal_tetrahedra':10,'internal_triangles':10,'boundary_triangles':10} and all(a['tetrahedron'] for a in adjacency)
+          out={'lane':'topology-incidence','counts':counts,'refined':refined,'internal_tetrahedra':internal_tets,'internal_triangles':internal_tri,'boundary_triangles':boundary_tri,'adjacency':adjacency,'scientific_pass':passed,'classification':'PASS' if passed else 'FAIL'}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2)+'\n')
+          if not passed: raise SystemExit(2)
+          PY
+          elif [[ "$lane" == "backend-provenance" ]]; then
+            git clone -q https://github.com/qg-cpt-marseille/sl2cfoam-next.git backend
+            cd backend
+            git checkout -q 052e4346028870bd76f69a3034e6cae8defb8f7f
+            test "$(git rev-parse HEAD)" = '052e4346028870bd76f69a3034e6cae8defb8f7f'
+            sha256sum README.md QUICKSTART_Ubuntu.md inc/sl2cfoam.h src/vertex.c > ../out/backend_hashes.txt
+            cd ..
+            python3 - <<'PY'
+          import json,re,pathlib,subprocess
+          readme=pathlib.Path('backend/README.md').read_text(errors='replace')
+          quick=pathlib.Path('backend/QUICKSTART_Ubuntu.md').read_text(errors='replace')
+          hdr=pathlib.Path('backend/inc/sl2cfoam.h').read_text(errors='replace')
+          vc=pathlib.Path('backend/src/vertex.c').read_text(errors='replace')
+          text='\n'.join([readme,quick,hdr,vc]).lower()
+          preds={
+            'pinned_sha':subprocess.check_output(['git','-C','backend','rev-parse','HEAD'],text=True).strip()=='052e4346028870bd76f69a3034e6cae8defb8f7f',
+            'lorentzian_eprl':('lorentzian eprl' in text),
+            'vertex_compute':('vertex_compute' in text),
+            'ten_spin_interface':('list of 10 spins' in readme.lower() or '10 spins' in quick.lower()),
+            'shell_control':('number of shells' in readme.lower() or 'dl =' in quick.lower()),
+            'immirzi_control':('immirzi' in text)}
+          passed=all(preds.values())
+          out={'lane':'backend-provenance','backend':'qg-cpt-marseille/sl2cfoam-next','sha':'052e4346028870bd76f69a3034e6cae8defb8f7f','predicates':preds,'scientific_pass':passed,'classification':'PASS_BACKEND_PROVENANCE' if passed else 'BLOCKED_BACKEND_API'}
+          pathlib.Path('out/evidence.json').write_text(json.dumps(out,indent=2)+'\n')
+          if not passed: raise SystemExit(2)
+          PY
+            rm -rf backend
+          elif [[ "$lane" == "state-space" ]]; then
+            python3 - <<'PY'
+          import json
+          rows=[]
+          for J2 in [2,3,4,5,6]:
+            # half-integer spins from 0 through Jmax inclusive -> J2+1 labels
+            labels=J2+1
+            raw=labels**10
+            rows.append({'Jmax':J2/2,'labels_per_internal_face':labels,'ten_face_cartesian_tuples':raw})
+          ratios=[rows[i+1]['ten_face_cartesian_tuples']/rows[i]['ten_face_cartesian_tuples'] for i in range(len(rows)-1)]
+          out={'lane':'state-space','internal_faces':10,'rows':rows,'successive_growth_ratios':ratios,'classification':'PASS_FEASIBILITY_DIAGNOSTIC','note':'raw Cartesian counts only; no amplitude-derived pruning'}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2)+'\n')
+          PY
+          else
+            python3 - <<'PY'
+          import itertools,json
+          orig=list(range(5)); c=5
+          good=[tuple(sorted((c,)+tuple(v for v in orig if v!=omit))) for omit in orig]
+          def metrics(simplices):
+            uniq=list(dict.fromkeys(simplices))
+            tets={tuple(sorted(x)) for s in uniq for x in itertools.combinations(s,4)}
+            tris={tuple(sorted(x)) for s in uniq for x in itertools.combinations(s,3)}
+            adj=[]
+            for i,j in itertools.combinations(range(len(uniq)),2): adj.append(len(set(uniq[i])&set(uniq[j]))==4)
+            return {'n4':len(uniq),'it':sum(c in x for x in tets),'ii':sum(c in x for x in tris),'bt':sum(c not in x for x in tris),'all_pairs_share_tet':all(adj) if adj else False}
+          cases={
+            'remove_one':good[:-1],
+            'duplicate_one':good+[good[0]],
+            'replace_center': [tuple(sorted((0,)+tuple(v for v in orig if v!=omit))) for omit in orig],
+            'disconnect_one':good[:-1]+[(6,7,8,9,10)]}
+          target={'n4':5,'it':10,'ii':10,'bt':10,'all_pairs_share_tet':True}
+          rows=[]
+          for name,s in cases.items():
+            m=metrics(s); rejected=(m!=target); rows.append({'name':name,'metrics':m,'rejected':rejected})
+          passed=all(r['rejected'] for r in rows)
+          out={'lane':'topology-null','controls':rows,'null_pass':passed,'classification':'NULL_PASS' if passed else 'NULL_FAIL'}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2)+'\n')
+          if not passed: raise SystemExit(2)
+          PY
+          fi
+          python3 - <<'PY'
+          import json,pathlib
+          e=json.loads(pathlib.Path('out/evidence.json').read_text())
+          pathlib.Path('out/manifest.json').write_text(json.dumps({'lane':'${{ matrix.lane }}','classification':e.get('classification'),'files':[p.name for p in pathlib.Path('out').iterdir()]},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter045-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 90
+  aggregate:
+    needs: readiness
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter045-*
+          path: collected
+      - name: Frozen aggregate
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          ev=[]
+          for p in pathlib.Path('collected').glob('iter045-*/evidence.json'):
+            ev.append(json.loads(p.read_text()))
+          by={e['lane']:e for e in ev}
+          complete=len(by)==4
+          top=by.get('topology-incidence',{}).get('scientific_pass') is True
+          back=by.get('backend-provenance',{}).get('scientific_pass') is True
+          null=by.get('topology-null',{}).get('null_pass') is True
+          state='state-space' in by
+          passed=complete and top and back and null and state
+          out={'classification':'LORENTZIAN_1TO5_IMPLEMENTATION_READINESS_PASS' if passed else ('LORENTZIAN_1TO5_IMPLEMENTATION_READINESS_BLOCKED' if complete else 'INFRASTRUCTURE_FAIL'),'lane_count':len(by),'topology_pass':top,'backend_pass':back,'null_pass':null,'state_space_complete':state,'bounded_numerical_successor_authorized':passed,'refinement_map_derived':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/summary.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter045-aggregate
+          path: aggregate/
+          if-no-files-found: error
+          retention-days: 90
