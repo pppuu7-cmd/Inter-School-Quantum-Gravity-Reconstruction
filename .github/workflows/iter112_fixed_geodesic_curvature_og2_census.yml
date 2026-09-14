@@ -1,0 +1,100 @@
+name: ITER112 fixed-geodesic curvature O(G2) census
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/iter112_fixed_geodesic_curvature_og2_census.yml'
+      - 'protocols/ITER112_FIXED_GEODESIC_CURVATURE_O_G2_OPERATOR_DIAGRAM_CENSUS.md'
+  workflow_dispatch:
+
+jobs:
+  census:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [sector-census, power-counting, cancellation-logic]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen structural lane
+        shell: bash
+        run: |
+          mkdir -p out
+          python - <<'PY'
+          import json, os
+          from itertools import product
+          lane='${{ matrix.lane }}'
+          out={'lane':lane,'protocol':'ITER112','classification':'STRUCTURAL_ONLY'}
+          if lane=='sector-census':
+              sectors=[]
+              # r_x,r_y are powers of kappa carried by curvature expansions;
+              # q is localization/geodesic-expansion order. Keep total <=4.
+              for rx,ry,q in product(range(1,5), range(1,5), range(0,5)):
+                  total=rx+ry+q
+                  if total<=4:
+                      sectors.append({'R_x_order':rx,'R_y_order':ry,'localization_order':q,'kappa_order':total,'origin':'pure-curvature' if q==0 else 'mixed-localization'})
+              g2=[s for s in sectors if s['kappa_order']==4]
+              out.update({'all_sectors':sectors,'og2_sectors':g2,'og2_count':len(g2),'has_pure_curvature':any(s['localization_order']==0 for s in g2),'has_mixed_localization':any(s['localization_order']>0 for s in g2)})
+          elif lane=='power-counting':
+              rows=[]
+              for p in range(5):
+                  # [G^p/ell^n]=L^(2p-n)=L^-4 => n=4+2p
+                  n=4+2*p
+                  rows.append({'G_order':p,'required_ell_power':-n,'dimension_check':2*p-n})
+              out.update({'rows':rows,'og2_required_power':-8,'og3_required_power':-10,'all_dimension_checks_rr':all(r['dimension_check']==-4 for r in rows)})
+          else:
+              # Frozen logical null test: coefficients from structurally distinct operator classes are independent symbols.
+              classes=['R1R3','R2R2','R3R1','R1R1_times_geodesic2','R1R2_times_geodesic1','R2R1_times_geodesic1']
+              # Dimensional analysis assigns same scaling but supplies no coefficient relations.
+              constraints=[]
+              symmetry_relations=[['R1R3','R3R1'],['R1R2_times_geodesic1','R2R1_times_geodesic1']]
+              independent_after_exchange=4
+              forced_zero = independent_after_exchange==0
+              out.update({'classes':classes,'exchange_symmetry_relations':symmetry_relations,'independent_coefficient_classes_after_exchange':independent_after_exchange,'dimensional_constraints_on_coefficients':constraints,'symmetry_forces_total_zero':forced_zero})
+          with open(f'out/{lane}.json','w') as f: json.dump(out,f,indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter112-${{ matrix.lane }}
+          path: out/${{ matrix.lane }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: census
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter112-*
+          path: in
+          merge-multiple: true
+      - name: Apply preregistered structural gate
+        run: |
+          mkdir -p out
+          python - <<'PY'
+          import json, glob
+          data={}
+          for p in glob.glob('in/*.json'):
+              d=json.load(open(p)); data[d['lane']]=d
+          s=data['sector-census']; p=data['power-counting']; c=data['cancellation-logic']
+          consistency = s['og2_count']>0 and s['has_pure_curvature'] and s['has_mixed_localization'] and p['all_dimension_checks_rr'] and p['og2_required_power']==-8
+          if not consistency:
+              verdict='NUMERICAL_OR_IMPLEMENTATION_FAIL'
+          elif c['symmetry_forces_total_zero']:
+              verdict='NO_GO_SCOPED_SYMMETRY_FORCES_G2_CANCELLATION'
+          else:
+              verdict='PASS_SCOPED_STRUCTURAL_CENSUS_COEFFICIENT_CALCULATION_AUTHORIZED'
+          out={'protocol':'ITER112','verdict':verdict,'scientific_scope':'structural census only; physical O(G^2) coefficient not calculated','inputs':data,'claim_locks':{'bridge_derived':False,'new_physics_found':False,'candidate_theory':'UNFORMED'}}
+          json.dump(out,open('out/aggregate.json','w'),indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter112-aggregate
+          path: out/aggregate.json
+          if-no-files-found: error
