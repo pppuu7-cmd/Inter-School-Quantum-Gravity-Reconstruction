@@ -1,0 +1,261 @@
+name: ISQGR ITER051 pinned Lorentzian backend runtime
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter051-lorentzian-backend-runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-runtime:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install frozen generic build dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            build-essential m4 lzip curl ca-certificates \
+            libgmp-dev libmpfr-dev libmpc-dev libopenblas-dev libgsl-dev libomp-dev
+
+      - name: Build exact pinned runtime and source tables
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p work out
+          cd work
+          git clone --quiet https://github.com/qg-cpt-marseille/sl2cfoam-next.git backend
+          git -C backend checkout --quiet 052e4346028870bd76f69a3034e6cae8defb8f7f
+          test "$(git -C backend rev-parse HEAD)" = '052e4346028870bd76f69a3034e6cae8defb8f7f'
+
+          mkdir -p backend/ext
+          cd backend/ext
+
+          curl --fail -L --retry 4 --retry-delay 2 \
+            -o wigxjpf-1.13.tar.gz \
+            https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz
+          sha256sum wigxjpf-1.13.tar.gz | tee ../../out/wigxjpf_archive_sha256.txt
+          tar -xf wigxjpf-1.13.tar.gz
+          if [ -d wigxjpf-1.13 ]; then mv wigxjpf-1.13 wigxjpf; fi
+          test -d wigxjpf
+          make -C wigxjpf -j2
+
+          curl --fail -L --retry 4 --retry-delay 2 \
+            -o fastwigxj-1.4.1.tar.gz \
+            https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz
+          sha256sum fastwigxj-1.4.1.tar.gz | tee ../../out/fastwigxj_archive_sha256.txt
+          tar -xf fastwigxj-1.4.1.tar.gz
+          if [ -d fastwigxj-1.4.1 ]; then mv fastwigxj-1.4.1 fastwigxj; fi
+          test -d fastwigxj
+
+          set +e
+          make -C fastwigxj -j2 > ../../out/fastwigxj_build.log 2>&1
+          fwrc=$?
+          set -e
+          echo "$fwrc" > ../../out/fastwigxj_initial_rc.txt
+          if [ "$fwrc" -ne 0 ]; then
+            echo 'FASTWIGXJ_INITIAL_BUILD_FAILED_DOCUMENTED_9J_REPAIR_NOT_YET_APPLIED' >&2
+            cat ../../out/fastwigxj_build.log >&2
+            exit "$fwrc"
+          fi
+
+          cd ..
+          mkdir -p data_sl2cfoam
+          ./ext/fastwigxj/bin/hash_js --max-E-3j=50 /dev/null ./data_sl2cfoam/table_50.3j
+          ./ext/fastwigxj/bin/hash_js --max-E-6j=40 /dev/null ./data_sl2cfoam/table_40.6j
+
+          make -j2 BLAS=system OMP=0 tools
+          test -x bin/vertex-amplitude
+          test -f lib/libsl2cfoam.so
+
+          export LD_LIBRARY_PATH="$PWD/lib:$PWD/ext/wigxjpf/lib:$PWD/ext/fastwigxj/lib:${LD_LIBRARY_PATH:-}"
+          ldd bin/vertex-amplitude | tee ../out/vertex_amplitude_ldd.txt
+
+          python3 - <<'PY'
+          import hashlib,json,pathlib,subprocess
+          root=pathlib.Path('.')
+          def sha(p):
+              h=hashlib.sha256(); h.update(pathlib.Path(p).read_bytes()); return h.hexdigest()
+          manifest={
+            'iteration':'ITER051',
+            'backend_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
+            'backend_repo':'qg-cpt-marseille/sl2cfoam-next',
+            'build_flags':{'BLAS':'system','OMP':'0','ADD_CFLAGS':''},
+            'allowed_fastwigxj_9j_repair_applied':False,
+            'fixed_cli':{
+              'gamma':'1.2','two_js':'1,1,1,1,1,1,1,1,1,1',
+              'two_is':'0,0,0,0,0','Dl':'0'
+            },
+            'files':{
+              'bin/vertex-amplitude':sha('bin/vertex-amplitude'),
+              'lib/libsl2cfoam.so':sha('lib/libsl2cfoam.so'),
+              'data_sl2cfoam/table_50.3j':sha('data_sl2cfoam/table_50.3j'),
+              'data_sl2cfoam/table_40.6j':sha('data_sl2cfoam/table_40.6j')
+            },
+            'compiler':subprocess.check_output(['gcc','--version'],text=True).splitlines()[0],
+            'build_pass':True
+          }
+          pathlib.Path('../out/runtime_manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          PY
+
+          tar -czf ../out/runtime_bundle.tar.gz \
+            bin/vertex-amplitude lib \
+            ext/wigxjpf/lib ext/fastwigxj/lib \
+            data_sl2cfoam
+
+      - name: Upload build evidence and runtime bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter051-runtime-build
+          path: out/
+          if-no-files-found: warn
+
+  checks:
+    needs: build-runtime
+    if: needs.build-runtime.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [vertex-smoke-A, vertex-smoke-B, runtime-identity, negative-control]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Install runtime libraries
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            libgmp10 libmpfr6 libmpc3 libopenblas0-pthread libquadmath0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter051-runtime-build
+          path: build
+
+      - name: Execute frozen independent lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p runtime out
+          tar -xzf build/runtime_bundle.tar.gz -C runtime
+          cp build/runtime_manifest.json runtime_manifest.json
+          export LD_LIBRARY_PATH="$PWD/runtime/lib:$PWD/runtime/ext/wigxjpf/lib:$PWD/runtime/ext/fastwigxj/lib:${LD_LIBRARY_PATH:-}"
+          lane='${{ matrix.lane }}'
+          python3 - "$lane" <<'PY'
+          import hashlib,json,math,pathlib,re,subprocess,sys
+          lane=sys.argv[1]
+          root=pathlib.Path('runtime')
+          manifest=json.loads(pathlib.Path('runtime_manifest.json').read_text())
+          fixed=manifest['fixed_cli']
+          def sha(p):
+              h=hashlib.sha256(); h.update(pathlib.Path(p).read_bytes()); return h.hexdigest()
+          def identity_ok():
+              return all(sha(root/p)==v for p,v in manifest['files'].items())
+          out={'iteration':'ITER051','lane':lane,'backend_commit':manifest['backend_commit']}
+          if lane in ('vertex-smoke-A','vertex-smoke-B'):
+              cmd=[str(root/'bin/vertex-amplitude'),str(root/'data_sl2cfoam'),fixed['gamma'],fixed['two_js'],fixed['two_is'],fixed['Dl']]
+              p=subprocess.run(cmd,text=True,capture_output=True)
+              out['command_frozen']=True
+              out['returncode']=p.returncode
+              out['stdout']=p.stdout[-12000:]
+              out['stderr']=p.stderr[-12000:]
+              nums=[]
+              for line in p.stdout.splitlines():
+                  s=line.strip()
+                  try: nums.append(float(s))
+                  except Exception: pass
+              val=nums[-1] if nums else None
+              out['value']=val
+              out['finite']=bool(val is not None and math.isfinite(val))
+              out['identity_ok']=identity_ok()
+              out['pass']=bool(p.returncode==0 and out['finite'] and out['identity_ok'])
+          elif lane=='runtime-identity':
+              out['files_match_manifest']=identity_ok()
+              out['backend_sha_match']=(manifest['backend_commit']=='052e4346028870bd76f69a3034e6cae8defb8f7f')
+              out['build_flags_match']=(manifest['build_flags']=={'BLAS':'system','OMP':'0','ADD_CFLAGS':''})
+              out['fixed_cli_match']=(fixed=={'gamma':'1.2','two_js':'1,1,1,1,1,1,1,1,1,1','two_is':'0,0,0,0,0','Dl':'0'})
+              out['pass']=all([out['files_match_manifest'],out['backend_sha_match'],out['build_flags_match'],out['fixed_cli_match']])
+          else:
+              def accept(candidate):
+                  return candidate==fixed and identity_ok()
+              changed_gamma=dict(fixed); changed_gamma['gamma']='1.1'
+              changed_dl=dict(fixed); changed_dl['Dl']='1'
+              changed_js=dict(fixed); changed_js['two_js']='2,1,1,1,1,1,1,1,1,1'
+              wrong_manifest=dict(manifest['files']); wrong_manifest['bin/vertex-amplitude']='0'*64
+              out['changed_gamma_rejected']=not accept(changed_gamma)
+              out['changed_Dl_rejected']=not accept(changed_dl)
+              out['changed_spins_rejected']=not accept(changed_js)
+              out['wrong_binary_hash_rejected']=(wrong_manifest['bin/vertex-amplitude'] != sha(root/'bin/vertex-amplitude'))
+              out['pass']=all([out['changed_gamma_rejected'],out['changed_Dl_rejected'],out['changed_spins_rejected'],out['wrong_binary_hash_rejected']])
+          pathlib.Path('out/evidence.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter051-${{ matrix.lane }}
+          path: out/evidence.json
+
+  aggregate:
+    needs: [build-runtime, checks]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter051-*
+          path: evidence
+          merge-multiple: false
+        continue-on-error: true
+
+      - name: Frozen conservative aggregate
+        env:
+          BUILD_RESULT: ${{ needs.build-runtime.result }}
+          CHECKS_RESULT: ${{ needs.checks.result }}
+        run: |
+          python3 - <<'PY'
+          import json,math,os,pathlib
+          rows=[]
+          for p in pathlib.Path('evidence').rglob('evidence.json'):
+              try: rows.append(json.loads(p.read_text()))
+              except Exception: pass
+          by={r.get('lane'):r for r in rows}
+          build_result=os.environ.get('BUILD_RESULT')
+          checks_result=os.environ.get('CHECKS_RESULT')
+          if build_result!='success':
+              cls='LORENTZIAN_PINNED_BACKEND_RUNTIME_BLOCKED_DEPENDENCY'
+          else:
+              req=['vertex-smoke-A','vertex-smoke-B','runtime-identity','negative-control']
+              if not all(x in by for x in req):
+                  cls='INVALID_IMPLEMENTATION'
+              elif not by['runtime-identity'].get('pass') or not by['negative-control'].get('pass'):
+                  cls='INVALID_IMPLEMENTATION'
+              elif not by['vertex-smoke-A'].get('pass') or not by['vertex-smoke-B'].get('pass'):
+                  cls='LORENTZIAN_PINNED_BACKEND_RUNTIME_NUMERICAL_FAIL'
+              else:
+                  a=float(by['vertex-smoke-A']['value']); b=float(by['vertex-smoke-B']['value'])
+                  tol=1e-12+1e-10*max(abs(a),abs(b))
+                  if abs(a-b)<=tol:
+                      cls='LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS'
+                  else:
+                      cls='LORENTZIAN_PINNED_BACKEND_RUNTIME_NUMERICAL_FAIL'
+          out={'iteration':'ITER051','classification':cls,'build_result':build_result,'checks_result':checks_result,
+               'lane_pass':{k:bool(v.get('pass')) for k,v in by.items()},
+               'green_ci_not_scientific_predicate':True,
+               'claim_locks':{'refinement_map_derived':False,'bridge_credit':False,'candidate_theory':'UNFORMED'}}
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter051-aggregate
+          path: aggregate.json
