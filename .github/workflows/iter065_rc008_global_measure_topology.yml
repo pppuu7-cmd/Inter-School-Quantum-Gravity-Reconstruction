@@ -1,0 +1,75 @@
+name: ITER065 RC008 global measure topology authority
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter065_rc008_global_measure_topology.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  geometry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        mode: [coarse2, fine32, sentinel]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check numpy
+      - name: Frozen global-geometric-measure topology diagnostic
+        run: python code/iter065/gate.py --mode '${{ matrix.mode }}' --out 'out/${{ matrix.mode }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter065-${{ matrix.mode }}
+          path: out/${{ matrix.mode }}.json
+          if-no-files-found: warn
+
+  source_authority:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        source: ['1508.07961','1605.07649','1701.02311','1804.00023']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check requests pypdf
+      - name: Frozen exact-PDF source authority extraction
+        run: python code/iter065/gate.py --mode source --source '${{ matrix.source }}' --out 'out/source-${{ matrix.source }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter065-source-${{ matrix.source }}
+          path: out/source-${{ matrix.source }}.json
+          if-no-files-found: warn
+
+  aggregate:
+    needs: [geometry, source_authority]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter065-*
+          path: artifacts
+          merge-multiple: true
+      - name: Apply frozen ITER065 aggregate predicates
+        run: python code/iter065/aggregate.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter065-aggregate
+          path: aggregate/summary.json
+          if-no-files-found: error
