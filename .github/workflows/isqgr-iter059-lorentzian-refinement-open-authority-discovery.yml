@@ -1,0 +1,69 @@
+name: ISQGR ITER059 Lorentzian refinement open authority discovery
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr-iter059-lorentzian-refinement-open-authority-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  discovery:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane:
+          - lorentzian-eprl-refinement
+          - lorentzian-spin-foam-map
+          - eprl-rg-simplicial
+          - eprl-refinement-map
+          - null-provenance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen discovery lane
+        run: |
+          mkdir -p out
+          python3 code/iter059/discovery.py --lane '${{ matrix.lane }}' --out out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter059-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: discovery
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter059-*
+          path: evidence
+      - name: Aggregate discovery candidates
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          rows={}
+          for p in pathlib.Path('evidence').rglob('evidence.json'):
+            x=json.loads(p.read_text());rows[x['lane']]=x
+          req=['lorentzian-eprl-refinement','lorentzian-spin-foam-map','eprl-rg-simplicial','eprl-refinement-map','null-provenance']
+          missing=[x for x in req if x not in rows]
+          transport=all(rows.get(k,{}).get('retrieval_pass') is True for k in req if k!='null-provenance')
+          ids=[]
+          for k in req:
+            ids += rows.get(k,{}).get('new_candidate_ids',[])
+          ids=sorted(set(ids))
+          if missing or not transport: classification='INFRASTRUCTURE_FAIL_DISCOVERY'
+          elif ids: classification='DISCOVERY_POSITIVE_SCOPED'
+          else: classification='DISCOVERY_SATURATED_SCOPED'
+          out={'iteration':'ITER059','classification':classification,'missing':missing,'new_candidate_ids':ids,'candidate_count':len(ids),'metadata_only_candidates_require_exact_source_qualification':True,'refinement_map_derived':False,'bridge_credit':False,'candidate_theory':'UNFORMED','candidate_theory_percent':0}
+          pathlib.Path('aggregate').mkdir();pathlib.Path('aggregate/aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True));print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter059-aggregate
+          path: aggregate/aggregate.json
+          if-no-files-found: error
