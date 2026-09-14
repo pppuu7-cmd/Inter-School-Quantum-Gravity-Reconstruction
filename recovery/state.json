@@ -3,8 +3,8 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITER064_TERMINAL_INVALID_DIAGNOSTIC_INFERENCE",
-  "iteration_completion_percent": 100,
+  "active_iteration": "ITER065_RC008_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY_ACTIVE",
+  "iteration_completion_percent": 15,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
     "amplitude_refinement_cross_realization_validation": 50,
@@ -21,21 +21,11 @@
     "lorentzian_refinement_derived": false
   },
   "frontier": {
-    "RC006": {
-      "status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
-      "bridge_credit": false
-    },
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "REFINEMENT_AUTHORITY_UNRESOLVED",
-      "refinement_map_derived": false,
-      "bridge_credit": false
-    },
-    "BH004_BH004B": {
-      "status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
-      "bridge_credit": false
-    },
+    "RC006": {"status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED", "bridge_credit": false},
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status": "REFINEMENT_AUTHORITY_UNRESOLVED", "refinement_map_derived": false, "bridge_credit": false},
+    "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
     "RC008": {
-      "status": "SOURCE_KERNEL_CLOSED_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_UNRESOLVED",
+      "status": "GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY_ACTIVE",
       "scope": "SYMMETRY_RESTRICTED_RIEMANNIAN_EPRL_FK_QUANTUM_CUBOID",
       "iter061_source_authority": "SCIENTIFIC_PASS",
       "iter062a_kernel_source_closure": "SCIENTIFIC_PASS",
@@ -45,10 +35,7 @@
         "manual_terminal_status": "SUPERSEDED_INVALID_SCIENTIFIC_INFERENCE_SOURCE_MEASURE_MAPPING_UNRESOLVED",
         "authoritative_run": 34874113741,
         "aggregate_job": 104077252124,
-        "aggregate_artifact": {
-          "id": 10359819990,
-          "digest": "sha256:fd62c82a618b6ded0e4ab0013610f00a33a70551e9d3f76ab1188d1c2f44493b"
-        },
+        "aggregate_artifact": {"id": 10359819990, "digest": "sha256:fd62c82a618b6ded0e4ab0013610f00a33a70551e9d3f76ab1188d1c2f44493b"},
         "primary_crossing": "B0_0.50_TO_0.55",
         "crossing_endpoint_alpha_0_50_converged": false,
         "source_global_measure_mapping_qualified": false,
@@ -60,10 +47,7 @@
         "status": "INVALID_IMPLEMENTATION_OR_SELECTOR_GATE",
         "classification": "INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL",
         "authoritative_run": 34874671586,
-        "aggregate_artifact": {
-          "id": 10360430809,
-          "digest": "sha256:a59a92d11b4d439b25eb17a380c03298dfe606186fa7fbd5187c4483c8ef3d00"
-        },
+        "aggregate_artifact": {"id": 10360430809, "digest": "sha256:a59a92d11b4d439b25eb17a380c03298dfe606186fa7fbd5187c4483c8ef3d00"},
         "gate_credit": false
       },
       "iter064": {
@@ -73,45 +57,49 @@
         "production_head": "be911ba4e7a847049f4882fbe615d0f25774b3ad",
         "authoritative_run": 34874915843,
         "aggregate_job": 104079838227,
-        "aggregate_artifact": {
-          "id": 10361141304,
-          "digest": "sha256:f248f9146222a411d04b3b74359650f89ff81ce77e9fcb5083cb3a5220376bf8"
-        },
-        "crossings": {
-          "B2": [0.50, 0.55],
-          "P1": [0.50, 0.55],
-          "P2": [0.50, 0.55]
-        },
+        "aggregate_artifact": {"id": 10361141304, "digest": "sha256:f248f9146222a411d04b3b74359650f89ff81ce77e9fcb5083cb3a5220376bf8"},
+        "crossings": {"B2": [0.50,0.55], "P1": [0.50,0.55], "P2": [0.50,0.55]},
         "alpha_0_50_fine_ess_pass": false,
         "alpha_0_50_fine_cv_pass": false,
         "narrow_structural_observation": "ITER063 permutation discrepancy is seed_QMC_sensitive",
         "gate_credit": false,
         "manual_audit_commit": "5f1cc5f980d1d8b49d7755148ab82ee1ebef5d10"
       },
+      "iter065": {
+        "status": "ACTIVE",
+        "prereg_commit": "e1f97fa2ac91a48e9bb479c81074ea091c0d6d21",
+        "implementation_commits": ["f25ccba64d81de1daa4d3c6205a7425d22b93e3e", "031cfefd7a0d6f2b62bfce79a12f9a55c544fb98"],
+        "production_head": "3609580257c5ff35bbf292d7d04754031bf3523f",
+        "authoritative_run": 34877639682,
+        "frozen_source_ids": ["1508.07961","1605.07649","1701.02311","1804.00023"],
+        "gate_credit": false
+      },
       "global_geometric_measure_topology_qualified": false,
       "full_eprl_refinement_derived": false,
       "lorentzian_refinement_derived": false,
       "bridge_credit": false
     },
-    "RC009": {
-      "status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"
-    },
-    "LORENTZIAN_DELTA4": {
-      "status": "SATURATED_NEGATIVE_SCOPED",
-      "bridge_credit": false
-    }
+    "RC009": {"status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"},
+    "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
-  "active_compute": [],
+  "active_compute": [{
+    "iteration": "ITER065",
+    "run": 34877639682,
+    "head": "3609580257c5ff35bbf292d7d04754031bf3523f",
+    "scientifically_useful_jobs": 7,
+    "status_at_recovery_write": "queued"
+  }],
   "idle_capacity": {
-    "scientifically_useful_jobs_queued": 0,
+    "scientifically_useful_jobs_queued": 7,
     "scientifically_useful_jobs_in_progress": 0,
     "avoidable_idle": false
   },
-  "next_gate": "PREREGISTER_RC008_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY",
-  "next_gate_rationale": "ITER062B and ITER064 crossings rely on alpha=0.50 where fine ESS/CV or level convergence fails, while the executable also applies the one-hypercuboid Delta_FP locally to every cell without a source-qualified derivation of the global glued-complex pullback measure. Exact global measure topology is now the upstream blocker; another numerical crossing rerun is lower information.",
+  "next_gate": "CONSUME_ITER065_THEN_MANUAL_EQUATION_LEVEL_SOURCE_AUDIT_IF_CANDIDATE_PRESENT",
+  "next_gate_rationale": "The old local product of one-cell Delta_FP factors is not source-qualified as the global glued-complex pullback measure. ITER065 prospectively tests the reduced geometric embedding/Jacobian and exact-PDF source authority before any corrected crossing is authorized.",
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "prereg/ITER065_RC008_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY_2026-09-14.md",
     "results/ITER064_RC008_CROSSING_CONVERGENCE_AND_GLOBAL_MEASURE_MANUAL_AUDIT_2026-09-14.md",
     "prereg/ITER064_RC008_PERMUTATION_SEED_STABILITY_DIAGNOSTIC_2026-09-14.md",
     "results/ITER063_RC008_HELDOUT_TRANSPORT_SELECTOR_INVALID_2026-09-14.md",
