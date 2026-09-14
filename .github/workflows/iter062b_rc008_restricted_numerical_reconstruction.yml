@@ -1,0 +1,143 @@
+name: ITER062B RC008 restricted coarse-fine numerical reconstruction
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter062b_rc008_restricted_numerical_reconstruction.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  calibration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy
+      - name: Frozen analytic/source calibration
+        run: python code/iter062b/reconstruct.py --mode calibration --out out/calibration.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter062b-calibration
+          path: out/calibration.json
+          if-no-files-found: warn
+
+  boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        boundary: [B0, B1, B2, B3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy
+      - name: Frozen boundary reconstruction
+        run: python code/iter062b/reconstruct.py --mode boundary --boundary '${{ matrix.boundary }}' --out 'out/${{ matrix.boundary }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter062b-${{ matrix.boundary }}
+          path: out/${{ matrix.boundary }}.json
+          if-no-files-found: warn
+
+  aggregate:
+    needs: [calibration, boundary]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter062b-*
+          path: artifacts
+          merge-multiple: true
+      - name: Apply frozen convergence and scientific predicates
+        run: |
+          python - <<'PY'
+          import json,glob,math,statistics,os
+          alphas=[0.45,0.50,0.55,0.60,0.65,0.70,0.75,0.80]
+          central={0.55,0.60,0.65,0.70}
+          def load(name):
+            p=glob.glob(f'artifacts/{name}.json')
+            return json.load(open(p[0])) if p else None
+          cal=load('calibration')
+          bds={b:load(b) for b in ['B0','B1','B2','B3']}
+          missing=[x for x,v in [('calibration',cal),*bds.items()] if v is None]
+          def sample_map(d,power,kind):
+            out={a:[] for a in alphas}; ess={a:[] for a in alphas}; fin={a:[] for a in alphas}
+            for row in d['rows']:
+              if row['power']!=power: continue
+              for r in row[kind]:
+                a=round(float(r['alpha']),2); out[a].append(r['value']); ess[a].append(r['ess_fraction']); fin[a].append(r['finite_fraction'])
+            return out,ess,fin
+          summaries={}
+          for b,d in bds.items():
+            if d is None: continue
+            c16,ce16,cf16=sample_map(d,16,'coarse'); f16,fe16,ff16=sample_map(d,16,'fine')
+            c14,_,_=sample_map(d,14,'coarse'); f14,_,_=sample_map(d,14,'fine')
+            conv_checks=[]; per_alpha={}; diffs={}
+            for a in alphas:
+              cv=lambda xs: statistics.stdev(xs)/max(abs(statistics.mean(xs)),1e-300) if len(xs)>1 else float('inf')
+              rel=lambda x,y: abs(x-y)/max(abs(y),1e-300)
+              cm=statistics.mean(c16[a]); fm=statistics.mean(f16[a]); dm=fm-cm
+              ds=[f16[a][i]-c16[a][i] for i in range(min(len(f16[a]),len(c16[a])))]
+              se=statistics.stdev(ds)/math.sqrt(len(ds)) if len(ds)>1 else float('inf')
+              diffs[a]={'mean':dm,'stderr':se,'seed_values':ds}
+              chk={
+                'finite': all(x==1.0 for x in cf16[a]+ff16[a]),
+                'coarse_ess': statistics.median(ce16[a])>=1e-4,
+                'fine_ess': statistics.median(fe16[a])>=1e-4,
+                'coarse_cv': cv(c16[a])<=0.15,
+                'fine_cv': cv(f16[a])<=0.15,
+                'coarse_level': rel(statistics.mean(c14[a]),cm)<=0.20,
+                'fine_level': rel(statistics.mean(f14[a]),fm)<=0.20,
+              }
+              per_alpha[str(a)]={'coarse_mean':cm,'fine_mean':fm,'difference':dm,'difference_stderr':se,'checks':chk,
+                'coarse_ess_median':statistics.median(ce16[a]),'fine_ess_median':statistics.median(fe16[a]),
+                'coarse_cv':cv(c16[a]),'fine_cv':cv(f16[a])}
+              if a in central: conv_checks.extend(chk.values())
+            converged=all(conv_checks)
+            crossings=[]
+            for a0,a1 in zip(alphas[:-1],alphas[1:]):
+              d0=diffs[a0]; d1=diffs[a1]
+              if d0['mean']==0 or d1['mean']==0 or d0['mean']*d1['mean']<0:
+                sig0=abs(d0['mean'])>d0['stderr']; sig1=abs(d1['mean'])>d1['stderr']
+                if sig0 and sig1:
+                  root=a0+(a1-a0)*(-d0['mean'])/(d1['mean']-d0['mean']) if d1['mean']!=d0['mean'] else (a0+a1)/2
+                  crossings.append({'bracket':[a0,a1],'linear_report_only':root,'both_endpoint_signs_resolved':True})
+            summaries[b]={'converged':converged,'robust_crossing':bool(crossings),'crossings':crossings,'per_alpha':per_alpha}
+          if missing:
+            classification='INFRASTRUCTURE_FAIL_PRE_SCIENCE'; scientific_pass=False
+          elif not cal.get('pass',False):
+            classification='INVALID_IMPLEMENTATION_CALIBRATION'; scientific_pass=False
+          elif not summaries['B0']['converged']:
+            classification='NUMERICAL_FAIL_PRIMARY_CONVERGENCE_NOT_ESTABLISHED'; scientific_pass=False
+          elif not summaries['B0']['robust_crossing']:
+            classification='SCIENTIFIC_FAIL_RC008_RESTRICTED_COARSE_FINE_CROSSING_NOT_REPRODUCED_ON_FROZEN_PANEL'; scientific_pass=False
+          else:
+            transported=[b for b in ['B1','B2','B3'] if summaries[b]['converged'] and summaries[b]['robust_crossing']]
+            converged_held=[b for b in ['B1','B2','B3'] if summaries[b]['converged']]
+            if transported:
+              classification='SCIENTIFIC_PASS_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_SCOPED'; scientific_pass=True
+            elif not converged_held:
+              classification='NUMERICAL_FAIL_HELDOUT_TRANSPORT_CONVERGENCE_NOT_ESTABLISHED'; scientific_pass=False
+            else:
+              classification='SCIENTIFIC_FAIL_RC008_RESTRICTED_CROSSING_NOT_TRANSPORTED'; scientific_pass=False
+          out={'classification':classification,'scientific_pass':scientific_pass,'missing':missing,'calibration':cal,'boundaries':summaries,
+               'claim_locks':{'bridge_credit':False,'candidate_theory':'UNFORMED','full_eprl_refinement':False,'lorentzian_refinement':False,'new_physics':False}}
+          os.makedirs('aggregate',exist_ok=True); open('aggregate/summary.json','w').write(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps({'classification':classification,'scientific_pass':scientific_pass,'boundary_summary':{k:{'converged':v['converged'],'robust_crossing':v['robust_crossing'],'crossings':v['crossings']} for k,v in summaries.items()}},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter062b-aggregate
+          path: aggregate/summary.json
+          if-no-files-found: error
