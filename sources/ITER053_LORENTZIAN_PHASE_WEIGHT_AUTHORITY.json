@@ -1,0 +1,54 @@
+{
+  "arxiv_id": "2302.00072",
+  "main_tex_sha256": "bff93f3a7857658264a04eb23521bb935a68eccb7760b284589ff5ec4073f063",
+  "validated_rawtex_artifact": {
+    "run": 34811727020,
+    "job": 103874254568,
+    "artifact_id": 10334723630,
+    "artifact_digest": "sha256:191262f0c2a6d5c5b3ac6f1036caacd6808735c4bc38ecc73c45da49b2c53cb9"
+  },
+  "paper": {
+    "eq11_face_factor": "prod_f=1^10 (2 j_f + 1)",
+    "eq11_intertwiner_factor": "prod_e=1^15 (2 i_e + 1)",
+    "eq11_global_phase": "(-1)^chi",
+    "chi_reduction": "chi = sum_{k=1}^{10} j_k + sum_{k=11}^{15} i_k",
+    "spin_code_crosswalk": {
+      "jpink":"j1","jblue":"j2","jbrightgreen":"j3","jpurple":"j4","jgrassgreen":"j5","jred":"j6","jbrown":"j7","jdarkgreen":"j8","jorange":"j9","jviolet":"j10"
+    },
+    "intertwiner_code_crosswalk": {
+      "rIul":"i11","rIur":"i12","rIu":"i13","rIbl":"i14","rIbr":"i15"
+    },
+    "face_weight_deformation": "A_f(j_f) = (2 j_f +1) -> (2 j_f +1)^mu",
+    "standard_face_weight": "mu=1"
+  },
+  "author_code": {
+    "repository": "PietropaoloFrisoni/Monte_Carlo_spinfoams",
+    "commit": "84b375f2a2e0d29b44dd8820953553624bb007a3",
+    "path": "src/vertex_renormalization_EPRL_MC.jl",
+    "git_blob_sha1": "6b627f7c2329724b589947195edc7e5ee7c18bb1",
+    "frozen_tokens": {
+      "face_weights_vec": "FACE_WEIGHTS_VEC = [1.1, 1.3, 1.5]",
+      "dfj": "dfj = (2jpink + 1) * (2jblue + 1) * (2jbrightgreen + 1) * (2jbrown + 1) * (2jdarkgreen + 1) * (2jviolet + 1) * (2jpurple + 1) * (2jred + 1) * (2jorange + 1) * (2jgrassgreen + 1)",
+      "df_phase": "df_phase = (-1)^(2 * (jpink + jblue + jbrightgreen + jbrown + jdarkgreen + jviolet + jpurple + jred + jorange + jgrassgreen))",
+      "final_weight": "bulk_ampls[bulk_ampls_index, weight_index, ib_index] *= dfj^(weight) * df_phase"
+    },
+    "five_precontraction_phase_exponents": [
+      "jb + jbrightgreen + jred - jgrassgreen",
+      "jb + jpink + jbrightgreen - jblue",
+      "jb + jbrown + jpink - jdarkgreen",
+      "jb + jbrown + jviolet - jpurple",
+      "jb + jviolet + jred - jorange"
+    ],
+    "five_final_local_phase_exponents": [
+      "jb + jred + rIur_intertw",
+      "jb + jbrightgreen + rIu_intertw",
+      "jb + jpink + rIul_intertw",
+      "jb + jbrown + rIbl_intertw",
+      "jb + jviolet + rIbr_intertw"
+    ]
+  },
+  "historical_project_alpha": {
+    "source_identity_asserted": false,
+    "note": "No paper/code source identity between historical project alpha notation and paper mu is frozen here."
+  }
+}
