@@ -10,14 +10,16 @@ QUERIES={
 CONSUMED={'2302.00072','1803.00835','0810.1714','1903.12624','1412.8247','1409.2407','1701.02311'}
 NS={'a':'http://www.w3.org/2005/Atom'}
 def fetch(q):
- url='https://export.arxiv.org/api/query?'+urllib.parse.urlencode({'search_query':q,'start':0,'max_results':50,'sortBy':'relevance','sortOrder':'descending'})
+ params=urllib.parse.urlencode({'search_query':q,'start':0,'max_results':50,'sortBy':'relevance','sortOrder':'descending'})
+ urls=['https://export.arxiv.org/api/query?'+params,'https://arxiv.org/api/query?'+params]
  last=None
- for k in range(5):
-  try:
-   req=urllib.request.Request(url,headers={'User-Agent':'ISQGR-discovery/1.0'})
-   with urllib.request.urlopen(req,timeout=60) as r: data=r.read()
-   if data:return url,data
-  except Exception as e:last=repr(e);time.sleep(3*(k+1))
+ for base in urls:
+  for k in range(4):
+   try:
+    req=urllib.request.Request(base,headers={'User-Agent':'ISQGR-discovery/1.0'})
+    with urllib.request.urlopen(req,timeout=90) as r: data=r.read()
+    if data:return base,data
+   except Exception as e:last=repr(e);time.sleep(4*(k+1))
  raise RuntimeError(last)
 def aid(x):
  m=re.search(r'arxiv.org/abs/([^v]+)',x);return m.group(1) if m else x.rsplit('/',1)[-1].split('v')[0]
