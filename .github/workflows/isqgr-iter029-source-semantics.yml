@@ -1,0 +1,31 @@
+name: ISQGR Iter029 source-semantics reconciliation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter029/source_semantics_reconciliation.py'
+      - '.github/workflows/isqgr-iter029-source-semantics.yml'
+  workflow_dispatch:
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute frozen ITER029 audit
+        run: python3 code/iter029/source_semantics_reconciliation.py
+      - name: Show aggregate
+        if: always()
+        run: cat out_iter029/aggregate.json || true
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter029-source-semantics-evidence
+          path: out_iter029/
+          if-no-files-found: error
+          retention-days: 90
