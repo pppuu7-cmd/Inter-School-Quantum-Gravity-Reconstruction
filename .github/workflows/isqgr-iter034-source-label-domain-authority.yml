@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lane: [external, factor1, factor2, null]
+        lane: [external, factor1, factor2, "null"]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
