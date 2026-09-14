@@ -1,0 +1,54 @@
+{
+  "source": {
+    "arxiv": "2302.00072",
+    "main_tex_sha256": "bff93f3a7857658264a04eb23521bb935a68eccb7760b284589ff5ec4073f063",
+    "recovery_run": 34811727020,
+    "recovery_job": 103874254568,
+    "recovery_artifact_id": 10334723630,
+    "recovery_artifact_digest": "sha256:191262f0c2a6d5c5b3ac6f1036caacd6808735c4bc38ecc73c45da49b2c53cb9"
+  },
+  "literal_eq11_vertex_intertwiners": {
+    "up": ["ib", "i4", "i11", "i12", "i2"],
+    "left": ["ib", "i6", "i13", "i14", "i4"],
+    "bottom_left": ["ib", "i8", "i15", "i11", "i6"],
+    "bottom_right": ["ib", "i10", "i12", "i14", "i15"],
+    "right": ["ib", "i2", "i13", "i15", "i10"]
+  },
+  "literal_eq11_6j_intertwiner_pairs": [
+    ["i1", "i2"],
+    ["i3", "i4"],
+    ["i5", "i6"],
+    ["i7", "i8"],
+    ["i8", "i10"]
+  ],
+  "source_comment_crosswalk": {
+    "rBCl": "i1",
+    "rBCr": "i2",
+    "rABl": "i3",
+    "rABr": "i4",
+    "rAEl": "i5",
+    "rAEr": "i6",
+    "rbl": "i7",
+    "rbr": "i8",
+    "rCDl": "i9",
+    "rCDr": "i10",
+    "rIul": "i11",
+    "rIur": "i12",
+    "rIu": "i13",
+    "rIbl": "i14",
+    "rIbr": "i15"
+  },
+  "source_comment_spin_crosswalk": {
+    "jpink": "j1",
+    "jblue": "j2",
+    "jbrightgreen": "j3",
+    "jpurple": "j4",
+    "jgrassgreen": "j5",
+    "jred": "j6",
+    "jbrown": "j7",
+    "jdarkgreen": "j8",
+    "jorange": "j9",
+    "jviolet": "j10"
+  },
+  "note": "Machine-readable extraction from the already authoritative ITER048 raw-TeX artifact; no amplitude values or post-hoc routing choices are used."
+}
