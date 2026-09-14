@@ -12,7 +12,7 @@ This gate is an **asymptotic operator-typing test**, not a finite-radius CDT fit
 ## Frozen sources
 
 - arXiv:1712.08847 — smooth-manifold QRC construction and expansions.
-- arXiv:1805.08698 — *Implementing quantum Ricci curvature*; dimension-dependent smooth expansion authority.
+- arXiv:1802.10524 — *Implementing quantum Ricci curvature*; dimension-dependent smooth expansion authority.
 - arXiv:2112.02118 — FRG relational scalar-curvature composite operator.
 - ITER083B, ITER099 and ITER100 only as prior type/claim authority.
 
