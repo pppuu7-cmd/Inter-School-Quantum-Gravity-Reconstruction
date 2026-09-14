@@ -1,0 +1,75 @@
+name: ISQGR ITER045 topology-null recovery
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter045-topology-null-recovery.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  topology_null_recovery:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Re-run frozen malformed-topology controls with duplicate detection repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python3 - <<'PY'
+          import itertools,json
+          orig=list(range(5)); c=5
+          good=[tuple(sorted((c,)+tuple(v for v in orig if v!=omit))) for omit in orig]
+          def metrics(simplices):
+            uniq=list(dict.fromkeys(simplices))
+            tets={tuple(sorted(x)) for s in uniq for x in itertools.combinations(s,4)}
+            tris={tuple(sorted(x)) for s in uniq for x in itertools.combinations(s,3)}
+            adj=[]
+            for i,j in itertools.combinations(range(len(uniq)),2):
+              adj.append(len(set(uniq[i])&set(uniq[j]))==4)
+            return {
+              'input_n4':len(simplices),
+              'unique_n4':len(uniq),
+              'has_duplicates':len(uniq)!=len(simplices),
+              'it':sum(c in x for x in tets),
+              'ii':sum(c in x for x in tris),
+              'bt':sum(c not in x for x in tris),
+              'all_pairs_share_tet':all(adj) if adj else False}
+          def valid(m):
+            return (m['input_n4']==5 and m['unique_n4']==5 and not m['has_duplicates'] and
+                    m['it']==10 and m['ii']==10 and m['bt']==10 and m['all_pairs_share_tet'])
+          cases={
+            'remove_one':good[:-1],
+            'duplicate_one':good+[good[0]],
+            'replace_center':[tuple(sorted((0,)+tuple(v for v in orig if v!=omit))) for omit in orig],
+            'disconnect_one':good[:-1]+[(6,7,8,9,10)]}
+          rows=[]
+          for name,s in cases.items():
+            m=metrics(s); rows.append({'name':name,'metrics':m,'rejected':not valid(m)})
+          passed=all(r['rejected'] for r in rows)
+          out={
+            'lane':'topology-null-recovery',
+            'repair_scope':'duplicate detection only; frozen null cases/predicates unchanged',
+            'controls':rows,
+            'null_pass':passed,
+            'classification':'NULL_PASS' if passed else 'NULL_FAIL',
+            'inherited_original_run':34808101073,
+            'inherited_pass_artifacts':{
+              'topology_incidence':{'id':10333528151,'digest':'sha256:b472dc9ed86ad7b798b0560bf7d0ccf107820fb2c01564c83c09a5851c10679f'},
+              'backend_provenance':{'id':10333308561,'digest':'sha256:860e8c0bf6d4b6c4f731835f809befc1676ea2a8a8b08543ef25c4459568cf72'},
+              'state_space':{'id':10333642689,'digest':'sha256:740b3fddf1514bc32186af5a847dcaf774d159c8cee9b68653d9ffcf127a5a9a'}},
+            'bounded_numerical_successor_authorized':passed,
+            'refinement_map_derived':False,
+            'bridge_credit':False,
+            'candidate_theory_authorized':False}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out,indent=2))
+          if not passed: raise SystemExit(2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter045-topology-null-recovery
+          path: out/
+          if-no-files-found: error
+          retention-days: 90
