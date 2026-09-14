@@ -1,0 +1,96 @@
+name: ITER062A primary frozen-version recovery
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter062a_primary_version_recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  EXPECTED_SHA: b7e0690f32cb7cc56f4e64cf5d1f7bc9da54405ed7275d28d4d97a35a148a8ee
+
+jobs:
+  version-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        version: [v1,v2,v3,v4,v5,v6,v7,v8,v9,v10]
+    steps:
+      - name: Probe exact arXiv version source for frozen primary hash
+        run: |
+          python - <<'PY'
+          import io, json, os, tarfile, urllib.request, hashlib
+          v='${{ matrix.version }}'; expected=os.environ['EXPECTED_SHA']
+          urls=[f'https://export.arxiv.org/e-print/1508.07961{v}',f'https://arxiv.org/e-print/1508.07961{v}',f'https://export.arxiv.org/src/1508.07961{v}']
+          out={'version':v,'expected_sha256':expected,'attempts':[],'match':False}
+          for url in urls:
+            try:
+              req=urllib.request.Request(url,headers={'User-Agent':'ISQGR-source-version-recovery/1.0'})
+              with urllib.request.urlopen(req,timeout=45) as r: data=r.read()
+              candidates=[]
+              try:
+                with tarfile.open(fileobj=io.BytesIO(data),mode='r:*') as tf:
+                  for m in tf.getmembers():
+                    if m.isfile() and m.name.endswith('QuantumCuboids_article.tex'):
+                      raw=tf.extractfile(m).read(); candidates.append((m.name,raw))
+              except tarfile.TarError:
+                if b'Eq:4Volume' in data: candidates=[('raw',data)]
+              rec={'url':url,'http_ok':True,'candidates':[]}
+              for name,raw in candidates:
+                sh=hashlib.sha256(raw).hexdigest(); rec['candidates'].append({'name':name,'sha256':sh,'bytes':len(raw)})
+                if sh==expected:
+                  out['match']=True; out['matched_url']=url; out['matched_name']=name
+                  open('QuantumCuboids_article.tex','wb').write(raw)
+              out['attempts'].append(rec)
+              if out['match']: break
+            except Exception as e:
+              out['attempts'].append({'url':url,'http_ok':False,'error':f'{type(e).__name__}: {e}'})
+          open('probe.json','w').write(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter062a-primary-probe-${{ matrix.version }}
+          path: |
+            probe.json
+            QuantumCuboids_article.tex
+          if-no-files-found: warn
+
+  aggregate:
+    needs: version-probe
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter062a-primary-probe-*
+          path: probes
+      - name: Aggregate version recovery evidence
+        run: |
+          python - <<'PY'
+          import glob,json,os,shutil
+          rows=[]; matched=[]
+          for p in glob.glob('probes/**/probe.json',recursive=True):
+            d=json.load(open(p)); rows.append(d)
+            if d.get('match'):
+              matched.append(d)
+              src=os.path.join(os.path.dirname(p),'QuantumCuboids_article.tex')
+              if os.path.exists(src): shutil.copyfile(src,'QuantumCuboids_article.tex')
+          out={'classification':'FROZEN_PRIMARY_VERSION_RECOVERED' if matched else 'FROZEN_PRIMARY_VERSION_NOT_RECOVERED','match_count':len(matched),'matches':matched,'probes':rows}
+          open('summary.json','w').write(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter062a-primary-version-recovery
+          path: |
+            summary.json
+            QuantumCuboids_article.tex
+          if-no-files-found: warn
