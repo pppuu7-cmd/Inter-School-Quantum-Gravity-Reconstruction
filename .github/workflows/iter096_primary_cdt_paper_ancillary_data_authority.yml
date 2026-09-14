@@ -1,0 +1,83 @@
+name: ITER096 primary CDT paper ancillary data authority
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter096_primary_cdt_paper_ancillary_data_authority.yml'
+  workflow_dispatch:
+
+jobs:
+  audit-source:
+    strategy:
+      fail-fast: false
+      matrix:
+        arxiv: ['1704.04373','1802.10434','2002.01051','1904.05755','2510.02159']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and inventory exact arXiv source
+        env:
+          ARXIV_ID: ${{ matrix.arxiv }}
+        run: |
+          python - <<'PY'
+          import hashlib,io,json,os,re,tarfile,urllib.request
+          aid=os.environ['ARXIV_ID']
+          url='https://export.arxiv.org/e-print/'+aid
+          req=urllib.request.Request(url,headers={'User-Agent':'ISQGR-ITER096/1.0'})
+          with urllib.request.urlopen(req,timeout=60) as r: raw=r.read()
+          archive_sha=hashlib.sha256(raw).hexdigest()
+          records=[]; text_hits=[]; errors=[]
+          tokens=['data availability','code availability','supplement','supplementary','ancillary','github','zenodo','figshare','repository','available upon request','not deposited','n_0','n_41','n_32']
+          data_ext={'.csv','.tsv','.dat','.json','.h5','.hdf5','.npz','.npy','.txt'}
+          try:
+            tf=tarfile.open(fileobj=io.BytesIO(raw),mode='r:*')
+            members=[m for m in tf.getmembers() if m.isfile()]
+            for m in members:
+              b=tf.extractfile(m).read()
+              sha=hashlib.sha256(b).hexdigest()
+              low=m.name.lower(); ext=os.path.splitext(low)[1]
+              data_like=(ext in data_ext or any(k in low for k in ['data','supp','ancillary','github','zenodo','figshare']))
+              rec={'path':m.name,'size':len(b),'sha256':sha,'data_like':data_like}
+              records.append(rec)
+              if ext in {'.tex','.txt','.bib','.md','.html'} or len(b)<2_000_000:
+                s=b.decode('utf-8','ignore').lower()
+                hits=[t for t in tokens if t in s]
+                if hits:
+                  snippets=[]
+                  for t in hits:
+                    i=s.find(t); snippets.append(s[max(0,i-240):i+360])
+                  text_hits.append({'path':m.name,'tokens':hits,'snippets':snippets})
+          except Exception as e:
+            errors.append({'archive_parse_error':repr(e),'content_type_guess':'non-tar-or-unexpected'})
+          out={'gate':'ITER096_PRIMARY_CDT_PAPER_ANCILLARY_DATA_AUTHORITY','arxiv_id':aid,'source_url':url,'archive_sha256':archive_sha,'archive_bytes':len(raw),'records':records,'text_hits':text_hits,'errors':errors,'scientific_classification':'PENDING_MANUAL_ARTIFACT_AUDIT'}
+          fn='iter096-'+aid.replace('.','_')+'.json'
+          json.dump(out,open(fn,'w'),indent=2,sort_keys=True)
+          if errors and not records: raise SystemExit('source audit incomplete')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter096-${{ matrix.arxiv }}
+          path: iter096-*.json
+
+  aggregate:
+    needs: audit-source
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter096-*
+          path: artifacts
+      - name: Aggregate without scientific auto-pass
+        run: |
+          python - <<'PY'
+          import glob,json,os
+          rows=[]
+          for p in glob.glob('artifacts/**/*.json',recursive=True):
+            d=json.load(open(p)); rows.append({'arxiv_id':d.get('arxiv_id'),'archive_sha256':d.get('archive_sha256'),'files':len(d.get('records',[])),'data_like_files':sum(1 for x in d.get('records',[]) if x.get('data_like')),'text_hit_files':len(d.get('text_hits',[])),'errors':d.get('errors',[])})
+          json.dump({'gate':'ITER096_PRIMARY_CDT_PAPER_ANCILLARY_DATA_AUTHORITY','papers':rows,'scientific_classification':'PENDING_MANUAL_ARTIFACT_AUDIT','green_ci_is_not_scientific_pass':True},open('aggregate.json','w'),indent=2,sort_keys=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter096-aggregate
+          path: aggregate.json
