@@ -1,0 +1,58 @@
+name: ISQGR ITER048 raw TeX census recovery
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/isqgr-iter048-rawtex-recovery.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rawtex:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve raw source neighborhoods
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out work/src
+          ok=0
+          for u in 'https://export.arxiv.org/e-print/2302.00072' 'https://arxiv.org/e-print/2302.00072'; do
+            if curl --fail -L --retry 4 --retry-delay 2 --max-time 180 -A 'ISQGR-ITER048-rawtex/1.0' "$u" -o work/source.tar; then ok=1; break; fi
+          done
+          test "$ok" = 1
+          sha256sum work/source.tar > out/source_archive_sha256.txt
+          tar -xf work/source.tar -C work/src
+          sha256sum work/src/main.tex > out/main_tex_sha256.txt
+          python3 - <<'PY'
+          import pathlib,json,re
+          p=pathlib.Path('work/src/main.tex'); t=p.read_text(errors='replace')
+          needles=['vertex renormalization','i_{15}','i_{14}','i_{13}','i_{12}','i_{11}','i_{10}','i_{9}','j_{10}','6j','Wsix','sixj']
+          hits=[]
+          for needle in needles:
+              start=0
+              while True:
+                  pos=t.lower().find(needle.lower(),start)
+                  if pos<0: break
+                  hits.append({'needle':needle,'offset':pos,'excerpt':t[max(0,pos-8000):min(len(t),pos+12000)]})
+                  start=pos+1
+          pathlib.Path('out/raw_neighborhoods.json').write_text(json.dumps({'main_tex_length':len(t),'hits':hits},indent=2,ensure_ascii=False)+'\n')
+          # Preserve all source lines that mention high-index labels or explicit equation labels.
+          lines=t.splitlines()
+          selected=[]
+          for i,line in enumerate(lines,1):
+              lo=line.lower()
+              if any(x in lo for x in ['i_{15}','i_{14}','i_{13}','i_{12}','i_{11}','i_{10}','i_{9}','j_{10}','vertex renormal','label{','6j','wsix','sixj']):
+                  selected.append(f'{i}: {line}')
+          pathlib.Path('out/raw_selected_lines.txt').write_text('\n'.join(selected)+'\n')
+          pathlib.Path('out/evidence.json').write_text(json.dumps({'lane':'rawtex-census','transport_complete':True,'main_tex_sha256':pathlib.Path('out/main_tex_sha256.txt').read_text().split()[0],'hit_count':len(hits),'selected_line_count':len(selected),'classification':'RAW_TEX_PRESERVED_FOR_FROZEN_SCIENTIFIC_CLASSIFICATION'},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter048-rawtex-census
+          path: out/
