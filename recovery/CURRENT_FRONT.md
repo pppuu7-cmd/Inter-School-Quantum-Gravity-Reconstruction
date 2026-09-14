@@ -4,41 +4,49 @@ Date: 2026-09-14.
 
 Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains **49%**. Bridge credit remains zero.
 
-## ITER039 remains scientific FAIL
+## RC006 — frozen scientific FAIL + source blocker
 
-`RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_FAIL` remains frozen. No threshold, tuple domain, normalization, phase or convention has been retuned.
+ITER039 remains **SCIENTIFIC FAIL — `RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_FAIL`**. No threshold, tuple domain, normalization, phase or convention has been retuned.
 
-## ITER040 — diagnostic complete
+ITER040 remains diagnostic-complete. ITER041 remains `RC006_ROOT_UNITY_PRIMITIVE_DOMAIN_SOURCE_AUTHORITY_BLOCKED`: projected/quotient R-domain structure is source-supported, but the exact expanded-domain dual/cap/cup normalization identity is not.
 
-`RC006_CENTRAL_COMPONENT_VALIDITY_BOUNDARY_DIAGNOSTIC_COMPLETE`, run `34806282247`, result commit `d3e5a2752fa07ec5cc5beb97db96dc159f7b700f`. All exact prior ITER027 ordered-pair-scope tuples pass 24/24. Root-boundary (`a+b>k`) failures are strong R/R^-1 failures, but additional non-root failures outside prior scope are dual-contraction failures. Therefore no single post-hoc cutoff rule explains ITER039.
+ITER042 is terminal **SCOPED BLOCKED — `DELEGATED_AUTHORITY_SOURCE_EXPANSION_BLOCKED`**, authoritative durable commit `70a8ccd7f88c9ff98a4d0b5c7cfb8996039f71f6`, run `34806737112`. The delegated books resolve bibliographically but were not inspectable formula authority in the frozen discovery. The targeted root/quotient OpenAlex query returned zero records; the broad duality query returned open records but none was promoted to the missing indexed SU(2)_k dual/cap/cup authority from title/full-text availability alone.
 
-## ITER041 — scoped source BLOCKED
+A later conflicting `...CANDIDATES_FOUND` reinterpretation has been explicitly voided in commit `269e63e5e41a7f811eee4a11d3ae5aeee967014d`; it is not authoritative science.
 
-Terminal classification: **`RC006_ROOT_UNITY_PRIMITIVE_DOMAIN_SOURCE_AUTHORITY_BLOCKED`**. Prereg `4884e9b784506db0c428decc808eaac2ffdb9831`; implementation `a02700b58dafcc92e6b5d3fea3039dc3ae312020`; production `5464d07efb957dbc5476fd99baa2c4baae1b465b`; source-evidence run `34806469113`; result commit `025e40bfbb7113534e5a20120a88c751b6d73b21`.
+## ITER043 — no scientific effect
 
-Exact frozen archive hashes all reproduce. The source panel explicitly states that above-cutoff representations are quantum-trace-zero, the tensor product contains a trace-zero part **which is modded out**, root-of-unity coupling requires `j1+j2+j3 <= k`, and completeness contains a projector `Pi` which projects out the trace-zero part. Thus ITER041-B passes scoped: the naive full-tensor `R^-1 R = I` formulation used as a universal expanded-domain check is not source-authorized across the root boundary; a projected/quotient categorical object is required.
+ITER043 was created before the latest-commit audit noticed the already-existing ITER042-BLOCKED durable result. It is therefore **VOID FOR SCIENTIFIC INFERENCE**. Its run `34807715146` was also `INFRASTRUCTURE_FAIL PRE-SCIENCE`: Dowdall lane job `103862737304` hit HTTP 404 before evidence extraction; aggregate artifact `10333332986`, digest `sha256:9b394312494e422f4cd67ed0008d7b5f60109c53363b322d36c166a4442effb1`, reports `lane_count=3`, `transport_complete=false`. Result commit `55cb2f9d8b6f08cddee62c4056210d0aa7222ca5`.
 
-The dual/cap/cup question remains BLOCKED: while the source gives cap/cup identity, qbar bending and dual intertwiner constructions, it does not source-qualify the exact expanded-domain ordinary-matrix `F @ D = sign/d * I` identity over all newly introduced central channels with enough quotient/quantum-trace scope. This matters because ITER040 found dual failures even for some channels with `a+b<=k`.
+No repair/re-run is authorized because the premise was superseded. RC006 numerical retry remains forbidden.
 
-Original D control had a technical qbar-regex miss only. Parser-only repair `262c0e0d52b81e747447c409ff72bdf7e2547152`; D-only recovery run/job `34806601065 / 103859578836`, artifact `10332758669`, digest `sha256:35d4f50756466af20c3e43672b5b9e3faa93de1fada5b313df02d30c240f49bd`, passes with 4 R and 7 qbar positive hits. No science changed.
+## Active ITER044 — genuine multi-vertex Lorentzian EPRL source-map audit
 
-## Active ITER042 — delegated duality authority source expansion
+The programme has switched to an independent PHASE_1 priority rather than idling on RC006.
 
-ITER042 is source discovery/qualification only. It prospectively targets the two authorities explicitly delegated by the exact q-spinnet bibliography: Biedenharn–Lohe, *Quantum Group Symmetry and q-Tensor Algebras* (1995), and Carter–Flath–Saito, *The Classical and Quantum 6j-symbols* (1995), plus clearly separated open scholarly candidates for the missing quotient/duality-domain formulas.
+ITER044 prospectively audits the frozen Lorentzian EPRL multi-vertex source panel: arXiv `1801.03771`, `2206.14755`, `2302.00072`, with `1803.00835` as fixed auxiliary comparison. It separates four questions: genuine connected multi-vertex amplitude object; true refinement/coarse-fine map; source-qualified zero-spin face-collapse identity; executable finite-cutoff/internal-sum object.
 
-- prereg commit `ce2e1c73a62ab416b8625b8934f7e598063bda5e`
-- production/workflow head `5ef1025bbae0f12e7374578fdeb9e1baf108102d`
-- authoritative run `34806737112`
-- jobs: books-Crossref `103859971665`; root-OpenAlex `103859971776`; books-OpenLibrary `103859971804`; dual-OpenAlex `103859971841`.
+Crucially, **two vertices, cutoff scaling, divergence/finiteness, or a fixed radiative diagram do not count as a refinement map**. Zero-spin face deletion cannot be inferred from numerical convenience.
 
-Latest snapshot: root and dual candidate lanes terminal success; two delegated-book discovery lanes in progress. These are discovery results only; green CI cannot qualify formulas.
+- prereg commit: `6c26b2b87e7fa21cfc040ef17a8eb2a0cbc88937`
+- production/workflow head: `7d1c024fd52d5cb792c3d8e3bc839f9bcce69768`
+- authoritative run: `34807867688`
+- jobs: semantic-null `103863161250`; Monte-Carlo/internal-sum `103863161435`; radiative two-vertex `103863161537`; dipole two-vertex `103863161561`.
+
+Latest authoritative snapshot: **2 in_progress / 2 queued**, avoidable idle false.
 
 ## Exact next action
 
-Consume all ITER042 raw discovery artifacts. If inspectable source candidates exist, preregister a separate exact-formula/source-domain qualification gate before any numerical implementation. If only metadata/catalog records are available for the delegated authorities and no open candidate supplies the missing indexed duality/domain formula, classify source expansion BLOCKED. **No ITER039 numerical retry is authorized now.**
+Consume all four raw ITER044 source-evidence packets and aggregate. Apply the frozen predicates independently:
 
-## Persistent locks / other fronts
+- if a true source-explicit coarse→refined map exists, classify `LORENTZIAN_MULTIVERTEX_REFINEMENT_MAP_SOURCE_QUALIFIED_SCOPED` and only then preregister a separate implementation/validation gate;
+- if a genuine connected multi-vertex Lorentzian amplitude is source-qualified but no refinement map is, classify `LORENTZIAN_MULTIVERTEX_AMPLITUDE_SOURCE_PASS_REFINEMENT_MAP_BLOCKED`;
+- if transport/extraction is incomplete, classify infrastructure failure only.
 
-Eq.(29)/Lambda, one-step TNR, full Eq.(27) amplitude, refinement bridge and candidate-theory construction remain unauthorized. BH004/BH004B remains scoped-negative; genuine multivertex Lorentzian EPRL refinement remains source-blocked; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
+No source-only outcome earns bridge credit.
+
+## Persistent locks
+
+Eq.(29)/Lambda, one-step TNR, full Eq.(27) amplitude, bridge derivation and candidate-theory construction remain unauthorized. BH004/BH004B remains scoped-negative; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
 
 Still false: `full_eq27_amplitude_derived`, `eq29_amplitude_authorized`, `one_step_tnr_authorized`, `bridge_credit`, `candidate_theory_authorized`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `BRIDGE_DERIVED`.
