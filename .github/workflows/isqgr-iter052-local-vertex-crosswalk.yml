@@ -1,0 +1,91 @@
+name: ISQGR ITER052 local vertex crosswalk
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/iter052/**'
+      - 'prereg/ITER052_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_2026-09-14.md'
+      - 'sources/ITER052_EQ11_ROUTING_DATA.json'
+      - '.github/workflows/isqgr-iter052-local-vertex-crosswalk.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: isqgr-iter052-local-vertex-crosswalk
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [tex-authority, author-code, backend-axis, graph-incidence, null-controls]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen source-structure lane
+        run: python code/iter052/local_vertex_crosswalk.py --lane '${{ matrix.lane }}'
+      - name: Upload raw evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter052-${{ matrix.lane }}
+          path: out/iter052/evidence.json
+
+  aggregate:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter052-*
+          path: evidence
+      - name: Frozen aggregate classification
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          rows=[]
+          for p in pathlib.Path('evidence').glob('**/evidence.json'):
+              rows.append(json.loads(p.read_text()))
+          expected={'tex-authority','author-code','backend-axis','graph-incidence','null-controls'}
+          got={r.get('lane') for r in rows}
+          passes={r.get('lane'):bool(r.get('pass')) for r in rows}
+          infra=[r for r in rows if r.get('infrastructure_failure')]
+          failures=[r.get('failure_class') for r in rows if not r.get('pass') and r.get('failure_class')]
+          if got != expected or infra:
+              cls='INVALID_PROVENANCE'
+          elif all(passes.get(x,False) for x in expected):
+              cls='LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_AUTHORITY_PASS'
+          elif 'INVALID_PROVENANCE' in failures:
+              cls='INVALID_PROVENANCE'
+          elif 'LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_BLOCKED_SOURCE_AXIS_CONVENTION' in failures:
+              cls='LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_BLOCKED_SOURCE_AXIS_CONVENTION'
+          elif 'LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_STRUCTURAL_FAIL' in failures:
+              cls='LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_STRUCTURAL_FAIL'
+          else:
+              cls='INVALID_IMPLEMENTATION'
+          out={
+            'iteration':'ITER052',
+            'classification':cls,
+            'evidence_count':len(rows),
+            'lane_pass':passes,
+            'amplitude_values_used':False,
+            'claim_locks':{
+              'refinement_map_derived':False,
+              'bridge_credit':False,
+              'candidate_theory':'UNFORMED'
+            }
+          }
+          pathlib.Path('aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter052-aggregate
+          path: aggregate.json
