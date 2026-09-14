@@ -4,31 +4,19 @@ Date: 2026-09-14.
 
 Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains **49%**. Bridge credit remains zero.
 
-## Newly closed — ITER038
+## Newly closed — ITER039
 
-ITER038 is terminal **SCIENTIFIC PASS — `RC006_EQ27_CENTRAL_COUPLING_DOMAIN_AUTHORITY_PASS`**.
+ITER039 is terminal **SCIENTIFIC FAIL — `RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_FAIL`**. This is a failure of the frozen expanded central-component closure gate, not an infrastructure failure and not a global falsification of RC006.
 
-Frozen authority: prereg `3cdcc41939aac89c4bd934c10fbd7bc48a8dd321`; implementation `6340ead5bd78bdc650261c4827298943eab1b7a5`; production `b68d479615b9f966c2628ba8c69c1a2336d5c1dc`; original run `34805710939`. A/C/D passed directly. The original B blocker was a TeX-alignment parser defect: raw source already contained all frozen finite-k predicates. Minimal parser-only repair `e1eb8a3b6fb8db1bef1caa9262d853bfee9bd387` changed no science. B-only recovery run/job `34805845056 / 103857457176`, artifact `10333225494`, digest `sha256:af9dde495a26791a59f32f17cb2629ac740b0a8a92cfad9242b398c7407f04b6`, is PASS. Durable result commit `f9391713820703a0a2619222bd38d7485cf84e4e`.
+Provenance: prereg `b40ff1765bd5c5c73f578a943dca72ea031f08e4`; implementation `d05819e58f86994e08043708d67b465a343a48c1`; production `bb21fda2081ca81a691bf58cac2073645201b17f`; run `34806079470`; jobs C `103858118898`, B `103858118927`, D `103858118961`, A `103858119040`, aggregate `103858164412`; aggregate artifact `10333415213`, digest `sha256:abc8db20556142a54f467311268f061cb21eb5dbf857994788f5ed74f2974807`; result commit `73bc362dce539c918c1a3b9344739c1d67316dd3`.
 
-The original aggregate is preserved and not retrofitted. ITER038 PASS only authorizes a bounded central/intermediate-index component gate, not a full Eq.(27) amplitude.
+Lane A PASS and lane D PASS (3/3 invalid controls detected). Lane B evaluates 54 primary tuples with no retuning and fails 7; lane C evaluates 96 held-out tuples identically and fails 23. Representative R/R^-1 residual is `16.48528137423864` for `(k=6,J+=2,J-=2,l=0)` versus frozen `5e-8`; held-out maximum is `2349.968022439629`. Some k=12 tuples also fail the frozen dual-contraction predicate with residual up to `0.7137917357844189`. Direct-source qbar identity remains zero in the recorded rows and qbar-intertwiner residual remains below its `5e-9` threshold.
 
-## Active ITER039
+No threshold, phase, normalization, tuple selection or domain rule is changed. ITER039 remains FAIL permanently under its frozen gate.
 
-`ITER039_RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE` was preregistered before implementation. It evaluates every source-authorized central `(J+,J-,l)` tuple from ITER038 on the unchanged primary and held-out diagonal panels using previously validated q-CG/qbar/dual/braid primitives. Physical integer-spin central labels are converted to the existing twice-spin numerical representation without changing the source domain.
+## Exact next gate
 
-Frozen thresholds are inherited from the validated primitive layer: source-qbar identity `<2e-12`, qbar intertwiner `<5e-9`, dual contraction `<5e-8`, R/R^-1 `<5e-8`. No tuple pruning, retuning, phase fitting, normalization fitting, Eq.(29), Lambda or TNR is permitted.
-
-- prereg commit `b40ff1765bd5c5c73f578a943dca72ea031f08e4`
-- implementation commit `d05819e58f86994e08043708d67b465a343a48c1`
-- production/workflow head `bb21fda2081ca81a691bf58cac2073645201b17f`
-- authoritative run `34806079470`
-- jobs: C held-out transfer `103858118898`; B primary closure `103858118927`; D nulls `103858118961`; A provenance/domain `103858119040`.
-
-Latest snapshot: **3 in_progress / 1 queued**, avoidable idle false.
-
-## Exact next action
-
-Consume all four raw ITER039 lane artifacts and dependent aggregate against the frozen preregistration. Only `RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_PASS` may authorize a separately preregistered bounded label-complete Eq.(27) network-assembly gate. A valid-source frozen residual failure is SCIENTIFIC FAIL; missing authority is BLOCKED; execution/dependency failure is NUMERICAL/INFRASTRUCTURE FAIL.
+The only admissible immediate RC006 continuation is an **independent component-validity-boundary diagnostic**. It may determine whether the failed tuples lie outside the previously source-qualified/validated primitive domain or coincide with root-of-unity trace-zero/quotient boundaries, and must separately reproduce the R and dual residual patterns. It may not remove failed tuples, alter thresholds, reinterpret ITER039 as PASS, or directly authorize a full Eq.(27) amplitude.
 
 ## Persistent locks / other fronts
 
