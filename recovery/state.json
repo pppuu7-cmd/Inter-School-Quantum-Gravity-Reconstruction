@@ -3,22 +3,105 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITER066_BH004_CAUSAL_SET_AMPLITUDE_REFINEMENT_SOURCE_AUTHORITY_ACTIVE",
-  "iteration_completion_percent": 15,
+  "active_iteration": "ITER066_TERMINAL_SCOPED_BLOCKED_PENDING_NEXT_PREREG",
+  "iteration_completion_percent": 100,
   "candidate_theory_status": "UNFORMED",
-  "readiness_percent": {"amplitude_refinement_cross_realization_validation":50,"candidate_theory_construction":0,"overall_scientific_programme":50},
-  "claim_locks": {"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"full_eprl_refinement_derived":false,"lorentzian_refinement_derived":false},
-  "frontier": {
-    "RC006":{"status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","bridge_credit":false},
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED","refinement_map_derived":false,"bridge_credit":false},
-    "BH004_BH004B":{"status":"AMPLITUDE_REFINEMENT_SOURCE_AUTHORITY_ACTIVE","prior_status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","iter066":{"status":"ACTIVE","prereg_commit":"1a65535f840424668ff05176c2fddad0d30bf8ad","implementation_commit":"e0c8009fd7c78f181df5f8dbd2987881d3fefdea","production_head":"915255cfae8d13a10b37f95742fe61cfd9f6e6ad","authoritative_run":34878725306,"frozen_source_ids":["1903.11544","2007.13192","gr-qc/0212064"],"gate_credit":false},"bridge_credit":false},
-    "RC008":{"status":"SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY","iter065":{"classification":"SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY","initial_run":34877639682,"source_repair_run":34877767148,"source_repair_aggregate_artifact":{"id":10362035885,"digest":"sha256:c152167507d988f392548bc8577fa59802bd564aa120aacbf943abc029d20b8c"},"terminal_result_commit":"d1787f9473d25e587d31b2f1fa8ecc8891427f89","gate_credit":false},"corrected_crossing_authorized":false,"bridge_credit":false},
-    "RC009":{"status":"SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"},
-    "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
+  "readiness_percent": {
+    "amplitude_refinement_cross_realization_validation": 50,
+    "candidate_theory_construction": 0,
+    "overall_scientific_programme": 50
   },
-  "active_compute":[{"iteration":"ITER066","run":34878725306,"head":"915255cfae8d13a10b37f95742fe61cfd9f6e6ad","scientifically_useful_jobs":3,"status_at_recovery_write":"queued"}],
-  "idle_capacity":{"scientifically_useful_jobs_queued":3,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false},
-  "next_gate":"CONSUME_ITER066_THEN_MANUAL_EQUATION_LEVEL_AUDIT_IF_SOURCE_CANDIDATE_PRESENT",
-  "next_gate_rationale":"RC008 is source-blocked. ITER066 independently tests whether the frozen RC004 causal-set authority stack contains a source-faithful quantum amplitude/measure together with an explicit scale/composition/refinement object before any BH004 numerical amplitude gate is allowed.",
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER066_BH004_CAUSAL_SET_AMPLITUDE_REFINEMENT_SOURCE_AUTHORITY_2026-09-14.md","results/ITER065_RC008_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY_2026-09-14.md","realizations/RC-004_CAUSAL_SET_BDG_ACTION.md","results/ITER007_FUSION_DYNAMIC_PREDICTIVITY_TERMINAL_2026-09-13.md","docs/CONSTITUTION.md"]
+  "claim_locks": {
+    "known_schools_fail": false,
+    "new_theory_required": false,
+    "new_physics_found": false,
+    "bridge_derived": false,
+    "candidate_theory_authorized": false,
+    "full_eprl_refinement_derived": false,
+    "lorentzian_refinement_derived": false
+  },
+  "frontier": {
+    "RC006": {
+      "status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
+      "bridge_credit": false
+    },
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
+      "status": "REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED",
+      "refinement_map_derived": false,
+      "bridge_credit": false
+    },
+    "BH004_BH004B": {
+      "status": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
+      "prior_status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
+      "iter066": {
+        "status": "TERMINAL",
+        "classification": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
+        "prereg_commit": "1a65535f840424668ff05176c2fddad0d30bf8ad",
+        "implementation_commit": "e0c8009fd7c78f181df5f8dbd2987881d3fefdea",
+        "initial_production_head": "915255cfae8d13a10b37f95742fe61cfd9f6e6ad",
+        "initial_run": 34878725306,
+        "initial_run_classification": "ARTIFACT_PRESERVATION_FAILURE_AFTER_SOURCE_AUDIT",
+        "artifact_failure_record_commit": "2a575fac0c58fcf316d1990f513f7949550c70a4",
+        "transport_repair_commit": "1caebf07c29bc90eedec67180f28683e031e5a14",
+        "authoritative_run": 34884258757,
+        "frozen_source_ids": [
+          "1903.11544",
+          "2007.13192",
+          "gr-qc/0212064"
+        ],
+        "source_authority_record_commit": "c5a0c94defd149140878b77eb95785d188520890",
+        "critic_commit": "752693e81a96c2f6f821c8bd27fe9df0264d2abf",
+        "terminal_result_commit": "f72f7cf08162f1467b1e1e8bcb82251a77e48709",
+        "quantum_measure_or_amplitude_qualified": true,
+        "classical_csg_scale_map_qualified": true,
+        "bdg_action_continuum_object_qualified": true,
+        "quantum_scale_refinement_map_qualified": false,
+        "bh004_numeric_amplitude_refinement_authorized": false,
+        "gate_credit": false
+      },
+      "bridge_credit": false
+    },
+    "RC008": {
+      "status": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY",
+      "iter065": {
+        "classification": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY",
+        "initial_run": 34877639682,
+        "source_repair_run": 34877767148,
+        "source_repair_aggregate_artifact": {
+          "id": 10362035885,
+          "digest": "sha256:c152167507d988f392548bc8577fa59802bd564aa120aacbf943abc029d20b8c"
+        },
+        "terminal_result_commit": "d1787f9473d25e587d31b2f1fa8ecc8891427f89",
+        "gate_credit": false
+      },
+      "corrected_crossing_authorized": false,
+      "bridge_credit": false
+    },
+    "RC009": {
+      "status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"
+    },
+    "LORENTZIAN_DELTA4": {
+      "status": "SATURATED_NEGATIVE_SCOPED",
+      "bridge_credit": false
+    }
+  },
+  "active_compute": [],
+  "idle_capacity": {
+    "scientifically_useful_jobs_queued": 0,
+    "scientifically_useful_jobs_in_progress": 0,
+    "avoidable_idle": false
+  },
+  "next_gate": "PREREGISTER_ITER067_RC002_FULL_CDT_TRANSFER_MATRIX_COMPOSITION_MEASURE_AUTHORITY",
+  "next_gate_rationale": "ITER066 exactly localizes the causal-set source gap to missing quantum scale/refinement transport. RC008 is independently blocked on global glued-complex measure. RC002 already contains an explicit regulated transfer-matrix composition object, so a source-first audit of its full-state composition law, measure/normalization/reflection-positivity semantics, and dependence on preferred discrete time directly stress-tests H0 with high falsifiability and no fabricated dynamics or heavy compute.",
+  "authoritative_recovery_order": [
+    "recovery/state.json",
+    "recovery/CURRENT_FRONT.md",
+    "results/ITER066_BH004_CAUSAL_SET_AMPLITUDE_REFINEMENT_SOURCE_AUTHORITY_2026-09-14.md",
+    "sources/ITER066_BH004_EQUATION_LEVEL_AUTHORITY_AUDIT_2026-09-14.md",
+    "results/ITER066_ADVERSARIAL_CRITIC_2026-09-14.md",
+    "prereg/ITER066_BH004_CAUSAL_SET_AMPLITUDE_REFINEMENT_SOURCE_AUTHORITY_2026-09-14.md",
+    "realizations/RC-002_4D_CDT_TRANSFER_MATRIX.md",
+    "docs/INTERFACE_ATLAS_V0_1.md",
+    "docs/CONSTITUTION.md"
+  ]
 }
