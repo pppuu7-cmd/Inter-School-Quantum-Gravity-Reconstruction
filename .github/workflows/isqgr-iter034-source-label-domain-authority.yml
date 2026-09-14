@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
 
+# Recovery trigger after admissible-authority source restriction; frozen preregistration unchanged.
 jobs:
   lane:
     strategy:
