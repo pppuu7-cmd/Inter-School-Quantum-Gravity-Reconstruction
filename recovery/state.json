@@ -3,99 +3,22 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITER065_TERMINAL_SCOPED_BLOCKED_SELECT_INDEPENDENT_PHASE1_FRONT",
-  "iteration_completion_percent": 100,
+  "active_iteration": "ITER066_BH004_CAUSAL_SET_AMPLITUDE_REFINEMENT_SOURCE_AUTHORITY_ACTIVE",
+  "iteration_completion_percent": 15,
   "candidate_theory_status": "UNFORMED",
-  "readiness_percent": {
-    "amplitude_refinement_cross_realization_validation": 50,
-    "candidate_theory_construction": 0,
-    "overall_scientific_programme": 50
-  },
-  "claim_locks": {
-    "known_schools_fail": false,
-    "new_theory_required": false,
-    "new_physics_found": false,
-    "bridge_derived": false,
-    "candidate_theory_authorized": false,
-    "full_eprl_refinement_derived": false,
-    "lorentzian_refinement_derived": false
-  },
+  "readiness_percent": {"amplitude_refinement_cross_realization_validation":50,"candidate_theory_construction":0,"overall_scientific_programme":50},
+  "claim_locks": {"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"full_eprl_refinement_derived":false,"lorentzian_refinement_derived":false},
   "frontier": {
-    "RC006": {"status": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED", "bridge_credit": false},
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status": "REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED", "refinement_map_derived": false, "bridge_credit": false},
-    "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
-    "RC008": {
-      "status": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY",
-      "scope": "SYMMETRY_RESTRICTED_RIEMANNIAN_EPRL_FK_QUANTUM_CUBOID",
-      "iter061_source_authority": "SCIENTIFIC_PASS",
-      "iter062a_kernel_source_closure": "SCIENTIFIC_PASS",
-      "restricted_coarse_fine_amplitude_reproduced": false,
-      "iter062b": {
-        "workflow_classification": "SCIENTIFIC_PASS_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_SCOPED",
-        "manual_terminal_status": "SUPERSEDED_INVALID_SCIENTIFIC_INFERENCE_SOURCE_MEASURE_MAPPING_UNRESOLVED",
-        "authoritative_run": 34874113741,
-        "aggregate_artifact": {"id": 10359819990, "digest": "sha256:fd62c82a618b6ded0e4ab0013610f00a33a70551e9d3f76ab1188d1c2f44493b"},
-        "gate_credit": false
-      },
-      "iter063": {
-        "status": "INVALID_IMPLEMENTATION_OR_SELECTOR_GATE",
-        "classification": "INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL",
-        "authoritative_run": 34874671586,
-        "aggregate_artifact": {"id": 10360430809, "digest": "sha256:a59a92d11b4d439b25eb17a380c03298dfe606186fa7fbd5187c4483c8ef3d00"},
-        "gate_credit": false
-      },
-      "iter064": {
-        "workflow_classification": "DIAGNOSTIC_PASS_PERMUTATION_CROSSING_STABLE",
-        "manual_terminal_status": "INVALID_DIAGNOSTIC_INFERENCE_CROSSING_ENDPOINT_NONCONVERGED",
-        "authoritative_run": 34874915843,
-        "aggregate_artifact": {"id": 10361141304, "digest": "sha256:f248f9146222a411d04b3b74359650f89ff81ce77e9fcb5083cb3a5220376bf8"},
-        "gate_credit": false
-      },
-      "iter065": {
-        "status": "SCOPED_BLOCKED",
-        "classification": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY",
-        "prereg_commit": "e1f97fa2ac91a48e9bb479c81074ea091c0d6d21",
-        "production_head": "3609580257c5ff35bbf292d7d04754031bf3523f",
-        "initial_run": 34877639682,
-        "initial_run_classification": "INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION",
-        "initial_aggregate_artifact": {"id": 10361358105, "digest": "sha256:f70e984bcfa109ca8b3f07aefdc196289bad4308608d1312abb325a5acb11e36"},
-        "source_transport_repair_commit": "d6a5e018d2029b3d629142d3b9bc144c09b9fe53",
-        "source_repair_run": 34877767148,
-        "source_repair_aggregate_artifact": {"id": 10362035885, "digest": "sha256:c152167507d988f392548bc8577fa59802bd564aa120aacbf943abc029d20b8c"},
-        "frozen_source_ids": ["1508.07961", "1605.07649", "1701.02311", "1804.00023"],
-        "all_frozen_sources_extracted": true,
-        "manual_equation_audit": "NO_SAME_REALIZATION_EXPLICIT_GLOBAL_GLUED_COMPLEX_MEASURE",
-        "coarse2_pullback": {"rank": 1, "reduced_dim": 1, "artifact": 10360359283, "digest": "sha256:1c0de992800e1f858278c3c778a81183df8468e28bc6afdc8ec57a546779fde3"},
-        "fine32_pullback": {"rank": 6, "reduced_dim": 6, "artifact": 10360279585, "digest": "sha256:0e325725eada5aaced645a7a82fd1dd55221bddad29531da2327a9b2af115f8b"},
-        "old_local_product_sentinel": {"coarse_ratio_cv": 0.01783571272665122, "fine_ratio_cv": 0.9369701593382911, "artifact": 10361348303, "digest": "sha256:6581c435770871baaff0d2b576c81cf40e4b195a9d36e8fe657ed954c51c72bf"},
-        "report_commit": "aac1b50dbf5f0c72ea8b76ec3c046b68259c7e8f",
-        "gate_credit": false
-      },
-      "global_geometric_measure_topology_qualified": false,
-      "corrected_crossing_authorized": false,
-      "full_eprl_refinement_derived": false,
-      "lorentzian_refinement_derived": false,
-      "bridge_credit": false
-    },
-    "RC009": {"status": "SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"},
-    "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
+    "RC006":{"status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","bridge_credit":false},
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED","refinement_map_derived":false,"bridge_credit":false},
+    "BH004_BH004B":{"status":"AMPLITUDE_REFINEMENT_SOURCE_AUTHORITY_ACTIVE","prior_status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","iter066":{"status":"ACTIVE","prereg_commit":"1a65535f840424668ff05176c2fddad0d30bf8ad","implementation_commit":"e0c8009fd7c78f181df5f8dbd2987881d3fefdea","production_head":"915255cfae8d13a10b37f95742fe61cfd9f6e6ad","authoritative_run":34878725306,"frozen_source_ids":["1903.11544","2007.13192","gr-qc/0212064"],"gate_credit":false},"bridge_credit":false},
+    "RC008":{"status":"SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY","iter065":{"classification":"SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY","initial_run":34877639682,"source_repair_run":34877767148,"source_repair_aggregate_artifact":{"id":10362035885,"digest":"sha256:c152167507d988f392548bc8577fa59802bd564aa120aacbf943abc029d20b8c"},"terminal_result_commit":"d1787f9473d25e587d31b2f1fa8ecc8891427f89","gate_credit":false},"corrected_crossing_authorized":false,"bridge_credit":false},
+    "RC009":{"status":"SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"},
+    "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
-  "active_compute": [],
-  "idle_capacity": {
-    "scientifically_useful_jobs_queued": 0,
-    "scientifically_useful_jobs_in_progress": 0,
-    "avoidable_idle": false
-  },
-  "next_gate": "SELECT_HIGHEST_INFORMATION_INDEPENDENT_PHASE1_FRONT_AFTER_RC008_SOURCE_BLOCK",
-  "next_gate_rationale": "ITER065 closed the current RC008 route as a same-realization source-authority blocker. The geometric pullback diagnostics reject the old local-product prescription as normalization-equivalent but do not define the physical measure. No further RC008 crossing is authorized without a new source or separate derivation gate. The next scientific step should compare independent PHASE_1 fronts by exact upstream blocker and downstream leverage.",
-  "authoritative_recovery_order": [
-    "recovery/state.json",
-    "recovery/CURRENT_FRONT.md",
-    "results/ITER065_RC008_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY_BLOCKED_2026-09-14.md",
-    "prereg/ITER065_RC008_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY_2026-09-14.md",
-    "results/ITER064_RC008_CROSSING_CONVERGENCE_AND_GLOBAL_MEASURE_MANUAL_AUDIT_2026-09-14.md",
-    "results/ITER063_RC008_HELDOUT_TRANSPORT_SELECTOR_INVALID_2026-09-14.md",
-    "results/ITER062A_RC008_RESTRICTED_AMPLITUDE_KERNEL_SOURCE_CLOSED_2026-09-14.md",
-    "docs/CONSTITUTION.md"
-  ]
+  "active_compute":[{"iteration":"ITER066","run":34878725306,"head":"915255cfae8d13a10b37f95742fe61cfd9f6e6ad","scientifically_useful_jobs":3,"status_at_recovery_write":"queued"}],
+  "idle_capacity":{"scientifically_useful_jobs_queued":3,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false},
+  "next_gate":"CONSUME_ITER066_THEN_MANUAL_EQUATION_LEVEL_AUDIT_IF_SOURCE_CANDIDATE_PRESENT",
+  "next_gate_rationale":"RC008 is source-blocked. ITER066 independently tests whether the frozen RC004 causal-set authority stack contains a source-faithful quantum amplitude/measure together with an explicit scale/composition/refinement object before any BH004 numerical amplitude gate is allowed.",
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER066_BH004_CAUSAL_SET_AMPLITUDE_REFINEMENT_SOURCE_AUTHORITY_2026-09-14.md","results/ITER065_RC008_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY_2026-09-14.md","realizations/RC-004_CAUSAL_SET_BDG_ACTION.md","results/ITER007_FUSION_DYNAMIC_PREDICTIVITY_TERMINAL_2026-09-13.md","docs/CONSTITUTION.md"]
 }
