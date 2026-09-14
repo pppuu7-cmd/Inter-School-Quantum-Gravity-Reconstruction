@@ -3,9 +3,9 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_028_PREREGISTERED_NOT_EXECUTED",
-  "iteration_completion_percent": 0,
-  "iteration_completion_scope": "ITER028 topology-faithful Eq.(27) component contraction is prospectively frozen. No ITER028 implementation or substantive result has been executed yet.",
+  "active_iteration": "ITERATION_028_TERMINAL_BLOCKED",
+  "iteration_completion_percent": 100,
+  "iteration_completion_scope": "ITER028 Stage S executed under the frozen preregistration and terminalized before numerical lanes because the exact source inventory did not satisfy the frozen four-graphical-block predicate.",
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
     "known_schools_fail": false,
@@ -24,156 +24,67 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ27_TOPOLOGY_FAITHFUL_SUCCESSOR_PREREGISTERED",
-      "iter023": {
-        "prereg_commit": "f236741ce6b76050b40ed9fc5ef52998048a8c35",
-        "implementation_commit": "b3ac56b8dec57873d2e59c72c57c30b64f1f46b3",
-        "production_head": "86366a7abd003c166ea5ef277b1a3d1048e92e0a",
-        "run": 34785936567,
-        "classification": "RC006_QBAR_INDEX_ORDER_BLOCKED",
-        "report": "results/ITER023_RC006_QBAR_R_AUTHORITY_SPLIT_2026-09-14.md"
-      },
-      "iter024A_graphical_dual_braid": {
-        "prereg_commit": "0740c83d7951ba71a2c9797225ca7fcae7fbe739",
-        "production_head": "675098880739810a0e394d59497cc0471bbacdc8",
-        "run": 34786045133,
-        "terminal_commit": "831d566555dc1e21ae84e5b0bd69ddb0e336f690",
-        "classification": "RC006_GRAPHICAL_QBAR_COMPONENT_FAIL",
-        "report": "results/ITER024_RC006_GRAPHICAL_DUAL_BRAID_2026-09-14.md"
-      },
-      "iter024B_cited_authority_parser": {
-        "prereg_commit": "6d007bf342997425d5eee88d0f354062e9f8bb95",
-        "implementation_commit": "c223a73f0c66c950da98f478cfe4b7d2d3be8ca0",
-        "production_head": "2511ad18bf53d7159b935df306419dad709a210c",
-        "run": 34788335930,
-        "raw_aggregate_classification": "RC006_CITED_AUTHORITY_CHAIN_COMPLETE",
-        "scientific_classification": "INVALID_IMPLEMENTATION",
-        "report": "results/ITER024_RC006_CITED_AUTHORITY_CHAIN_INVALID_IMPLEMENTATION_2026-09-14.md"
-      },
-      "iter025A_source_normalized_qbar_sign": {
-        "prereg_commit": "235438817d2731209e532524fb60a6d2150070db",
-        "implementation_commit": "1dd6d2a316a63a487d49fec6f6a40f86b75223ae",
-        "production_head": "72ef40054d450d6c97213ffa211ffb63a8b524f9",
-        "run": 34786242013,
-        "classification": "RC006_QBAR_CUP_INDEPENDENT_FAIL"
-      },
-      "iter025B_exact_qbar_R_source_authority": {
-        "prereg_commit": "db2e00079e61258e69c1c8d68c587674e921be9e",
-        "implementation_commit": "8294e02f2e0ab9e08f44b124d608efbc44a05072",
-        "production_head": "cdf8142df05b61ea17b116571326e4e2721dbde0",
-        "run": 34788769863,
-        "classification": "RC006_EXACT_QBAR_R_SOURCE_AUTHORITY_COMPLETE",
-        "source_record": "sources/ITER025_RC006_QBAR_R_AUTHORITY.md",
-        "report": "results/ITER025_RC006_EXACT_QBAR_R_SOURCE_AUTHORITY_2026-09-14.md"
-      },
-      "provenance_reconciliation": {
-        "commit": "73743e942d654870e073674a6f78f38f93313657",
-        "report": "results/ITER024_025_AB_PROVENANCE_RECONCILIATION_2026-09-14.md",
-        "rule": "Historical paths remain unchanged; A/B are logical aliases. Source authority PASS does not supersede executable primitive FAIL."
-      },
+      "status": "EQ27_SOURCE_GRAPH_SEMANTICS_RECONCILIATION_REQUIRED",
       "iter026": {
-        "prereg_commit": "17dd87a110645b2a7ca6cc22df52569758502a70",
-        "implementation_commit": "caf988b3313a9c7cf5f7c6b409e6eb3ef99f0215",
-        "production_head": "d6a457f364feefd3fd4523ab84e09f8803590f3c",
         "run": 34789873827,
-        "aggregate_artifact": 10328005590,
-        "aggregate_digest": "sha256:f74355c6d101ee1728e01f7ddc953bac09d3b00a6d8678db51287e5ecfa98bad",
         "classification": "RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_VALIDATED",
-        "report": "results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md",
-        "report_commit": "b87fb2bb84c161a37b2927e6cd0c085d851065ab"
+        "report": "results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md"
       },
       "iter027": {
         "prereg_commit": "d07fd121f0abeb34396bb4f2bc4028070fed0e12",
-        "implementation_commit": "fcb17f980caa82fd7a1a1482a523084125915d53",
-        "initial_run": 34791069641,
-        "initial_run_classification": "INFRASTRUCTURE_FAIL_PRE_SCIENCE_MISSING_MPMATH",
-        "control_only_repair_commit": "b59fbc7a53ec2dda697826beb07550201052cd71",
-        "production_head": "b59fbc7a53ec2dda697826beb07550201052cd71",
         "run": 34792339154,
-        "aggregate_artifact": 10328698059,
-        "aggregate_digest": "sha256:fe1369502a90c617e601d7d45a3d7620010dd516b24174b3191117b013e20411",
-        "raw_aggregate_classification": "RC006_EQ27_COMPONENT_CONTRACTION_BLOCKED_AUTHORITY",
         "scientific_classification": "INVALID_IMPLEMENTATION_RC006_EQ27_TOPOLOGY_NOT_INSTANTIATED",
-        "implementation_findings": {
-          "authority_self_scanner_false_positive": true,
-          "eq27_two_l_loops_instantiated": false,
-          "eq27_internal_j_jpm_Jpm_network_instantiated": false,
-          "eq27_primed_unprimed_channel_wiring_instantiated": false,
-          "eq27_four_graph_blocks_contracted": false,
-          "full_eq27_amplitude_claimed_by_code": false
-        },
-        "surviving_local_control_metrics": {
-          "max_source_identity": 0.0,
-          "max_qbar_intertwiner": 3.839616566770844e-15,
-          "max_dual_contraction": 8.671119018262734e-16,
-          "max_R_inverse": 7.224267142543843e-15,
-          "null_controls_detected": 2,
-          "null_controls_required": 2
-        },
         "report": "results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md",
         "report_commit": "cad509649420b79a46b4c8e08616865e35673a0f"
       },
       "iter028": {
-        "status": "PREREGISTERED_NOT_EXECUTED",
+        "status": "TERMINAL_BLOCKED",
         "prereg": "prereg/ITER028_RC006_EQ27_TOPOLOGY_FAITHFUL_CONTRACTION_2026-09-14.md",
         "prereg_commit": "73246639c6710ab3e7228c3e5f0f11ae654f32b7",
-        "target_source": "1609.02429v2",
-        "target_source_sha256": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
-        "eq27_source_snippet_sha256": "88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d",
-        "stage_s_required": true,
-        "post_stage_parallel_lanes": [
-          "network_einsum_contraction",
-          "explicit_index_reference_contraction",
-          "appendixE_source_reduction",
-          "q1_instrumentation_sentinel",
-          "source_number_normalization_sentinel",
-          "topology_breaking_adversarial_controls"
-        ],
-        "scientific_result": null
+        "implementation_commit": "a56829c6beeee273d410c5dc87a7234aa76daef4",
+        "production_head": "3661564138585ad990761371e8a2d1e980719433",
+        "run": 34794113275,
+        "job": 103823792085,
+        "artifact": 10329326228,
+        "artifact_digest": "sha256:9d077dfe52a76033c6061de872e6068cdea1980f55ceda0bf8e25c976d4f7c03",
+        "graph_dictionary_digest": "sha256:c6ced1ae5348d6ff57571b7007c50b061a3296b4ee75b2e584c2a0dfaf482216",
+        "classification": "RC006_EQ27_SOURCE_GRAPH_COMPONENT_MAP_BLOCKED",
+        "source_provenance_pass": true,
+        "fresh_archive_sha256": "3e04a41195e0313fd97c68fcb8cc2ec30fa4bdfb5529ba867923c4120fc3e0ee",
+        "fresh_eq27_sha256": "88d2f7be9489980a763dd66b5c4900473c79900ccf72790095ae1675e9733b2d",
+        "mechanical_tikz_block_count": 2,
+        "frozen_required_graphical_block_count": 4,
+        "post_stage_numeric_lanes_authorized": false,
+        "report": "results/ITER028_RC006_EQ27_STAGE_S_SOURCE_GRAPH_MAP_BLOCKED_2026-09-14.md",
+        "report_commit": "c9b783f9dedef67011bb3f54b45159d92f99a6e0"
       },
-      "eq27_component_reconstruction_prereg_allowed": true,
       "iter012_retry_authorized": false,
       "eq29_amplitude_authorized": false,
       "one_step_tnr_authorized": false,
       "bridge_credit": false,
-      "next_gate": "IMPLEMENT_ITER028_STAGE_S_AND_PARALLEL_LANES_WITHOUT_CONTRACT_CHANGE"
+      "next_gate": "PREREGISTER_SOURCE_SEMANTICS_RECONCILIATION_OF_TWO_TIKZ_ENVIRONMENTS_VS_HISTORICAL_FOUR_GRAPHICAL_SUBFACTORS"
     },
-    "BH004_BH004B": {
-      "status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE",
-      "bridge_credit": false
-    },
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {
-      "status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS",
-      "refinement_map_derived": false
-    },
-    "RC008": {
-      "status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"
-    },
-    "RC009": {
-      "status": "SCOPED_BLOCKED"
-    },
-    "LORENTZIAN_DELTA4": {
-      "status": "SATURATED_NEGATIVE_SCOPED",
-      "bridge_credit": false
-    }
+    "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS", "refinement_map_derived": false},
+    "RC008": {"status": "SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
+    "RC009": {"status": "SCOPED_BLOCKED"},
+    "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
   "active_compute": [],
   "idle_capacity": {
     "scientifically_useful_jobs_queued": 0,
     "scientifically_useful_jobs_in_progress": 0,
-    "avoidable_idle": false,
-    "reason": "ITER028 scientific contract is frozen prospectively; implementation/execution is intentionally deferred to the next gate execution so no second substantive scientific gate is run in the same research pass."
+    "avoidable_idle": true,
+    "reason": "ITER028 is terminal. A new prospectively preregistered source-semantics reconciliation audit is admissible and should be started without altering ITER028."
   },
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "results/ITER028_RC006_EQ27_STAGE_S_SOURCE_GRAPH_MAP_BLOCKED_2026-09-14.md",
     "prereg/ITER028_RC006_EQ27_TOPOLOGY_FAITHFUL_CONTRACTION_2026-09-14.md",
     "results/ITER027_RC006_EQ27_BOUNDED_COMPONENT_INVALID_IMPLEMENTATION_2026-09-14.md",
-    "prereg/ITER027_RC006_EQ27_BOUNDED_COMPONENT_CONTRACTION_2026-09-14.md",
     "results/ITER026_RC006_DIRECT_SOURCE_QBAR_PRIMITIVE_2026-09-14.md",
     "results/ITER021_RC006_EQ27_COMPONENT_TRANSLATION_2026-09-14.md",
-    "prereg/ITER021_RC006_EQ27_COMPONENT_RECONSTRUCTION_2026-09-14.md",
-    "sources/ITER025_RC006_QBAR_R_AUTHORITY.md",
     "docs/INTERFACE_ATLAS_V0_1.md",
     "docs/CONSTITUTION.md"
   ]
