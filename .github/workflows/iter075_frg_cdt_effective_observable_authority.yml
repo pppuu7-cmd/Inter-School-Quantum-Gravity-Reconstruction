@@ -1,0 +1,80 @@
+name: ITER075 FRG CDT effective observable authority
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/iter075_frg_cdt_effective_observable_authority.yml'
+  workflow_dispatch:
+
+jobs:
+  source:
+    strategy:
+      fail-fast: false
+      matrix:
+        source: ['0807.4481','1403.5940','1412.0468','2203.08003']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests pypdf
+      - name: Frozen exact-PDF source extraction
+        shell: python
+        env:
+          SOURCE: ${{ matrix.source }}
+        run: |
+          import io,json,os,re,time,pathlib,requests,hashlib
+          from pypdf import PdfReader
+          aid=os.environ['SOURCE']
+          terms=['volume profile','effective action','transfer matrix','de sitter','minisuperspace','proper time','three-volume','spatial volume','effective average action','renormalization group','background metric','dynamical metric','cutoff','regulator','scale dependent','mean field','running cosmological','running newton','self-consistent background','cos^3','cosine']
+          data=None; errors=[]; used=None
+          for u in [f'https://arxiv.org/pdf/{aid}',f'https://export.arxiv.org/pdf/{aid}']:
+            for k in range(3):
+              try:
+                r=requests.get(u,timeout=45,headers={'User-Agent':'ISQGR-ITER075/1.0'})
+                if r.status_code==200 and r.content[:4]==b'%PDF': data=r.content; used=u; break
+                errors.append(f'{u}:HTTP{r.status_code}')
+              except Exception as e: errors.append(f'{u}:{type(e).__name__}:{e}')
+              time.sleep(2*(k+1))
+            if data is not None: break
+          if data is None:
+            out={'source':aid,'classification':'INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION','errors':errors,'gate_credit':False,'bridge_credit':False}
+          else:
+            rd=PdfReader(io.BytesIO(data)); text='\n'.join((p.extract_text() or '') for p in rd.pages); low=text.lower(); rows=[]
+            for t in terms:
+              for m in re.finditer(re.escape(t),low):
+                lo=max(0,m.start()-1100); hi=min(len(text),m.end()+1100)
+                sn=re.sub(r'\s+',' ',text[lo:hi])
+                rows.append({'trigger':t,'snippet':sn[:2600]})
+            out={'source':aid,'classification':'SOURCE_CANDIDATE_REQUIRES_MANUAL_EQUATION_AUDIT','pages':len(rd.pages),'pdf_bytes':len(data),'pdf_sha256':hashlib.sha256(data).hexdigest(),'retrieved_from':used,'passages':rows[:180],'gate_credit':False,'bridge_credit':False,'claim_lock':'green CI is not scientific PASS; prereg predicates A-H and failure controls require manual audit'}
+          pathlib.Path('out').mkdir(); pathlib.Path(f'out/{aid}.json').write_text(json.dumps(out,indent=2)+'\n')
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter075-${{ matrix.source }}
+          path: out/${{ matrix.source }}.json
+          if-no-files-found: error
+  aggregate:
+    needs: source
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter075-*
+          path: inputs
+          merge-multiple: true
+      - shell: python
+        run: |
+          import glob,json,pathlib
+          rows=[json.load(open(p)) for p in glob.glob('inputs/*.json')]
+          infra=[r.get('source') for r in rows if r.get('classification')=='INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION']
+          expected=['0807.4481','1403.5940','1412.0468','2203.08003']
+          got=[r.get('source') for r in rows]
+          missing=[x for x in expected if x not in got]
+          cls='INFRASTRUCTURE_FAIL_SOURCE_EXTRACTION' if infra or missing else 'SOURCE_CANDIDATES_REQUIRE_MANUAL_EQUATION_AUDIT'
+          out={'iteration':'ITER075','classification':cls,'expected_sources':expected,'sources':got,'infrastructure_fail_sources':infra,'missing_sources':missing,'gate_credit':False,'bridge_credit':False,'claim_lock':'manual equation-level audit against prereg required; no de-Sitter/minisuperspace-form promotion'}
+          pathlib.Path('out').mkdir(); pathlib.Path('out/summary.json').write_text(json.dumps(out,indent=2)+'\n')
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter075-aggregate
+          path: out/summary.json
