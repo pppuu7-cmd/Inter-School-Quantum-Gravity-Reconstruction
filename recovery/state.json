@@ -1,15 +1,45 @@
 {
-  "project":"Inter-School Quantum Gravity Reconstruction","repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction","date":"2026-09-14","phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE","active_iteration":"ITERATION_042_DELEGATED_DUALITY_AUTHORITY_SOURCE_EXPANSION_RUNNING","iteration_completion_percent":35,"candidate_theory_status":"UNFORMED",
+  "project":"Inter-School Quantum Gravity Reconstruction",
+  "repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
+  "date":"2026-09-14",
+  "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
+  "active_iteration":"ITERATION_044_MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_SOURCE_MAP_AUDIT_RUNNING",
+  "iteration_completion_percent":20,
+  "candidate_theory_status":"UNFORMED",
   "readiness_percent":{"amplitude_refinement_cross_realization_validation":49,"candidate_theory_construction":0,"overall_scientific_programme":49},
   "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"full_eq27_amplitude_derived":false},
-  "frontier":{"RC006":{"status":"DELEGATED_DUALITY_AUTHORITY_SOURCE_EXPANSION_RUNNING",
-    "iter039":{"status":"SCIENTIFIC_FAIL","authoritative_run":34806079470,"classification":"RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_FAIL","report_commit":"73bc362dce539c918c1a3b9344739c1d67316dd3"},
-    "iter040":{"status":"DIAGNOSTIC_COMPLETE","authoritative_run":34806282247,"classification":"RC006_CENTRAL_COMPONENT_VALIDITY_BOUNDARY_DIAGNOSTIC_COMPLETE","prior_scope_passed":24,"prior_scope_total":24,"root_boundary_total":18,"report_commit":"d3e5a2752fa07ec5cc5beb97db96dc159f7b700f"},
-    "iter041":{"status":"SCOPED_BLOCKED","prereg_commit":"4884e9b784506db0c428decc808eaac2ffdb9831","implementation_commit":"a02700b58dafcc92e6b5d3fea3039dc3ae312020","production_head":"5464d07efb957dbc5476fd99baa2c4baae1b465b","authoritative_run":34806469113,"jobs":{"C":103859206862,"D_original":103859206973,"A":103859206982,"B":103859207036,"aggregate":103859245378,"D_recovery":103859578836},"artifacts":{"A":{"id":10333475564,"digest":"sha256:1e73b88457abaab5c1df692bf0cc95c5bf5e0233fc41beac386d256dac95e882"},"B":{"id":10333480570,"digest":"sha256:1d5cc53cbdc24fce1f52788af065b9765ff320780c8df1c21fb83207503f5139"},"C":{"id":10333400754,"digest":"sha256:5b40763bafc11eb13be49f5d18dd1d328c365554424acaff91e55b75dd0b5d81"},"aggregate":{"id":10333330998,"digest":"sha256:29b3757059c4e1770b6671e2b47f99e42b4c263e42bfb9c201050db910ca4468"},"D_recovery":{"id":10332758669,"digest":"sha256:35d4f50756466af20c3e43672b5b9e3faa93de1fada5b313df02d30c240f49bd"}},"control_parser_repair_commit":"262c0e0d52b81e747447c409ff72bdf7e2547152","D_recovery_run":34806601065,"classification":"RC006_ROOT_UNITY_PRIMITIVE_DOMAIN_SOURCE_AUTHORITY_BLOCKED","R_domain_authority":"PASS_SCOPED_PROJECTED_QUOTIENT","dual_domain_authority":"BLOCKED_SOURCE_AUTHORITY","report_commit":"025e40bfbb7113534e5a20120a88c751b6d73b21"},
-    "iter042":{"status":"RUNNING","prereg_commit":"ce2e1c73a62ab416b8625b8934f7e598063bda5e","production_head":"5ef1025bbae0f12e7374578fdeb9e1baf108102d","authoritative_run":34806737112,"jobs":{"books_crossref":103859971665,"root_openalex":103859971776,"books_openlibrary":103859971804,"dual_openalex":103859971841},"scientific_result":null},
-    "eq29_amplitude_authorized":false,"one_step_tnr_authorized":false,"bridge_credit":false,"next_gate":"CONSUME_ITER042_DISCOVERY_ARTIFACTS; ANY_CANDIDATE_REQUIRES_SEPARATE_EXACT_FORMULA_QUALIFICATION_BEFORE_NUMERICS"},
-    "BH004_BH004B":{"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},"MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","refinement_map_derived":false},"RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},"RC009":{"status":"SCOPED_BLOCKED"},"LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}},
-  "active_compute":[{"run":34806737112,"job":103859971665,"status":"in_progress","purpose":"ITER042 delegated-book Crossref resolution"},{"run":34806737112,"job":103859971804,"status":"in_progress","purpose":"ITER042 delegated-book accessibility discovery"}],
-  "idle_capacity":{"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":2,"avoidable_idle":false},
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","prereg/ITER042_RC006_DELEGATED_DUALITY_AUTHORITY_SOURCE_EXPANSION_2026-09-14.md","results/ITER041_RC006_ROOT_UNITY_PRIMITIVE_DOMAIN_SOURCE_AUTHORITY_BLOCKED_2026-09-14.md","results/ITER040_RC006_CENTRAL_COMPONENT_VALIDITY_BOUNDARY_DIAGNOSTIC_COMPLETE_2026-09-14.md","results/ITER039_RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_FAIL_2026-09-14.md","docs/CONSTITUTION.md"]
+  "frontier":{
+    "RC006":{
+      "status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
+      "iter039":{"status":"SCIENTIFIC_FAIL","authoritative_run":34806079470,"classification":"RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_FAIL","report_commit":"73bc362dce539c918c1a3b9344739c1d67316dd3"},
+      "iter040":{"status":"DIAGNOSTIC_COMPLETE","authoritative_run":34806282247,"classification":"RC006_CENTRAL_COMPONENT_VALIDITY_BOUNDARY_DIAGNOSTIC_COMPLETE","prior_scope_passed":24,"prior_scope_total":24,"root_boundary_total":18,"report_commit":"d3e5a2752fa07ec5cc5beb97db96dc159f7b700f"},
+      "iter041":{"status":"SCOPED_BLOCKED","authoritative_run":34806469113,"classification":"RC006_ROOT_UNITY_PRIMITIVE_DOMAIN_SOURCE_AUTHORITY_BLOCKED","R_domain_authority":"PASS_SCOPED_PROJECTED_QUOTIENT","dual_domain_authority":"BLOCKED_SOURCE_AUTHORITY","report_commit":"025e40bfbb7113534e5a20120a88c751b6d73b21"},
+      "iter042":{"status":"SCOPED_BLOCKED","prereg_commit":"ce2e1c73a62ab416b8625b8934f7e598063bda5e","production_head":"5ef1025bbae0f12e7374578fdeb9e1baf108102d","authoritative_run":34806737112,"jobs":{"books_crossref":103859971665,"root_openalex":103859971776,"books_openlibrary":103859971804,"dual_openalex":103859971841,"aggregate":103860026831},"artifacts":{"books_crossref":{"id":10333306491,"digest":"sha256:4cd092b6ea5e276470a2603a462d8633ca7353e19424ad9098da735e73269db7"},"root_openalex":{"id":10333346306,"digest":"sha256:e9626fedcaa9706825048cd768860ec0b08312fe8b3e663b15db05a15b62f480"},"books_openlibrary":{"id":10332693982,"digest":"sha256:e901dddf8bededbf7e6588dc851a6d1644a195c82585ea86ef984feb946e0554"},"dual_openalex":{"id":10333520820,"digest":"sha256:315494a90210079720ef053180c76126977c2c673bd764db03df4c10cf49e4fa"},"aggregate":{"id":10332304276,"digest":"sha256:ba3d0d24bd90d8d8d64687d76ffb3c0252f627710395e271939ec50b89d2b444"}},"classification":"DELEGATED_AUTHORITY_SOURCE_EXPANSION_BLOCKED","report_commit":"70a8ccd7f88c9ff98a4d0b5c7cfb8996039f71f6"},
+      "iter043":{"status":"INFRASTRUCTURE_FAIL_PRE_SCIENCE_VOID","prereg_commit":"d1aca4c37fe855ca00e7f9a92bceea241f82e700","production_head":"a1102cbe88c3f99110710ea56fe90015d64f66db","authoritative_run":34807715146,"jobs":{"null":103862737182,"delegated_preview":103862737295,"coman":103862737300,"dowdall":103862737304,"aggregate":103862770361},"aggregate_artifact":{"id":10333332986,"digest":"sha256:9b394312494e422f4cd67ed0008d7b5f60109c53363b322d36c166a4442effb1"},"technical_cause":"Dowdall frozen URL HTTP 404 before evidence extraction","scientific_effect":"NONE_SOURCE_OF_TRUTH_CONFLICT","report_commit":"55cb2f9d8b6f08cddee62c4056210d0aa7222ca5"},
+      "eq29_amplitude_authorized":false,"one_step_tnr_authorized":false,"bridge_credit":false,"next_gate":"RC006_PAUSED_SOURCE_BLOCKED; NO_NUMERICAL_RETRY"
+    },
+    "BH004_BH004B":{"status":"CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE","bridge_credit":false},
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"SOURCE_MAP_AUDIT_RUNNING","prior_status":"BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS","refinement_map_derived":false,"iter044":{"prereg_commit":"6c26b2b87e7fa21cfc040ef17a8eb2a0cbc88937","production_head":"7d1c024fd52d5cb792c3d8e3bc839f9bcce69768","authoritative_run":34807867688,"jobs":{"semantic_null":103863161250,"montecarlo_2302":103863161435,"radiative_2206":103863161537,"dipole_1801":103863161561},"scientific_result":null}},
+    "RC008":{"status":"SOURCE_ONLY_COARSE_REFINED_RECONSTRUCTION_BLOCKED"},
+    "RC009":{"status":"SCOPED_BLOCKED"},
+    "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
+  },
+  "active_compute":[
+    {"run":34807867688,"job":103863161250,"status":"in_progress","purpose":"ITER044 frozen semantic/null controls"},
+    {"run":34807867688,"job":103863161435,"status":"in_progress","purpose":"ITER044 Monte Carlo/internal-sum source audit"},
+    {"run":34807867688,"job":103863161537,"status":"queued","purpose":"ITER044 radiative two-vertex source audit"},
+    {"run":34807867688,"job":103863161561,"status":"queued","purpose":"ITER044 dipole two-vertex source audit"}
+  ],
+  "idle_capacity":{"scientifically_useful_jobs_queued":2,"scientifically_useful_jobs_in_progress":2,"avoidable_idle":false},
+  "authoritative_recovery_order":[
+    "recovery/state.json",
+    "recovery/CURRENT_FRONT.md",
+    "prereg/ITER044_MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT_SOURCE_MAP_AUDIT_2026-09-14.md",
+    "results/ITER043_INFRASTRUCTURE_FAIL_VOID_SOURCE_OF_TRUTH_CONFLICT_2026-09-14.md",
+    "results/ITER042_RC006_DELEGATED_DUALITY_AUTHORITY_SOURCE_EXPANSION_BLOCKED_2026-09-14.md",
+    "results/ITER041_RC006_ROOT_UNITY_PRIMITIVE_DOMAIN_SOURCE_AUTHORITY_BLOCKED_2026-09-14.md",
+    "results/ITER040_RC006_CENTRAL_COMPONENT_VALIDITY_BOUNDARY_DIAGNOSTIC_COMPLETE_2026-09-14.md",
+    "results/ITER039_RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_FAIL_2026-09-14.md",
+    "docs/CONSTITUTION.md"
+  ]
 }
