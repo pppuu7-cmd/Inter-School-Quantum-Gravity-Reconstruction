@@ -46,7 +46,10 @@
         "attempt5_new_candidate_ids": ["1107.2633"],
         "attempt5_candidate_already_qualified_blocked": true,
         "attempt5_report_commit": "8a812bd9236cf12e049a5079ec351868626330fa",
-        "attempt6_status": "QUEUED",
+        "attempt6_target_job": 104048033247,
+        "attempt6_target_status": "IN_PROGRESS",
+        "attempt6_reinstantiated_non_target_jobs": [104048033734, 104048034370, 104048035078, 104048069073],
+        "attempt6_non_target_repeats_counted_as_new_science": false,
         "frozen_queries_and_scoring_unchanged": true
       },
       "iter060": {
@@ -74,11 +77,11 @@
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
   "active_compute": [
-    {"iteration": "ITER059", "run": 34835772221, "run_attempt": 6, "production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b", "workflow_status": "QUEUED"}
+    {"iteration": "ITER059", "run": 34835772221, "run_attempt": 6, "production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b", "jobs_in_progress": [104048033247]}
   ],
   "idle_capacity": {
-    "scientifically_useful_jobs_queued": 1,
-    "scientifically_useful_jobs_in_progress": 0,
+    "scientifically_useful_jobs_queued": 0,
+    "scientifically_useful_jobs_in_progress": 1,
     "avoidable_idle": false
   },
   "next_gate": "CONSUME_ATTEMPT6_EPRL_REFINEMENT_MAP_RAW_OUTPUT; DO_NOT ALTER FROZEN SCIENCE",
