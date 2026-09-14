@@ -3,7 +3,7 @@
   "repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date":"2026-09-14",
   "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration":"NONE_TERMINAL_THROUGH_ITER051",
+  "active_iteration":"NONE_TERMINAL_THROUGH_ITER052",
   "iteration_completion_percent":100,
   "candidate_theory_status":"UNFORMED",
   "readiness_percent":{"amplitude_refinement_cross_realization_validation":49,"candidate_theory_construction":0,"overall_scientific_programme":49},
@@ -11,33 +11,29 @@
   "frontier":{
     "RC006":{"status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","bridge_credit":false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{
-      "status":"BACKEND_RUNTIME_PASS_LOCAL_VERTEX_CROSSWALK_NEXT",
+      "status":"LOCAL_VERTEX_CROSSWALK_PASS_PHASE_WEIGHT_AUTHORITY_NEXT",
       "source_refinement_map_qualified":true,
       "refinement_map_derived":false,
       "zero_face_collapse_status":"BLOCKED_UNCHANGED",
       "iter047":{"status":"SCIENTIFIC_PASS","classification":"LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS","authoritative_run":34808646324,"report_commit":"d477c5514e4c6156ce96187cbe75f27c40cb2b6d"},
       "iter048":{"status":"SCOPED_BLOCKED","classification":"LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY","rawtex_run":34811727020,"rawtex_job":103874254568,"rawtex_artifact":{"id":10334723630,"digest":"sha256:191262f0c2a6d5c5b3ac6f1036caacd6808735c4bc38ecc73c45da49b2c53cb9"},"report_commit":"851d0665305cd7d379f758b2b4f4a320d85691ae"},
       "iter049":{"status":"SCIENTIFIC_PASS","classification":"LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS","authoritative_run":34811866640,"production_head":"946d427f2821971c3342f2ff5831b2cdeae79dc9","selected_route":"COMMENT_REPAIR","report_commit":"5d3d480196c0525701996b56a799034a7f498778"},
-      "iter050":{"status":"INVALID_IMPLEMENTATION","classification":"LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED","prereg_commit":"61908806492f5053c83cf45a50ea54bc5905797b","implementation_commit":"f9758afda5291661b1edf8115247a3d155e8e9ff","dependency_repair_commit":"0158a25ef6f96236d3dc783e922bfebe4e88a360","pre_science_infra_run":34815874165,"green_actions_run":34815939847,"lorentzian_vertex_evaluated":false,"report_commit":"51cd9302f25f642fdb0ed85539fb7421bdbba213"},
-      "iter051":{
+      "iter050":{"status":"INVALID_IMPLEMENTATION","classification":"LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED","green_actions_run":34815939847,"report_commit":"51cd9302f25f642fdb0ed85539fb7421bdbba213"},
+      "iter051":{"status":"PASS","classification":"LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS","authoritative_run":34818301950,"production_head":"52150ba71882c04091edbfac16e6f55ca0d244fe","smoke_amplitude":1.34499311005e-9,"report_commit":"16c8934ae7074f5c29aa20af3ded0a73dbfb0bdf"},
+      "iter052":{
         "status":"PASS",
-        "classification":"LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS",
-        "prereg_commit":"f013d4800a306ce4c1d9838d2a63c781c16f864d",
-        "authoritative_run":34818301950,
-        "production_head":"52150ba71882c04091edbfac16e6f55ca0d244fe",
-        "runtime_backend_sha":"052e4346028870bd76f69a3034e6cae8defb8f7f",
-        "smoke_amplitude":1.34499311005e-9,
-        "smoke_A_equals_B_exactly":true,
-        "runtime_identity_pass":true,
-        "negative_controls_pass":true,
-        "build_artifact":{"id":10336669907,"digest":"sha256:f357f01e2aa370db20701bbced8cf7f6d03d6c43751ba5399584dd343820454b"},
-        "aggregate_artifact":{"id":10337373597,"digest":"sha256:842a9868229de381de47ede61556bb2efe274b986ec3eed75e3e070ed9a63016"},
-        "report_commit":"16c8934ae7074f5c29aa20af3ded0a73dbfb0bdf"
-      },
-      "local_vertex_argument_crosswalk":{
-        "status":"SOURCE_MISMATCH_DISCOVERED_REQUIRES_PROSPECTIVE_AUTHORITY_GATE",
-        "source_record_commit":"b918058a35cbaf66456aa57b19576104c4d8c2f3",
-        "material_only_outside_all_zero_sector":true
+        "classification":"LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_AUTHORITY_PASS",
+        "prereg_commit":"a3f494374b491110525bee30af7ee1fa581a8fd6",
+        "implementation_commit":"f276e4d00a1a0bd63a129913d737318534125cb6",
+        "production_head":"20b87fbcf7b049c700796daaf4380de4d79cdc5b",
+        "authoritative_run":34819214900,
+        "amplitude_values_used":false,
+        "all_global_i1_i15_degree_two":true,
+        "tex_literal_rejected":true,
+        "sixj_only_repair_rejected":true,
+        "ordered_signature_control_pass":true,
+        "aggregate_artifact":{"id":10337417876,"digest":"sha256:c435fd981b6b67cb20187a971f6a528b26c8ba14b0a3e4823025e58ca5a1e8c5"},
+        "report_commit":"21dc48666d59a10150f2df0d181c3f5ee54331ec"
       },
       "bridge_credit":false
     },
@@ -48,7 +44,7 @@
   },
   "active_compute":[],
   "idle_capacity":{"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false},
-  "next_gate":"PROSPECTIVELY_FREEZE_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_AUTHORITY",
-  "next_gate_after_crosswalk_pass":"PROSPECTIVELY_REREGISTER_BOUNDED_FIVE_VERTEX_FIXED_CONFIGURATION_WITH_ACTUAL_BACKEND_AND_SOURCE_QUALIFIED_LOCAL_ARGUMENT_MAP",
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER051_LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS_2026-09-14.md","sources/ITER051_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK.md","sources/ITER051_LORENTZIAN_BACKEND_LABEL_SEMANTICS.md","results/ITER050_LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_INVALID_IMPLEMENTATION_2026-09-14.md","results/ITER049_LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS_2026-09-14.md","results/ITER048_LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_2026-09-14.md","docs/CONSTITUTION.md"]
+  "next_gate":"PROSPECTIVELY_FREEZE_LORENTZIAN_FIVE_VERTEX_PHASE_WEIGHT_AUTHORITY",
+  "next_gate_after_phase_weight_pass":"PROSPECTIVELY_REREGISTER_BOUNDED_FIVE_VERTEX_FIXED_CONFIGURATION_WITH_ACTUAL_BACKEND_AND_SOURCE_QUALIFIED_ARGUMENT_PHASE_WEIGHT_MAP",
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER052_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_PASS_2026-09-14.md","results/ITER051_LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS_2026-09-14.md","sources/ITER051_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK.md","sources/ITER051_LORENTZIAN_BACKEND_LABEL_SEMANTICS.md","results/ITER050_LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_INVALID_IMPLEMENTATION_2026-09-14.md","results/ITER049_LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS_2026-09-14.md","results/ITER048_LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_2026-09-14.md","docs/CONSTITUTION.md"]
 }
