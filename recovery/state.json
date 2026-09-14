@@ -3,21 +3,18 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-15",
   "phase": "PHASE_1_CDT_FRG_IDENTIFIABILITY_FRONTIER",
-  "active_iteration": "ITER091_PREREGISTRATION_NEXT",
-  "iteration_completion_percent": 0,
+  "active_iteration": "ITER095_PUBLIC_ARCHIVE_CDT_JOINT_COUNT_DATA_DISCOVERY",
+  "iteration_completion_percent": 15,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {"amplitude_refinement_cross_realization_validation":50,"candidate_theory_construction":0,"overall_scientific_programme":50},
   "claim_locks": {"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"full_eprl_refinement_derived":false,"lorentzian_refinement_derived":false,"universal_common_parent_found":false},
   "cdt_frg_direct_frontier": {
-    "iter078":{"status":"TERMINAL","classification":"PASS_SCOPED_DIRECT_REDUCED_ACTION_PARAMETER_CROSSWALK_RG_SCALE_OPEN","terminal_result_commit":"de6aee8b075c8f794d4d3f187e62034ee41a224c","bridge_credit":false},
-    "iter080":{"status":"TERMINAL","classification":"SCOPED_BLOCKED_UNDERDETERMINED_FRG_TRAJECTORY_FROM_REDUCED_MAP","terminal_result_commit":"dc2ffe874ca833773556675dacff54421782a0b5","bridge_credit":false},
-    "iter084":{"status":"TERMINAL","classification":"PASS_SCOPED_EXACT_LOCAL_TPFA_COEFFICIENT_CONTINUUM_CONVERGENCE_OPEN","terminal_result_commit":"b0706e5b503729f4b77549abac7d7c2d0b2c2ab3","normalized_spatial_eigenvalue":"z_CDT = 9 lambda_graph / a^2","bridge_credit":false},
-    "iter085":{"status":"TERMINAL","classification":"PASS_SCOPED_BACKGROUND_SPATIAL_THRESHOLD_ROUTE_PRODUCTION_COVARIANT_OPEN","prereg_commit":"c5abaa46cdc5a32801b469fb195e4aa2e8d455f1","source_authority_commit":"ff5c24e32e9757fd533edd0878b11e73e4d8f67b","adversarial_review_commit":"f91f9b83b6b15f73bee106547e3e160288643b42","terminal_result_commit":"c5580d4b9c4c5c842dbab6b5f3b59bb29a1ab55a","bridge_credit":false},
-    "iter086":{"status":"TERMINAL","classification":"FAIL_SCOPED_CANONICAL_GAP_SCALE_INCOMPATIBLE","prereg_commit":"f54bb3238eb1a52923230537256e973936d82ec2","terminal_result_commit":"fc1f962e0ec9087f8f58b3cc35e723c761a490ca","bridge_credit":false},
-    "iter087":{"status":"TERMINAL","classification":"PASS_SCOPED_RELATIVE_SCALING_ONLY_ABSOLUTE_COEFFICIENT_OPEN","prereg_commit":"6f24c0c3004c2b423815695ce42b636147003960","terminal_result_commit":"e733dd7497b40d6bb1a9309dccb25622882cd8a0","bridge_credit":false},
-    "iter088":{"status":"TERMINAL","classification":"SOURCE_REJECTS_ROUND_S3_IR_SCALING_ACCESSIBLE_CDS","retrospective":true,"prospective_validation_credit":0,"protocol_commit":"385f70a3c24f3f4dc39a5ba8e2380516786ad5d7","source_authority_commit":"152d258b9919f1958beb80206d776363e7d4a9cd","terminal_result_commit":"e0c3df0a9e899ecde82426f2310f466d479a70a8","measured_spatial_spectral_effective_dimension":"approximately 1.6","bridge_credit":false},
-    "iter089":{"status":"TERMINAL","classification":"FAIL_SCOPED_COVARIANCE_REDUNDANT_WITH_REDUCED_ACTION_PARAMETERS","prereg_commit":"ba4b6733cec302925f537ed0e9dde2e0d7fe315e","source_authority_commit":"bd74562cc07a0a62b9658524014c5c173b6a3ae2","terminal_result_commit":"fc39e0a1725a5776f13cb51e0769116f122eb420","bridge_credit":false},
-    "iter090":{"status":"TERMINAL","classification":"PASS_SCOPED_ONE_PARAMETER_FIXED_VOLUME_IDENTIFIABILITY_NOGO","prereg_commit":"a5b68cad14d102824777d349be904bba94c19c34","source_authority_commit":"f3fdf4662f0423730c95811e0b99d02a94ea77e0","adversarial_review_commit":"3665de31680b67e298f6f030a6652c422acb09ce","terminal_result_commit":"f774611a2400b0ebabe69876f9b4007efe29134a","identified_parameter":"g_k lambda_k","bridge_credit":false}
+    "iter090":{"status":"TERMINAL","classification":"PASS_SCOPED_ONE_PARAMETER_FIXED_VOLUME_IDENTIFIABILITY_NOGO","terminal_result_commit":"f774611a2400b0ebabe69876f9b4007efe29134a","bridge_credit":false},
+    "iter091":{"status":"TERMINAL","classification":"PASS_SCOPED_BARE_VOLUME_RESPONSE_RENORMALIZED_MAP_OPEN","terminal_result_commit":"15cc2bad9f3948014d2dd24fd6ac89592671a08f","bridge_credit":false},
+    "iter092":{"status":"TERMINAL","classification":"SOURCE_SUPPORTS_MIXED_PSEUDOCRITICAL_SHIFT_NOT_INDEPENDENT_COSMOLOGICAL_DIRECTION","terminal_result_commit":"2de2727b65b023b8d65963dcc6180912973659f9","bridge_credit":false,"prospective_validation_credit":0},
+    "iter093":{"status":"TERMINAL","classification":"PASS_SCOPED_FORMAL_RESPONSE_MATRIX_DATA_AUTHORITY_OPEN","terminal_result_commit":"7cfcc82037a7d2695a8c00a152b8b6c1752d5833","response_object":"F_ij = Cov(A_i,A_j), A=(-N0,N41-6N0,N4)","bridge_credit":false},
+    "iter094":{"status":"TERMINAL","classification":"DISCOVERY_SATURATED_NO_PUBLIC_DATA_IN_FROZEN_SET","prereg_commit":"c6c9d1b71a033306b0ec19cb6027b19a2d6b8492","production_head":"35c812381b33f22eac3f45dbb9ab9f9d13c2f2e1","run_id":34906684974,"aggregate_job":104184934584,"aggregate_artifact":10373135110,"aggregate_digest":"sha256:94ff118b234c8d31a9b4f4ee1369d0415d7be8de8dcefc92a8fd1ba2dedc040c","terminal_result_commit":"a115755e6f5e6b7b1318d7287af7f93495c52531","bridge_credit":false},
+    "iter095":{"status":"RUNNING_OR_QUEUED","prereg_commit":"1f5ab92f5d54656c48a9a349065c29c752caa712","production_head":"a27f5fc882cd7bacfd423028f64c4a358dd74e26","run_id":34907330487,"frozen_providers":["zenodo","datacite","figshare"],"bridge_credit":false}
   },
   "frontier": {
     "RC006":{"status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","bridge_credit":false},
@@ -27,14 +24,8 @@
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":{"status":"REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED","bridge_credit":false},
     "LORENTZIAN_DELTA4":{"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false}
   },
-  "route_locks": {
-    "canonical_lowest_spatial_gap_equals_frg_cutoff":"REJECTED_ITER086",
-    "round_s3_low_mode_scaling_accessible_cds":"REJECTED_BY_SOURCE_ITER088",
-    "leading_global_covariance_as_second_coupling_observable":"REDUNDANT_ITER089",
-    "fixed_volume_global_cumulants_split_g_lambda_in_EH_minisuperspace":"NO_GO_ITER090"
-  },
-  "idle_capacity":{"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false},
-  "next_gate":"PREREGISTER_ITER091_VARIABLE_VOLUME_COSMOLOGICAL_RESPONSE_AUTHORITY",
-  "next_gate_rationale":"ITER090 proves rank-one coupling dependence for the fixed-volume EH minisuperspace action. The cleanest global escape is to change ensemble and audit whether total-volume response to the CDT cosmological source supplies an independent renormalized direction, while strictly separating bare kappa_4, critical kappa_4^c, Gaussian volume fixing and FRG lambda_k.",
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER090_FIXED_VOLUME_EH_MINISUPERSPACE_IDENTIFIABILITY_NOGO_2026-09-15.md","results/ITER089_CDT_GLOBAL_COVARIANCE_SECOND_OBSERVABLE_INDEPENDENCE_AUTHORITY_2026-09-15.md","results/ITER088_RETROSPECTIVE_CDS_SPATIAL_GAP_IR_SCALING_ADJUDICATION_2026-09-15.md","results/ITER087_DIRECT_MAP_ABSOLUTE_GEOMETRIC_NORMALIZATION_FOR_SPATIAL_GAP_2026-09-15.md","results/ITER086_CANONICAL_SPECTRAL_GAP_SCALE_THEORY_SPACE_POINT_TEST_2026-09-15.md","results/ITER085_NORMALIZED_CDT_SPATIAL_MODE_FRG_REGULATOR_THRESHOLD_CROSSWALK_2026-09-15.md","results/ITER084_CDT_CELL_CENTERED_TPFA_GRAPH_LAPLACIAN_NORMALIZATION_2026-09-15.md","docs/CONSTITUTION.md"]
+  "idle_capacity":{"scientifically_useful_jobs_queued":3,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false},
+  "next_gate":"CONSUME_ITER095_PROVIDER_ARTIFACTS_AND_MANUALLY_AUDIT_AGAINST_FROZEN_PASS_CONDITIONS",
+  "next_gate_rationale":"ITER094 saturated the frozen GitHub repository set. ITER095 independently searches frozen public research-data providers. Only a qualifying 3+1 joint primitive-count data product can authorize a response-matrix computation; green CI alone cannot.",
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER094_PUBLIC_CDT_JOINT_COUNT_DATA_DISCOVERY_2026-09-15.md","prereg/ITER095_PUBLIC_ARCHIVE_CDT_JOINT_COUNT_DATA_DISCOVERY.md","results/ITER093_BARE_COUPLING_RESPONSE_MATRIX_SCALING_FIELD_AUTHORITY_2026-09-15.md","results/ITER092_RETROSPECTIVE_KAPPA4_PSEUDOCRITICAL_SCALING_EIGENDIRECTION_ADJUDICATION_2026-09-15.md","results/ITER091_VARIABLE_VOLUME_COSMOLOGICAL_RESPONSE_AUTHORITY_2026-09-15.md","docs/CONSTITUTION.md"]
 }
