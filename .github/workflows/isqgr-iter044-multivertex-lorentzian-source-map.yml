@@ -1,0 +1,121 @@
+name: ISQGR ITER044 multivertex Lorentzian EPRL source-map audit
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter044-multivertex-lorentzian-source-map.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source_audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [dipole-1801, radiative-2206, montecarlo-2302, semantic-null]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen source-map lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out work
+          lane='${{ matrix.lane }}'
+          if [[ "$lane" == "semantic-null" ]]; then
+            python3 - <<'PY'
+          import json
+          controls=[
+            {'name':'two_vertices_not_refinement','input':'connected two-vertex amplitude with internal face sum','refinement_should_pass':False},
+            {'name':'cutoff_scaling_not_refinement','input':'amplitude as function of homogeneous bulk cutoff','refinement_should_pass':False},
+            {'name':'finiteness_not_refinement','input':'vertex-renormalization diagram appears finite','refinement_should_pass':False},
+            {'name':'unsourced_zero_face_deletion_rejected','input':'delete j=0 face because numerically convenient','zero_face_should_pass':False}]
+          out={'lane':'semantic-null','transport_complete':True,'controls':controls,'null_pass':True,'classification':'NULL_PASS'}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2)+'\n')
+          PY
+          else
+            python3 -m pip -q install pypdf
+            case "$lane" in
+              dipole-1801) ids=('1801.03771');;
+              radiative-2206) ids=('2206.14755');;
+              montecarlo-2302) ids=('2302.00072' '1803.00835');;
+            esac
+            : > out/source_hashes.txt
+            for id in "${ids[@]}"; do
+              ok=0
+              for base in 'https://arxiv.org/pdf/' 'https://export.arxiv.org/pdf/'; do
+                if curl --fail --location --retry 4 --retry-delay 2 --max-time 180 -A 'ISQGR-ITER044-source-audit/1.0' "${base}${id}" -o "work/${id}.pdf"; then ok=1; break; fi
+              done
+              if [[ "$ok" != 1 ]]; then echo "transport failure $id" >&2; exit 22; fi
+              sha256sum "work/${id}.pdf" >> out/source_hashes.txt
+            done
+            LANE="$lane" IDS="${ids[*]}" python3 - <<'PY'
+          import json,os,re
+          from pypdf import PdfReader
+          terms={
+            'multivertex':[r'two.?vertex',r'2.?vertex',r'multi.?vertex',r'two vertices'],
+            'complex':[r'2.?complex',r'two.?complex',r'foam',r'diagram'],
+            'boundary':[r'boundary data',r'boundary state',r'boundary spin',r'boundary graph'],
+            'internal':[r'internal face',r'internal edge',r'bulk spin',r'bulk quantum',r'internal spin'],
+            'sum':[r'\bsum over',r'summing',r'cutoff',r'bulk sum',r'state sum'],
+            'refinement':[r'refinement',r'refine[ds]?',r'coarse.?grain',r'coarse',r'fine discret',r'pachner'],
+            'zero_face':[r'zero.?spin',r'j\s*=\s*0',r'vanishing spin',r'remove.{0,30}face',r'collapse.{0,30}face'],
+            'numeric':[r'sl2cfoam',r'monte carlo',r'numerical',r'vertex renormalization',r'self.?energy']}
+          sources=[]
+          for sid in os.environ['IDS'].split():
+            reader=PdfReader(f'work/{sid}.pdf')
+            pages=[]; counts={k:0 for k in terms}
+            for i,p in enumerate(reader.pages,1):
+              text=(p.extract_text() or '').replace('\x00',' ')
+              low=text.lower()
+              hits={k:[pat for pat in pats if re.search(pat,low,re.I)] for k,pats in terms.items()}
+              if any(hits.values()):
+                for k,v in hits.items(): counts[k]+=bool(v)
+                excerpts=[]
+                anchors=['two-vertex','2-vertex','internal face','bulk quantum','boundary data','boundary state','refinement','coarse','pachner','zero spin','j = 0','sl2cfoam','vertex renormalization','self-energy','cutoff']
+                for a in anchors:
+                  pos=low.find(a)
+                  if pos>=0: excerpts.append(text[max(0,pos-750):min(len(text),pos+1600)])
+                eq_like=bool(re.search(r'[=∑Σ]|\\sum|amplitude',text,re.I))
+                pages.append({'page':i,'hits':hits,'equation_like':eq_like,'excerpts':excerpts[:8]})
+            sources.append({'arxiv':sid,'pages_total':len(reader.pages),'family_page_counts':counts,'candidate_pages':pages})
+          out={'lane':os.environ['LANE'],'transport_complete':True,'sources':sources,'classification':'SOURCE_EVIDENCE_COLLECTED_REQUIRES_FROZEN_SCIENTIFIC_CLASSIFICATION'}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2,ensure_ascii=False)+'\n')
+          PY
+            rm -f work/*.pdf
+          fi
+          python3 - <<'PY'
+          import json,pathlib
+          e=json.loads(pathlib.Path('out/evidence.json').read_text())
+          pathlib.Path('out/manifest.json').write_text(json.dumps({'lane':'${{ matrix.lane }}','transport_complete':e.get('transport_complete',False),'classification':e.get('classification'),'files':[p.name for p in pathlib.Path('out').iterdir()]},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter044-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 90
+  aggregate:
+    needs: source_audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter044-*
+          path: collected
+      - name: Frozen transport aggregate
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          mans=list(pathlib.Path('collected').glob('iter044-*/manifest.json'))
+          transport=len(mans)==4 and all(json.loads(p.read_text()).get('transport_complete') for p in mans)
+          out={'classification':'MULTIVERTEX_SOURCE_EVIDENCE_COLLECTED_REQUIRES_SCIENTIFIC_CLASSIFICATION' if transport else 'INFRASTRUCTURE_FAIL','lane_count':len(mans),'transport_complete':transport,'refinement_map_derived':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/summary.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter044-aggregate
+          path: aggregate/
+          if-no-files-found: error
+          retention-days: 90
