@@ -1,0 +1,78 @@
+name: ISQGR ITER034 source label domain authority
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter034-source-label-domain-authority.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [external, factor1, factor2, null]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen ITER034 lane
+        run: |
+          rm -rf out/iter034
+          python3 code/iter034/source_label_domain_authority.py --lane '${{ matrix.lane }}'
+      - name: Preserve evidence
+        run: |
+          mkdir -p lane_out
+          cp out/iter034/evidence.json lane_out/evidence.json
+          cat lane_out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter034-${{ matrix.lane }}
+          path: lane_out/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter034-*
+          path: downloaded_iter034
+      - name: Aggregate frozen classes
+        run: |
+          python3 - <<'PY'
+          import glob,json,os
+          rows=[]
+          for p in sorted(glob.glob('downloaded_iter034/**/evidence.json',recursive=True)):
+              with open(p) as f: rows.append(json.load(f))
+          aliases={'external-labels':'external','factor1-labels':'factor1','factor2-labels':'factor2','domain-null':'null'}
+          by={aliases.get(r.get('lane'),r.get('lane')):r for r in rows}
+          expected=['external','factor1','factor2','null']
+          missing=[x for x in expected if x not in by]
+          infra=[x for x,r in by.items() if r.get('infrastructure_failure')]
+          blocked=[x for x,r in by.items() if not r.get('pass',False) and not r.get('infrastructure_failure')]
+          if missing or infra:
+              cls='NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE'; sp=False
+          elif blocked:
+              cls='RC006_EQ27_SOURCE_LABEL_DOMAIN_BLOCKED'; sp=False
+          else:
+              cls='RC006_EQ27_SOURCE_LABEL_DOMAIN_AUTHORITY_PASS'; sp=True
+          out={'classification':cls,'scientific_pass':sp,'lanes':by,'missing':missing,'infrastructure_lanes':infra,'blocked_lanes':blocked,
+               'claim_locks_preserved':True,'full_eq27_amplitude_derived':False,'eq29_amplitude_authorized':False,'one_step_tnr_authorized':False,'bridge_credit':False}
+          os.makedirs('out_iter034_aggregate',exist_ok=True)
+          with open('out_iter034_aggregate/aggregate.json','w') as f: json.dump(out,f,indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter034-aggregate
+          path: out_iter034_aggregate/
+          if-no-files-found: error
+          retention-days: 90
