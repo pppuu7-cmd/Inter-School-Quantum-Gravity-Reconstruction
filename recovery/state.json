@@ -35,7 +35,10 @@
         "attempt4_aggregate_artifact": {"id": 10352407284, "digest": "sha256:91ad884a7e45b21a37edf3ce398117620f9246ec7c68e59ece7b42781087d044"},
         "attempt4_new_candidate_ids": ["1107.2633"],
         "attempt4_candidate_already_qualified_blocked": true,
-        "attempt5_queued_jobs": [104025417356],
+        "attempt5_target_job": 104025417356,
+        "attempt5_target_status": "IN_PROGRESS",
+        "attempt5_matrix_reinstantiated_non_target_jobs": [104025418656, 104025419526, 104025451849, 104025471685],
+        "attempt5_non_target_repeats_counted_as_new_science": false,
         "frozen_queries_and_scoring_unchanged": true
       },
       "iter060": {
@@ -62,8 +65,8 @@
     "RC009": {"status": "SCOPED_BLOCKED"},
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
-  "active_compute": [{"iteration": "ITER059", "run": 34835772221, "run_attempt": 5, "production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b", "jobs_queued": [104025417356]}],
-  "idle_capacity": {"scientifically_useful_jobs_queued": 1, "scientifically_useful_jobs_in_progress": 0, "avoidable_idle": false},
+  "active_compute": [{"iteration": "ITER059", "run": 34835772221, "run_attempt": 5, "production_head": "7dd94a511d95be0512ed5bbeb76c7682a223180b", "jobs_in_progress": [104025417356]}],
+  "idle_capacity": {"scientifically_useful_jobs_queued": 0, "scientifically_useful_jobs_in_progress": 1, "avoidable_idle": false},
   "next_gate": "CONSUME_ATTEMPT5_EPRL_REFINEMENT_MAP_RAW_OUTPUT; DO_NOT ALTER FROZEN SCIENCE",
   "next_gate_after_iter059_positive": "FREEZE_ANY_OTHER_EXACT_NEW_SOURCE_IDS_IN_SEPARATE_SOURCE_QUALIFICATION_GATE_BEFORE_INTERPRETATION",
   "next_gate_after_iter059_saturated": "PRESERVE_REFINEMENT_MAP_AUTHORITY_BLOCKER_AND_REASSESS_OTHER_INDEPENDENT_PHASE1_BRANCHES",
