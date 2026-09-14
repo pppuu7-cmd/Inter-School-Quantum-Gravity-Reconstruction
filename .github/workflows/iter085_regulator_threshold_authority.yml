@@ -1,0 +1,95 @@
+name: ITER085 regulator-threshold authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/iter085_regulator_threshold_authority.yml'
+      - 'prereg/ITER085_NORMALIZED_CDT_SPATIAL_MODE_FRG_REGULATOR_THRESHOLD_CROSSWALK_2026-09-15.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - key: production-2306.10408
+            url: https://arxiv.org/pdf/2306.10408
+          - key: background-1212.5114
+            url: https://arxiv.org/pdf/1212.5114
+          - key: background-1609.04813
+            url: https://arxiv.org/pdf/1609.04813
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests pypdf
+      - name: Exact PDF extraction
+        env:
+          SOURCE_KEY: ${{ matrix.key }}
+          SOURCE_URL: ${{ matrix.url }}
+        run: |
+          python - <<'PY'
+          import io,json,os,pathlib,re,time,hashlib,requests
+          key=os.environ['SOURCE_KEY']; url=os.environ['SOURCE_URL']
+          last=None
+          for attempt in range(4):
+              try:
+                  r=requests.get(url,headers={'User-Agent':'ISQGR-ITER085'},timeout=45); r.raise_for_status(); data=r.content; break
+              except Exception as exc:
+                  last=exc; time.sleep(2**attempt)
+          else: raise SystemExit(f'FETCH_FAIL {key}: {last}')
+          from pypdf import PdfReader
+          reader=PdfReader(io.BytesIO(data)); text=''
+          for i,p in enumerate(reader.pages,1): text += f'\n===== PAGE {i} =====\n'+(p.extract_text() or '')
+          pats=[r'coarse.grain',r'spatial',r'Laplac',r'covariant choice',r'Type I',r'Litim',r'R_k',r'k\^2',r'p_0',r'momentum',r'regulator']
+          wins=[]; low=text.lower()
+          for pat in pats:
+              for m in list(re.finditer(pat.lower(),low))[:30]:
+                  wins.append({'pattern':pat,'excerpt':text[max(0,m.start()-800):min(len(text),m.end()+1200)]})
+          out=pathlib.Path('audit'); out.mkdir()
+          (out/f'{key}.txt').write_text(text,encoding='utf-8')
+          meta={'key':key,'url':url,'sha256_pdf':hashlib.sha256(data).hexdigest(),'pages':len(reader.pages),'characters':len(text),'windows':wins}
+          (out/f'{key}.json').write_text(json.dumps(meta,indent=2),encoding='utf-8')
+          print(json.dumps({k:meta[k] for k in ['key','sha256_pdf','pages','characters']}))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter085-${{ matrix.key }}
+          path: audit/
+
+  aggregate:
+    needs: source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter085-*
+          path: inputs
+          merge-multiple: true
+      - run: |
+          python - <<'PY'
+          import glob,json,pathlib
+          rows=[]
+          for f in sorted(glob.glob('inputs/*.json')):
+              j=json.loads(pathlib.Path(f).read_text()); rows.append({k:j[k] for k in ['key','url','sha256_pdf','pages','characters']})
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/manifest.json').write_text(json.dumps(rows,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter085-aggregate
+          path: aggregate/
+
+  claim_lock:
+    needs: aggregate
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo 'Extraction success is not scientific PASS.'
+          echo 'Background-spatial and production-covariant regulator routes must remain distinct.'
+          echo 'No k=1/a, FRG trajectory, bridge credit or candidate-theory claim follows.'
