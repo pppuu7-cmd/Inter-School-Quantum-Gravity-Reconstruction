@@ -1,0 +1,99 @@
+name: ITER095 public archive CDT joint-count data discovery
+
+on:
+  push:
+    paths:
+      - '.github/workflows/iter095_public_archive_cdt_joint_count_discovery.yml'
+  workflow_dispatch:
+
+jobs:
+  archive-search:
+    strategy:
+      fail-fast: false
+      matrix:
+        provider: [zenodo, datacite, figshare]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen provider search
+        env:
+          PROVIDER: ${{ matrix.provider }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request, time
+          provider=os.environ['PROVIDER']
+          queries=[
+            'causal dynamical triangulations',
+            'causal dynamical triangulations N41 N32',
+            'causal dynamical triangulations bifurcation transition',
+            'causal dynamical triangulations phase transition data',
+            'Gizbert-Studnicki causal dynamical triangulations',
+            'Ambjorn causal dynamical triangulations data',
+          ]
+          out={'gate':'ITER095_PUBLIC_ARCHIVE_CDT_JOINT_COUNT_DATA_DISCOVERY','provider':provider,'queries':queries,'responses':[],'errors':[]}
+          def get_json(req, timeout=30):
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+              return json.loads(r.read().decode('utf-8','replace'))
+          for q in queries:
+            try:
+              if provider=='zenodo':
+                url='https://zenodo.org/api/records?size=25&q='+urllib.parse.quote(q)
+                data=get_json(urllib.request.Request(url,headers={'User-Agent':'ISQGR-ITER095/1.0'}))
+                rows=[]
+                for h in data.get('hits',{}).get('hits',[]):
+                  md=h.get('metadata',{})
+                  rows.append({'id':h.get('id'),'doi':md.get('doi'),'title':md.get('title'),'description':md.get('description'),'keywords':md.get('keywords'),'created':h.get('created'),'updated':h.get('updated'),'links':h.get('links'),'files':h.get('files',[])})
+              elif provider=='datacite':
+                url='https://api.datacite.org/dois?page[size]=25&query='+urllib.parse.quote(q)
+                data=get_json(urllib.request.Request(url,headers={'User-Agent':'ISQGR-ITER095/1.0'}))
+                rows=[]
+                for h in data.get('data',[]):
+                  a=h.get('attributes',{})
+                  rows.append({'id':h.get('id'),'doi':a.get('doi'),'titles':a.get('titles'),'descriptions':a.get('descriptions'),'subjects':a.get('subjects'),'publisher':a.get('publisher'),'publicationYear':a.get('publicationYear'),'url':a.get('url'),'types':a.get('types')})
+              else:
+                url='https://api.figshare.com/v2/articles/search'
+                body=json.dumps({'search_for':q,'limit':25,'order':'published_date','order_direction':'desc'}).encode()
+                req=urllib.request.Request(url,data=body,headers={'User-Agent':'ISQGR-ITER095/1.0','Content-Type':'application/json'},method='POST')
+                data=get_json(req)
+                rows=[]
+                for h in data:
+                  rows.append({'id':h.get('id'),'title':h.get('title'),'description':h.get('description'),'url':h.get('url'),'url_private_api':h.get('url_private_api'),'published_date':h.get('published_date'),'modified_date':h.get('modified_date'),'doi':h.get('doi')})
+              out['responses'].append({'query':q,'records':rows})
+            except Exception as e:
+              out['errors'].append({'query':q,'error':repr(e)})
+            time.sleep(0.25)
+          with open(f'iter095-{provider}.json','w') as f: json.dump(out,f,indent=2,sort_keys=True)
+          if len(out['errors'])==len(queries):
+            raise SystemExit('provider lane fully failed')
+          PY
+      - name: Upload provider artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter095-${{ matrix.provider }}
+          path: iter095-${{ matrix.provider }}.json
+
+  aggregate:
+    needs: archive-search
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter095-*
+          path: artifacts
+      - name: Aggregate without scientific auto-pass
+        run: |
+          python - <<'PY'
+          import glob,json,os
+          items=[]
+          for p in glob.glob('artifacts/**/*.json',recursive=True):
+            try:
+              d=json.load(open(p)); items.append({'provider':d.get('provider'),'error_count':len(d.get('errors',[])),'query_count':len(d.get('queries',[])),'response_count':len(d.get('responses',[]))})
+            except Exception as e: items.append({'path':p,'parse_error':repr(e)})
+          out={'gate':'ITER095_PUBLIC_ARCHIVE_CDT_JOINT_COUNT_DATA_DISCOVERY','providers':items,'scientific_classification':'PENDING_MANUAL_ARTIFACT_AUDIT','green_ci_is_not_scientific_pass':True}
+          json.dump(out,open('aggregate.json','w'),indent=2,sort_keys=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter095-aggregate
+          path: aggregate.json
