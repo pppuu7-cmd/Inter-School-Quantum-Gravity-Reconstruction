@@ -17,7 +17,13 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        source: ['1903.11544','2007.13192','gr-qc/0212064']
+        include:
+          - source: '1903.11544'
+            artifact: '1903.11544'
+          - source: '2007.13192'
+            artifact: '2007.13192'
+          - source: 'gr-qc/0212064'
+            artifact: 'gr-qc-0212064'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -28,7 +34,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: iter066-${{ matrix.source }}
+          name: iter066-${{ matrix.artifact }}
           path: out/${{ matrix.source }}.json
           if-no-files-found: warn
 
