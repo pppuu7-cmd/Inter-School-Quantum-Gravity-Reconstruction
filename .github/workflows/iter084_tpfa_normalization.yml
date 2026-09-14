@@ -1,0 +1,122 @@
+name: ITER084 TPFA normalization authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/iter084_tpfa_normalization.yml'
+      - 'prereg/ITER084_CDT_CELL_CENTERED_TPFA_GRAPH_LAPLACIAN_NORMALIZATION_2026-09-15.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - key: cdt-1804.02294
+            url: https://arxiv.org/pdf/1804.02294
+          - key: fv-math-0505109
+            url: https://arxiv.org/pdf/math/0505109
+          - key: tetra-laplacian-2020
+            url: https://igl.ethz.ch/projects/LB3D/LB3D.pdf
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests pypdf
+      - name: Extract exact PDF text and keyword windows
+        env:
+          SOURCE_KEY: ${{ matrix.key }}
+          SOURCE_URL: ${{ matrix.url }}
+        run: |
+          python - <<'PY'
+          import io, json, os, pathlib, re, time, hashlib
+          import requests
+          from pypdf import PdfReader
+
+          key = os.environ['SOURCE_KEY']
+          url = os.environ['SOURCE_URL']
+          headers = {'User-Agent': 'ISQGR-source-audit/ITER084'}
+          last = None
+          for attempt in range(4):
+              try:
+                  r = requests.get(url, headers=headers, timeout=45)
+                  r.raise_for_status()
+                  data = r.content
+                  break
+              except Exception as exc:
+                  last = exc
+                  time.sleep(2 ** attempt)
+          else:
+              raise SystemExit(f'FETCH_FAIL {key}: {last}')
+
+          reader = PdfReader(io.BytesIO(data))
+          pages = []
+          for i, page in enumerate(reader.pages, start=1):
+              txt = page.extract_text() or ''
+              pages.append(f'\n===== PAGE {i} =====\n{txt}')
+          text = ''.join(pages)
+          patterns = [
+              r'laplac', r'4\s*I', r'adjac', r'tetra', r'lattice spacing',
+              r'orthogon', r'transmiss', r'finite volume', r'cell.?cent',
+              r'distance', r'face', r'volume', r'converg', r'dual graph'
+          ]
+          windows = []
+          low = text.lower()
+          for pat in patterns:
+              for m in list(re.finditer(pat.lower(), low))[:20]:
+                  a = max(0, m.start()-700); b = min(len(text), m.end()+1000)
+                  windows.append({'pattern': pat, 'excerpt': text[a:b]})
+          out = pathlib.Path('audit')
+          out.mkdir()
+          (out/f'{key}.txt').write_text(text, encoding='utf-8')
+          meta = {
+              'key': key, 'url': url, 'sha256_pdf': hashlib.sha256(data).hexdigest(),
+              'pages': len(reader.pages), 'characters': len(text), 'windows': windows
+          }
+          (out/f'{key}.json').write_text(json.dumps(meta, indent=2), encoding='utf-8')
+          print(json.dumps({k: meta[k] for k in ['key','sha256_pdf','pages','characters']}))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter084-${{ matrix.key }}
+          path: audit/
+
+  aggregate:
+    needs: source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter084-*
+          path: inputs
+          merge-multiple: true
+      - run: |
+          python - <<'PY'
+          import glob, hashlib, json, pathlib
+          files = sorted(glob.glob('inputs/*.json'))
+          rows=[]
+          for f in files:
+              j=json.loads(pathlib.Path(f).read_text())
+              rows.append({k:j[k] for k in ['key','url','sha256_pdf','pages','characters']})
+          pathlib.Path('aggregate').mkdir()
+          pathlib.Path('aggregate/manifest.json').write_text(json.dumps(rows,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter084-aggregate
+          path: aggregate/
+
+  claim_lock:
+    needs: aggregate
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo 'Green CI means extraction success only.'
+          echo 'Scientific PASS requires manual equation-level adjudication against the frozen preregistration.'
+          echo 'No bridge credit or candidate-theory authorization follows from CI.'
