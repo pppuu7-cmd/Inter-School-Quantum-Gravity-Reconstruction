@@ -24,6 +24,10 @@ jobs:
         run: |
           set -u
           mkdir -p out
+          if [[ '${{ matrix.lane }}' == 'primary-algebra' || '${{ matrix.lane }}' == 'heldout-algebra' ]]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq python3-sympy
+          fi
           python3 - <<'PY'
           import json, os, subprocess, hashlib, math
           lane='${{ matrix.lane }}'
@@ -38,17 +42,12 @@ jobs:
               out['author_lsremote']=a; out['backend_lsremote']=b
               out['authority_freeze_pass']=(a['returncode']==0 and b['returncode']==0)
           elif lane in ('primary-algebra','heldout-algebra'):
-              subprocess.run('python3 -m pip -q install sympy',shell=True,check=False)
               from sympy import S
               from sympy.physics.wigner import wigner_6j
-              # Exact source-defined recoupling objects for all-half-spin frozen j-sector.
-              # Production routing is COMMENT_REPAIR: fourth uses i7/i8; fifth uses i9/i10.
               if lane=='primary-algebra':
                   ii=[0]*15; ib=0
               else:
                   ii=[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]; ib=1
-              # Use doubled index entries as frozen discrete labels; this lane checks exact
-              # finiteness/admissibility only and does not substitute for Lorentzian vertices.
               vals=[]
               tuples=[(S(1)/2,S(1)/2,S(0),S(1)/2,S(1)/2,S(0)),
                       (S(1)/2,S(1)/2,S(0),S(1)/2,S(1)/2,S(0)),
@@ -77,7 +76,6 @@ jobs:
                   text=src.decode('utf-8','replace')
                   out['vertex_tool_has_10spin_5intertwiner']=('two_js[10]' in text and 'two_is[5]' in text and 'sl2cfoam_vertex_amplitude' in text)
                   out['build_probe_note']='Source-qualified backend executable interface recovered; full build/evaluation requires fastwigxj table/runtime setup and is intentionally not replaced by a surrogate.'
-                  # Probe repository-provided build metadata without fabricating runtime tables.
                   out['makefile_present']=os.path.exists('backend/Makefile')
               out['lorentzian_vertex_evaluated']=False
           open('out/evidence.json','w').write(json.dumps(out,indent=2,sort_keys=True))
@@ -100,7 +98,7 @@ jobs:
       - name: Conservative aggregate
         run: |
           python3 - <<'PY'
-          import json,glob,os
+          import json,glob
           lanes=[]
           for p in glob.glob('evidence/**/evidence.json',recursive=True):
               try: lanes.append(json.load(open(p)))
