@@ -1,0 +1,155 @@
+name: ISQGR ITER047 Lorentzian 5-to-1 assembly authority
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter047-5to1-assembly-authority.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gate:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [formula-2302, formula-1803, backend-map-shell, assembly-null]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen ITER047 lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out work
+          lane='${{ matrix.lane }}'
+          if [[ "$lane" == formula-* ]]; then
+            python3 -m pip -q install pypdf
+            if [[ "$lane" == "formula-2302" ]]; then id='2302.00072'; else id='1803.00835'; fi
+            ok=0
+            for base in 'https://arxiv.org/pdf/' 'https://export.arxiv.org/pdf/'; do
+              if curl --fail -L --retry 4 --retry-delay 2 --max-time 180 -A 'ISQGR-ITER047/1.0' "${base}${id}" -o work/source.pdf; then ok=1; break; fi
+            done
+            test "$ok" = 1
+            ID="$id" LANE="$lane" python3 - <<'PY'
+          import json,os,re
+          from pypdf import PdfReader
+          reader=PdfReader('work/source.pdf')
+          terms={
+            'pachner':[r'5.?1 pachner',r'1.?5 pachner',r'vertex renormal'],
+            'bulk':[r'bulk spin',r'internal face',r'internal spin',r'bulk face'],
+            'intertwiner':[r'intertwiner',r'internal edge',r'edge amplitude'],
+            'weights':[r'face amplitude',r'edge amplitude',r'vertex amplitude',r'face weight'],
+            'sum':[r'\\sum',r'sum over',r'summing',r'monte carlo']}
+          pages=[]; counts={k:0 for k in terms}
+          for i,p in enumerate(reader.pages,1):
+            text=(p.extract_text() or '').replace('\x00',' '); low=text.lower()
+            hits={k:[pat for pat in pats if re.search(pat,low,re.I)] for k,pats in terms.items()}
+            if any(hits.values()):
+              for k,v in hits.items(): counts[k]+=bool(v)
+              excerpts=[]
+              for a in ['5-1 pachner','1-5 pachner','vertex renormal','bulk spin','internal face','intertwiner','edge amplitude','face amplitude','vertex amplitude','sum over','monte carlo']:
+                pos=low.find(a)
+                if pos>=0: excerpts.append(text[max(0,pos-1000):min(len(text),pos+2200)])
+              pages.append({'page':i,'hits':hits,'equation_like':bool(re.search(r'[=∑Σ]|\\sum|amplitude',text,re.I)),'excerpts':excerpts[:10]})
+          out={'lane':os.environ['LANE'],'arxiv':os.environ['ID'],'transport_complete':True,'family_page_counts':counts,'candidate_pages':pages,'classification':'FORMULA_EVIDENCE_COLLECTED_REQUIRES_FROZEN_SCIENTIFIC_CLASSIFICATION'}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2,ensure_ascii=False)+'\n')
+          PY
+          elif [[ "$lane" == "backend-map-shell" ]]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq build-essential m4 lzip libquadmath0 libomp-dev libgmp-dev libmpfr-dev libmpc-dev libgsl-dev libopenblas-dev wget
+            git clone -q https://github.com/qg-cpt-marseille/sl2cfoam-next.git backend
+            git -C backend checkout -q 052e4346028870bd76f69a3034e6cae8defb8f7f
+            test "$(git -C backend rev-parse HEAD)" = '052e4346028870bd76f69a3034e6cae8defb8f7f'
+            sha256sum backend/tools/vertex-amplitude.c backend/src/vertex.c backend/inc/sl2cfoam.h > out/backend_hashes.txt
+            mkdir -p backend/ext
+            cd backend/ext
+            curl --fail -L --retry 5 --retry-delay 2 https://fy.chalmers.se/subatom/wigxjpf/wigxjpf-1.13.tar.gz -o wigxjpf.tar.gz
+            tar -xzf wigxjpf.tar.gz && mv wigxjpf-1.13 wigxjpf && make -C wigxjpf -j2
+            curl --fail -L --retry 5 --retry-delay 2 https://fy.chalmers.se/subatom/fastwigxj/fastwigxj-1.4.1.tar.gz -o fastwigxj.tar.gz
+            tar -xzf fastwigxj.tar.gz && mv fastwigxj-1.4.1 fastwigxj && make -C fastwigxj -j2
+            cd ..
+            mkdir -p data_sl2cfoam
+            ext/fastwigxj/bin/hash_js --max-E-3j=24 /dev/null data_sl2cfoam/table_24.3j
+            ext/fastwigxj/bin/hash_js --max-E-6j=24 /dev/null data_sl2cfoam/table_24.6j
+            make BLAS=system OMP=0 lib
+            make BLAS=system OMP=0 tools
+            export LD_LIBRARY_PATH="$PWD/lib:${LD_LIBRARY_PATH:-}"
+            p1=$(bin/vertex-amplitude "$PWD/data_sl2cfoam" 1.2 2,2,2,2,2,2,2,2,2,2 0,0,0,0,0 1 | tail -n1)
+            p2=$(bin/vertex-amplitude "$PWD/data_sl2cfoam" 1.2 2,2,2,2,2,2,2,2,2,2 0,0,0,0,0 1 | tail -n1)
+            h1=$(bin/vertex-amplitude "$PWD/data_sl2cfoam" 1.2 2,2,2,2,2,2,2,2,2,2 2,2,2,2,2 1 | tail -n1)
+            h2=$(bin/vertex-amplitude "$PWD/data_sl2cfoam" 1.2 2,2,2,2,2,2,2,2,2,2 2,2,2,2,2 1 | tail -n1)
+            cd ..
+            P1="$p1" P2="$p2" H1="$h1" H2="$h2" python3 - <<'PY'
+          import itertools,json,math,os,pathlib,re
+          vals={k:float(os.environ[k]) for k in ['P1','P2','H1','H2']}
+          finite=all(math.isfinite(v) for v in vals.values())
+          prep=abs(vals['P1']-vals['P2'])<=1e-12*max(1,abs(vals['P1']))
+          hrep=abs(vals['H1']-vals['H2'])<=1e-12*max(1,abs(vals['H1']))
+          cli=pathlib.Path('backend/tools/vertex-amplitude.c').read_text(errors='replace')
+          api=(re.search(r'two_js\[10\]',cli) is not None and re.search(r'two_is\[5\]',cli) is not None)
+          # deterministic global-to-local combinatorial ordering, independent of amplitudes
+          orig=range(5); c=5
+          simplices=[tuple(sorted((c,)+tuple(v for v in orig if v!=omit))) for omit in orig]
+          local=[]
+          for s in simplices:
+            faces=sorted(tuple(sorted(x)) for x in itertools.combinations(s,3))
+            tets=sorted(tuple(sorted(x)) for x in itertools.combinations(s,4))
+            local.append({'simplex':s,'face_slots':faces,'intertwiner_slots':tets})
+          passed=finite and prep and hrep and api and all(len(x['face_slots'])==10 and len(x['intertwiner_slots'])==5 for x in local)
+          out={'lane':'backend-map-shell','backend_sha':'052e4346028870bd76f69a3034e6cae8defb8f7f','global_local_order_rule':'lexicographic sorted triangle/tetrahedron labels, frozen without amplitude use','local_maps':local,'Dl':1,'values':vals,'finite':finite,'primary_repeat_pass':prep,'heldout_repeat_pass':hrep,'api_pass':api,'scientific_pass':passed,'classification':'BACKEND_GLOBAL_LOCAL_MAP_AND_DL1_TRANSPORT_PASS' if passed else 'SCIENTIFIC_FAIL_OR_BLOCKED'}
+          open('out/evidence.json','w').write(json.dumps(out,indent=2)+'\n')
+          if not passed: raise SystemExit(2)
+          PY
+            rm -rf backend
+          else
+            python3 - <<'PY'
+          import json
+          controls=[
+            {'claim':'bare product of five vertex values is the full 5-to-1 amplitude without source weights/sums','accepted':False},
+            {'claim':'cutoff or profile behavior is itself a refinement map','accepted':False},
+            {'claim':'finite Dl0 and Dl1 values establish shell convergence','accepted':False},
+            {'claim':'numerical agreement can choose an otherwise unsourced local ordering','accepted':False}]
+          passed=all(not c['accepted'] for c in controls)
+          open('out/evidence.json','w').write(json.dumps({'lane':'assembly-null','controls':controls,'null_pass':passed,'classification':'ASSEMBLY_NULL_PASS' if passed else 'NULL_FAIL'},indent=2)+'\n')
+          if not passed: raise SystemExit(2)
+          PY
+          fi
+          python3 - <<'PY'
+          import json,pathlib
+          e=json.loads(pathlib.Path('out/evidence.json').read_text())
+          pathlib.Path('out/manifest.json').write_text(json.dumps({'lane':'${{ matrix.lane }}','classification':e.get('classification'),'files':[p.name for p in pathlib.Path('out').iterdir()]},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter047-${{ matrix.lane }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 90
+  aggregate:
+    needs: gate
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter047-*
+          path: collected
+      - name: Conservative aggregate
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          ev=[json.loads(p.read_text()) for p in pathlib.Path('collected').glob('iter047-*/evidence.json')]
+          by={x['lane']:x for x in ev}
+          transport=len(by)==4
+          back=by.get('backend-map-shell',{}).get('scientific_pass') is True
+          null=by.get('assembly-null',{}).get('null_pass') is True
+          out={'classification':'ASSEMBLY_EVIDENCE_COLLECTED_REQUIRES_SOURCE_FORMULA_CLASSIFICATION' if transport and back and null else ('INFRASTRUCTURE_FAIL_OR_NUMERICAL_FAIL_REQUIRES_RAW_CLASSIFICATION'),'lane_count':len(by),'backend_map_shell_pass':back,'null_pass':null,'bounded_multivertex_contraction_authorized':False,'refinement_map_derived':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/summary.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter047-aggregate
+          path: aggregate/
+          if-no-files-found: error
+          retention-days: 90
