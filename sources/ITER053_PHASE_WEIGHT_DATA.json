@@ -1,0 +1,45 @@
+{
+  "paper_source": {
+    "arxiv": "2302.00072",
+    "main_tex_sha256": "bff93f3a7857658264a04eb23521bb935a68eccb7760b284589ff5ec4073f063",
+    "rawtex_artifact_id": 10334723630,
+    "rawtex_artifact_digest": "sha256:191262f0c2a6d5c5b3ac6f1036caacd6808735c4bc38ecc73c45da49b2c53cb9",
+    "edge_amplitude": "A_e(i_e)=2 i_e+1",
+    "face_amplitude_standard": "A_f(j_f)=2 j_f+1",
+    "vertex_renormalization_face_product": "prod_{f=1}^{10}(2 j_f+1)",
+    "vertex_renormalization_intertwiner_product": "prod_{e=1}^{15}(2 i_e+1)",
+    "phase": "(-1)^chi",
+    "chi": "sum_{k=1}^{10} j_k + sum_{k=11}^{15} i_k",
+    "deformed_face_amplitude": "A_f(j_f)=(2j_f+1)^mu",
+    "standard_mu": 1
+  },
+  "author_code": {
+    "repository": "PietropaoloFrisoni/Monte_Carlo_spinfoams",
+    "commit": "84b375f2a2e0d29b44dd8820953553624bb007a3",
+    "eprl_file": "src/vertex_renormalization_EPRL_MC.jl",
+    "eprl_blob": "6b627f7c2329724b589947195edc7e5ee7c18bb1",
+    "bf_file": "src/vertex_renormalization_BF.jl",
+    "bf_blob": "6ce6a9cb31db931bb3491932edfe1828d0852091",
+    "face_dimension_product_symbol": "dfj",
+    "face_exponent_symbol": "weight",
+    "face_weight_semantics_comment": "each internal face with spin j has dimension (2j+1)^(weight)",
+    "df_phase": "(-1)^(2*sum_internal_spins)",
+    "standard_bf_uses": "amp *= dfj * df_phase"
+  },
+  "backend": {
+    "repository": "qg-cpt-marseille/sl2cfoam-next",
+    "commit": "052e4346028870bd76f69a3034e6cae8defb8f7f",
+    "vertex_file": "src/vertex.c",
+    "vertex_blob": "9581999f0d5d59155e8c912fc7f2f3c5a98b346e",
+    "booster_file": "src/b4.c",
+    "booster_blob": "ccbe7d907ff5c04fd876343b6e732759064567c8",
+    "vertex_15j_dimension_factor": "sqrt(DIM(two_i1)*DIM(two_k2)*DIM(two_k3)*DIM(two_k4)*DIM(two_k5))",
+    "booster_dimension_factor": "sqrt(DIM(two_i)*DIM(two_k))"
+  },
+  "project_alpha_firewall": {
+    "rc006_prereg": "prereg/ITER010_RC006_EPRL_ALPHA_MEASURE_FAMILY_GATE.md",
+    "meaning": "reduced Euclidean SU(2)_k x SU(2)_k external quantum-dimension power alpha",
+    "not_identified_with_lorentzian_mu": true
+  },
+  "note": "Source extraction only. No Lorentzian amplitude value is used. The later gate must independently verify code/source identities and algebraic equivalence."
+}
