@@ -7,6 +7,10 @@ on:
       - '.github/workflows/isqgr-iter051-lorentzian-backend-runtime.yml'
   workflow_dispatch:
 
+concurrency:
+  group: isqgr-iter051-lorentzian-backend-runtime
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
