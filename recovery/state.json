@@ -3,7 +3,7 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-14",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE_ACTIVE",
-  "active_iteration": "ITERATION_030_CORRECTED_STAGE_S_RUNNING",
+  "active_iteration": "ITERATION_031_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_RUNNING",
   "iteration_completion_percent": 20,
   "candidate_theory_status": "UNFORMED",
   "claim_locks": {
@@ -23,23 +23,39 @@
   },
   "frontier": {
     "RC006": {
-      "status": "EQ27_CORRECTED_STAGE_S_RUNNING",
+      "status": "EQ27_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_RUNNING",
       "iter028": {"run": 34794113275, "classification": "RC006_EQ27_SOURCE_GRAPH_COMPONENT_MAP_BLOCKED", "retrofit_authorized": false},
       "iter029": {"run": 34794237347, "job": 103824140071, "artifact": 10328987132, "artifact_digest": "sha256:b6114041c61b2bfe3c21403a24afe641882af042aeba6ed05ca64cc7367ef721", "classification": "RC006_EQ27_SOURCE_SEMANTICS_RECONCILED_SCOPED", "report_commit": "a072c04b11ee947515cac4e1dcdd09dd25ba04c6"},
       "iter030": {
-        "status": "QUEUED",
+        "status": "PASS",
         "prereg_commit": "bec01d4995043e6aa02148ad78ae38c9e5975b8e",
         "implementation_commit": "34e2f0b832d46c0be67d6e57ae3bbd208cc26e95",
         "production_head": "19ded19077db5dc84f4ec7ed7d8aaa78cc536e55",
         "run": 34797567102,
-        "jobs": {"A":103833526261,"B":103833526417,"C":103833526458,"D":103833526480},
+        "jobs": {"A":103833526261,"B":103833526417,"C":103833526458,"D":103833526480,"aggregate":103834119032},
+        "aggregate_artifact": 10330087985,
+        "aggregate_digest": "sha256:b23c40284ee7ddaf6046aa13b9687e405eea18dee40f2dceeb90759676a6f4f1",
+        "classification": "RC006_EQ27_CORRECTED_STAGE_S_COMPONENT_MAP_PASS",
+        "report_commit": "cdf8cac16aac6cbe0302950ef1c79f286113b0c8",
+        "bounded_numerical_contraction_authorized": true
+      },
+      "iter031": {
+        "status": "QUEUED_AFTER_INFRASTRUCTURE_REPAIR",
+        "prereg_commit": "38333cb3e5a912eb7e6be8b6e997dcb94d366279",
+        "implementation_commit": "045a25241b37912199794385e6b4cd89b1f37b4f",
+        "initial_production_head": "08cad425efe828fb1fd8431c0ece927138889493",
+        "initial_run": 34801076904,
+        "initial_classification": "NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE_MISSING_NUMPY",
+        "repair_commit": "38610cb655314328f74be0a9383ff9125abbf9fd",
+        "authoritative_run": 34801143752,
+        "jobs": {"authority-domain":103843905093,"bounded-contraction":103843905182,"null-controls":103843905197,"component-translation":103843905269},
         "scientific_result": null
       },
       "iter012_retry_authorized": false,
       "eq29_amplitude_authorized": false,
       "one_step_tnr_authorized": false,
       "bridge_credit": false,
-      "next_gate": "CONSUME_ITER030_RAW_LANE_ARTIFACTS_AND_DEPENDENT_AGGREGATE_AGAINST_FROZEN_CORRECTED_STAGE_S_GATE"
+      "next_gate": "CONSUME_ITER031_RECOVERY_RUN_RAW_LANES_AND_AGGREGATE_AGAINST_FROZEN_PREREG_WITHOUT_RETUNING"
     },
     "BH004_BH004B": {"status": "CAUSAL_SET_SUPPORT_POSITIVE_FUSION_DYNAMIC_SELECTOR_SCOPED_NEGATIVE", "bridge_credit": false},
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status": "BLOCKED_SOURCE_ALGEBRAIC_ZERO_FACE_COLLAPSE_AMBIGUOUS", "refinement_map_derived": false},
@@ -48,18 +64,18 @@
     "LORENTZIAN_DELTA4": {"status": "SATURATED_NEGATIVE_SCOPED", "bridge_credit": false}
   },
   "active_compute": [
-    {"run":34797567102,"job":103833526261,"status":"queued","purpose":"ITER030 lane A corrected source inventory"},
-    {"run":34797567102,"job":103833526417,"status":"queued","purpose":"ITER030 lane B topology/endpoints"},
-    {"run":34797567102,"job":103833526458,"status":"queued","purpose":"ITER030 lane C component/index authority"},
-    {"run":34797567102,"job":103833526480,"status":"queued","purpose":"ITER030 lane D scalar/null controls"}
+    {"run":34801143752,"job":103843905093,"status":"queued","purpose":"ITER031 authority-domain"},
+    {"run":34801143752,"job":103843905182,"status":"queued","purpose":"ITER031 bounded-contraction primary+heldout"},
+    {"run":34801143752,"job":103843905197,"status":"queued","purpose":"ITER031 frozen null controls"},
+    {"run":34801143752,"job":103843905269,"status":"queued","purpose":"ITER031 component-translation primary+heldout"}
   ],
-  "idle_capacity": {"scientifically_useful_jobs_queued":4,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"Four independent prospectively frozen Stage-S authority lanes are queued; dependent numerical contraction is not yet admissible."},
+  "idle_capacity": {"scientifically_useful_jobs_queued":4,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false,"reason":"Four independent prospectively frozen ITER031 lanes are queued after a dependency-only infrastructure repair; no duplicate batch is admissible."},
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
+    "prereg/ITER031_RC006_EQ27_BOUNDED_CONTRACTION_CORRECTED_STAGE_S_2026-09-14.md",
+    "results/ITER030_RC006_EQ27_CORRECTED_STAGE_S_PASS_2026-09-14.md",
     "prereg/ITER030_RC006_EQ27_CORRECTED_STAGE_S_2026-09-14.md",
-    "results/ITER029_RC006_EQ27_SOURCE_SEMANTICS_RECONCILED_2026-09-14.md",
-    "results/ITER028_RC006_EQ27_STAGE_S_SOURCE_GRAPH_MAP_BLOCKED_2026-09-14.md",
     "docs/CONSTITUTION.md"
   ]
 }
