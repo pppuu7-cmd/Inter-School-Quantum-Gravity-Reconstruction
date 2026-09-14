@@ -1,0 +1,62 @@
+name: ISQGR ITER058 Lorentzian refinement transfer second hop
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr-iter058-lorentzian-refinement-transfer-second-hop.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  authority:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane:
+          - citation-provenance-1903
+          - dtnr-1409
+          - hypercuboidal-1701
+          - null-controls
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen second-hop lane
+        run: |
+          mkdir -p out
+          python3 code/iter058/second_hop.py --lane '${{ matrix.lane }}' --root "$RUNNER_TEMP/iter058" --out out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter058-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: authority
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter058-*
+          path: evidence
+      - name: Aggregate without auto-promoting source hits
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          rows={}
+          for p in pathlib.Path('evidence').rglob('evidence.json'):
+            x=json.loads(p.read_text()); rows[x['lane']]=x
+          req=['citation-provenance-1903','dtnr-1409','hypercuboidal-1701','null-controls']
+          missing=[x for x in req if x not in rows]
+          ret={k:rows.get(k,{}).get('retrieval_pass') for k in req if k!='null-controls'}
+          classification='INFRASTRUCTURE_FAIL_SOURCE_RETRIEVAL' if missing or any(v is not True for v in ret.values()) else 'AWAIT_RAW_SOURCE_CLASSIFICATION'
+          out={'iteration':'ITER058','classification':classification,'missing':missing,'retrieval':ret,'manual_source_classification_required':True,'green_ci_not_scientific_pass':True,'refinement_map_derived':False,'bridge_credit':False,'candidate_theory':'UNFORMED','candidate_theory_percent':0}
+          pathlib.Path('aggregate').mkdir();pathlib.Path('aggregate/aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True));print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter058-aggregate
+          path: aggregate/aggregate.json
+          if-no-files-found: error
