@@ -6,51 +6,43 @@ Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness: **50%*
 
 ## Persistent locks
 
-RC006 numerical retry remains unauthorized. RC009 remains scoped blocked on its tested reduced isotemporal route. Lorentzian Delta4 negative results remain preserved. No full Eq.(27), full EPRL/FK refinement, Lorentzian refinement, q-deformed bridge derivation or candidate-theory construction is authorized.
+RC006 numerical retry remains unauthorized. RC009 remains scoped blocked on its tested reduced isotemporal route. Lorentzian Delta4 negative results remain preserved. No full EPRL/FK refinement, Lorentzian refinement, q-deformed bridge derivation or candidate-theory construction is authorized.
 
 Forbidden claims remain `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`.
 
-## ITER062B terminal scoped PASS
+## ITER062B — terminal scoped scientific PASS
 
-Preregistered commit: `6fa9eb40d45be8facc952716bde83c57e962469d`.
-Implementation commit: `8039a7e8a17aa2b62baead26452425971367ae9c`.
-Production/workflow head: `3f4b1c89d5183cde99ae6f7cdfa9efe06ae6d829`.
-Authoritative run: `34874113741`.
-Aggregate job: `104077252124`.
-Aggregate artifact: `10359819990`, digest `sha256:fd62c82a618b6ded0e4ab0013610f00a33a70551e9d3f76ab1188d1c2f44493b`.
-Durable result commit: `19dbebcdcd32a3c2d1292a343d4e74a08a4ca362`.
+Authoritative run `34874113741`; aggregate job `104077252124`; aggregate artifact `10359819990`, digest `sha256:fd62c82a618b6ded0e4ab0013610f00a33a70551e9d3f76ab1188d1c2f44493b`; durable result commit `19dbebcdcd32a3c2d1292a343d4e74a08a4ca362`.
 
-Scientific verdict: **`SCIENTIFIC_PASS_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_SCOPED`**.
+Verdict: `SCIENTIFIC_PASS_RC008_RESTRICTED_COARSE_FINE_NUMERICAL_RECONSTRUCTION_SCOPED`.
 
-Calibration passed all frozen analytic/null predicates. With no boundary-specific retuning:
+B0, B1 and B2 converged with robust non-retuned crossings; B3 converged without a crossing and remains a preserved held-out negative.
 
-- B0 converged and crossed on `[0.50,0.55]` (report-only interpolation `0.534507642057044`);
-- B1 converged and crossed on `[0.55,0.60]` (`0.5669524248350563`);
-- B2 converged and crossed on `[0.50,0.55]` (`0.5277179126897538`);
-- B3 converged but did not cross on the frozen panel; this held-out negative is preserved.
+## ITER063 — terminal INVALID, no gate credit
 
-This raises only restricted RC008 numerical-reconstruction readiness. It does not supply bridge credit, full refinement, Lorentzian support or candidate-theory authorization.
+Prereg commit `04dacfba44f2a59efb882dbe162cc5161c7e7795`; production head `a6fa3c4d11b0b34298b3c3ac3e934721db757639`; authoritative run `34874671586`; aggregate job `104078941713`; aggregate artifact `10360430809`, digest `sha256:a59a92d11b4d439b25eb17a380c03298dfe606186fa7fbd5187c4483c8ef3d00`; durable report commit `d0c35b572bd803b841d0a6917676fcbaf809dbfe`.
 
-## ITER063 active — held-out non-retuned transport / selector
+Frozen verdict: **`INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL`**. This is not a scientific failure of RC008.
 
-The next gate was prospectively frozen before execution.
+All six boundary lanes numerically converged. H1/H2/H4 showed frozen-panel crossings, H3 did not. However both preregistered spatial-permutation selector controls P1 and P2 converged without crossings, violating the gate prerequisite. Those positive H lanes therefore receive no scientific gate credit and may not be cherry-picked.
 
-Prereg commit: `04dacfba44f2a59efb882dbe162cc5161c7e7795`.
-Implementation commits: `a30bd8a3b4b06d61506411a18dd3d48dd2825318`, `8b248e50c19ae8829af98f00c74cf98acf0892df`.
-Production head: `a6fa3c4d11b0b34298b3c3ac3e934721db757639`.
-Authoritative Actions run: `34874671586`.
+## ITER064 — active permutation / seed stability diagnostic
 
-Frozen lanes use independent Sobol seeds and inherit the ITER062B amplitude, alpha grid, integration domains, sample powers, convergence thresholds and crossing rule unchanged.
+Purpose: distinguish QMC/seed instability from an integrated spatial-permutation mismatch without changing the amplitude, observable, alpha panel or endpoint treatment.
 
-Permutation controls: P1 `(1,3,1,1)`, P2 `(1,1,3,1)`.
-New held-out anisotropies: H1 `(2,1,1,2)`, H2 `(2,3,1,1)`, H3 `(2,3,4,1)`, H4 `(1,2,3,2)`.
+Prereg commit: `aa2179c06bbbc3d54fbd917e1809e335839d30ed`.
+Implementation commits: `03e0118bafdd0a1c3d05a383a160f506b5ea2b8e`, `35680dd447cb997793d0bd1c2eeab79eb67582ef`.
+Production head: `be911ba4e7a847049f4882fbe615d0f25774b3ad`.
+Authoritative run: `34874915843`.
 
-At launch inspection there were 7 scientifically useful jobs queued and no duplicated scientific batch. The dependent aggregate is allowed only after all lanes terminalize.
+Frozen geometries are B2 `(3,1,1,1)`, P1 `(1,3,1,1)` and P2 `(1,1,3,1)`, using the same eight prospectively frozen Sobol seeds and powers `2^16`, `2^18`. No denser retry is authorized by this preregistration.
+
+Current scientifically useful compute: **0 queued / 3 in_progress** — jobs `104079605579` (P1), `104079605734` (P2), `104079605838` (B2). The dependent aggregate is not yet eligible.
 
 ## Readiness
 
-Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
+Overall scientific programme: **50%**. Current ITER064 diagnostic completion: **~25%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
 ## Exact next admissible action
 
-Consume all ITER063 raw artifacts and logs after terminalization, then classify strictly against `prereg/ITER063_RC008_HELDOUT_NONRETUNED_TRANSPORT_SELECTOR_2026-09-14.md`. Green CI is not sufficient. If the gate scientifically passes, preserve any individual held-out negative lanes and only then choose the next independent PHASE_1 gate. If it fails numerically or scientifically, do not retune the frozen panel.
+Wait only for the three already-running ITER064 lanes to terminalize, then consume their raw artifacts and the dependent aggregate against the frozen diagnostic classifications. Do not launch a competing RC008 gate while these lanes are active. No threshold/model retuning is permitted after the result.
