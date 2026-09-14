@@ -1,0 +1,59 @@
+name: ISQGR ITER039 bounded central component closure
+on:
+  push:
+    branches: [ main ]
+    paths: ['.github/workflows/isqgr-iter039-bounded-central-component-closure.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  lanes:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [A, B, C, D]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install --disable-pip-version-check numpy mpmath
+      - run: |
+          rm -rf out/iter039
+          python3 code/iter039/bounded_central_component_closure.py --lane ${{ matrix.lane }}
+      - run: |
+          mkdir -p lane_out
+          cp out/iter039/evidence.json lane_out/evidence.json
+          cat lane_out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter039-${{ matrix.lane }}
+          path: lane_out/
+          if-no-files-found: error
+          retention-days: 90
+  aggregate:
+    needs: lanes
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter039-*
+          path: collected
+      - run: |
+          python3 - <<'PY'
+          import json, pathlib
+          rows={}
+          for p in pathlib.Path('collected').glob('iter039-*/evidence.json'):
+              key=p.parent.name.split('-')[-1]; rows[key]=json.loads(p.read_text())
+          expected={'A','B','C','D'}
+          infra=any(v.get('infrastructure_failure') for v in rows.values()) or set(rows)!=expected
+          passes={k:bool(rows.get(k,{}).get('pass')) for k in sorted(expected)}
+          allpass=(not infra and all(passes.values()))
+          classification=('NUMERICAL_OR_INFRASTRUCTURE_FAIL' if infra else ('RC006_EQ27_BOUNDED_CENTRAL_COMPONENT_CLOSURE_PASS' if allpass else 'SCIENTIFIC_FAIL_OR_BLOCKED_REQUIRES_RAW_CLASSIFICATION'))
+          out={'classification':classification,'scientific_pass':allpass,'lane_pass':passes,'infra':infra,'full_eq27_amplitude_derived':False,'eq29_amplitude_authorized':False,'one_step_tnr_authorized':False,'bridge_credit':False,'candidate_theory_authorized':False}
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/summary.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n'); print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter039-aggregate
+          path: aggregate/
+          if-no-files-found: error
+          retention-days: 90
