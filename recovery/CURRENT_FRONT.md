@@ -6,28 +6,22 @@ Candidate theory: **UNFORMED / 0%**. Overall programme roadmap readiness remains
 
 ## Newly closed
 
-ITER037 is terminal **SCIENTIFIC PASS — `RC006_DIAGONAL_EXTERNAL_LABEL_SOURCE_SUPPORT_PASS`**. Prereg `8b9a3b7d97afcf5fafb1cd6ece8d300b43652619`; implementation `0a9c787c1d95937f9052c0a0b36b8b3f4ddaca3e`; production `bbad8c8acfcee52b856c5a977f2caf64a31770d4`; run `34805544176`; jobs B `103856600497`, D `103856600592`, C `103856600613`, A `103856600629`, aggregate `103856639970`; aggregate artifact `10332862398`, digest `sha256:21e67d0ca092e5ddf63f9bb770fb80aafa5378b3c239d786f439a490a91cb9af`; result commit `4faa7b10c7e67d765ba717d536bb562824b95163`.
+ITER038 is terminal **SCIENTIFIC PASS — `RC006_EQ27_CENTRAL_COUPLING_DOMAIN_AUTHORITY_PASS`**.
 
-Raw evidence confirms positive indexed source authority `l_i -> (j_i^+,j_i^-)`, not merely absence of a distinctness restriction. The frozen diagonal panel contains exactly 2 primary and 2 held-out source-listed cases. Every case has finite non-empty common internal-j support and exact exponents; frozen nulls reject 3/3 wrong constructions. ITER036 nevertheless remains historically BLOCKED under its own frozen split and is not retrofitted.
+Frozen provenance: prereg `3cdcc41939aac89c4bd934c10fbd7bc48a8dd321`; implementation `6340ead5bd78bdc650261c4827298943eab1b7a5`; production `b68d479615b9f966c2628ba8c69c1a2336d5c1dc`; original run `34805710939`; A `103857072596`, B-original `103857072719`, C `103857072746`, D `103857072479`, aggregate-original `103857203026`.
 
-## Active ITER038
+Raw A/C/D pass the frozen topology, central-domain enumeration and 3/3 null predicates. The original B artifact was marked BLOCKED only because its parser omitted TeX `eqnarray` alignment ampersands even though the raw context already contained the exact frozen source conditions `j_I+j_K >= j_L`, `j_1+j_2+j_3 <= k`, admissible representations and `j_max=k/2`. Minimal parser-only repair commit `e1eb8a3b6fb8db1bef1caa9262d853bfee9bd387` changed no science. B-only recovery run `34805845056`, job `103857457176`, artifact `10333225494`, digest `sha256:af9dde495a26791a59f32f17cb2629ac740b0a8a92cfad9242b398c7407f04b6` is PASS. Result note commit `f9391713820703a0a2619222bd38d7485cf84e4e`.
 
-`ITER038_RC006_EQ27_CENTRAL_COUPLING_DOMAIN_AUTHORITY` is prospectively frozen before any numerical Eq.(27) sum. The unresolved object is the central source coupling: indexed `j_i^+` couple to `J^+`, indexed `j_i^-` to `J^-`, then `J^+,J^-` couple to central `l`. The exact source also says simplicity constraints are not explicitly imposed on that latter coupling, so no EPRL map is being invented for central `l`.
+The original aggregate artifact remains preserved (`10333122987`, `sha256:92f719ef482e7eac781246848bafc1b99efa5a41dea9dfb979e972f0d73b9d64`) and is not rewritten; its B blocker is superseded only as a technical parser result.
 
-- prereg commit `3cdcc41939aac89c4bd934c10fbd7bc48a8dd321`
-- implementation commit `6340ead5bd78bdc650261c4827298943eab1b7a5`
-- production head `b68d479615b9f966c2628ba8c69c1a2336d5c1dc`
-- authoritative run `34805710939`
-- jobs: D nulls `103857072479`; A topology authority `103857072596`; B finite-k coupling-domain authority `103857072719`; C central-domain enumeration `103857072746`.
+## Exact next gate
 
-Latest snapshot: **3 in_progress / 1 queued**, avoidable idle false. No duplicate batch is admissible.
+ITER038 PASS authorizes a separately preregistered **bounded central/intermediate-index Eq.(27) contraction** on the already source-supported primary+held-out diagonal panel. The new gate must freeze the panel and contraction object before implementation, use the validated finite SU(2)_k domains, forbid retuning/phase fitting/domain repair, include held-out transfer and adversarial invalid-domain/orientation controls, and remain below a full Eq.(27) amplitude claim.
 
-## Exact next action
+Eq.(29)/Lambda, one-step TNR, refinement bridge and candidate-theory construction remain unauthorized.
 
-Consume all four raw ITER038 artifacts and aggregate against the frozen preregistration. Only `RC006_EQ27_CENTRAL_COUPLING_DOMAIN_AUTHORITY_PASS` may authorize a separately preregistered label-complete bounded panel gate. Missing source topology/domain support is BLOCKED; valid-source exact-domain/null failure is SCIENTIFIC FAIL. Eq.(29)/Lambda, one-step TNR and full-amplitude claims remain forbidden.
+## Other fronts / persistent locks
 
-## Persistent locks / other fronts
+ITER028 remains terminal BLOCKED; ITER034 remains terminal BLOCKED with its over-permissive green run rejected; ITER036 remains historically BLOCKED. BH004/BH004B remains scoped-negative; genuine multivertex Lorentzian EPRL refinement remains source-blocked; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
 
-ITER028 remains terminal BLOCKED; ITER034 remains terminal BLOCKED with its over-permissive green run rejected; ITER036 remains terminal BLOCKED. BH004/BH004B remains scoped-negative; genuine multivertex Lorentzian EPRL refinement remains source-blocked; RC008 and RC009 remain blocked; Lorentzian Delta4 remains saturated-negative in scope.
-
-Still false: `full_eq27_amplitude_derived`, `eq29_amplitude_authorized`, `one_step_tnr_authorized`, `bridge_credit`, `candidate_theory_authorized`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `UNIVERSAL_BRIDGE_FOUND`.
+Still false: `full_eq27_amplitude_derived`, `eq29_amplitude_authorized`, `one_step_tnr_authorized`, `bridge_credit`, `candidate_theory_authorized`, `new_physics_found`, `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `BRIDGE_DERIVED`.
