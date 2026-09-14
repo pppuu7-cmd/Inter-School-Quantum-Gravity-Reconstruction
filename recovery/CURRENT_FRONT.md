@@ -18,21 +18,19 @@ ITER054 and ITER055 remain scoped SCIENTIFIC PASS results for bounded five-verte
 
 ITER056, ITER057 and ITER058 remain source/refinement-transfer blockers: no exact source-qualified Lorentzian simplicial EPRL 5→1 coarse↔fine map has been established.
 
-## ITER060 — arXiv:1107.2633 source qualification TERMINAL
+ITER060 remains **SCOPED BLOCKED — `SCOPED_BLOCKED_NO_EXPLICIT_REFINEMENT_MAP`** for arXiv:1107.2633. Durable result commit `d089cc48717fa0b0f893f71af9859ea10fe12780`; authoritative run `34835559911`; aggregate artifact `10344285407`, digest `sha256:e5b88e4fc9b0bdab73c0fa4a371acd800be5ac18f1b88b0a5887275193ff3244`.
 
-Classification: **SCOPED BLOCKED — `SCOPED_BLOCKED_NO_EXPLICIT_REFINEMENT_MAP`**.
+## ITER059 — transport-repaired discovery ACTIVE RETRY
 
-Prereg commit `97c7c2747c08717068dbecbf492347324a833881`; implementation `63912df8c7bc9635fd3737218ac5ea237dd7f3fb`; production `de686bf46e9c78eb2c70fcb57d09a589ae218f6a`; authoritative run **34835559911**; aggregate job `103948497310`; artifact `10344285407`, digest `sha256:e5b88e4fc9b0bdab73c0fa4a371acd800be5ac18f1b88b0a5887275193ff3244`; exact source SHA256 `d46522e8f605202fb0bd1be7b13d4fe197133521597507a11d3bba2ecc64c564`; durable result commit `d089cc48717fa0b0f893f71af9859ea10fe12780`.
+Authoritative run remains **34835772221** at frozen production head `7dd94a511d95be0512ed5bbeb76c7682a223180b`.
 
-The exact source is genuinely Lorentzian EPRL/FK/KKL and compares multiple boundary graphs, including a 4-simplex boundary, but it does not supply a distinct coarse/fine pair or an explicit refinement/embedding/coarse-graining map for the active Lorentzian simplicial multi-vertex problem. The source explicitly confines the calculation to boundary graphs and does not address bulk two-complex refinement. Therefore no coarse↔fine numerical refinement test is authorized from this candidate.
+The latest completed attempt was **INFRASTRUCTURE FAIL DISCOVERY PARTIAL**, not a scientific negative. Raw logs show `eprl-rg-simplicial` job `103949121291` and `eprl-refinement-map` job `103949121524` failed before scientific evaluation with HTTP 429. Successful lanes remained valid. Aggregate job `103950107579` / artifact `10344805518` (`sha256:828ea5babbb64013c2f16492a776773d0f4c05a979156db73305a4aa02ecf6fa`) reported missing lanes `[eprl-rg-simplicial, eprl-refinement-map]` and only one metadata candidate, `1107.2633`, which is already source-qualified and BLOCKED by ITER060.
 
-## ITER059 — open authority discovery transport-repaired run ACTIVE
+Frozen queries, inclusion scoring, thresholds and consumed-source set remain unchanged. No scientific predicate was weakened or retuned.
 
-The previous run `34823751928` remained infrastructure-incomplete. Attempt 4 recovered the `lorentzian-spin-foam-map` lane with **zero candidates**, but `eprl-rg-simplicial` and `eprl-refinement-map` again timed out before scientific evaluation. This remains infrastructure failure, not a scientific negative.
+A retry of the failed discovery work was started. Current scientifically useful workload at the last check: **0 queued / 1 in_progress** — job `103964393982` (`eprl-rg-simplicial`) in progress. The recreated `eprl-refinement-map` job `103964395296` has already failed again pre-science; it must not be interpreted as a scientific negative and may be retried only after the active run is no longer executing. Successful lanes are not to be reinterpreted as new science.
 
-A minimal transport-only repair was applied to `code/iter059/discovery.py`: frozen queries, inclusion scoring, thresholds and consumed-source set are unchanged; only endpoint fallback (`export.arxiv.org` → `arxiv.org`) and timeout/retry transport were added. Repair commit `de36e6dbfc1c4b575f95a6f1f7b31a8744a2de7a`.
-
-Current production/workflow head `7dd94a511d95be0512ed5bbeb76c7682a223180b`; authoritative run **34835772221**. Current scientifically useful workload: **1 queued / 3 in_progress** — `103949121291` queued; `103949121452`, `103949121501`, `103949121524` in progress. Job `103949121491` is already terminal success. No duplicate batch is running.
+Recovery state commit: `b7eb6cad1facccd679a6a96ac635ce8aeb0d8ca6`.
 
 ## Readiness
 
@@ -40,4 +38,4 @@ Current iteration/front completion: **≈60%**. Overall scientific programme: **
 
 ## Exact next admissible action
 
-Consume all raw artifacts and aggregate from run **34835772221**. Deduplicate any newly discovered source IDs against the frozen consumed set and against arXiv:1107.2633. Any genuinely new surviving candidate must be frozen by exact ID in a separate source-qualification gate before interpretation. If the repaired discovery run yields no additional candidates, preserve the Lorentzian refinement-map authority blocker and move compute to another independent PHASE_1 amplitude/refinement branch rather than weakening the explicit-map requirement.
+Consume terminal output from job `103964393982`. Once the run is no longer active, retry only the still-failed `eprl-refinement-map` lane if it remains an infrastructure failure. Do not change frozen queries, scoring, thresholds, source set or map criterion. If all discovery lanes eventually complete with no genuinely new source ID beyond blocked `1107.2633`, preserve the Lorentzian refinement-map authority blocker and shift compute to another independent PHASE_1 branch rather than weakening the explicit-map requirement.
