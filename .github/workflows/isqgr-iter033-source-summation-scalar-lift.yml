@@ -1,0 +1,79 @@
+name: ISQGR ITER033 source summation scalar lift
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/isqgr-iter033-source-summation-scalar-lift.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lane:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [segmentation, binding, scalar, nulls]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen ITER033 source lane
+        run: |
+          rm -rf out/iter033
+          python3 code/iter033/source_summation_scalar_lift.py --lane '${{ matrix.lane }}'
+      - name: Preserve evidence
+        run: |
+          mkdir -p lane_out
+          cp out/iter033/evidence.json lane_out/evidence.json
+          cat lane_out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter033-${{ matrix.lane }}
+          path: lane_out/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: lane
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter033-*
+          path: downloaded_iter033
+      - name: Aggregate frozen classes
+        run: |
+          python3 - <<'PY'
+          import glob,json,os
+          rows=[]
+          for p in sorted(glob.glob('downloaded_iter033/**/evidence.json',recursive=True)):
+              with open(p) as f: rows.append(json.load(f))
+          aliases={'segmentation':'segmentation','summation-binding':'binding','external-scalar-inventory':'scalar','syntax-nulls':'nulls'}
+          by={aliases.get(r.get('lane'),r.get('lane')):r for r in rows}
+          expected=['segmentation','binding','scalar','nulls']
+          missing=[x for x in expected if x not in by]
+          infra=[x for x,r in by.items() if r.get('infrastructure_failure')]
+          blocked=[x for x,r in by.items() if not r.get('pass',False) and not r.get('infrastructure_failure')]
+          if missing or infra:
+              cls='NUMERICAL_OR_INFRASTRUCTURE_FAIL_PRE_SCIENCE'; sp=False
+          elif blocked:
+              cls='RC006_EQ27_SOURCE_SUMMATION_SCALAR_STRUCTURE_BLOCKED'; sp=False
+          else:
+              cls='RC006_EQ27_SOURCE_SUMMATION_SCALAR_STRUCTURE_PASS'; sp=True
+          out={'classification':cls,'scientific_pass':sp,'lanes':by,'missing':missing,'infrastructure_lanes':infra,'blocked_lanes':blocked,
+               'claim_locks_preserved':True,'full_eq27_amplitude_derived':False,'eq29_amplitude_authorized':False,
+               'one_step_tnr_authorized':False,'bridge_credit':False}
+          os.makedirs('out_iter033_aggregate',exist_ok=True)
+          with open('out_iter033_aggregate/aggregate.json','w') as f: json.dump(out,f,indent=2,sort_keys=True)
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter033-aggregate
+          path: out_iter033_aggregate/
+          if-no-files-found: error
+          retention-days: 90
