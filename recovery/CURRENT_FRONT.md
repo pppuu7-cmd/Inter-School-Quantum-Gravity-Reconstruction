@@ -12,49 +12,37 @@ RC006 numerical retry remains unauthorized. RC009 remains SCOPED BLOCKED. Lorent
 
 Forbidden claims remain `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`.
 
-## Lorentzian lineage
+## Lorentzian lineage through ITER056
 
-ITER047 PASS assembly authority; ITER048 remains historical SCOPED BLOCKED without retrofit; ITER049 PASS `COMMENT_REPAIR`; ITER050 INVALID_IMPLEMENTATION; ITER051 PASS pinned SL2Cfoam runtime; ITER052 PASS local vertex crosswalk; ITER053 PASS phase/weight authority; ITER054 PASS bounded five-vertex fixed summand.
+ITER047 PASS assembly authority; ITER048 remains historical SCOPED BLOCKED without retrofit; ITER049 PASS `COMMENT_REPAIR`; ITER050 INVALID_IMPLEMENTATION; ITER051 PASS pinned SL2Cfoam runtime; ITER052 PASS local vertex crosswalk; ITER053 PASS phase/weight authority; ITER054 PASS bounded five-vertex fixed summand; ITER055 PASS four-class low-spin recoupling transport; ITER056 SCOPED BLOCKED because the author implementation source pins the fine EPRL 5→1 object but not a separate coarse object or explicit refinement map.
 
-## ITER055 terminal SCIENTIFIC PASS
+## ITER057 terminal SCOPED BLOCKED
 
-Authoritative run **`34821443455`**, production head `82f2d33cebdec0e8bcaee165a7150cf5884eb0a0`.
+Prereg commit `b255704c7aeff417add30ae4e9ca1d4715054935`; implementation `e73eb39b4bfbf472def448d51ca198fedaf52b2d`; production head `d1df80096f3fcbe80660ffb7300e55d9af398641`; authoritative run **`34823253593`**.
 
-Classification: **`SCIENTIFIC PASS — LORENTZIAN_RECOUPLING_MINIPANEL_TRANSPORT_PASS_SCOPED`**.
+Classification: **`SCOPED BLOCKED — LORENTZIAN_REFINEMENT_MAP_CITED_AUTHORITY_BLOCKED`**.
 
-All seven raw lanes and aggregate were consumed against prereg commit `0d96a7c9f4c4fbb07a5001b0c3586e90bee1e8f0`. R10 (`1→0`) and R11 (`1→1`) both transported through the same pinned runtime without retuning; A/B differences were exactly zero. Aggregate job/artifact `103903853005 / 10337969589`, digest `sha256:a5d6f4de322db0163ef2824164636dc94c93e8480f4641743aedd74ae3f421cc`.
+All six raw source lanes and aggregate were consumed. The Lorentzian EPRL primary source arXiv:2302.00072, Lorentzian EPRL-FK divergence source arXiv:1803.00835, radiative 1→5 source arXiv:0810.1714 and Lorentzian vertex source arXiv:1903.12624 provide fine/vertex-renormalization context but no source-qualified separate coarse object plus explicit variable-level fine→coarse map satisfying the preregistration.
 
-Durable result commit: `586ff3cd107a3c62166ab53c0f1ac9cfffa6c977`.
+The Riemannian-holomorphic control arXiv:1412.8247 contains a real explicit 5→1 homogeneity map, including `H_{5-1}[A^tau_{5-1}] = A_{5-1}`, but it is model-mismatched by construction and no frozen source supplies an exact transfer theorem to Lorentzian EPRL. Importing it is forbidden.
 
-ITER054+055 now cover all four low-spin recoupling classes for bounded fixed summands only. No full internal sum, shell convergence, refinement invariance or bridge credit follows.
+Aggregate job/artifact `103909476987 / 10338893493`, digest `sha256:803e96f5ed313431486828c69dec893ae62bf8afdcf7a39baf2581db8fb4a9a3`. Durable result commit `9adf888c7abe76f841a23597462251fbbebf34f0`.
 
-## ITER056 terminal SCOPED BLOCKED
+This sharpens, but does not remove, the blocker: an explicit refinement-like algebra exists in a different spin-foam realization; the missing object is a source-proven Lorentzian-EPRL transfer/map.
 
-Frozen source: `PietropaoloFrisoni/Monte_Carlo_spinfoams@84b375f2a2e0d29b44dd8820953553624bb007a3`, tree `5ded1505fbb148b8ab336027a509f942d9565176`, EPRL 5→1 notebook blob `bd1a55c0e95b98244df02e049346ba8b7488797a`.
+## ITER058 active — second-hop transfer authority
 
-Prereg `55160b6b48194d4d8ef2698bcf1b04dd3c038800`; implementation `05f2660b37d7cf21f006cdeff086ea9fb5b697bb`; production head `f8f6c04e2c525110eb860350923922a5ca182d73`; authoritative run **`34822881473`**.
+ITER058 prospectively checks only two concrete renormalization/coarse-graining works explicitly cited by the Lorentzian EPRL numerical source arXiv:1903.12624:
 
-Classification: **`SCOPED BLOCKED — LORENTZIAN_REFINEMENT_MAP_SOURCE_AUTHORITY_BLOCKED`**.
+- arXiv:1409.2407 — decorated tensor-network renormalization for lattice gauge/spin-foam models;
+- arXiv:1701.02311 — hypercuboidal spin-foam renormalization.
 
-Exact source identity passed and the fine EPRL 5→1/vertex-renormalization object is source-qualified. But the independent inventories found no separately source-qualified coarse/single-vertex EPRL object and no explicit variable-level refinement/coarse-graining map. Null controls reject keyword-only, plot-only, BF/Riemannian substitution, fitted rescaling and amplitude-dependent map selection.
+A third lane freezes citation provenance in arXiv:1903.12624; a fourth lane is adversarial null control. Generic TNR applicability, Euclidean/hypercuboidal truncation, or language that a method can be adapted cannot qualify. PASS requires an exact theorem/construction transferring a defined coarse/fine map to the relevant Lorentzian EPRL simplicial/5→1 object with model-dependent normalization fixed.
 
-Aggregate job/artifact `103908307101 / 10338687626`, digest `sha256:5eef9a31442b2355b81708d7b4670cd43e901b42be06cbfe4c80ddf892f9bb67`. Durable result commit: `f6724bdf2377f4661fdf78c5920f5e38034323ab`.
+Prereg commit `4da059da6b8639158d4f298869e968c75c577b5f`; implementation `e6c41bad1c2a0e46d4d58c94b251bba1ec1af47c`; production/workflow head `731201da41118368f65b21891142d24bd3e192eb`; authoritative run **`34823516850`**.
 
-This is not a scientific FAIL of Lorentzian EPRL. It blocks a numerical coarse↔fine comparison until an explicit map and both objects are source-qualified.
-
-## ITER057 active — cited-authority chain
-
-ITER057 prospectively tests a fixed literature/source panel for the missing Lorentzian EPRL refinement authority, amplitude-blind. Frozen panel: arXiv `2302.00072`, `1803.00835`, `0810.1714`, `1903.12624`, plus `1412.8247` strictly as a Riemannian-holomorphic model-mismatch control.
-
-PASS requires a Lorentzian-EPRL-compatible source chain that independently pins: fine object, coarse object, explicit variable-level map, and required normalization/weight convention. A 5→1 renormalization label or plot is insufficient.
-
-Prereg commit: `b255704c7aeff417add30ae4e9ca1d4715054935`.
-Implementation commit: `e73eb39b4bfbf472def448d51ca198fedaf52b2d`.
-Production/workflow head: `d1df80096f3fcbe80660ffb7300e55d9af398641`.
-Authoritative run: **`34823253593`**.
-
-Six independent jobs are authorized with `fail-fast:false`: primary source chain, EPRL-FK 1803, radiative 0810, Lorentzian vertex 1903, holomorphic-control 1412, and null controls. At the latest check all six were queued; no duplicate batch was launched.
+At the latest check four scientifically useful jobs were **in_progress**: citation-provenance `103910245976`, hypercuboidal-1701 `103910246241`, dtnr-1409 `103910246332`, null-controls `103910246400`. No duplicate batch is running.
 
 ## Exact next admissible action
 
-Consume every terminal ITER057 raw source artifact plus aggregate and manually classify any relation candidates against the frozen model-compatibility rule. Only a genuine Lorentzian EPRL fine+coarse+explicit-map authority PASS can open a later prospectively frozen coarse↔fine numerical test. Otherwise preserve the refinement-map blocker; do not infer or fit a map from amplitudes.
+Consume all four ITER058 raw artifacts and dependent aggregate, then manually classify any claimed transfer against the frozen model-matching rule. Only exact Lorentzian-EPRL transfer authority may open a numerical coarse↔fine test; otherwise preserve the blocker and do not fit/infer a map from amplitudes.
