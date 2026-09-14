@@ -1,0 +1,90 @@
+name: ISQGR ITER056 Lorentzian refinement-map source authority
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/isqgr-iter056-lorentzian-refinement-map-source-authority.yml'
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUNBUFFERED: '1'
+
+jobs:
+  authority:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane:
+          - source-identity
+          - fine-object-inventory
+          - coarse-object-inventory
+          - map-inventory
+          - null-controls
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen authority lane
+        run: |
+          mkdir -p out
+          python3 code/iter056/source_authority.py --lane '${{ matrix.lane }}' --root "$RUNNER_TEMP/iter056" --out out/evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter056-${{ matrix.lane }}
+          path: out/evidence.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: authority
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter056-*
+          path: evidence
+      - name: Classify against frozen preregistration
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          rows={}
+          for p in pathlib.Path('evidence').rglob('evidence.json'):
+              x=json.loads(p.read_text()); rows[x['lane']]=x
+          required=['source-identity','fine-object-inventory','coarse-object-inventory','map-inventory','null-controls']
+          missing=[x for x in required if x not in rows]
+          identity=bool(rows.get('source-identity',{}).get('pass'))
+          fine=bool(rows.get('fine-object-inventory',{}).get('qualified_fine_object'))
+          coarse=bool(rows.get('coarse-object-inventory',{}).get('qualified_coarse_object'))
+          mapping=bool(rows.get('map-inventory',{}).get('qualified_explicit_map'))
+          nulls=bool(rows.get('null-controls',{}).get('pass'))
+          if missing or not identity:
+              classification='INFRASTRUCTURE_OR_SOURCE_IDENTITY_FAIL'
+          elif fine and coarse and mapping and nulls:
+              classification='LORENTZIAN_REFINEMENT_MAP_SOURCE_AUTHORITY_PASS_SCOPED'
+          else:
+              classification='LORENTZIAN_REFINEMENT_MAP_SOURCE_AUTHORITY_BLOCKED'
+          out={
+            'iteration':'ITER056',
+            'classification':classification,
+            'missing':missing,
+            'source_identity_pass':identity,
+            'fine_object_qualified':fine,
+            'coarse_object_qualified':coarse,
+            'explicit_map_qualified':mapping,
+            'null_controls_pass':nulls,
+            'green_ci_not_scientific_predicate':True,
+            'refinement_map_derived':False,
+            'bridge_credit':False,
+            'candidate_theory':'UNFORMED',
+            'candidate_theory_percent':0,
+          }
+          pathlib.Path('aggregate').mkdir(); pathlib.Path('aggregate/aggregate.json').write_text(json.dumps(out,indent=2,sort_keys=True))
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter056-aggregate
+          path: aggregate/aggregate.json
+          if-no-files-found: error
