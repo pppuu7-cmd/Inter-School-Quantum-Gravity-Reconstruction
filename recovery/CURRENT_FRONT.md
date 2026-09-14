@@ -14,83 +14,72 @@ ITER047 remains SCIENTIFIC PASS — `LORENTZIAN_5TO1_ASSEMBLY_AUTHORITY_PASS`, r
 
 ITER048 remains terminal **SCOPED BLOCKED — `LORENTZIAN_EQ11_ROUTING_REFERENCE_AUTHORITY_BLOCKED_SOURCE_INDEX_INCONSISTENCY`**. It is not retrofitted.
 
-ITER049 remains terminal **SCIENTIFIC PASS — `LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS`**, run `34811866640`. The pinned authors' executable path selects `COMMENT_REPAIR` for the disputed recoupling route: fourth Wigner-6j uses `rbl/rbr`; fifth uses `rCDl/rCDr`, hence `i9` rather than the duplicated displayed Eq.(11) `i8`, without amplitude fitting.
+ITER049 remains terminal **SCIENTIFIC PASS — `LORENTZIAN_AUTHOR_CODE_ROUTING_RECONCILIATION_PASS`**, run `34811866640`. Its exact scope is the disputed recoupling route; it selects `COMMENT_REPAIR` without amplitude fitting.
 
-ITER050 remains terminal **INVALID_IMPLEMENTATION — `LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED`**. Its green Actions run never evaluated a Lorentzian vertex and did not instantiate the frozen five-vertex summand. Durable report commit `51cd9302f25f642fdb0ed85539fb7421bdbba213`.
+ITER050 remains terminal **INVALID_IMPLEMENTATION — `LORENTZIAN_BOUNDED_FIXED_CONFIGURATION_CONTRACTION_NOT_EXECUTED`**. No five-vertex Lorentzian value exists from it.
 
-## ITER051 terminal PASS — pinned Lorentzian backend runtime
+ITER051 remains terminal **PASS — `LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS`**, run `34818301950`. Exact pinned `sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f` is buildable/executable with source-required tables; two independent frozen smoke processes both returned `1.34499311005e-09`, exact difference zero. This is runtime-only and not a five-vertex result.
 
-Preregistration: `prereg/ITER051_LORENTZIAN_PINNED_BACKEND_RUNTIME_EXECUTABILITY_2026-09-14.md`, commit `f013d4800a306ce4c1d9838d2a63c781c16f864d`.
+## ITER052 terminal PASS — local vertex argument crosswalk
 
-Authoritative run: **`34818301950`** at production head **`52150ba71882c04091edbfac16e6f55ca0d244fe`**.
+Preregistration: `prereg/ITER052_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_2026-09-14.md`, commit `a3f494374b491110525bee30af7ee1fa581a8fd6`.
+
+Implementation: `code/iter052/local_vertex_crosswalk.py`, commit `f276e4d00a1a0bd63a129913d737318534125cb6`.
+
+Authoritative run: **`34819214900`**, production head **`20b87fbcf7b049c700796daaf4380de4d79cdc5b`**.
 
 Terminal classification:
 
-**`PASS — LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS`**.
+**`PASS — LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_AUTHORITY_PASS`**.
 
-The exact pinned backend `qg-cpt-marseille/sl2cfoam-next@052e4346028870bd76f69a3034e6cae8defb8f7f` was successfully built in the hosted Ubuntu environment using:
+All five independent source/structure lanes PASS: `tex-authority`, `author-code`, `backend-axis`, `graph-incidence`, `null-controls`. No Lorentzian amplitude value was used or computed.
 
-- source-named `wigxjpf-1.13`, archive SHA256 `90ab9bfd495978ad1fdcbb436e274d6f4586184ae290b99920e5c978d64b3e6a`;
-- source-named `fastwigxj-1.4.1`, archive SHA256 `0a4171c18dfd0ad5689c9456c873a9edd7a2a2af8e15805e880b800e8f766550`;
-- `.3j` table with `max-E-3j=50`;
-- `.6j` table with `max-E-6j=40`;
-- `BLAS=system`, `OMP=0`, no Y-map override.
+### Source-qualified executable original local argument mapping
 
-No fastwigxj 9j repair was required or applied.
+Before Wigner-6j basis change, the pinned authors' executable implementation fixes:
 
-Frozen smoke point:
-- `gamma=1.2`;
-- ten `two_j=1` = physical `j=1/2`;
-- five `two_i=0` = physical `i=0`;
-- `Dl=0`.
+- up `(ib,i4,i11,i12,i1)`;
+- left `(ib,i6,i14,i13,i3)`;
+- bottom-left `(ib,i8,i15,i11,i5)`;
+- bottom-right `(ib,i10,i12,i14,i7)`;
+- right `(ib,i2,i13,i15,i9)`.
 
-Two independent processes launched the backend's own `bin/vertex-amplitude` executable and both returned exactly
+The five executable Wigner-6j basis-change pairs are:
 
-**`1.34499311005e-09`**
+`(i1→i2), (i3→i4), (i5→i6), (i7→i8), (i9→i10)`.
 
-with return code zero, finite output and exact runtime identity. Absolute A/B difference = `0.0`, well below the prospectively frozen reproducibility tolerance.
+After pre-contraction, the local lists become:
 
-Runtime identity and negative-control lanes PASS. Changed gamma, changed Dl, changed spin tuple and deliberately wrong binary identity were rejected.
+- up `(ib,i4,i11,i12,i2)`;
+- left `(ib,i6,i14,i13,i4)`;
+- bottom-left `(ib,i8,i15,i11,i6)`;
+- bottom-right `(ib,i10,i12,i14,i8)`;
+- right `(ib,i2,i13,i15,i10)`.
 
-Key frozen runtime hashes:
-- `bin/vertex-amplitude`: `b4f8f536645b3fe6bc55830040f624140eefca02a3b960b9940b2564a7876e26`;
-- `lib/libsl2cfoam.so`: `a539c968afde2a7ec397b2fa7184f9dd036042b82ff2ec5d8026c2b6881b71fc`;
-- `.3j` table: `73d9170de4f04b776923106c5c6ea1bbb70cf2e62a14d24b83cda31194567e6e`;
-- `.6j` table: `de1a29d0252c3c1ebf51b96d7fdebe7f21587ee65dcbc3864070774c14704b72`.
+The pinned backend independently confirms tensor-axis order `(i5,i4,i3,i2,i1)` and the ordered `(i1,...,i5)` physical-intertwiner single-amplitude API before doubled-label conversion.
 
-Build artifact `10336669907`, digest `sha256:f357f01e2aa370db20701bbced8cf7f6d03d6c43751ba5399584dd343820454b`; aggregate artifact `10337373597`, digest `sha256:842a9868229de381de47ede61556bb2efe274b986ec3eed75e3e070ed9a63016`.
+### New exact structural fact
 
-Durable terminal report: `results/ITER051_LORENTZIAN_PINNED_BACKEND_RUNTIME_PASS_2026-09-14.md`, commit `16c8934ae7074f5c29aa20af3ded0a73dbfb0bdf`.
+Across the five **original** executable local vertex lists plus the five Wigner-6j pairs, every global `i1...i15` has degree exactly **2**. This provides a source-topological closure certificate for the fixed-summand incidence graph.
 
-### Interpretation ceiling
+Literal Eq.(11) fails this invariant: `i9` has degree 0 and multiple labels have degree 1 or 3. Repairing only the fifth 6j to `(i9,i10)` still fails global degree-2 closure. A degree-preserving left-slot swap is separately rejected by the exact ordered author-code signature, proving the gate is not merely a graph-counting fit.
 
-This proves executable runtime availability and reproducibility for one prospectively frozen local Lorentzian vertex smoke configuration only. It is not a five-vertex result and earns no bridge credit.
+Artifacts include aggregate `10337417876`, digest `sha256:c435fd981b6b67cb20187a971f6a528b26c8ba14b0a3e4823025e58ca5a1e8c5`.
 
-## New local-vertex argument source blocker
-
-During ITER051, an outcome-independent source audit found a mapping issue that is invisible in the all-zero smoke sector but material in the old alternating `0/1` held-out sector.
-
-Durable record: `sources/ITER051_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK.md`, commit `b918058a35cbaf66456aa57b19576104c4d8c2f3`.
-
-Exact arXiv Eq.(11) local vertex intertwiner argument lists and the pinned authors' executable `vertex_compute` local range comments/code-name mapping differ in several slots, not only the already-known displayed fifth-6j `i8/i9` inconsistency. Examples include the up local fifth slot (`i2` literal Eq.(11) versus executable `rBCl=i1`) and analogous left/right recoupling-basis differences.
-
-These discrepancies may reflect a basis/orientation recoupling between the displayed formula and executable implementation. They must not be guessed or selected from amplitude agreement.
-
-The exact backend doubled-label semantics are separately source-qualified in `sources/ITER051_LORENTZIAN_BACKEND_LABEL_SEMANTICS.md`: physical `j=1/2 -> two_j=1`, physical `i=0 -> two_i=0`, physical `i=1 -> two_i=2`.
+Durable report: `results/ITER052_LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK_PASS_2026-09-14.md`, commit `21dc48666d59a10150f2df0d181c3f5ee54331ec`.
 
 ## Exact next admissible gate
 
-The next primary scientific/source gate is **not yet another numerical five-vertex contraction**.
+Do **not** evaluate a five-vertex amplitude yet. The remaining upstream object is the exact phase/weight convention.
 
-Prospectively freeze and execute a **`LORENTZIAN_LOCAL_VERTEX_ARGUMENT_CROSSWALK` authority gate** that reconciles without amplitude fitting:
+Prospectively freeze a **Lorentzian five-vertex phase/weight authority gate** comparing without amplitude fitting:
 
-1. the five literal Eq.(11) local `A_v` intertwiner lists;
-2. the exact source comment mapping `rBCl=i1 ... rIbr=i15`;
-3. the pinned authors' executable `vertex_compute` local range comments and tensor-axis order;
-4. each Wigner-6j pre-contraction from left to right recoupling basis;
-5. the pinned `sl2cfoam-next` `(i1,...,i5)` / doubled-label API.
+1. exact Eq.(11) `(-1)^chi`, face factors and intertwiner dimension factors;
+2. the source's explicit reduction of `chi`;
+3. author code `dfj`, `df_phase`, five local sign factors and `face_weights_vec` exponent semantics;
+4. the relation, if any, between project historical `alpha` notation and the paper/code face-weight parameter.
 
-Only after that crosswalk closes may a repaired bounded primary/held-out five-vertex summand gate be preregistered and run with the now-validated runtime backend.
+Only after that authority gate PASS may a new bounded primary/held-out five-vertex summand gate be preregistered using ITER051 runtime, ITER052 argument mapping and correct doubled labels (`i=0→two_i=0`, `i=1→two_i=2`).
 
 ## Persistent locks
 
