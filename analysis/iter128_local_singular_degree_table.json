@@ -1,0 +1,146 @@
+{
+  "gate": "ITER128_FIXED_GEODESIC_CURVATURE_PROJECTED_LOCAL_SINGULAR_DEGREE_CENSUS",
+  "dimension": "d=4-2 epsilon",
+  "rules": {
+    "single_propagator": "m=2+N; m_eff=m-s; jet=m_eff-1",
+    "two_propagator_local_product": "m=4+N; m_eff=m-s; jet=m_eff-1",
+    "meaning_N": "total derivatives acting on the local propagator product at the singular stratum",
+    "meaning_s": "source-qualified polynomial suppression order from affine/geodesic weights",
+    "actual_residue_warning": "superficial degree only; tensor and symmetry cancellations can reduce or eliminate poles"
+  },
+  "canonical_rows": [
+    {
+      "id": "R1_to_Gamma1_lower_endpoint",
+      "propagators": 1,
+      "derivatives": {"R1": 2, "Gamma1": 1, "N": 3},
+      "source_suppression_s": 0,
+      "m_raw": 5,
+      "m_eff": 5,
+      "jet_order": 4,
+      "stratum": "tau->0"
+    },
+    {
+      "id": "R1_to_Gamma1_upper_endpoint",
+      "propagators": 1,
+      "derivatives": {"R1": 2, "Gamma1": 1, "N": 3},
+      "source_suppression_s": 1,
+      "m_raw": 5,
+      "m_eff": 4,
+      "jet_order": 3,
+      "stratum": "tau->1 with outer (1-tau)"
+    },
+    {
+      "id": "R1_to_dGamma1_lower_endpoint",
+      "propagators": 1,
+      "derivatives": {"R1": 2, "dGamma1": 2, "N": 4},
+      "source_suppression_s": 0,
+      "m_raw": 6,
+      "m_eff": 6,
+      "jet_order": 5,
+      "stratum": "tau->0"
+    },
+    {
+      "id": "R1_to_dGamma1_upper_endpoint",
+      "propagators": 1,
+      "derivatives": {"R1": 2, "dGamma1": 2, "N": 4},
+      "source_suppression_s": 1,
+      "m_raw": 6,
+      "m_eff": 5,
+      "jet_order": 4,
+      "stratum": "tau->1 with outer (1-tau)"
+    },
+    {
+      "id": "Gamma1_to_Gamma1_diagonal_unsuppressed",
+      "propagators": 1,
+      "derivatives": {"Gamma1_left": 1, "Gamma1_right": 1, "N": 2},
+      "source_suppression_s": 0,
+      "m_raw": 4,
+      "m_eff": 4,
+      "jet_order": 3,
+      "stratum": "tau->sigma"
+    },
+    {
+      "id": "dGamma1_to_Gamma1_diagonal_green_suppressed",
+      "propagators": 1,
+      "derivatives": {"dGamma1": 2, "Gamma1": 1, "N": 3},
+      "source_suppression_s": 1,
+      "m_raw": 5,
+      "m_eff": 4,
+      "jet_order": 3,
+      "stratum": "sigma->tau with inner (tau-sigma)"
+    },
+    {
+      "id": "dGamma1_to_Gamma1_diagonal_unsuppressed_upper_bound",
+      "propagators": 1,
+      "derivatives": {"dGamma1": 2, "Gamma1": 1, "N": 3},
+      "source_suppression_s": 0,
+      "m_raw": 5,
+      "m_eff": 5,
+      "jet_order": 4,
+      "stratum": "diagonal if no Green suppression survives"
+    },
+    {
+      "id": "R1_to_BoxPerpR_genuine_defect_endpoint",
+      "propagators": 1,
+      "derivatives": {"R1": 2, "BoxPerpR": 4, "N": 6},
+      "source_suppression_s": 0,
+      "m_raw": 8,
+      "m_eff": 8,
+      "jet_order": 7,
+      "stratum": "line endpoint"
+    },
+    {
+      "id": "R1_to_BoxPerpRnn_genuine_defect_endpoint",
+      "propagators": 1,
+      "derivatives": {"R1": 2, "BoxPerpRnn": 4, "N": 6},
+      "source_suppression_s": 0,
+      "m_raw": 8,
+      "m_eff": 8,
+      "jet_order": 7,
+      "stratum": "line endpoint"
+    }
+  ],
+  "source_weight_applications": [
+    {
+      "iter127_row": "M_chi1_bulk",
+      "lower_endpoint_s": 0,
+      "upper_endpoint_s": 1
+    },
+    {
+      "iter127_row": "G_chi2_Gamma1_dchi1_bulk",
+      "diagonal_s": 0,
+      "outer_upper_endpoint_s": 1
+    },
+    {
+      "iter127_row": "G_chi2_dGamma1_chi1_bulk",
+      "diagonal_s": 1,
+      "outer_upper_endpoint_s": 1
+    },
+    {
+      "iter127_row": "G_chi2_dGamma1_chi1_initial",
+      "lower_endpoint_s": 1,
+      "upper_endpoint_s": 1
+    },
+    {
+      "iter127_row": "G_chi1chi1_bulk_bulk",
+      "diagonal_s": 0,
+      "tau_upper_s": 1,
+      "sigma_upper_s": 1
+    }
+  ],
+  "global_residual_defect_ceiling": {
+    "basis_reason": "after bulk subdivergence subtraction, residual line/endpoint divergences project onto the ITER118 dimension<=4 defect basis",
+    "max_linear_line_derivative_order": 4,
+    "anchor_R_derivative_order": 2,
+    "max_single_propagator_N": 6,
+    "max_single_propagator_m": 8,
+    "max_one_variable_jet_order": 7,
+    "scope": "counterterm-projected residual defect sector; raw interaction integrands can be more singular before required cancellations/subtractions"
+  },
+  "two_propagator_rule": {
+    "status": "graph_specific_N_required",
+    "formula": "m_eff=4+N-s; jet=m_eff-1",
+    "overlap_note": "sector/forest subtraction required; one-variable jet orders are sector ingredients, not the full overlap result"
+  },
+  "claim_lock": "No superficial degree or jet order is a nonzero residue or B1 coefficient."
+}
