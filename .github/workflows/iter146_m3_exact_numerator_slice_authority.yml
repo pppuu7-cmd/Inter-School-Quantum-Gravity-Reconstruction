@@ -1,0 +1,26 @@
+name: ITER146 M3 exact numerator slices
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter146_m3_exact_numerator_slice_authority.py'
+      - '.github/workflows/iter146_m3_exact_numerator_slice_authority.yml'
+  workflow_dispatch:
+jobs:
+  m3-numerator-slice-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen exact M3 numerator slice audit
+        run: cd analysis && python iter146_m3_exact_numerator_slice_authority.py | tee ../iter146.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter146-m3-exact-numerator-slices
+          path: |
+            analysis/iter146_m3_exact_numerator_slices.json
+            iter146.log
+          if-no-files-found: error
