@@ -1,0 +1,31 @@
+name: ITER129 graph derivative ceiling table
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter129_graph_derivative_ceiling_table.json'
+      - 'analysis/iter129_validate_graph_derivative_ceiling_table.py'
+      - '.github/workflows/iter129_graph_derivative_ceiling_table.yml'
+      - 'prereg/ITER129_FIXED_GEODESIC_CURVATURE_PROJECTED_GRAPH_NUMERATOR_DERIVATIVE_CENSUS_2026-09-15.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-graph-ceilings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate derivative ceiling table
+        run: python analysis/iter129_validate_graph_derivative_ceiling_table.py
+      - name: Upload ITER129 validation
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter129-graph-derivative-ceiling-table
+          path: artifacts/iter129/
+          if-no-files-found: error
