@@ -1,0 +1,31 @@
+name: ITER124 projected RG-pole calculation manifest
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prereg/ITER124_FIXED_GEODESIC_CURVATURE_PROJECTED_RG_POLE_CALCULATION_SPEC_2026-09-15.md'
+      - 'analysis/iter124_projected_rg_pole_manifest.json'
+      - 'analysis/iter124_validate_rg_pole_manifest.py'
+      - '.github/workflows/iter124_projected_rg_pole_manifest.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-calculation-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate ITER124 frozen calculation contract
+        run: python analysis/iter124_validate_rg_pole_manifest.py
+      - name: Upload ITER124 validation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter124-projected-rg-pole-manifest
+          path: artifacts/iter124/
+          if-no-files-found: error
