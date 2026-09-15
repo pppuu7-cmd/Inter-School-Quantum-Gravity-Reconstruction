@@ -1,0 +1,27 @@
+name: ITER130 R2 Gamma2 vertex authority
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter130_r2_gamma2_vertex_authority.py'
+      - '.github/workflows/iter130_r2_gamma2_vertex_authority.yml'
+  workflow_dispatch:
+jobs:
+  symbolic-vertex-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install sympy
+      - name: Frozen symbolic audit
+        run: python analysis/iter130_r2_gamma2_vertex_authority.py | tee iter130.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter130-r2-gamma2-vertex-authority
+          path: |
+            iter130_vertex_authority.json
+            iter130.log
+          if-no-files-found: error
