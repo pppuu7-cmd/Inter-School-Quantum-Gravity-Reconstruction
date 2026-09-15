@@ -1,0 +1,60 @@
+name: ITER140 first M/G general-d family-parallel v5
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter140_family_dimension_shard_v5.py'
+      - 'analysis/iter140_aggregate_v5.py'
+      - 'analysis/iter140_d4_terminal_authority_manifest.json'
+      - '.github/workflows/iter140_first_mg_general_d_invariant_continuation_v5_family_parallel.yml'
+  workflow_dispatch:
+jobs:
+  family-dimension-shards:
+    strategy:
+      fail-fast: false
+      matrix:
+        D: [3,4,5,6,7,8,9,10]
+        family:
+          - M_R2_chi1_dR1
+          - M_R1_chi1_dR2
+          - G_R1_chi2_Gamma2_dR1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Exact frozen family x dimension shard
+        run: python analysis/iter140_family_dimension_shard_v5.py ${{ matrix.D }} ${{ matrix.family }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter140-v5-D${{ matrix.D }}-${{ matrix.family }}
+          path: iter140_v5_D${{ matrix.D }}_${{ matrix.family }}.json
+          if-no-files-found: error
+  aggregate:
+    needs: family-dimension-shards
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter140-v5-*
+          path: iter140_v5_shards
+          merge-multiple: true
+      - name: Frozen ITER140 v5 exact aggregate
+        shell: bash
+        run: |
+          set -o pipefail
+          python analysis/iter140_aggregate_v5.py iter140_v5_shards | tee iter140_v5.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter140-first-mg-general-d-invariant-continuation-v5
+          path: |
+            iter140_first_mg_general_d_invariant_continuation_v5.json
+            iter140_v5.log
+          if-no-files-found: error
