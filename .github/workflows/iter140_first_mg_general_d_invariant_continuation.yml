@@ -1,0 +1,26 @@
+name: ITER140 first M/G general-d invariant continuation
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter140_first_mg_general_d_invariant_continuation.py'
+      - '.github/workflows/iter140_first_mg_general_d_invariant_continuation.yml'
+  workflow_dispatch:
+jobs:
+  general-d-continuation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER140 exact dimensional continuation audit
+        run: python analysis/iter140_first_mg_general_d_invariant_continuation.py | tee iter140.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter140-first-mg-general-d-invariant-continuation
+          path: |
+            iter140_first_mg_general_d_invariant_continuation.json
+            iter140.log
+          if-no-files-found: error
