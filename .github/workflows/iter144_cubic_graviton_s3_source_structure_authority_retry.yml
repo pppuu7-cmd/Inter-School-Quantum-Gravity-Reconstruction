@@ -1,0 +1,26 @@
+name: ITER144 cubic S3 source authority parser retry
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter144_cubic_graviton_s3_source_structure_authority_v2.py'
+      - '.github/workflows/iter144_cubic_graviton_s3_source_structure_authority_retry.yml'
+  workflow_dispatch:
+jobs:
+  s3-source-structure-audit-retry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER144 audit with parser-only correction
+        run: python analysis/iter144_cubic_graviton_s3_source_structure_authority_v2.py | tee iter144_retry.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter144-cubic-graviton-s3-source-structure-authority-retry
+          path: |
+            iter144_cubic_graviton_s3_source_structure_authority.json
+            iter144_retry.log
+          if-no-files-found: error
