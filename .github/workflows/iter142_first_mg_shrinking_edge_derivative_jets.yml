@@ -1,0 +1,26 @@
+name: ITER142 first M/G shrinking-edge derivative jets
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter142_first_mg_shrinking_edge_derivative_jets.py'
+      - '.github/workflows/iter142_first_mg_shrinking_edge_derivative_jets.yml'
+  workflow_dispatch:
+jobs:
+  shrinking-edge-jet-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER142 shrinking-edge audit
+        run: python analysis/iter142_first_mg_shrinking_edge_derivative_jets.py | tee iter142.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter142-first-mg-shrinking-edge-derivative-jets
+          path: |
+            iter142_first_mg_shrinking_edge_derivative_jets.json
+            iter142.log
+          if-no-files-found: error
