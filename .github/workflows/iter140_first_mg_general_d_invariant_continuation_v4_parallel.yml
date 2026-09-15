@@ -1,0 +1,55 @@
+name: ITER140 first M/G general-d continuation parallel v4
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter140_dimension_shard_v4.py'
+      - 'analysis/iter140_aggregate_v4.py'
+      - '.github/workflows/iter140_first_mg_general_d_invariant_continuation_v4_parallel.yml'
+  workflow_dispatch:
+jobs:
+  dimension-shards:
+    strategy:
+      fail-fast: false
+      matrix:
+        D: [3,4,5,6,7,8,9,10]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Exact integer-D shard
+        run: python analysis/iter140_dimension_shard_v4.py ${{ matrix.D }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter140-D-${{ matrix.D }}
+          path: iter140_D${{ matrix.D }}.json
+          if-no-files-found: error
+  aggregate:
+    needs: dimension-shards
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter140-D-*
+          path: iter140_shards
+          merge-multiple: true
+      - name: Frozen exact continuation aggregate
+        shell: bash
+        run: |
+          set -o pipefail
+          python analysis/iter140_aggregate_v4.py iter140_shards | tee iter140_v4.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter140-first-mg-general-d-invariant-continuation-v4
+          path: |
+            iter140_first_mg_general_d_invariant_continuation_v4.json
+            iter140_v4.log
+          if-no-files-found: error
