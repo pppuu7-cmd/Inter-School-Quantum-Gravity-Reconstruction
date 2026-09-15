@@ -1,0 +1,27 @@
+name: ITER139 affine single-line ceiling repair
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter139_affine_single_line_ceiling_repair.py'
+      - '.github/workflows/iter139_affine_single_line_ceiling_repair.yml'
+  workflow_dispatch:
+jobs:
+  affine-ceiling-repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER139 allocation audit
+        run: python analysis/iter139_affine_single_line_ceiling_repair.py | tee iter139.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter139-affine-single-line-ceiling-repair
+          path: |
+            iter139_affine_single_line_ceiling_table_v2.json
+            iter139_affine_single_line_ceiling_repair.json
+            iter139.log
+          if-no-files-found: error
