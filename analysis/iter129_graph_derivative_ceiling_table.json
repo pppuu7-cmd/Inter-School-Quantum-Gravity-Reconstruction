@@ -1,0 +1,30 @@
+{
+  "gate": "ITER129_FIXED_GEODESIC_CURVATURE_PROJECTED_GRAPH_NUMERATOR_DERIVATIVE_CENSUS",
+  "rows": [
+    {"id":"F_R2_R2","sector":"F","D_total":4,"affine":false,"D_line_max":null,"D_partner_max":null,"N1_max":null,"two_prop_m_raw_ceiling":8,"notes":"Gaussian two-propagator composite contraction; no affine jet"},
+    {"id":"F_R1_R3","sector":"F","D_total":4,"affine":false,"D_line_max":null,"D_partner_max":null,"N1_max":null,"two_prop_m_raw_ceiling":8,"notes":"self-contraction/tadpole routings may be scaleless; family not erased"},
+    {"id":"F_R1_R2_S3","sector":"F","D_total":6,"affine":false,"D_line_max":null,"D_partner_max":null,"N1_max":null,"two_prop_m_raw_ceiling":10,"notes":"bubble core after fixed external factors"},
+    {"id":"F_R1_R1_S4","sector":"F","D_total":6,"affine":false,"D_line_max":null,"D_partner_max":null,"N1_max":null,"two_prop_m_raw_ceiling":10,"notes":"quartic tadpole routing can be scaleless in DR"},
+    {"id":"F_R1_R1_S3_S3","sector":"F","D_total":8,"affine":false,"D_line_max":null,"D_partner_max":null,"N1_max":null,"two_prop_m_raw_ceiling":12,"notes":"graviton/ghost self-energy bubble realizations included"},
+
+    {"id":"M_R2_chi1_dR1","sector":"M","D_total":6,"affine":true,"D_line_max":1,"D_partner_max":3,"N1_max":4,"two_prop_m_raw_ceiling":10,"source_suppression":{"lower":0,"upper":1},"notes":"bulk chi1 Gamma1 line leg"},
+    {"id":"M_R1_chi1_dR2","sector":"M","D_total":6,"affine":true,"D_line_max":1,"D_partner_max":3,"N1_max":4,"two_prop_m_raw_ceiling":10,"source_suppression":{"lower":0,"upper":1},"notes":"bulk chi1 can meet dR2 endpoint leg"},
+    {"id":"M_R1_chi1_dR1_S3","sector":"M","D_total":8,"affine":true,"D_line_max":1,"D_partner_max":3,"N1_max":4,"two_prop_m_raw_ceiling":12,"source_suppression":{"lower":0,"upper":1},"notes":"interaction-dressed mixed family; S3 carries two derivatives total"},
+
+    {"id":"G_R1_chi2_Gamma2_dR1","sector":"G","D_total":6,"affine":true,"D_line_max":1,"D_partner_max":3,"N1_max":4,"two_prop_m_raw_ceiling":10,"source_suppression":{"lower":0,"upper":1},"notes":"Gamma2 has one derivative total on quadratic metric structure"},
+    {"id":"G_R1_chi2_Gamma1_dchi1_dR1","sector":"G","D_total":7,"affine":true,"D_line_max":1,"D_partner_max":3,"N1_max":4,"line_line_N_max":2,"two_prop_m_raw_ceiling":11,"source_suppression":{"outer_upper":1,"nested_diagonal":0},"notes":"dchi1 removes inner Green suppression"},
+    {"id":"G_R1_chi2_dGamma1_chi1_dR1","sector":"G","D_total":8,"affine":true,"D_line_max":2,"D_partner_max":3,"N1_max":5,"line_line_N_max":3,"two_prop_m_raw_ceiling":12,"source_suppression":{"outer_upper":1,"nested_diagonal":1},"notes":"chi1 position retains inner (tau-sigma)"},
+    {"id":"G_R1_chi1chi1_d2R1","sector":"G","D_total":8,"affine":true,"D_line_max":1,"D_partner_max":4,"N1_max":5,"line_line_N_max":2,"two_prop_m_raw_ceiling":12,"source_suppression":{"each_upper":1,"diagonal":0,"double_upper_total":2},"notes":"bulk-bulk square-domain line pair; diagonal unsuppressed"}
+  ],
+  "operator_budgets": {
+    "R1":2,"R2":2,"R3":2,"dR1":3,"dR2":3,"d2R1":4,
+    "Gamma1":1,"Gamma2_total":1,"dGamma1":2,"S3":2,"S4":2
+  },
+  "rules": {
+    "two_prop_m_raw_ceiling":"4+D_total",
+    "single_prop_m_raw_ceiling":"2+N1_max",
+    "jet_after_suppression":"m_raw-s-1",
+    "warning":"D_total and N1_max are conservative ceilings before exact tensor reduction; derivative contractions can lower them"
+  },
+  "claim_lock":"No derivative ceiling is a nonzero pole or B1 coefficient."
+}
