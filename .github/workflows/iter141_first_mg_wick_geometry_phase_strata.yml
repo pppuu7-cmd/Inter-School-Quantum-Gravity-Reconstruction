@@ -1,0 +1,26 @@
+name: ITER141 first M/G Wick geometry phase strata
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter141_first_mg_wick_geometry_phase_strata.py'
+      - '.github/workflows/iter141_first_mg_wick_geometry_phase_strata.yml'
+  workflow_dispatch:
+jobs:
+  wick-geometry-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER141 geometry and phase audit
+        run: python analysis/iter141_first_mg_wick_geometry_phase_strata.py | tee iter141.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter141-first-mg-wick-geometry-phase-strata
+          path: |
+            iter141_first_mg_wick_geometry_phase_strata.json
+            iter141.log
+          if-no-files-found: error
