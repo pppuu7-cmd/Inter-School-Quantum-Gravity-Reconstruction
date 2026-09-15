@@ -1,0 +1,32 @@
+name: ITER126 defect-pole prototypes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prereg/ITER126_FIXED_GEODESIC_CURVATURE_LINE_ENDPOINT_COINCIDENCE_POLE_EXTRACTION_AUTHORITY_2026-09-15.md'
+      - 'analysis/iter126_defect_pole_prototypes_v2.py'
+      - '.github/workflows/iter126_defect_pole_prototypes.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prototype-poles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install symbolic dependency
+        run: python -m pip install --disable-pip-version-check sympy==1.13.3
+      - name: Run ITER126 authoritative v2 prototype checks
+        run: python analysis/iter126_defect_pole_prototypes_v2.py
+      - name: Upload ITER126 outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter126-defect-pole-prototypes
+          path: artifacts/iter126/
+          if-no-files-found: error
