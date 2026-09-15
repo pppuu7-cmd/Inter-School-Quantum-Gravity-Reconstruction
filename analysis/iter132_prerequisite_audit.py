@@ -2,17 +2,9 @@
 """ITER132 frozen prerequisite audit. Does not invent missing geodesic kernels."""
 import json, pathlib, re
 root=pathlib.Path('.')
-required={
- 'ITER131_R2_Gamma2':'analysis/iter131_explicit_momentum_vertices.py',
- 'ITER129_ceilings':'analysis/iter129_graph_derivative_ceiling_table.json',
-}
+required={'ITER131_R2_Gamma2':'analysis/iter131_explicit_momentum_vertices.py','ITER129_ceilings':'analysis/iter129_graph_derivative_ceiling_table.json'}
 files={k:(root/v).exists() for k,v in required.items()}
-# M/G families in frozen ITER129 require chi1/chi2 line-localization kernels in addition to R/Gamma vertices.
-# Search only executable/symbolic analysis objects; prose mentions are not executable prerequisites.
-patterns={'chi1_kernel':re.compile(r'def\s+chi1\b|chi1_kernel\s*='),
-          'chi2_kernel':re.compile(r'def\s+chi2\b|chi2_kernel\s*='),
-          'dR1_tensor':re.compile(r'def\s+dR1\b|dR1_tensor\s*='),
-          'dR2_tensor':re.compile(r'def\s+dR2\b|dR2_tensor\s*=')}
+patterns={'chi1_kernel':re.compile(r'def\s+chi1\b|chi1_kernel\s*='),'chi2_kernel':re.compile(r'def\s+chi2\b|chi2_kernel\s*='),'dR1_tensor':re.compile(r'def\s+dR1\b|dR1_tensor\s*='),'dR2_tensor':re.compile(r'def\s+dR2\b|dR2_tensor\s*=')}
 hits={k:[] for k in patterns}
 for p in (root/'analysis').glob('*.py'):
  if p.name==pathlib.Path(__file__).name: continue
