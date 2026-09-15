@@ -1,0 +1,56 @@
+name: ITER148 M3 full invariant parallel tau v2
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter148_tau_shard_v2.py'
+      - 'analysis/iter148_aggregate_v2.py'
+      - '.github/workflows/iter148_m3_full_invariant_parallel_v2.yml'
+  workflow_dispatch:
+jobs:
+  tau-shards:
+    strategy:
+      fail-fast: false
+      matrix:
+        tau_index: [0,1,2,3,4,5,6,7,8]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Exact frozen tau shard
+        run: python analysis/iter148_tau_shard_v2.py ${{ matrix.tau_index }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter148-tau-${{ matrix.tau_index }}
+          path: iter148_tau_${{ matrix.tau_index }}.json
+          if-no-files-found: error
+  aggregate:
+    needs: tau-shards
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter148-tau-*
+          path: iter148_shards
+          merge-multiple: true
+      - name: Frozen ITER148 exact aggregate
+        shell: bash
+        run: |
+          set -o pipefail
+          cd analysis
+          python iter148_aggregate_v2.py ../iter148_shards | tee ../iter148_v2.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter148-m3-full-invariant-parallel-v2
+          path: |
+            analysis/iter148_m3_full_invariant_bubble_reduced_numerator_v2.json
+            iter148_v2.log
+          if-no-files-found: error
