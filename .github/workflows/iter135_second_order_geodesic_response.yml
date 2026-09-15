@@ -1,0 +1,26 @@
+name: ITER135 second-order geodesic response
+on:
+  push:
+    paths:
+      - '.github/workflows/iter135_second_order_geodesic_response.yml'
+  workflow_dispatch:
+jobs:
+  response-audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [dirichlet-green, second-order-source-census]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install sympy
+      - run: python analysis/iter135_second_order_geodesic_response.py --lane ${{ matrix.lane }} | tee iter135-${{ matrix.lane }}.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter135-${{ matrix.lane }}
+          path: |
+            iter135_${{ matrix.lane }}.json
+            iter135-${{ matrix.lane }}.log
