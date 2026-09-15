@@ -1,54 +1,63 @@
-# ITER114 adversarial critic — radial master-distribution basis
+# ITER114 adversarial critic — corrected radial master-distribution basis
 
 Date: 2026-09-15
 Gate: `ITER114_FIXED_GEODESIC_CURVATURE_G2_RADIAL_MASTER_DISTRIBUTION_BASIS`
 Preregistration: `22f0ee94fb43aba82b52c9a8ba29c0d22c26ce52`
-Source authority: `1ab0a0855772a03b75a22632ca979746d7b560b7`
+Corrected source authority: `001b5bd81212e1b85698bafa0739d5810ac17336`
+Correction record: `7e8d7e9c0ade3d0483de2448a8011bd09d6a699a`
 
-## Attack 1 — a line integral can generate arbitrary special functions of `mu l`
+## Correction accepted
 
-Not under the frozen massless one-scale setup. The geodesic parameter runs over a dimensionless fixed interval and all coordinate differences on the straight background geodesic are proportional to the same vector `l`. Factoring out `l` leaves dimensionless beta/Feynman/line-parameter integrals whose nontrivial dependence is numerical; dimensional regularization introduces powers `(mu^2 l^2)^epsilon`, whose expansion gives logarithms.
+The earlier critic incorrectly endorsed a separated `log^2` basis by reading the `log^2` inside the distributional definition of `H^(2)` as if it survived the outer Laplacian unchanged.
 
-A genuine additional special-function argument would require a second independent ratio/cross-ratio, mass scale or angle. None survives in the final scalar two-point geometry.
+At `r>0`,
 
-## Attack 2 — curvature insertions may raise the logarithmic degree beyond two
+`partial^2[L/r^2] = -4/r^4`,
 
-Curvature derivatives can raise inverse powers of `l` and change coefficients, but differentiation of `log^k(mu^2 l^2)` does not increase `k`. The only route to a higher log degree would be a stronger pole structure than the one-loop fixed-geodesic template's double pole.
+`partial^2[L^2/r^2] = 8(1-L)/r^4`,
 
-At the frozen one-loop order there is a single loop integration; the extra geodesic endpoint singularity already produces the known double pole. Curvature-composite counterterms at the same order are local and do not introduce an additional independent loop subdivergence in the separated noncontact sector. No source-required triple-pole mechanism is identified.
+so the correct separated one-loop template contains only constant and single-log terms.
 
-Therefore the `log^2` ceiling is justified **at this order and within this renormalization structure**, not as an all-loop theorem.
+This mathematical correction supersedes the earlier verdict while leaving the original commits in Git history.
 
-## Attack 3 — finite geodesic counterterms introduce a new physical scale
+## Attack 1 — line integrals may generate extra special functions
 
-They introduce scheme/renormalization data and a reference scale, not automatically a new propagating physical mass. Their dependence enters dimensionless coefficients and logarithms. If one imposed a new physical renormalization length as extra observable data, the one-scale ansatz would need extension; ITER114 does not assume such an extra measured scale.
+Under the frozen one-scale massless setup, there is no independent dimensionless cross-ratio after the geodesic parameter integrations and scalar rotational projection. Such integrals may change numerical coefficients but do not require a second functional argument beyond `mu r`.
 
-## Attack 4 — fixed geodesic direction leaves anisotropic functions
+## Attack 2 — curvature derivatives can regenerate log^2
 
-Intermediate diagrams depend on the unit tangent `n^mu`, but the endpoint separation is `l^mu=l n^mu`; after all scalar contractions there is no independent vector. Terms such as `(n.partial)^k f(l^2)` reduce to radial derivatives. A second preferred vector/background structure would invalidate this reduction, but none exists in the frozen flat Euclidean setup.
+Rejected. Differentiation of `r^-4(c_0+c_1L)` yields `r^-8(d_0+d_1L)` plus contact terms. Derivatives can lower but do not raise logarithmic degree.
 
-## Attack 5 — field-sector loop integrals need not reduce to the same `H^(1),H^(2)` distributions as the matter template
+## Attack 3 — hidden triple-pole structures could restore log^2 at separated points
 
-Correct at the coefficient/integrand level, but not fatal to the **radial function-space** claim. Different curvature vertices can yield different linear combinations of derivatives of renormalized one-scale massless distributions. Dimensionality and one-loop pole structure still restrict the separated scalar result to `l^-8` times constants/single/double logs.
+No source-required triple-pole mechanism is present at the frozen one-loop order. The fixed-geodesic precedent's strongest singularity is the double pole whose renormalized distribution is `H^(2)`; after the defining Laplacian acts, its separated form is single-log. This is not an all-loop theorem.
 
-Thus ITER114 does not assert that every curvature diagram literally equals the matter `H` coefficients.
+## Attack 4 — geodesic finite renormalization introduces a new physical ratio
 
-## Attack 6 — contact-term derivatives can mix into the radial answer under renormalization
+It introduces scheme/reference-scale dependence and finite dimensionless data, not automatically an independent propagating mass scale. A genuinely new physical scale would require a separate extension of the gate assumptions.
 
-They can shift local distributional definitions and RG bookkeeping, but at strictly nonzero separation they vanish. The split is valid only after the renormalized distribution is defined; one must not drop contact pieces before pole cancellation.
+## Attack 5 — field-sector integrals need not literally equal H^(1),H^(2)
 
-## Attack 7 — the effective-slope formula can be used to explain the EDT `-10` target
+Correct but not fatal. The corrected claim is about the final one-scale radial function space, not equality of individual diagram coefficients to the matter template. One-loop massless distributions with the frozen pole structure reduce at separated points to `r^-8` times constant/single-log after curvature derivatives.
 
-Not as a validation claim. Algebraically,
+## Attack 6 — contact terms may contaminate the separated basis
 
-`p_eff=-8+2P'(L)/P(L)`
+They are essential during renormalization, but vanish at strictly nonzero separation once the distribution is properly defined. They form a separate local sector.
 
-shows that logarithms can change a finite-window slope. Without `A_0,A_1,A_2` and a matched distance observable, this does not predict the EDT fit and cannot be used to tune coefficients.
+## Attack 7 — the finite-window slope can be tuned to EDT
 
-## Critic verdict
+Forbidden. For
 
-**CONFIRMS `PASS_SCOPED_G2_NONCONTACT_RADIAL_BASIS_L8_LOG0_LOG1_LOG2`** under the explicit one-loop, massless, single-separation, no-extra-physical-scale assumptions.
+`C=G^2 r^-8(B_0+B_1L)`,
 
-The next highest-information step is RG consistency: determine which log coefficients are fixed by the anomalous running of the geodesic embedding / curvature composite and how many independent finite constants remain.
+`p_eff=-8+2B_1/(B_0+B_1L)`
+
+is an algebraic identity. Without calculated `B_0,B_1` and matched distance semantics it is not an EDT prediction or fit.
+
+## Corrected critic verdict
+
+**CONFIRMS `PASS_SCOPED_G2_NONCONTACT_RADIAL_BASIS_L8_CONSTANT_PLUS_SINGLE_LOG`.**
+
+The corrected basis is smaller than the initially reported one. The next valid RG gate must use `B_0+B_1L`, not the superseded `A_0+A_1L+A_2L^2` ansatz.
 
 Bridge credit: **0**. Candidate theory: **UNFORMED / 0%**.
