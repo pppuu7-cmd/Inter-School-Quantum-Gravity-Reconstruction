@@ -1,0 +1,30 @@
+name: ITER147 rational S3 evaluator M3 slice repair
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter147_rational_s3_evaluator_m3_slice_repair.py'
+      - '.github/workflows/iter147_rational_s3_evaluator_m3_slice_repair.yml'
+  workflow_dispatch:
+jobs:
+  rational-s3-m3-slice-repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER147 rational evaluator audit
+        shell: bash
+        run: |
+          set -o pipefail
+          cd analysis
+          python iter147_rational_s3_evaluator_m3_slice_repair.py | tee ../iter147.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter147-rational-s3-m3-slice-repair
+          path: |
+            analysis/iter147_rational_s3_evaluator_m3_slice_repair.json
+            iter147.log
+          if-no-files-found: error
