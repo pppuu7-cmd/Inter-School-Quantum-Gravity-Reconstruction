@@ -1,0 +1,26 @@
+name: ITER145 M3 collinear triangle to bubble routing
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter145_m3_collinear_triangle_to_bubble_routing.py'
+      - '.github/workflows/iter145_m3_collinear_triangle_to_bubble_routing.yml'
+  workflow_dispatch:
+jobs:
+  m3-routing-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER145 collinear denominator audit
+        run: python analysis/iter145_m3_collinear_triangle_to_bubble_routing.py | tee iter145.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter145-m3-collinear-triangle-to-bubble-routing
+          path: |
+            iter145_m3_collinear_triangle_to_bubble_routing.json
+            iter145.log
+          if-no-files-found: error
