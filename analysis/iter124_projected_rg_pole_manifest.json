@@ -1,0 +1,81 @@
+{
+  "gate": "ITER124_FIXED_GEODESIC_CURVATURE_PROJECTED_RG_POLE_CALCULATION_SPEC",
+  "regularization": {
+    "dimension": "d=4-2 epsilon",
+    "background": "flat Euclidean",
+    "primary_gauge": "de Donder",
+    "physical_acceptance_requires": "independent gauge/BRST consistency"
+  },
+  "projector": {
+    "u_points": ["0", "1/2"],
+    "general_d_determinant": "1/4",
+    "avoid_u": ["1"],
+    "avoid_form_factor_zeros": true,
+    "take_d_to_4_after_pole_projection": true
+  },
+  "sectors": {
+    "F": [
+      "curvature/composite diagrams",
+      "graviton loops",
+      "ghost loops",
+      "cubic action insertions",
+      "quartic action insertions",
+      "bulk gravitational EFT counterterms"
+    ],
+    "M": [
+      "chi1 localization corrections",
+      "interaction-dressed mixed corrections",
+      "endpoint mixed terms"
+    ],
+    "G": [
+      "chi2 localization corrections",
+      "chi1-chi1 corrections",
+      "second-order endpoint localization"
+    ],
+    "endpoint": [
+      "local curvature composite basis through dimension four",
+      "geodesic embedding renormalization",
+      "contact/subdivergence bookkeeping"
+    ],
+    "line": {
+      "retain_during_renormalization": [
+        "int R",
+        "int R_nn",
+        "int Box_perp R",
+        "int Box_perp R_nn"
+      ],
+      "field_redefinition_redundant_physical_inputs": ["int R", "int R_nn"],
+      "genuine_representatives": ["int Box_perp R", "int Box_perp R_nn"]
+    }
+  },
+  "subtraction_order": [
+    "generate unrenormalized F/M/G poles in general d",
+    "subtract bulk ghost and local-composite subdivergences",
+    "add endpoint and lower-order geodesic counterterms",
+    "renormalize full line-defect mixing matrix including simple and higher poles",
+    "separate contact/polynomial structures only after renormalization",
+    "project genuine-defect poles at u=0 and u=1/2 in general d"
+  ],
+  "required_outputs": [
+    "B1_direct",
+    "beta_defect",
+    "B1_defect",
+    "B1_total",
+    "raw_and_subtracted_1_over_epsilon2_coefficients",
+    "raw_and_subtracted_1_over_epsilon_coefficients"
+  ],
+  "consistency_checks": [
+    "gauge_or_BRST_consistency",
+    "field_redefinition_invariance",
+    "trace_traceless_decomposition",
+    "two_point_projector_validation_subset",
+    "higher_pole_renormalization_consistency",
+    "EDT_target_independence"
+  ],
+  "stopping_rules": {
+    "B1_total_nonzero": "stop binary noncancellation branch; finite B0 not required for that question",
+    "B1_total_zero": "continue to finite B0 calculation",
+    "gauge_or_field_redefinition_failure": "reopen counterterm/mixing basis before physical interpretation"
+  },
+  "claim_lock": "Specification only; no B1 value, noncancellation result, EDT fit, bridge, new physics, or candidate theory."
+}
