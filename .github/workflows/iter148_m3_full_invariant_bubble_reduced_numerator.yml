@@ -1,0 +1,30 @@
+name: ITER148 M3 full invariant and canonical bubble reduction
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter148_m3_full_invariant_bubble_reduced_numerator.py'
+      - '.github/workflows/iter148_m3_full_invariant_bubble_reduced_numerator.yml'
+  workflow_dispatch:
+jobs:
+  m3-full-invariant-bubble-reduction:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER148 full invariant and bubble reduction
+        shell: bash
+        run: |
+          set -o pipefail
+          cd analysis
+          python iter148_m3_full_invariant_bubble_reduced_numerator.py | tee ../iter148.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter148-m3-full-invariant-bubble-reduced-numerator
+          path: |
+            analysis/iter148_m3_full_invariant_bubble_reduced_numerator.json
+            iter148.log
+          if-no-files-found: error
