@@ -1,0 +1,26 @@
+name: ITER131 explicit momentum vertices
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter131_explicit_momentum_vertices.py'
+      - '.github/workflows/iter131_explicit_momentum_vertices.yml'
+  workflow_dispatch:
+jobs:
+  momentum-vertex-generator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen explicit vertex audit
+        run: python analysis/iter131_explicit_momentum_vertices.py | tee iter131.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter131-explicit-momentum-vertices
+          path: |
+            iter131_momentum_vertices.json
+            iter131.log
+          if-no-files-found: error
