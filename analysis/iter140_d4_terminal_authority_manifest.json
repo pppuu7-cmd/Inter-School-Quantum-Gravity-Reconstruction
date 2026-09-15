@@ -1,0 +1,36 @@
+{
+  "authority": "ITER138/ITER139 terminal artifacts",
+  "iter138": {
+    "result_commit": "7104b169ad2c4196b621a632f93ce2714858e0a7",
+    "run": 34957193433,
+    "artifact": 10392280306,
+    "artifact_sha256": "4ed1ec825b8442b5b2e7f525f18f989e582672436a578ca1635560d64c14e4ba"
+  },
+  "iter139": {
+    "result_commit": "a4149974b6f484dd9b3083addcd73b76cea27b73",
+    "run": 34957549365,
+    "artifact": 10391284660,
+    "artifact_sha256": "3fc8cf990382fdbd93fb7569619d39a127dbf4b20909e00ffc169d7a0aa115d3"
+  },
+  "panels": [
+    {
+      "q": [1,2,-1,3], "k": [2,-1,1,4],
+      "M_R2_chi1_dR1": "15741/4",
+      "M_R1_chi1_dR2": "-48893/8",
+      "G_R1_chi2_Gamma2_dR1": "-4455/4"
+    },
+    {
+      "q": [2,1,3,-2], "k": [-1,2,4,1],
+      "M_R2_chi1_dR1": "3306",
+      "M_R1_chi1_dR2": "-8441",
+      "G_R1_chi2_Gamma2_dR1": "-3030"
+    },
+    {
+      "q": [-2,3,1,2], "k": [3,-1,2,-2],
+      "M_R2_chi1_dR1": "-1341/2",
+      "M_R1_chi1_dR2": "6463/4",
+      "G_R1_chi2_Gamma2_dR1": "1215/2"
+    }
+  ],
+  "scope": "Exact D=4 held-out values only. These values are copied byte-for-byte from the successful terminal ITER138/139 JSON artifacts and are used solely to avoid recomputing their expensive symbolic authority paths in ITER140 implementation retries."
+}
