@@ -1,4 +1,5 @@
 name: ITER146 M3 exact numerator slices
+# trigger touch after workflow registration; frozen scientific predicates unchanged
 on:
   push:
     branches: [main]
