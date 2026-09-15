@@ -1,0 +1,29 @@
+name: ITER134 chi2 localization kernels
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter134_chi2_localization_kernels.py'
+      - '.github/workflows/iter134_chi2_localization_kernels.yml'
+  workflow_dispatch:
+jobs:
+  chi2-audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [metric-parametrization-census, ordered-kernel-structure]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - run: python analysis/iter134_chi2_localization_kernels.py --lane ${{ matrix.lane }} | tee iter134-${{ matrix.lane }}.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter134-${{ matrix.lane }}
+          path: |
+            iter134_${{ matrix.lane }}.json
+            iter134-${{ matrix.lane }}.log
+          if-no-files-found: error
