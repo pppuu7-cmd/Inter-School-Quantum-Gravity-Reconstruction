@@ -1,0 +1,25 @@
+name: ITER132 Gaussian M/G numerator jets
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter132_prerequisite_audit.py'
+      - '.github/workflows/iter132_gaussian_mg_numerator_jets.yml'
+  workflow_dispatch:
+jobs:
+  frozen-prerequisite-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Audit exact symbolic prerequisites without surrogate substitution
+        run: python analysis/iter132_prerequisite_audit.py | tee iter132.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter132-frozen-prerequisite-audit
+          path: |
+            iter132_prerequisite_audit.json
+            iter132.log
+          if-no-files-found: error
