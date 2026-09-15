@@ -1,0 +1,31 @@
+name: ITER128 local singular-degree table
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter128_local_singular_degree_table.json'
+      - 'analysis/iter128_validate_local_singular_degree_table.py'
+      - '.github/workflows/iter128_local_singular_degree_table.yml'
+      - 'prereg/ITER128_FIXED_GEODESIC_CURVATURE_PROJECTED_LOCAL_SINGULAR_DEGREE_CENSUS_2026-09-15.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-table:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate singular-degree arithmetic
+        run: python analysis/iter128_validate_local_singular_degree_table.py
+      - name: Upload ITER128 validation
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter128-local-singular-degree-table
+          path: artifacts/iter128/
+          if-no-files-found: error
