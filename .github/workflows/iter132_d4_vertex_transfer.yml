@@ -1,0 +1,26 @@
+name: ITER132 D4 vertex transfer
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter132_d4_vertex_transfer.py'
+      - '.github/workflows/iter132_d4_vertex_transfer.yml'
+  workflow_dispatch:
+jobs:
+  d4-transfer-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen D4 transfer audit
+        run: python analysis/iter132_d4_vertex_transfer.py | tee iter132.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter132-d4-vertex-transfer
+          path: |
+            iter132_d4_vertex_transfer.json
+            iter132.log
+          if-no-files-found: error
