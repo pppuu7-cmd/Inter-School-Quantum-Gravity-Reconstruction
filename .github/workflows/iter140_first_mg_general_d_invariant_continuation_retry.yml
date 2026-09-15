@@ -1,0 +1,26 @@
+name: ITER140 first M/G general-d continuation performance retry
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter140_first_mg_general_d_invariant_continuation_v2.py'
+      - '.github/workflows/iter140_first_mg_general_d_invariant_continuation_retry.yml'
+  workflow_dispatch:
+jobs:
+  general-d-continuation-retry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER140 optimized exact dimensional continuation
+        run: python analysis/iter140_first_mg_general_d_invariant_continuation_v2.py | tee iter140_retry.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter140-first-mg-general-d-invariant-continuation-retry
+          path: |
+            iter140_first_mg_general_d_invariant_continuation.json
+            iter140_retry.log
+          if-no-files-found: error
