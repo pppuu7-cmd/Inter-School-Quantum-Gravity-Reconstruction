@@ -1,0 +1,26 @@
+name: ITER138 first M/G exact numerator kernels
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter138_first_mg_exact_numerator_kernels.py'
+      - '.github/workflows/iter138_first_mg_exact_numerator_kernels.yml'
+  workflow_dispatch:
+jobs:
+  numerator-ceiling-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER138 exact tensor audit
+        run: python analysis/iter138_first_mg_exact_numerator_kernels.py | tee iter138.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter138-first-mg-exact-numerator-kernels
+          path: |
+            iter138_first_mg_exact_numerator_kernels.json
+            iter138.log
+          if-no-files-found: error
