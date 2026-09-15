@@ -1,0 +1,36 @@
+{
+  "gate": "ITER139_FIXED_GEODESIC_CURVATURE_AFFINE_SINGLE_LINE_CEILING_REPAIR",
+  "supersedes_row_specific_affine_ceiling_logic_from": "ITER129",
+  "global_affine_N1_ceiling": 5,
+  "rows": [
+    {"id":"F_R2_R2","sector":"F","D_total":4,"affine":false,"old_N1_max":null,"N1_max_v2":null,"ceiling_authority_v2":"NOT_AFFINE","two_prop_m_raw_ceiling":8},
+    {"id":"F_R1_R3","sector":"F","D_total":4,"affine":false,"old_N1_max":null,"N1_max_v2":null,"ceiling_authority_v2":"NOT_AFFINE","two_prop_m_raw_ceiling":8},
+    {"id":"F_R1_R2_S3","sector":"F","D_total":6,"affine":false,"old_N1_max":null,"N1_max_v2":null,"ceiling_authority_v2":"NOT_AFFINE","two_prop_m_raw_ceiling":10},
+    {"id":"F_R1_R1_S4","sector":"F","D_total":6,"affine":false,"old_N1_max":null,"N1_max_v2":null,"ceiling_authority_v2":"NOT_AFFINE","two_prop_m_raw_ceiling":10},
+    {"id":"F_R1_R1_S3_S3","sector":"F","D_total":8,"affine":false,"old_N1_max":null,"N1_max_v2":null,"ceiling_authority_v2":"NOT_AFFINE","two_prop_m_raw_ceiling":12},
+
+    {"id":"M_R2_chi1_dR1","sector":"M","D_total":6,"affine":true,"old_N1_max":4,"N1_max_v2":5,"ceiling_authority_v2":"EXACT_TENSOR_ALLOCATION_ITER138","single_prop_m_raw_ceiling_v2":7,"source_suppression":{"lower":0,"upper":1},"endpoint_jet_ceiling_v2":{"lower":6,"upper":5},"notes":"exact independent-line degree 5; ITER138"},
+    {"id":"M_R1_chi1_dR2","sector":"M","D_total":6,"affine":true,"old_N1_max":4,"N1_max_v2":5,"ceiling_authority_v2":"EXACT_TENSOR_ALLOCATION_ITER139","single_prop_m_raw_ceiling_v2":7,"source_suppression":{"lower":0,"upper":1},"endpoint_jet_ceiling_v2":{"lower":6,"upper":5},"notes":"exact independent-line degree 5; ITER139"},
+    {"id":"M_R1_chi1_dR1_S3","sector":"M","D_total":8,"affine":true,"old_N1_max":4,"N1_max_v2":5,"ceiling_authority_v2":"GLOBAL_SAFE_BOUND_PENDING_EXACT_ALLOCATION","single_prop_m_raw_ceiling_v2":7,"source_suppression":{"lower":0,"upper":1},"endpoint_jet_ceiling_v2":{"lower":6,"upper":5},"notes":"prospective conservative repair; exact interaction tensor allocation open"},
+
+    {"id":"G_R1_chi2_Gamma2_dR1","sector":"G","D_total":6,"affine":true,"old_N1_max":4,"N1_max_v2":4,"ceiling_authority_v2":"EXACT_TENSOR_ALLOCATION_ITER138","single_prop_m_raw_ceiling_v2":6,"source_suppression":{"lower":0,"upper":1},"endpoint_jet_ceiling_v2":{"lower":5,"upper":4},"notes":"exact independent-line degree 4; ITER138"},
+    {"id":"G_R1_chi2_Gamma1_dchi1_dR1","sector":"G","D_total":7,"affine":true,"old_N1_max":4,"N1_max_v2":5,"ceiling_authority_v2":"GLOBAL_SAFE_BOUND_PENDING_EXACT_ALLOCATION","single_prop_m_raw_ceiling_v2":7,"line_line_N_max":2,"source_suppression":{"outer_upper":1,"nested_diagonal":0},"notes":"row-specific sharpness reopened; global safe bound retained"},
+    {"id":"G_R1_chi2_dGamma1_chi1_dR1","sector":"G","D_total":8,"affine":true,"old_N1_max":5,"N1_max_v2":5,"ceiling_authority_v2":"ITER129_GLOBAL_SAFE_BOUND_ALREADY_SATURATED","single_prop_m_raw_ceiling_v2":7,"line_line_N_max":3,"source_suppression":{"outer_upper":1,"nested_diagonal":1}},
+    {"id":"G_R1_chi1chi1_d2R1","sector":"G","D_total":8,"affine":true,"old_N1_max":5,"N1_max_v2":5,"ceiling_authority_v2":"ITER129_GLOBAL_SAFE_BOUND_ALREADY_SATURATED","single_prop_m_raw_ceiling_v2":7,"line_line_N_max":2,"source_suppression":{"each_upper":1,"diagonal":0,"double_upper_total":2}}
+  ],
+  "rules": {
+    "global_affine_bound":"N1_max_v2<=5",
+    "single_prop_m_raw_ceiling":"2+N1_max_v2",
+    "jet_after_suppression":"m_raw-s-1",
+    "nonlinear_allocation":"For nonlinear multi-leg vertices, row-specific N1 cannot in general be inferred as D_line_max+D_partner_max; vertex derivatives may concentrate on either internal leg.",
+    "unclosed_rows":"Use global safe bound 5 until exact tensor allocation closes row-specific sharpness."
+  },
+  "provenance": {
+    "ITER138_result":"7104b169ad2c4196b621a632f93ce2714858e0a7",
+    "ITER139_authoritative_run":34957549365,
+    "ITER139_job":104343137406,
+    "ITER139_artifact":10391284660,
+    "ITER139_artifact_sha256":"3fc8cf990382fdbd93fb7569619d39a127dbf4b20909e00ffc169d7a0aa115d3"
+  },
+  "claim_lock":"Corrected derivative/jet ceilings only; no pole residue or B1 coefficient."
+}
