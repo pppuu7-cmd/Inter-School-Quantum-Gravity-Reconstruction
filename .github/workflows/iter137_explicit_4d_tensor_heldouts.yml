@@ -1,0 +1,24 @@
+name: ITER137 explicit 4D tensor heldouts
+on:
+  push:
+    paths: ['.github/workflows/iter137_explicit_4d_tensor_heldouts.yml']
+  workflow_dispatch:
+jobs:
+  tensor-audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [gamma1-heldouts, reversal-and-gamma2-prereq]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - run: python analysis/iter137_explicit_4d_tensor_heldouts.py --lane ${{ matrix.lane }} | tee iter137-${{ matrix.lane }}.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter137-${{ matrix.lane }}
+          path: |
+            iter137_${{ matrix.lane }}.json
+            iter137-${{ matrix.lane }}.log
