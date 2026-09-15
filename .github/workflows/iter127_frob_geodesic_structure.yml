@@ -1,0 +1,54 @@
+name: ITER127 exact Frob geodesic structure
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter127_classify_frob_geodesic_structure.py'
+      - '.github/workflows/iter127_frob_geodesic_structure.yml'
+      - 'prereg/ITER127_FIXED_GEODESIC_CHI1_CHI2_PROJECTED_SINGULAR_STRATA_AUTHORITY_2026-09-15.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  classify-exact-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download exact arXiv source package
+        run: |
+          mkdir -p /tmp/iter127-src artifacts/iter127-structure
+          curl -L --fail --retry 4 --retry-delay 3 \
+            https://arxiv.org/e-print/1706.01891 \
+            -o /tmp/1706.01891.tar
+          tar -xf /tmp/1706.01891.tar -C /tmp/iter127-src
+      - name: Classify exact chi1/chi2 structure
+        run: |
+          python analysis/iter127_classify_frob_geodesic_structure.py \
+            --source-dir /tmp/iter127-src \
+            --out artifacts/iter127-structure
+      - name: Assert source-sensitive structure needed by ITER127
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open('artifacts/iter127-structure/geodesic_structure.json'))
+          f=d['facts']
+          assert f['has_chi1_equation']
+          assert f['has_chi2_equation']
+          assert f['chi1_has_line_integral']
+          assert f['chi2_has_line_integral']
+          assert f['source_has_gamma_in_chi_blocks']
+          assert f['source_has_geodesic_green_kernel']
+          print(json.dumps(f, indent=2))
+          PY
+      - name: Upload ITER127 structure artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter127-frob-geodesic-structure
+          path: artifacts/iter127-structure/
+          if-no-files-found: error
