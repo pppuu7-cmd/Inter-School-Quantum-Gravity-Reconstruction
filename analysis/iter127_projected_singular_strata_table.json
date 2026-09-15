@@ -1,0 +1,114 @@
+{
+  "gate": "ITER127_FIXED_GEODESIC_CHI1_CHI2_PROJECTED_SINGULAR_STRATA_AUTHORITY",
+  "source": "arXiv:1706.01891 exact TeX source",
+  "source_qualified_structure": {
+    "chi1": "chi1(t) = -(t/2) h(x).v - int_0^t ds (t-s) Gamma1(x+sv)[v,v]",
+    "chi2": "chi2(t) = +(3t/8) h(x)^2.v - int_0^t ds (t-s)[Gamma2[v,v] + 2 Gamma1[v,dchi1] + (d Gamma1)[chi1,v,v]]",
+    "coefficient_assertions": {
+      "chi1_initial": "-1/2",
+      "chi2_initial_quadratic": "+3/8"
+    }
+  },
+  "rows": [
+    {
+      "id": "M_chi1_initial",
+      "parameters": 0,
+      "domain": "endpoint-local",
+      "weight": "-1/2",
+      "singular_strata": ["initial endpoint"],
+      "suppression": "none; endpoint-local/contact-mixing sector",
+      "iter126_local_subtraction": false
+    },
+    {
+      "id": "M_chi1_bulk",
+      "parameters": 1,
+      "domain": "0<=tau<=1",
+      "weight": "1-tau",
+      "singular_strata": ["tau->0", "tau->1"],
+      "suppression": "upper endpoint +1; lower endpoint 0",
+      "iter126_local_subtraction": true
+    },
+    {
+      "id": "G_chi2_initial",
+      "parameters": 0,
+      "domain": "endpoint-local",
+      "weight": "+3/8",
+      "singular_strata": ["initial endpoint"],
+      "suppression": "none; endpoint-local/contact-mixing sector",
+      "iter126_local_subtraction": false
+    },
+    {
+      "id": "G_chi2_Gamma2",
+      "parameters": 1,
+      "domain": "0<=tau<=1",
+      "weight": "1-tau",
+      "singular_strata": ["tau->0", "tau->1"],
+      "suppression": "upper endpoint +1; lower endpoint 0",
+      "iter126_local_subtraction": true
+    },
+    {
+      "id": "G_chi2_Gamma1_dchi1_initial",
+      "parameters": 1,
+      "domain": "0<=tau<=1",
+      "weight": "1-tau",
+      "singular_strata": ["tau->0", "tau->1"],
+      "suppression": "upper endpoint +1; lower endpoint 0",
+      "iter126_local_subtraction": true
+    },
+    {
+      "id": "G_chi2_Gamma1_dchi1_bulk",
+      "parameters": 2,
+      "domain": "0<=sigma<=tau<=1",
+      "weight": "1-tau",
+      "singular_strata": ["tau->0", "tau->1", "sigma->tau", "sigma->0"],
+      "suppression": "outer upper endpoint +1; diagonal sigma->tau has no Green-kernel suppression after dchi1",
+      "iter126_local_subtraction": true
+    },
+    {
+      "id": "G_chi2_dGamma1_chi1_initial",
+      "parameters": 1,
+      "domain": "0<=tau<=1",
+      "weight": "tau(1-tau)",
+      "singular_strata": ["tau->0", "tau->1"],
+      "suppression": "both endpoints +1",
+      "iter126_local_subtraction": true
+    },
+    {
+      "id": "G_chi2_dGamma1_chi1_bulk",
+      "parameters": 2,
+      "domain": "0<=sigma<=tau<=1",
+      "weight": "(1-tau)(tau-sigma)",
+      "singular_strata": ["tau->0", "tau->1", "sigma->tau", "sigma->0"],
+      "suppression": "outer upper endpoint +1; inner diagonal sigma->tau +1",
+      "iter126_local_subtraction": true
+    },
+    {
+      "id": "G_chi1chi1_initial_initial",
+      "parameters": 0,
+      "domain": "endpoint-local",
+      "weight": "constant at final endpoint",
+      "singular_strata": ["initial endpoint"],
+      "suppression": "endpoint-local",
+      "iter126_local_subtraction": false
+    },
+    {
+      "id": "G_chi1chi1_initial_bulk",
+      "parameters": 1,
+      "domain": "0<=tau<=1",
+      "weight": "1-tau",
+      "singular_strata": ["tau->0", "tau->1"],
+      "suppression": "upper endpoint +1",
+      "iter126_local_subtraction": true
+    },
+    {
+      "id": "G_chi1chi1_bulk_bulk",
+      "parameters": 2,
+      "domain": "[0,1]^2",
+      "weight": "(1-tau)(1-sigma)",
+      "singular_strata": ["tau->0,1", "sigma->0,1", "tau->sigma"],
+      "suppression": "each upper endpoint +1; diagonal tau->sigma has no polynomial suppression",
+      "iter126_local_subtraction": true
+    }
+  ],
+  "claim_lock": "Affine weights are source-structure inputs only. Curvature/projector derivatives can change singular powers; no row is assigned a B1 residue here."
+}
