@@ -1,0 +1,40 @@
+name: ITER127 exact Frob initial tangent coefficients
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter127_assert_frob_initial_tangent_coeffs.py'
+      - '.github/workflows/iter127_frob_initial_tangent_coeffs.yml'
+      - 'prereg/ITER127_FIXED_GEODESIC_CHI1_CHI2_PROJECTED_SINGULAR_STRATA_AUTHORITY_2026-09-15.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  assert-exact-source-coefficients:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download exact arXiv source package
+        run: |
+          mkdir -p /tmp/iter127-src artifacts/iter127-coeffs
+          curl -L --fail --retry 4 --retry-delay 3 \
+            https://arxiv.org/e-print/1706.01891 \
+            -o /tmp/1706.01891.tar
+          tar -xf /tmp/1706.01891.tar -C /tmp/iter127-src
+      - name: Assert exact initial-tangent and Green-kernel structure
+        run: |
+          python analysis/iter127_assert_frob_initial_tangent_coeffs.py \
+            --source-dir /tmp/iter127-src \
+            --out artifacts/iter127-coeffs
+      - name: Upload ITER127 coefficient assertions
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter127-frob-initial-tangent-coefficients
+          path: artifacts/iter127-coeffs/
+          if-no-files-found: error
