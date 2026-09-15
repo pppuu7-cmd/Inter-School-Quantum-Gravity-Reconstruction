@@ -1,0 +1,52 @@
+name: ITER127 exact Frob geodesic-kernel authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prereg/ITER127_FIXED_GEODESIC_CHI1_CHI2_PROJECTED_SINGULAR_STRATA_AUTHORITY_2026-09-15.md'
+      - 'analysis/iter127_extract_frob_geodesic_kernels.py'
+      - '.github/workflows/iter127_frob_geodesic_kernel_authority.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-source-extraction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download exact arXiv source package
+        run: |
+          mkdir -p /tmp/iter127-src artifacts/iter127
+          curl -L --fail --retry 4 --retry-delay 3 \
+            https://arxiv.org/e-print/1706.01891 \
+            -o /tmp/1706.01891.tar
+          tar -xf /tmp/1706.01891.tar -C /tmp/iter127-src
+      - name: Extract short geodesic equation evidence and hashes
+        run: |
+          python analysis/iter127_extract_frob_geodesic_kernels.py \
+            --source-dir /tmp/iter127-src \
+            --archive /tmp/1706.01891.tar \
+            --out artifacts/iter127
+      - name: Assert source-sensitive evidence exists
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open('artifacts/iter127/source_authority.json'))
+          assert d['selected_equation_count'] > 0
+          p=d['pattern_summary']
+          assert p['selected_with_chi'] > 0
+          assert p['selected_with_integral'] > 0
+          print(json.dumps(p, indent=2))
+          PY
+      - name: Upload ITER127 source authority
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter127-frob-geodesic-kernel-authority
+          path: artifacts/iter127/
+          if-no-files-found: error
