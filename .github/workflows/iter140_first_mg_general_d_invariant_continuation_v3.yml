@@ -1,0 +1,29 @@
+name: ITER140 first M/G general-d continuation exact finite-difference retry
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter140_first_mg_general_d_invariant_continuation_v3.py'
+      - '.github/workflows/iter140_first_mg_general_d_invariant_continuation_v3.yml'
+  workflow_dispatch:
+jobs:
+  general-d-continuation-v3:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Frozen ITER140 exact finite-difference continuation
+        shell: bash
+        run: |
+          set -o pipefail
+          python analysis/iter140_first_mg_general_d_invariant_continuation_v3.py | tee iter140_v3.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter140-first-mg-general-d-invariant-continuation-v3
+          path: |
+            iter140_first_mg_general_d_invariant_continuation.json
+            iter140_v3.log
+          if-no-files-found: error
