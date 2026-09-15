@@ -1,77 +1,21 @@
 {
-  "project": "Inter-School Quantum Gravity Reconstruction",
-  "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
-  "date": "2026-09-15",
-  "phase": "PHASE_1_RELATIONAL_OBSERVABLE_FRONTIER",
-  "active_iteration": "ITER111_FIXED_GEODESIC_CURVATURE_SOURCE_DISCOVERY_TERMINAL",
-  "iteration_completion_percent": 100,
-  "candidate_theory_status": "UNFORMED",
-  "readiness_percent": {
-    "amplitude_refinement_cross_realization_validation": 50,
-    "candidate_theory_construction": 0,
-    "overall_scientific_programme": 50
+  "project":"Inter-School Quantum Gravity Reconstruction",
+  "repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
+  "date":"2026-09-15",
+  "phase":"PHASE_1_RELATIONAL_OBSERVABLE_FRONTIER",
+  "active_iteration":"ITER136_SECOND_ORDER_GEODESIC_RESPONSE_COMPLETION_RUNNING",
+  "iteration_completion_percent":20,
+  "candidate_theory_status":"UNFORMED",
+  "readiness_percent":{"amplitude_refinement_cross_realization_validation":50,"candidate_theory_construction":0,"overall_scientific_programme":50},
+  "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"full_eprl_refinement_derived":false,"lorentzian_refinement_derived":false,"universal_common_parent_found":false},
+  "current_chain":{
+    "iter132":{"status":"BLOCKED","classification":"BLOCKED_MISSING_PREREQUISITE"},
+    "iter133":{"status":"TERMINAL","classification":"PASS_SCOPED_DERIVATIVE_AND_CHI1_KERNELS_CLOSED_CHI2_OPEN","terminal_result_commit":"bbd278373228563b1580fc45301d2496997043e1"},
+    "iter134":{"status":"TERMINAL","classification":"BLOCKED_MISSING_SECOND_ORDER_PATH_RESPONSE_AUTHORITY","terminal_result_commit":"84e7cb55e090e71b8800dd533cc54cf4ee6de2a7","run_id":34930885055},
+    "iter135":{"status":"TERMINAL_PARTIAL","classification":"PASS_DIAGNOSTIC_PARTIAL_GATE_OPEN","result_note_commit":"f9f1145c77d712c3f05fc13302b74f731b23c3ed","prereg_commit":"2d1137077c595eee272fa64fbb59e3f9db4d7026","production_head":"16275060f6110c151cfbba75050c7bf28295fcb9","run_id":34940389488,"jobs":[104287516182,104287516471],"artifacts":[10385046903,10385460103],"bridge_credit":false},
+    "iter136":{"status":"RUNNING_OR_QUEUED","classification":"PENDING","prereg_commit":"eabd349cda5a0d323b537d8e3380de9aa43051d3","implementation_commit":"e7a09a7993c557d8c4fc9d604fe68839fc600aaf","launch_commit":"6640caf740a0c6d5f738b161056032c811b11b96","bridge_credit":false}
   },
-  "claim_locks": {
-    "known_schools_fail": false,
-    "new_theory_required": false,
-    "new_physics_found": false,
-    "bridge_derived": false,
-    "candidate_theory_authorized": false,
-    "full_eprl_refinement_derived": false,
-    "lorentzian_refinement_derived": false,
-    "universal_common_parent_found": false
-  },
-  "cdt_frg_direct_frontier": {
-    "iter090": {"status":"TERMINAL","classification":"PASS_SCOPED_ONE_PARAMETER_FIXED_VOLUME_IDENTIFIABILITY_NOGO","terminal_result_commit":"f774611a2400b0ebabe69876f9b4007efe29134a","bridge_credit":false},
-    "iter091": {"status":"TERMINAL","classification":"PASS_SCOPED_BARE_VOLUME_RESPONSE_RENORMALIZED_MAP_OPEN","terminal_result_commit":"271fea3e9e521344df11c6c1b71a093ea5c7a1f0","bridge_credit":false},
-    "iter092": {"status":"TERMINAL","classification":"SOURCE_SUPPORTS_MIXED_PSEUDOCRITICAL_SHIFT_NOT_INDEPENDENT_COSMOLOGICAL_DIRECTION","terminal_result_commit":"44ebd688d500ca0d0863ed52c930e3ddd64ea6df","bridge_credit":false,"prospective_validation_credit":0},
-    "iter093": {"status":"TERMINAL","classification":"PASS_SCOPED_FORMAL_RESPONSE_MATRIX_DATA_AUTHORITY_OPEN","terminal_result_commit":"7cfcc82037a7d2695a8c00a152b8b6c1752d5833","response_object":"F_ij = Cov(A_i,A_j), A=(-N0,N41-6N0,N4)","bridge_credit":false},
-    "iter094": {"status":"TERMINAL","classification":"DISCOVERY_SATURATED_NO_PUBLIC_DATA_IN_FROZEN_SET","terminal_result_commit":"a115755e6f5e6b7b1318d7287af7f93495c52531","bridge_credit":false},
-    "iter095": {"status":"TERMINAL","classification":"DISCOVERY_SATURATED_NO_PUBLIC_ARCHIVE_DATA_IN_FROZEN_PROVIDERS","terminal_result_commit":"afafa79d954327920db079a5f55ec411fb2d42e5","bridge_credit":false},
-    "iter096": {"status":"TERMINAL","classification":"SCOPED_BLOCKED_PRIMARY_SOURCES_NO_QUALIFYING_PUBLIC_DATA","terminal_result_commit":"838ac066caadcf953b8ec6d507dc6606fcab7170","run_id":34907499223,"bridge_credit":false},
-    "iter097": {"status":"TERMINAL","classification":"NO_GO_SCOPED_MARGINALS_DO_NOT_IDENTIFY_RESPONSE_EIGENDIRECTIONS","terminal_result_commit":"3a6b15df0dc1c3509ed92e04ea48943962818c1a","bridge_credit":false},
-    "iter098": {"status":"TERMINAL","classification":"PASS_SCOPED_MULTIVARIATE_OBJECT_EXISTS_DIFFERENT_DOMAIN","terminal_result_commit":"cc6474072839cbff5087b40c0000f931bf767984","bridge_credit":false},
-    "status": "SATURATED_UNDER_CURRENT_SOURCE_STACK"
-  },
-  "relational_observable_frontier": {
-    "iter099": {"status":"TERMINAL","classification":"PASS_SCOPED_SAME_QRC_FUNCTIONAL_BACKGROUND_LEVEL_ENSEMBLE_MAP_OPEN","terminal_result_commit":"e7b025261290c42110853a40a83bfb44a870ca9e","bridge_credit":false,"prospective_validation_credit":0},
-    "iter100": {"status":"TERMINAL","classification":"PASS_SCOPED_QRC_INGREDIENTS_EXIST_CLOSED_CONSTRUCTION_OPEN","terminal_result_commit":"3c05cdd6f380ca885eff9d455744349a16880f6a","bridge_credit":false},
-    "iter101": {"status":"TERMINAL","classification":"PASS_SCOPED_SMALL_DELTA_QRC_TO_RELATIONAL_SCALAR_OPERATOR_MAP","terminal_result_commit":"a967b50e46937c0548729ee5c4e30b365fa6ea70","bridge_credit":false},
-    "iter102": {"status":"TERMINAL","classification":"PASS_SCOPED_TRACELESS_RICCI_QRC_CHANNEL_FORMAL_RELATIONAL_TENSOR_ROUTE_FLOW_OPEN","terminal_result_commit":"130e5c61e35f94f8f0d5ea023b027a252d2c4dc0","bridge_credit":false},
-    "iter103": {"status":"TERMINAL","classification":"SOURCE_SUPPORTS_TWO_CLASS_DIRECTIONAL_CURVATURE_ISOTROPY_NOT_FULL_TENSOR_RECONSTRUCTION","terminal_result_commit":"6ba81f45a95c9f145cc580cba48e9f058fab5a7c","bridge_credit":false,"prospective_validation_credit":0},
-    "iter104": {"status":"TERMINAL","classification":"SCOPED_BLOCKED_FORMAL_RELATIONAL_TENSOR_ROUTE_NO_EXPLICIT_FRG_CURVATURE_TENSOR_FLOW_IN_FROZEN_STACK","terminal_result_commit":"775f26040ab22e3382659994a7f696eea564fd93","bridge_credit":false,"prospective_validation_credit":0},
-    "iter105": {"status":"TERMINAL","classification":"FAIL_SCOPED_LOCAL_EFT_VOLUME_AND_CDT_SLICE_VOLUME_OBSERVABLE_IDENTITY_REJECTED","terminal_result_commit":"20324823d6eff806f539e8f2bae2653628181d40","bridge_credit":false},
-    "iter106": {"status":"TERMINAL","classification":"PASS_SCOPED_COMMON_SCALAR_CURVATURE_TWO_POINT_TARGET_DIFFERENT_RELATIONAL_REALIZATION","terminal_result_commit":"2f5f46b2c077f4a292557184f71eccea895e640d","bridge_credit":false,"prospective_validation_credit":0},
-    "iter107": {"status":"TERMINAL","classification":"PASS_SCOPED_FIXED_GEODESIC_PERTURBATIVE_FORMALISM_EXISTS_CURVATURE_CALCULATION_OPEN","terminal_result_commit":"2d9735325b8eeffa3c72a5139bd611776458304d","bridge_credit":false,"prospective_validation_credit":0},
-    "iter108": {"status":"TERMINAL","classification":"PASS_SCOPED_MODERN_EDT_CURVATURE_POWER_LAW_DATA_AUTHORITY_MASTER_COORDINATE_MAP_OPEN","terminal_result_commit":"5b9cf7fbf6413d15853f4a4b3165a2ccfbf2b1ae","triangle_power":"-10.03(35)","simplex_power":"-9.09(54)","bridge_credit":false,"prospective_validation_credit":0},
-    "iter109": {"status":"TERMINAL","classification":"PASS_SCOPED_CONDITIONAL_G2_POWER_IS_MINUS8_NONCANCELLATION_OPEN","terminal_result_commit":"844c6c092e4170852c02144f0ec0a09b601d201c","bridge_credit":false},
-    "iter110": {"status":"TERMINAL","classification":"PASS_SCOPED_NONANALYTIC_TAIL_UNIVERSAL_WITHIN_FIXED_RELATIONAL_OBSERVABLE_CROSS_COMPLETION_PROTECTION_OPEN","terminal_result_commit":"60116654fc0c42764264c862df3c0a3ff8a31ead","bridge_credit":false,"prospective_validation_credit":0},
-    "iter111": {"status":"TERMINAL","classification":"DISCOVERY_SATURATED_NO_EXPLICIT_4D_PERTURBATIVE_FIXED_GEODESIC_CURVATURE_CORRELATOR_IN_FROZEN_SEARCH","terminal_result_commit":"de8c50aecc2a2e745f7893da2d642ff3d989679d","bridge_credit":false,"prospective_validation_credit":0}
-  },
-  "frontier": {
-    "RC006": {"status":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","bridge_credit":false},
-    "RC008": {"status":"SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY","bridge_credit":false},
-    "RC009": {"status":"SCOPED_BLOCKED_ENDPOINT_POWER_AND_FROZEN_SOURCE_PHASE_RESCUE_NEGATIVE"},
-    "BH004_BH004B": {"status":"SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT","bridge_credit":false},
-    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": {"status":"REFINEMENT_AUTHORITY_UNRESOLVED_DISCOVERY_TRANSPORT_SATURATED","bridge_credit":false},
-    "LORENTZIAN_DELTA4": {"status":"SATURATED_NEGATIVE_SCOPED","bridge_credit":false},
-    "FIXED_GEODESIC_CURVATURE_CORRELATOR": {"status":"SOURCE_DISCOVERY_SATURATED_ORIGINAL_G2_CALCULATION_REQUIRED","bridge_credit":false}
-  },
-  "idle_capacity": {"scientifically_useful_jobs_queued":0,"scientifically_useful_jobs_in_progress":0,"avoidable_idle":false},
-  "next_gate": "PREREGISTER_ORIGINAL_FIXED_GEODESIC_CURVATURE_ONE_LOOP_OPERATOR_AND_DIAGRAM_CENSUS_OR_SWITCH_TO_MATCHED_OBSERVABLE",
-  "next_gate_rationale": "ITER111 saturated the frozen public source route for the decisive 4D perturbative fixed-geodesic curvature correlator. The EDT P≈-10 and master-coordinate EFT P=-8 results must not be compared directly. Further progress requires either an original O(G^2) fixed-geodesic RR derivation, starting with a frozen operator/diagram/counterterm census and cancellation analysis, or a switch to an observable whose relational definition is already identical across frameworks.",
-  "authoritative_recovery_order": [
-    "recovery/state.json",
-    "recovery/CURRENT_FRONT.md",
-    "results/ITER111_RETROSPECTIVE_FIXED_GEODESIC_CURVATURE_CORRELATOR_POST2018_SOURCE_DISCOVERY_2026-09-15.md",
-    "results/ITER110_RETROSPECTIVE_RELATIONAL_COMPLETION_NONANALYTIC_G2_COEFFICIENT_PROTECTION_AUTHORITY_2026-09-15.md",
-    "results/ITER109_GEODESIC_DISTANCE_TRANSFORM_LEADING_POWER_STABILITY_AUTHORITY_2026-09-15.md",
-    "results/ITER108_RETROSPECTIVE_MODERN_4D_EDT_CURVATURE_CORRELATOR_DATA_AUTHORITY_2026-09-15.md",
-    "results/ITER107_RETROSPECTIVE_FIXED_GEODESIC_DISTANCE_EFT_CURVATURE_CORRELATOR_AUTHORITY_2026-09-15.md",
-    "results/ITER106_RETROSPECTIVE_EDT_EFT_RELATIONAL_CURVATURE_CORRELATOR_IDENTITY_AUTHORITY_2026-09-15.md",
-    "results/ITER105_LATTICE_RELATIONAL_VOLUME_CORRELATOR_EFT_SAME_OBSERVABLE_AUTHORITY_2026-09-15.md",
-    "results/ITER104_RETROSPECTIVE_FRG_EXPLICIT_RELATIONAL_TRACELESS_RICCI_COMPOSITE_FLOW_AUTHORITY_2026-09-15.md",
-    "results/ITER101_QRC_SMALL_DELTA_RELATIONAL_CURVATURE_OPERATOR_EXPANSION_AUTHORITY_2026-09-15.md",
-    "docs/CONSTITUTION.md"
-  ]
+  "frontier":{"RC006":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","RC009":"SCOPED_BLOCKED","BH004_BH004B":"SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT","MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":"AUTHORITY_UNRESOLVED_SATURATED","LORENTZIAN_DELTA4":"SATURATED_NEGATIVE_SCOPED","FIXED_GEODESIC_CURVATURE_CORRELATOR":"ORIGINAL_G2_CALCULATION_IN_PROGRESS"},
+  "next_gate":"CONSUME_ITER136_AND_APPLY_FROZEN_A_F;_ONLY_FULL_PASS_CAN_AUTHORIZE_PHYSICAL_CHI2_ASSEMBLY",
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER135_SECOND_ORDER_GEODESIC_PATH_RESPONSE_EQUATIONS_2026-09-15.md","prereg/ITER136_SECOND_ORDER_GEODESIC_RESPONSE_COMPLETION.md","docs/CONSTITUTION.md"]
 }
