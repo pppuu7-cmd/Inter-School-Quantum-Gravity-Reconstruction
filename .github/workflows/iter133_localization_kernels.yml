@@ -1,0 +1,29 @@
+name: ITER133 localization kernels
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter133_localization_kernels.py'
+      - '.github/workflows/iter133_localization_kernels.yml'
+  workflow_dispatch:
+jobs:
+  kernel-audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [curvature-derivatives, chi1-line-kernel]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - run: python analysis/iter133_localization_kernels.py --lane ${{ matrix.lane }} | tee iter133-${{ matrix.lane }}.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter133-${{ matrix.lane }}
+          path: |
+            iter133_${{ matrix.lane }}.json
+            iter133-${{ matrix.lane }}.log
+          if-no-files-found: error
