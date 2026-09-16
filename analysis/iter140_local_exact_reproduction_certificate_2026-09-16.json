@@ -1,0 +1,64 @@
+{
+  "gate": "ITER140_LOCAL_EXACT_REPRODUCTION_CERTIFICATE",
+  "date": "2026-09-16",
+  "source_frozen_v6_head": "0be2f7a7e2f4e84b173dbb0a89f778b786c8cf52",
+  "status": "EXACT_REPRODUCTION_PASS_AUXILIARY_UNTIL_OFFICIAL_CI_TERMINAL",
+  "method": "Reimplemented the committed fast exact contraction algebra locally, reproduced the frozen deterministic 28-panel design, matched immutable GitHub shards exactly on one overlap control per family, computed all 10 still-queued shards, and executed the frozen v6 aggregate logic over the resulting complete 24-shard set.",
+  "overlap_controls": [
+    {
+      "D": 4,
+      "family": "M_R1_chi1_dR2",
+      "coefficient_vector_28_exact_equal": true,
+      "heldout_directs_exact_equal": true
+    },
+    {
+      "D": 5,
+      "family": "M_R2_chi1_dR1",
+      "coefficient_vector_28_exact_equal": true,
+      "heldout_directs_exact_equal": true
+    },
+    {
+      "D": 7,
+      "family": "G_R1_chi2_Gamma2_dR1",
+      "coefficient_vector_28_exact_equal": true,
+      "heldout_directs_exact_equal": true
+    }
+  ],
+  "prospective_quadratic_trace_adjudication": {
+    "preregistered_targets": 10,
+    "coefficient_checks": 280,
+    "coefficient_failures": 0,
+    "heldout_checks": 30,
+    "heldout_failures": 0,
+    "realized_max_trace_polynomial_degree": 2
+  },
+  "frozen_v6_aggregate_reproduction": {
+    "classification": "PASS_SCOPED_FIRST_MG_GENERAL_D_INVARIANT_CONTINUATION_CLOSED_POLE_INTEGRATION_OPEN",
+    "max_observed_trace_polynomial_degree": 2,
+    "checks": {
+      "A_basis_size_28": true,
+      "B_design_rank_28": true,
+      "C_integer_D_invariant_heldouts": true,
+      "D_trace_polynomial_degree_le4": true,
+      "E_coefficient_continuation_D8_D10": true,
+      "F_direct_continuation_heldouts_D8_D10": true,
+      "G_D4_matches_ITER138_ITER139": true,
+      "H_target_blind": true,
+      "I_v6_scientific_predicates_unchanged": true
+    }
+  },
+  "remaining_10_shard_scientific_payload_sha256": [
+    {"D": 10, "family": "G_R1_chi2_Gamma2_dR1", "sha256": "ed9968b4deca9c323a3e8e241f6c364d07fe7a863198a35b9610e94f9cf08c14"},
+    {"D": 10, "family": "M_R2_chi1_dR1", "sha256": "52736eb980cb0d2d2d29d2711facb884d9ba0f707b3f8816d05535d2e346e6d5"},
+    {"D": 3, "family": "G_R1_chi2_Gamma2_dR1", "sha256": "a83624ba23be89665d8a68dca43a0e39e5c66e01b405256c37e4653d8a5b0a2e"},
+    {"D": 3, "family": "M_R2_chi1_dR1", "sha256": "46c5c5239b9d15d111f685502517ad9a09137beb281ec6a18548eb17b5324843"},
+    {"D": 4, "family": "M_R2_chi1_dR1", "sha256": "ad9e55ef51b81c8a63a30a0b541be4d43d0f70465e951b7b5c826c2200b1456d"},
+    {"D": 6, "family": "G_R1_chi2_Gamma2_dR1", "sha256": "8f3eb60b9cf07a5835c811900bbf199ce46564da5d0e63cc310708fa7a416db5"},
+    {"D": 6, "family": "M_R2_chi1_dR1", "sha256": "7d1ad834c702df8c0611a79980dcb5c55f6dd91ec899d4f0abaa903c5d4b3e4c"},
+    {"D": 7, "family": "M_R1_chi1_dR2", "sha256": "36d059966128397034e5117087c2c6c2398bb1adb00b068903701768ce7322bf"},
+    {"D": 8, "family": "G_R1_chi2_Gamma2_dR1", "sha256": "f390b676cc4edb713444885cd2438a9c50877ad3e5be633ec465e5dcabb4711f"},
+    {"D": 9, "family": "G_R1_chi2_Gamma2_dR1", "sha256": "922118a621ca50acd907198523198b2a279b83401d081822f721cb77e2568737"}
+  ],
+  "authority_note": "This is an exact independent reproduction and prospective adjudication certificate. It deliberately does not replace the still-queued official GitHub Actions v6 terminal result; ITER143 is not activated until the frozen authoritative terminal condition is satisfied.",
+  "claim_ceiling": "general-d numerator continuation and O(epsilon) coefficients only; no loop pole/B1/noncancellation/B0/EDT/bridge/new physics/candidate theory"
+}
