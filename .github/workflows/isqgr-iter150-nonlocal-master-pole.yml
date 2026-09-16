@@ -1,0 +1,48 @@
+name: ISQGR ITER150 nonlocal master pole
+on:
+  push:
+    branches:
+      - research/iter150-nonlocal-master-pole
+    paths:
+      - 'analysis/iter150_first_mg_nonlocal_two_propagator_master_pole.py'
+      - '.github/workflows/isqgr-iter150-nonlocal-master-pole.yml'
+  workflow_dispatch:
+
+jobs:
+  iter150:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install sympy
+      - name: Download authoritative ITER140 aggregate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 35040499084 -n iter140-first-mg-general-d-invariant-continuation-v6 -D iter140_authority
+          find iter140_authority -maxdepth 2 -type f -print
+      - name: Locate input
+        run: |
+          INPUT=$(find iter140_authority -type f -name 'iter140_first_mg_general_d_invariant_continuation*.json' | head -n 1)
+          test -n "$INPUT"
+          cp "$INPUT" iter140_input.json
+          sha256sum iter140_input.json
+      - name: Execute frozen ITER150 gate
+        run: python analysis/iter150_first_mg_nonlocal_two_propagator_master_pole.py iter140_input.json | tee iter150.log
+      - name: Re-run exact gate for deterministic byte check
+        run: |
+          cp iter150_first_mg_nonlocal_two_propagator_master_pole.json first.json
+          python analysis/iter150_first_mg_nonlocal_two_propagator_master_pole.py iter140_input.json > iter150-rerun.log
+          cmp first.json iter150_first_mg_nonlocal_two_propagator_master_pole.json
+          sha256sum iter150_first_mg_nonlocal_two_propagator_master_pole.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter150-first-mg-nonlocal-two-propagator-master-pole
+          path: |
+            iter150_first_mg_nonlocal_two_propagator_master_pole.json
+            iter150.log
+            iter150-rerun.log
+            iter140_input.json
