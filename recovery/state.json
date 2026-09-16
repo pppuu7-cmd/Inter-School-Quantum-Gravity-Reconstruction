@@ -1,5 +1,60 @@
 {
- "project":"Inter-School Quantum Gravity Reconstruction","repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction","date":"2026-09-15","phase":"PHASE_1_RELATIONAL_OBSERVABLE_FRONTIER","active_iteration":"ITER137_EXPLICIT_4D_GEODESIC_TENSOR_HELDOUT_AUTHORITY_LAUNCHED","iteration_completion_percent":15,"candidate_theory_status":"UNFORMED","readiness_percent":{"amplitude_refinement_cross_realization_validation":50,"candidate_theory_construction":0,"overall_scientific_programme":50},"claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false},
- "current_chain":{"iter132":{"status":"BLOCKED","classification":"BLOCKED_MISSING_PREREQUISITE"},"iter134":{"status":"TERMINAL","classification":"BLOCKED_MISSING_SECOND_ORDER_PATH_RESPONSE_AUTHORITY","terminal_result_commit":"84e7cb55e090e71b8800dd533cc54cf4ee6de2a7"},"iter135":{"status":"TERMINAL_PARTIAL","classification":"PASS_DIAGNOSTIC_PARTIAL_GATE_OPEN","result_note_commit":"f9f1145c77d712c3f05fc13302b74f731b23c3ed","run_id":34940389488},"iter136":{"status":"TERMINAL","classification":"PASS_DIAGNOSTIC_SCALARIZED_COMPLETION_FULL_TENSOR_AUTHORITY_OPEN","result_note_commit":"995a81c651c5bd0ac027e0686fef6a858401429c","run_id":34944054243,"jobs":[104299166214,104299166371],"artifacts":[10386158943,10386338161],"bridge_credit":false},"iter137":{"status":"LAUNCHED","classification":"PENDING","prereg_commit":"aced43798d1068725f7afd5787356db0b9af037f","implementation_commit":"96879a881889033ff590590293a8548ba38138ee","launch_commit":"5d4f70adcf69c1e0856e313b7db7bb8686559ca2","bridge_credit":false}},
- "frontier":{"RC006":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED","RC009":"SCOPED_BLOCKED","BH004_BH004B":"SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT","MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":"AUTHORITY_UNRESOLVED_SATURATED","LORENTZIAN_DELTA4":"SATURATED_NEGATIVE_SCOPED","FIXED_GEODESIC_CURVATURE_CORRELATOR":"ORIGINAL_G2_CALCULATION_IN_PROGRESS"},"next_gate":"CONSUME_ITER137_EXPLICIT_4D_TENSOR_HELDOUTS;_NO_CHI2_ASSEMBLY_UNTIL_FULL_AUTHORITY","authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","results/ITER136_GEODESIC_RESPONSE_COMPLETION_2026-09-15.md","prereg/ITER137_EXPLICIT_4D_GEODESIC_TENSOR_HELDOUT_AUTHORITY.md","docs/CONSTITUTION.md"]
+  "project": "Inter-School Quantum Gravity Reconstruction",
+  "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
+  "date": "2026-09-16",
+  "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE",
+  "active_iteration": "POST_ITER140_ITER148_POLE_CONTINUATION_FRONT",
+  "iteration_completion_percent": 100,
+  "candidate_theory_status": "UNFORMED",
+  "readiness_percent": {
+    "amplitude_refinement_cross_realization_validation": 50,
+    "candidate_theory_construction": 0,
+    "overall_scientific_programme": 50
+  },
+  "claim_locks": {
+    "known_schools_fail": false,
+    "new_theory_required": false,
+    "new_physics_found": false,
+    "bridge_derived": false,
+    "candidate_theory_authorized": false
+  },
+  "authoritative_terminal": {
+    "iter140": {
+      "status": "TERMINAL",
+      "classification": "PASS_SCOPED_FIRST_MG_GENERAL_D_INVARIANT_CONTINUATION_CLOSED_POLE_INTEGRATION_OPEN",
+      "commit": "0be2f7a7e2f4e84b173dbb0a89f778b786c8cf52",
+      "run_id": 35040499084,
+      "job_id": 104671152184,
+      "artifact_id": 10431112965,
+      "artifact_sha256": "f2a51f9dc30365d7c03b68d10a0920bfb90aca66f56b0daad18325a9cd6126e1",
+      "bridge_credit": false
+    },
+    "iter148": {
+      "status": "TERMINAL",
+      "classification": "PASS_SCOPED_M3_FULL_D4_INVARIANT_AND_CANONICAL_BUBBLE_REDUCTION_CLOSED_GENERAL_D_POLES_OPEN",
+      "commit": "1b85eec35af8f157e2982040013a70836a49334f",
+      "run_id": 35044099632,
+      "job_id": 104677935357,
+      "artifact_id": 10431996892,
+      "artifact_sha256": "5617edf6b6d30db3599e67a86f97b8f7c31308550e94a5bff3f859b395a2ab94",
+      "bridge_credit": false
+    }
+  },
+  "frontier": {
+    "RC006": "SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
+    "RC009": "SCOPED_BLOCKED",
+    "BH004_BH004B": "SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
+    "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT": "AUTHORITY_UNRESOLVED_SATURATED",
+    "LORENTZIAN_DELTA4": "SATURATED_NEGATIVE_SCOPED",
+    "ITER140": "SCOPED_PASS_POLE_INTEGRATION_OPEN",
+    "ITER148": "SCOPED_PASS_GENERAL_D_POLES_OPEN"
+  },
+  "next_gate": "PREREGISTER_AND_EXECUTE_FROZEN_POLE_INTEGRATION_NONCANCELLATION_CONTINUATION_WITHOUT_NUMERATOR_RETUNING;_PARALLEL_GENERAL_D_POLE_CONTINUATION_FOR_ITER148_IF_SOURCE_FAITHFUL",
+  "authoritative_recovery_order": [
+    "recovery/state.json",
+    "recovery/CURRENT_FRONT.md",
+    "validated Actions run 35040499084 aggregate artifact 10431112965",
+    "validated Actions run 35044099632 aggregate artifact 10431996892",
+    "docs/CONSTITUTION.md"
+  ]
 }
