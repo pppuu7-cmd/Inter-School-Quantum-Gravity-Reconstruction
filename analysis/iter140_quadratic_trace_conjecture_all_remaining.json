@@ -1,0 +1,67 @@
+{
+  "gate": "ITER140_AUX_QUADRATIC_TRACE_CONJECTURE_ALL_REMAINING_SHARDS",
+  "status": "PREREGISTERED_BEFORE_REMAINING_10_V6_SHARDS",
+  "source_run": 35040499084,
+  "source_head": "0be2f7a7e2f4e84b173dbb0a89f778b786c8cf52",
+  "conjecture": "For each of the 3 frozen families and each of 28 invariant coefficients, trace_j(d)=(d-2)^2*c_j(d) has polynomial degree <=2.",
+  "frozen_authority": "ITER140 allows trace degree <=4; this is an auxiliary stronger conjecture and does not modify the frozen gate.",
+  "cross_checks": {
+    "M_R1_validation": "D8,D9,D10: 84/84 exact coefficient matches from fit D3,D4,D5,D6",
+    "M_R2_validation": "D9: 28/28 exact coefficient matches from fit D5,D7,D8",
+    "M_R2_D4_terminal_authority": "Predicted D4 heldouts are 15741/4, 3306, -1341/2; all equal pinned ITER138/139 terminal authority values.",
+    "G_linear_rejection": "Linear trace fit from D4,D5 fails D7 only at coefficient indices 11 and 22; therefore available G data require trace degree at least 2 but are exactly representable by degree<=2 through D4,D5,D7."
+  },
+  "claim_ceiling": "Prospective auxiliary predictions for remaining ITER140 v6 shards only; frozen aggregate remains authoritative; no poles/B1/EDT/bridge/new physics/candidate theory.",
+  "families": {
+    "M_R1_chi1_dR2": {
+      "fit_dimensions": [3,4,5,6],
+      "observed_max_trace_degree": 2,
+      "known_coefficient_validation_dimensions": [8,9,10],
+      "known_coefficient_validation_checks": 84,
+      "known_coefficient_validation_failures": [],
+      "trace_polynomials_by_index": [
+        "0","0","0","0","-(d + 2)/4","-(3*d + 2)/4","-d/2","-d/2","-d/2","0",
+        "(d - 2)**2/4","3*(d - 2)**2/4","(d - 2)**2/2","(d - 2)**2/2","(d - 2)**2/2","0",
+        "-(d - 2)**2/2","-(d - 2)**2","0","-(d - 1)*(3*d - 10)/2","-(d - 4)*(d - 1)","-(d - 4)*(d - 1)",
+        "(d - 2)**2","0","0","d**2 - 2*d + 2","2*(d - 1)","(3*d - 2)/2"
+      ],
+      "targets": {
+        "7": {"heldout_predicted_direct": ["-17563/10","9338/5","12823/10"], "basis_source_family": "M_R2_chi1_dR1"}
+      }
+    },
+    "M_R2_chi1_dR1": {
+      "fit_dimensions": [5,7,8],
+      "observed_max_trace_degree": 2,
+      "known_coefficient_validation_dimensions": [9],
+      "known_coefficient_validation_checks": 28,
+      "known_coefficient_validation_failures": [],
+      "trace_polynomials_by_index": [
+        "0","(d + 2)/4","d/2","0","0","d/2","0","0","0","0","0","-(d - 2)*(d - 1)","-(d - 2)/2","0","0","0","0",
+        "(d**2 - 5*d + 2)/2","(d - 4)*(d - 1)","0","(d - 4)*(d - 1)","0","-(d - 2)**2/4","-(d - 2)**2/2","0","-(d - 2)**2/2","0","0"
+      ],
+      "targets": {
+        "3": {"heldout_predicted_direct": ["-695/2","17814","5733/4"], "basis_source_family": "M_R1_chi1_dR2"},
+        "4": {"heldout_predicted_direct": ["15741/4","3306","-1341/2"], "basis_source_family": "M_R1_chi1_dR2"},
+        "6": {"heldout_predicted_direct": ["14817/8","-852","-1719/2"], "basis_source_family": "M_R1_chi1_dR2"},
+        "10": {"heldout_predicted_direct": ["18513/16","-17673/8","-29853/32"], "basis_source_family": "M_R1_chi1_dR2"}
+      }
+    },
+    "G_R1_chi2_Gamma2_dR1": {
+      "fit_dimensions": [4,5,7],
+      "observed_max_trace_degree": 2,
+      "known_coefficient_validation_dimensions": [],
+      "known_coefficient_validation_checks": 0,
+      "known_coefficient_validation_failures": [],
+      "trace_polynomials_by_index": [
+        "0","-(d - 2)/2","0","0","0","-(d - 1)/2","-1/2","0","0","0","0","(d - 2)*(d - 1)/2","0","0","0","0","0","d - 2","0","0","d - 1","0","(d - 2)**2/2","0","0","0","d/2","0"
+      ],
+      "targets": {
+        "3": {"heldout_predicted_direct": ["269","-8286","735/2"], "basis_source_family": "M_R1_chi1_dR2"},
+        "6": {"heldout_predicted_direct": ["-2541/16","-3397/4","3105/8"], "basis_source_family": "M_R1_chi1_dR2"},
+        "8": {"heldout_predicted_direct": ["253/4","-928/3","621/2"], "basis_source_family": "M_R1_chi1_dR2"},
+        "9": {"heldout_predicted_direct": ["825/7","-8440/49","28215/98"], "basis_source_family": "M_R1_chi1_dR2"},
+        "10": {"heldout_predicted_direct": ["9999/64","-1191/16","8667/32"], "basis_source_family": "M_R1_chi1_dR2"}
+      }
+    }
+  }
+}
