@@ -98,7 +98,7 @@ Thus a raw dimensional scaleless zero and a failed canonical line pullback are c
 
 ## 10. Claim discipline
 
-- The Hörmander condition is a canonical pullback authorization criterion, not an excuse to claim universal impossibility of every generalized extension.
+- The Hörmander condition is a canonical pullback authorization criterion; failure of this sufficient condition is not a universal theorem of nonexistence for every generalized prescription.
 - A smoothing or analytic regulator introduced only inside ITER153 is a diagnostic unless the frozen parent theory/source uniquely selects it.
 - Scaling-degree extension freedom is local renormalization freedom and must not be fixed by desired cancellation.
 - A raw scaleless dimensional integral may be recorded as zero only at the raw factorized level; it is not a renormalized contact-pole zero unless the frozen R-operation proves that implication.
