@@ -1,0 +1,68 @@
+name: ISQGR ITER151 contact authority gate
+
+on:
+  push:
+    branches:
+      - research/iter151-contact-authority-gate
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  iter151:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify frozen ITER143 support authority
+        shell: bash
+        run: |
+          ACTUAL=$(git hash-object analysis/iter143_first_mg_denominator_contact_partition.py)
+          EXPECTED=63ce6cb4b1e1593c5cf94966e53624aaf78084dd
+          echo "ITER143 blob: $ACTUAL"
+          test "$ACTUAL" = "$EXPECTED"
+
+      - name: Download authoritative ITER140 aggregate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh run download 35040499084 \
+            -n iter140-first-mg-general-d-invariant-continuation-v6 \
+            -D iter140_authority
+          find iter140_authority -maxdepth 2 -type f -print
+
+      - name: Locate frozen ITER140 input
+        shell: bash
+        run: |
+          INPUT=$(find iter140_authority -type f -name 'iter140_first_mg_general_d_invariant_continuation*.json' | head -n 1)
+          test -n "$INPUT"
+          cp "$INPUT" iter140_input.json
+          sha256sum iter140_input.json
+
+      - name: Execute preregistered ITER151 gate
+        shell: bash
+        run: |
+          python analysis/iter151_first_mg_contact_renormalization_authority_gate.py iter140_input.json | tee iter151.log
+
+      - name: Re-run for deterministic byte identity
+        shell: bash
+        run: |
+          cp iter151_first_mg_contact_renormalization_authority_gate.json first.json
+          python analysis/iter151_first_mg_contact_renormalization_authority_gate.py iter140_input.json > iter151-rerun.log
+          cmp first.json iter151_first_mg_contact_renormalization_authority_gate.json
+          sha256sum iter151_first_mg_contact_renormalization_authority_gate.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter151-first-mg-contact-renormalization-authority-gate
+          path: |
+            iter151_first_mg_contact_renormalization_authority_gate.json
+            iter151.log
+            iter151-rerun.log
+            iter140_input.json
