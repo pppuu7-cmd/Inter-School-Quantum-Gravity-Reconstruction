@@ -1,0 +1,41 @@
+name: ITER149 no-refit tau transport
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/iter149_no_refit_tau_transport.yml'
+  workflow_dispatch:
+jobs:
+  transport:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install sympy
+      - name: Download exact authoritative ITER148 artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 35044099632 -n iter148-m3-full-invariant-chunked-v3 -D iter148_authority
+          sha256sum <(cd iter148_authority && zip -q -r - .) || true
+          test -f iter148_authority/analysis/iter148_m3_full_invariant_bubble_reduced_numerator_v3.json || test -f iter148_authority/iter148_m3_full_invariant_bubble_reduced_numerator_v3.json
+      - name: Frozen no-refit held-out transport
+        run: |
+          P=iter148_authority/analysis/iter148_m3_full_invariant_bubble_reduced_numerator_v3.json
+          [ -f "$P" ] || P=iter148_authority/iter148_m3_full_invariant_bubble_reduced_numerator_v3.json
+          cd analysis
+          python iter149_no_refit_tau_transport.py ../$P | tee ../iter149.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter149-no-refit-tau-transport
+          path: |
+            analysis/iter149_no_refit_tau_transport.json
+            iter149.log
+          if-no-files-found: warn
