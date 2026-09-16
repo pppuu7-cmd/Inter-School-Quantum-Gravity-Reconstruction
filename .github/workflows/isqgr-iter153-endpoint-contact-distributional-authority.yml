@@ -1,0 +1,60 @@
+name: ISQGR ITER153 endpoint-contact distributional authority
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prereg/ITER153_FIXED_GEODESIC_CURVATURE_ENDPOINT_CONTACT_DISTRIBUTIONAL_EXTENSION_AUTHORITY_2026-09-17.md'
+      - 'sources/ITER153_DISTRIBUTION_PULLBACK_EXTENSION_AUTHORITY_2026-09-17.md'
+      - 'analysis/iter153_endpoint_contact_distributional_extension_authority.py'
+      - 'analysis/iter153_adversarial_critic.py'
+      - '.github/workflows/isqgr-iter153-endpoint-contact-distributional-authority.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  iter153:
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install exact symbolic dependency
+        run: python -m pip install --disable-pip-version-check sympy==1.14.0
+
+      - name: Run ITER153 first pass
+        run: |
+          python analysis/iter153_endpoint_contact_distributional_extension_authority.py
+          python analysis/iter153_adversarial_critic.py
+          cp iter153_endpoint_contact_distributional_extension_authority.json /tmp/iter153-result-first.json
+          cp iter153_adversarial_critic.json /tmp/iter153-critic-first.json
+
+      - name: Run ITER153 deterministic reproduction
+        run: |
+          rm -f iter153_endpoint_contact_distributional_extension_authority.json iter153_adversarial_critic.json
+          python analysis/iter153_endpoint_contact_distributional_extension_authority.py
+          python analysis/iter153_adversarial_critic.py
+          cmp /tmp/iter153-result-first.json iter153_endpoint_contact_distributional_extension_authority.json
+          cmp /tmp/iter153-critic-first.json iter153_adversarial_critic.json
+          sha256sum iter153_endpoint_contact_distributional_extension_authority.json iter153_adversarial_critic.json | tee iter153_sha256.txt
+
+      - name: Upload ITER153 terminal payloads
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter153-endpoint-contact-distributional-authority
+          path: |
+            iter153_endpoint_contact_distributional_extension_authority.json
+            iter153_adversarial_critic.json
+            iter153_sha256.txt
+          if-no-files-found: error
