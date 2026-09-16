@@ -1,0 +1,30 @@
+name: ISQGR ITER155 endpoint counterterm authority
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/isqgr-iter155-endpoint-counterterm-authority.yml'
+  workflow_dispatch:
+jobs:
+  iter155:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: frozen authority audit
+        run: |
+          python analysis/iter155_endpoint_counterterm_authority_audit.py
+          cp iter155_endpoint_counterterm_authority_audit.json /tmp/result.json
+      - name: deterministic reproduction
+        run: |
+          rm -f iter155_endpoint_counterterm_authority_audit.json
+          python analysis/iter155_endpoint_counterterm_authority_audit.py
+          cmp /tmp/result.json iter155_endpoint_counterterm_authority_audit.json
+          sha256sum iter155_endpoint_counterterm_authority_audit.json | tee iter155_sha256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter155-endpoint-counterterm-authority
+          path: |
+            iter155_endpoint_counterterm_authority_audit.json
+            iter155_sha256.txt
