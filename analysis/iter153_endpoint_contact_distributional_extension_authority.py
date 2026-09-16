@@ -2,8 +2,8 @@
 """ITER153: frozen seven-contact distributional pullback/extension authority gate.
 
 This gate closes or terminally blocks ITER152 slot 5 only. It does not choose
-counterterms, copy ITER126 prototype residues, or form B1_total. It also checks
-the frozen ITER124 R-operation ordering before interpreting raw scaleless DR data.
+counterterms, copy ITER126 prototype residues, form B1_total, or set a contact to
+zero by collapsing the endpoint phase before defining the distributional pullback.
 """
 from __future__ import annotations
 
@@ -17,7 +17,8 @@ import sympy as sp
 FROZEN_PARENT = "d44245c8a1387df197489e95296096c3f004451e"
 PREREG_COMMIT = "bbcb9021e0245f3a506efa072d90cff992177126"
 SOURCE_AUTHORITY_COMMIT = "1792940bd0b2d89788b5be3855c71b497018aa64"
-SOURCE_AUTHORITY_REPAIR_COMMIT = "8f5550d38a5eda4f61df465555c388d6e883af17"
+SOURCE_AUTHORITY_DR_ORDERING_COMMIT = "8f5550d38a5eda4f61df465555c388d6e883af17"
+SOURCE_AUTHORITY_SCALELESS_CONTROL_COMMIT = "d4c795370b099564fe66618cd24d346633eabb46"
 DIMENSION_CONVENTION = "d=4-2*epsilon"
 PHYSICAL_D = 4
 N = (1, 0, 0, 0)
@@ -122,8 +123,7 @@ def post_cancel_expression(contact: dict) -> sp.Expr:
 
 def longitudinal_alignment(contact: dict) -> str:
     Q, K, S, a, b = sp.symbols("Q K S a b")
-    aligned = sp.factor(post_cancel_expression(contact).subs({Q: a**2, K: b**2, S: a * b}))
-    return str(aligned)
+    return str(sp.factor(post_cancel_expression(contact).subs({Q: a**2, K: b**2, S: a * b})))
 
 
 def line_map(contact: dict) -> str:
@@ -132,6 +132,11 @@ def line_map(contact: dict) -> str:
 
 def endpoint_coordinate(contact: dict) -> str:
     return "s=tau" if contact["endpoint"] == "lower" else "s=1-tau"
+
+
+def phase_formula(contact: dict) -> str:
+    sign = "-" if contact["phase_sign"] < 0 else "+"
+    return f"exp[{sign} i L s (n.p_cancelled)]"
 
 
 def fixture_reasons(fixture: dict) -> list[str]:
@@ -153,6 +158,8 @@ def fixture_reasons(fixture: dict) -> list[str]:
         reasons.append("HARD_CODED_EXPECTED_POLE_OR_CANCELLATION")
     if fixture.get("contact_count", 7) != 7:
         reasons.append("CHANGED_SEVEN_CONTACT_SET")
+    if fixture.get("uses_premature_scaleless_zero"):
+        reasons.append("PREMATURE_ENDPOINT_COLLAPSE_SCALELESS_ZERO")
     return reasons
 
 
@@ -165,6 +172,7 @@ def build_controls() -> list[dict]:
         {"name": "prototype_residue", "id": 1, "endpoint": "lower", "cancelled": "Q", "line_map": "F(s)=+L*s*n", "dimension_convention": DIMENSION_CONVENTION, "assigned_contact_pole": "+2"},
         {"name": "hard_coded_pole", "id": 1, "endpoint": "lower", "cancelled": "Q", "line_map": "F(s)=+L*s*n", "dimension_convention": DIMENSION_CONVENTION, "uses_expected_pole": True},
         {"name": "changed_contact_set", "id": 1, "endpoint": "lower", "cancelled": "Q", "line_map": "F(s)=+L*s*n", "dimension_convention": DIMENSION_CONVENTION, "contact_count": 6},
+        {"name": "premature_scaleless_zero", "id": 1, "endpoint": "lower", "cancelled": "Q", "line_map": "F(s)=+L*s*n", "dimension_convention": DIMENSION_CONVENTION, "uses_premature_scaleless_zero": True},
     ]
     return [{"name": f["name"], "accepted": not fixture_reasons(f), "rejection_reasons": fixture_reasons(f)} for f in fixtures]
 
@@ -175,12 +183,14 @@ def main() -> None:
         "frozen_parent_is_ancestor": is_ancestor(FROZEN_PARENT),
         "preregistration_is_ancestor": is_ancestor(PREREG_COMMIT),
         "source_authority_initial_is_ancestor": is_ancestor(SOURCE_AUTHORITY_COMMIT),
-        "source_authority_DR_ordering_repair_is_ancestor": is_ancestor(SOURCE_AUTHORITY_REPAIR_COMMIT),
+        "source_authority_DR_ordering_is_ancestor": is_ancestor(SOURCE_AUTHORITY_DR_ORDERING_COMMIT),
+        "source_authority_scaleless_control_is_ancestor": is_ancestor(SOURCE_AUTHORITY_SCALELESS_CONTROL_COMMIT),
         "execution_head": head,
         "frozen_parent": FROZEN_PARENT,
         "preregistration_commit": PREREG_COMMIT,
         "source_authority_initial_commit": SOURCE_AUTHORITY_COMMIT,
-        "source_authority_DR_ordering_repair_commit": SOURCE_AUTHORITY_REPAIR_COMMIT,
+        "source_authority_DR_ordering_commit": SOURCE_AUTHORITY_DR_ORDERING_COMMIT,
+        "source_authority_scaleless_control_commit": SOURCE_AUTHORITY_SCALELESS_CONTROL_COMMIT,
     }
 
     source_blobs = {path: parent_blob(path) for path in PARENT_PATHS}
@@ -194,14 +204,13 @@ def main() -> None:
     iter124_order = iter124.get("subtraction_order", [])
     iter124_order_ok = iter124_order == EXPECTED_ITER124_ORDER
     contact_split_index = iter124_order.index("separate contact/polynomial structures only after renormalization") if iter124_order_ok else -1
-    required_prior_indices = [1, 2, 3]
-    contact_after_required_renormalization = iter124_order_ok and all(i < contact_split_index for i in required_prior_indices)
+    contact_after_required_renormalization = iter124_order_ok and all(i < contact_split_index for i in [1, 2, 3])
     source_rules_ok = all(key in source_authority for key in [
         "Hörmander distributional pullback criterion",
         "WF(delta_0)",
         "Brunetti and Fredenhagen",
         "delta_eta^(4)",
-        "Whole-integral dimensional-regularization diagnostic",
+        "Premature scaleless-collapse control",
         "Frozen ITER124 renormalization order",
         "not a universal theorem of nonexistence",
     ])
@@ -229,6 +238,7 @@ def main() -> None:
             "retained_propagator_factor": "K" if c["cancelled"] == "Q" else "Q",
             "endpoint_coordinate": endpoint_coordinate(c),
             "phase_sign_in_shrinking_momentum": c["phase_sign"],
+            "frozen_shrinking_phase": phase_formula(c),
             "line_embedding": line_map(c),
             "line_scale_jacobian_symbol": "L",
             "pre_cancellation_momentum_degrees": {"q": q_degree, "k": k_degree},
@@ -259,15 +269,13 @@ def main() -> None:
                 "longitudinal_component_nonzero": bool(aligned_nonzero),
                 "role": "independent uniqueness/existence diagnostic only; not a numerical renormalization prescription",
             },
-            "method_C_raw_dimreg_scaleless": {
-                "cancelled_momentum_factor": "polynomial momentum integral with no intrinsic scale after Q/K cancellation",
-                "post_cancellation_polynomial_degree": order,
-                "raw_factorized_dimreg_value": "0",
-                "raw_zero_reason": "power-law scaleless integral in dimensional regularization",
-                "raw_factorized_one_over_epsilon": "0",
-                "renormalized_contact_pole_inferred_from_raw_zero": False,
-                "frozen_ITER124_order_blocks_pre_subtraction_promotion": bool(contact_after_required_renormalization),
-                "role": "raw whole-factor diagnostic only; R-operation/local UV coefficient remains downstream",
+            "method_C_premature_scaleless_control": {
+                "phase_before_pullback": phase_formula(c),
+                "phase_nontrivial_for_s_nonzero": True,
+                "setting_s_zero_before_distributional_pairing_assumes_pullback": True,
+                "scaleless_zero_authorized_for_contact": False,
+                "frozen_ITER124_order_also_forbids_pre_subtraction_contact_collapse": bool(contact_after_required_renormalization),
+                "rejection_reason": "The cancelled-momentum Fourier integral is a delta-derivative distribution in s; setting s=0 first changes the object and assumes the disputed endpoint restriction.",
             },
             "source_qualified_unique_parent_analytic_extension_available": unique_parent_analytic_extension_available,
             "pole_data": {
@@ -289,7 +297,7 @@ def main() -> None:
     derivative_orders = [r["cancelled_momentum_polynomial_degree"] for r in rows]
     expected_orders = [1, 1, 2, 2, 2, 1, 2]
     checks = {
-        "A_frozen_parent_prereg_and_source_authority_lineage": all(lineage[k] for k in ["frozen_parent_is_ancestor", "preregistration_is_ancestor", "source_authority_initial_is_ancestor", "source_authority_DR_ordering_repair_is_ancestor"]),
+        "A_frozen_parent_prereg_and_source_authority_lineage": all(lineage[k] for k in ["frozen_parent_is_ancestor", "preregistration_is_ancestor", "source_authority_initial_is_ancestor", "source_authority_DR_ordering_is_ancestor", "source_authority_scaleless_control_is_ancestor"]),
         "B_exact_seven_ITER151_manifest_verbatim": manifest_ok and len(rows) == 7,
         "C_ITER152_slot5_parent_authority_open": slot5_was_open,
         "D_exact_cancelled_momentum_derivative_orders": derivative_orders == expected_orders,
@@ -297,12 +305,12 @@ def main() -> None:
         "F_all_seven_canonical_pullbacks_tested_without_prototype_residue": all(not r["method_A_microlocal"]["canonical_hormander_pullback_authorized"] for r in rows),
         "G_independent_transverse_mollifier_diagnostic_nonfinite": all(r["method_B_transverse_mollifier"]["transverse_factor_diverges"] and r["method_B_transverse_mollifier"]["longitudinal_component_nonzero"] for r in rows),
         "H_missing_pole_authority_not_encoded_as_zero": all(r["pole_data"]["one_over_epsilon"] is None and r["pole_data"]["one_over_epsilon2"] is None and not r["pole_data"]["absence_is_zero"] for r in rows),
-        "I_adversarial_negative_controls_rejected": all(not c["accepted"] and c["rejection_reasons"] for c in controls),
+        "I_adversarial_negative_controls_rejected": len(controls) == 8 and all(not c["accepted"] and c["rejection_reasons"] for c in controls),
         "J_source_authority_rules_present": source_rules_ok,
         "K_no_B1_or_counterterm_subtraction_performed": True,
         "L_target_blind_no_desired_sign_or_cancellation": True,
         "M_ITER124_subtraction_order_exact_and_contact_split_after_renormalization": bool(iter124_order_ok and contact_after_required_renormalization),
-        "N_raw_dimreg_scaleless_zero_not_promoted_to_renormalized_contact_zero": all(r["method_C_raw_dimreg_scaleless"]["raw_factorized_dimreg_value"] == "0" and not r["method_C_raw_dimreg_scaleless"]["renormalized_contact_pole_inferred_from_raw_zero"] and r["pole_data"]["one_over_epsilon"] is None for r in rows),
+        "N_premature_scaleless_zero_rejected_for_all_contacts": all(r["method_C_premature_scaleless_control"]["phase_nontrivial_for_s_nonzero"] and r["method_C_premature_scaleless_control"]["setting_s_zero_before_distributional_pairing_assumes_pullback"] and not r["method_C_premature_scaleless_control"]["scaleless_zero_authorized_for_contact"] for r in rows),
     }
 
     unresolved = [r["id"] for r in rows if not r["resolved_for_slot5"]]
@@ -332,12 +340,12 @@ def main() -> None:
         "independent_method_summary": {
             "method_A": "microlocal wavefront/normal-set pullback test",
             "method_B": "smooth ambient approximate-identity restriction exposing an uncancelled codimension-three transverse factor",
-            "method_C": "raw factorized dimensional-regularization scaleless-integral diagnostic, explicitly prevented from becoming a renormalized contact zero by the frozen ITER124 order",
-            "agreement": "The isolated raw contact does not supply a regulator-independent renormalized endpoint pole from frozen parent data alone. Method C gives a raw scaleless zero, while A/B show why that zero cannot be substituted for the local renormalized contact coefficient.",
+            "control_C": "premature dimensional-scaleless collapse is rejected because the frozen exp(+/- i L s n.p) phase is nontrivial before the endpoint distributional restriction",
+            "agreement": "Methods A/B independently show that the isolated raw contact lacks a canonical/regulator-independent line value. The tempting scaleless-zero route is circular rather than a third residue computation because it assumes s=0 before defining the pullback.",
         },
         "controls": controls,
         "checks": checks,
-        "interpretation": "The denominator-cancelled terms are genuine ambient point-supported contacts. At d=4 their ordinary restriction to the one-dimensional geodesic is not canonically licensed by the standard wavefront criterion, and a smooth transverse regulator exposes codimension-three local divergence. A separate raw dimensional-regularization calculation makes the cancelled-momentum factor scaleless and zero, but frozen ITER124 requires bulk/local, endpoint, and line-mixing renormalization before contact/polynomial separation. Therefore that raw zero is not the renormalized contact pole. The result is a scoped authority blocker, not a derived contact zero and not a universal theorem that no generalized prescription can ever be supplied.",
+        "interpretation": "The denominator-cancelled terms are genuine ambient point-supported contacts. At d=4 their ordinary restriction to the one-dimensional geodesic is not canonically licensed by the standard wavefront criterion, and a smooth transverse regulator exposes codimension-three local divergence. Setting the endpoint phase to one first and invoking a scaleless dimensional integral is not valid: for s nonzero the frozen phase remains and its Fourier transform is the delta-derivative distribution being restricted. Frozen ITER124 independently requires bulk/local, endpoint, and line-mixing renormalization before contact/polynomial separation. The result is a scoped authority blocker, not a derived contact zero and not a universal theorem that no generalized prescription can ever be supplied.",
         "next_dependency": "Prospectively freeze the graph-specific first-M/G R-operation/subdivergence gate on the unseparated amplitude (slot 6 primitive), carrying endpoint and line-renormalization dependencies symbolically. Do not form B1_total and do not replace raw contacts by zero before that operation.",
         "claim_ceiling": "slot-5 distributional authority only; no renormalized contact pole value, no graph-specific subdivergence coefficient, endpoint counterterm coefficient, line-mixing residue, renormalized contact mapping, B1_total, noncancellation, EDT, bridge, new physics, or candidate theory",
     }
