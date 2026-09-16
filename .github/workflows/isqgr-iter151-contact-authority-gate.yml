@@ -53,9 +53,11 @@ jobs:
       - name: Re-run for deterministic byte identity
         shell: bash
         run: |
-          cp iter151_first_mg_contact_renormalization_authority_gate.json first.json
+          # Keep the reference copy outside the repository tree so the repository-authority
+          # audit cannot observe its own prior output. Scientific predicates are unchanged.
+          cp iter151_first_mg_contact_renormalization_authority_gate.json /tmp/iter151-first.json
           python analysis/iter151_first_mg_contact_renormalization_authority_gate.py iter140_input.json > iter151-rerun.log
-          cmp first.json iter151_first_mg_contact_renormalization_authority_gate.json
+          cmp /tmp/iter151-first.json iter151_first_mg_contact_renormalization_authority_gate.json
           sha256sum iter151_first_mg_contact_renormalization_authority_gate.json
 
       - uses: actions/upload-artifact@v4
