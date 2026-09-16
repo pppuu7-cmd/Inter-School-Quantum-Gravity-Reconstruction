@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import json,re
 from pathlib import Path
-import sympy as sp
 
 basis=['R','S','DR','DS','BoxR','D2R','BoxS','D2S']
 required=[
@@ -26,11 +25,12 @@ for j,b in enumerate(basis):
  for fn,t in texts.items():
   for m in re.finditer(patterns[b],t):
    v=[0]*len(basis);v[j]=1;rows.append(v);evidence[b].append({'file':fn,'match':m.group(0)[:220]})
-M=sp.Matrix(rows) if rows else sp.zeros(0,len(basis))
-rank=int(M.rank()); null=M.nullspace()
-null_dirs=[]
-for v in null:
- null_dirs.append({basis[i]:str(v[i]) for i in range(len(basis)) if v[i]!=0})
+# Every admitted frozen row is exactly a standard basis vector e_j. Therefore exact rank is
+# simply the number of distinct basis directions represented, and the nullspace is the span
+# of the absent e_j directions. This is algebraically identical to the previous SymPy audit.
+present={i for row in rows for i,x in enumerate(row) if x==1}
+rank=len(present)
+null_dirs=[{basis[i]:'1'} for i in range(len(basis)) if i not in present]
 checks={'A_lineage':len(texts)==len(required),'B_basis_exact':basis==['R','S','DR','DS','BoxR','D2R','BoxS','D2S'],'C_explicit_only':True,'D_rank_reported':True,'F_no_null_as_zero':True,'G_claim_locks':True}
 full=(rank==len(basis))
 classification='PASS_SCOPED_ITER156_ENDPOINT_COEFFICIENTS_IDENTIFIABLE_DERIVATION_NEXT' if full else 'BLOCKED_SCOPED_ITER156_ENDPOINT_COEFFICIENTS_UNDERDETERMINED'
