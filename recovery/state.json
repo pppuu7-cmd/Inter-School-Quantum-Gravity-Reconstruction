@@ -3,7 +3,7 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-17",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE",
-  "active_iteration": "POST_ITER153_GRAPH_R_OPERATION_FRONT",
+  "active_iteration": "POST_ITER154B_ENDPOINT_COUNTERTERM_FRONT",
   "iteration_completion_percent": 100,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
@@ -19,13 +19,24 @@
     "candidate_theory_authorized": false
   },
   "authoritative_terminal": {
-    "iter140": {"status":"TERMINAL","classification":"PASS_SCOPED_FIRST_MG_GENERAL_D_INVARIANT_CONTINUATION_CLOSED_POLE_INTEGRATION_OPEN","commit":"0be2f7a7e2f4e84b173dbb0a89f778b786c8cf52","run_id":35040499084,"job_id":104671152184,"artifact_id":10431112965,"artifact_sha256":"f2a51f9dc30365d7c03b68d10a0920bfb90aca66f56b0daad18325a9cd6126e1","bridge_credit":false},
-    "iter148": {"status":"TERMINAL","classification":"PASS_SCOPED_M3_FULL_D4_INVARIANT_AND_CANONICAL_BUBBLE_REDUCTION_CLOSED_GENERAL_D_POLES_OPEN","commit":"1b85eec35af8f157e2982040013a70836a49334f","run_id":35044099632,"job_id":104677935357,"artifact_id":10431996892,"artifact_sha256":"5617edf6b6d30db3599e67a86f97b8f7c31308550e94a5bff3f859b395a2ab94","bridge_credit":false},
-    "iter149": {"status":"TERMINAL","classification":"PASS_SCOPED_ITER148_NO_REFIT_TAU_TRANSPORT_HELDOUTS","commit":"5544165988bf5d3f8350095001238f64f2400648","run_id":35066093004,"job_id":104696596220,"artifact_id":10433884862,"artifact_sha256":"614dd604832583f584050092f81c2be6b46ec45011daff2138f5777fbb7e39e1","exact_checks":"12/12","bridge_credit":false},
-    "iter150": {"status":"TERMINAL","classification":"PASS_SCOPED_FIRST_MG_NONLOCAL_TWO_PROPAGATOR_MASTER_POLE_CONTACT_COMPLETION_OPEN","commit":"71cd4031b23c8e7654d2c99c3364604e39af414f","run_id":35140549227,"job_id":104943683326,"artifact_id":10465465110,"artifact_sha256":"9e99d4b6854847a83b62ffde5c68969c96e5ac8f7d2c132375e49a737619fcd9","nonlocal_prefactor":"-11/96","full_noncancellation":false,"bridge_credit":false},
-    "iter151": {"status":"TERMINAL_BLOCKED","classification":"BLOCKED_MISSING_SOURCE_FAITHFUL_FULL_RENORMALIZATION_AUTHORITY_AFTER_CONTACT_MANIFEST_CLOSED","scientific_commit":"b674202300f3165772f32f64491526fd21ff9b08","run_commit":"184791e673a3c6c84486b5e609f2c00f9a1f9d67","run_id":35146603418,"job_id":104964165476,"artifact_id":10467577601,"artifact_sha256":"b2d8581c8daf0b76dcfd33df3408b11d29afb719c056ac07a7a20925def5ce1f","result_sha256":"a8dd586c9b092ec32ba520d265544e5a98bbf57672e8077eef6fb791ae4adb79","surviving_contacts":7,"full_noncancellation":false,"bridge_credit":false},
-    "iter152": {"status":"TERMINAL_BLOCKED","classification":"BLOCKED_SOURCE_AUTHORITY_INCOMPLETE_EXACT_MISSING_SLOTS_FROZEN","preregistration_commit":"f78c9796f2174c0de0a5e9b87a4f9aa0675493e8","implementation_commit":"adbc25004740673331998f0f04f8e9b4a5aaa603","run_commit":"32c26ffeb9ae990c6ce9019d31b618b2eafd9926","run_id":35150505863,"job_id":104977321094,"artifact_id":10469210437,"artifact_sha256":"16a722046d8bcf498980b39b1da7920b2696b93d83c1ed89f3f47bf872ba1a46","result_sha256":"0ee8ccdcb5eaef15e1a80e730bd2c40953dcc01941b4f7f48e7ccc339c327bd9","closed_slots":[1,2,3,4],"open_slots":[5,6,7,8,9,10],"bridge_credit":false},
-    "iter153": {"status":"TERMINAL_BLOCKED","classification":"BLOCKED_SCOPED_SLOT5_REQUIRES_NEW_DISTRIBUTIONAL_EXTENSION_OR_RENORMALIZATION_INPUT","frozen_parent":"d44245c8a1387df197489e95296096c3f004451e","preregistration_commit":"bbcb9021e0245f3a506efa072d90cff992177126","implementation_commit":"139fa221d61a9650b29c9bd140a2771d2efb8120","critic_commit":"f7efddec2fa1b1548d06a936fd122414526b7ec1","run_id":35153011242,"job_id":104985687348,"artifact_id":10470051348,"artifact_sha256":"1cb8c2ef156e74ba6076dad776adf68f295df5dfebbf74494edd732f88d606b3","result_sha256":"23fd1f191a7baf5bbab965678724d3d930e8297b9fadaedacde780cd5ebda8bf","critic_sha256":"c24c9221f1b72a6d3c421d9bd5f53c52cd8ba99ff5aa1ce36490f33a0d496e75","critic_classification":"PASS_CRITIC_ITER153_SCOPED_BLOCKER_LOGIC_SOUND","cancelled_momentum_orders":[1,1,2,2,2,1,2],"slot5_closed":false,"renormalized_contact_poles_zero":false,"minimal_blocker":"GRAPH_LEVEL_R_OPERATION_ON_UNSEPARATED_FIRST_MG_AMPLITUDE_BEFORE_CONTACT_SPLIT","bridge_credit":false}
+    "iter150": {"status":"TERMINAL","classification":"PASS_SCOPED_FIRST_MG_NONLOCAL_TWO_PROPAGATOR_MASTER_POLE_CONTACT_COMPLETION_OPEN","run_id":35140549227,"artifact_id":10465465110,"bridge_credit":false},
+    "iter151": {"status":"TERMINAL_BLOCKED","classification":"BLOCKED_MISSING_SOURCE_FAITHFUL_FULL_RENORMALIZATION_AUTHORITY_AFTER_CONTACT_MANIFEST_CLOSED","run_id":35146603418,"artifact_id":10467577601,"surviving_contacts":7,"bridge_credit":false},
+    "iter152": {"status":"TERMINAL_BLOCKED","classification":"BLOCKED_SOURCE_AUTHORITY_INCOMPLETE_EXACT_MISSING_SLOTS_FROZEN","run_id":35150505863,"artifact_id":10469210437,"closed_slots":[1,2,3,4],"open_slots":[5,6,7,8,9,10],"bridge_credit":false},
+    "iter153": {"status":"TERMINAL_BLOCKED","classification":"BLOCKED_SCOPED_SLOT5_REQUIRES_NEW_DISTRIBUTIONAL_EXTENSION_OR_RENORMALIZATION_INPUT","run_id":35153011242,"job_id":104985687348,"artifact_id":10470051348,"artifact_sha256":"1cb8c2ef156e74ba6076dad776adf68f295df5dfebbf74494edd732f88d606b3","result_sha256":"23fd1f191a7baf5bbab965678724d3d930e8297b9fadaedacde780cd5ebda8bf","critic_sha256":"c24c9221f1b72a6d3c421d9bd5f53c52cd8ba99ff5aa1ce36490f33a0d496e75","cancelled_momentum_orders":[1,1,2,2,2,1,2],"slot5_closed":false,"renormalized_contact_poles_zero":false,"bridge_credit":false},
+    "iter154": {"status":"PREREGISTERED_HYPOTHESIS_SOURCE_FALSIFIED_BEFORE_PROMOTION","classification":"SCIENTIFIC_FAIL_SCOPED_ITER154_TOPOLOGICAL_PRIMITIVITY_HYPOTHESIS_FALSE","falsified_clause":"geometric-site b1=0 was incorrectly equated with absence of loop momentum cycle","repair_gate":"ITER154B","bridge_credit":false},
+    "iter154b": {"status":"TERMINAL","classification":"PASS_SCOPED_SLOT6_FIRST_MG_PRIMITIVE_BUBBLES_NO_PROPER_SUBDIVERGENCES","frozen_parent":"a85276e5bf8a7518dc037a33d5eb8c9a02ca14f5","preregistration_commit":"c35e3a1d7a6a7c78ed0a02b376a7b899319d6be6","implementation_commit":"70cc1ae00e7b854eed9472b903d5c447a35af6cf","critic_commit":"6e2d869d385820d731fc3c1484a12a920d11240a","run_id":35153927336,"job_id":104988716931,"artifact_id":10470730440,"artifact_sha256":"8481cd17f9490e39878a86245a89ba8cdb28c9314a519b9dc0477a405df025b9","result_sha256":"049b6bb80f603feab787e318cf482fd6b5e809496ea2938241d5c69e898a33ea","critic_sha256":"3a9d492fa0818692d038bf3f170b2983fc63f3becfabe32d8565a6a618a9b362","slot6_closed_scoped":true,"derived_zero_scope":"strict proper ordinary bulk/local-composite subdivergence insertions only","endpoint_renormalization_still_open":true,"bridge_credit":false}
+  },
+  "slot_status": {
+    "1":"CLOSED",
+    "2":"CLOSED",
+    "3":"CLOSED",
+    "4":"CLOSED",
+    "5":"CHARACTERIZED_NUMERICALLY_OPEN",
+    "6":"CLOSED_SCOPED_FIRST_MG_CONNECTED_CROSS",
+    "7":"OPEN_ENDPOINT_COUNTERTERM_COEFFICIENTS",
+    "8":"OPEN_LINE_DEFECT_MIXING",
+    "9":"OPEN_RENORMALIZED_CONTACT_MAPPING",
+    "10":"OPEN_ITER124_TERMINAL_OUTPUTS"
   },
   "frontier": {
     "RC006":"SOURCE_BLOCKED_NO_NUMERICAL_RETRY_AUTHORIZED",
@@ -33,14 +44,9 @@
     "BH004_BH004B":"SCOPED_BLOCKED_NO_SOURCE_FAITHFUL_AMPLITUDE_REFINEMENT_OBJECT",
     "MULTIVERTEX_LORENTZIAN_EPRL_REFINEMENT":"AUTHORITY_UNRESOLVED_SATURATED",
     "LORENTZIAN_DELTA4":"SATURATED_NEGATIVE_SCOPED",
-    "ITER140":"SCOPED_PASS_GENERAL_D_NUMERATOR_POLE_INTEGRATION_OPEN",
-    "ITER148":"SCOPED_PASS_GENERAL_D_POLES_OPEN",
-    "ITER149":"SCOPED_PASS_NO_REFIT_TAU_TRANSPORT",
-    "ITER150":"SCOPED_PASS_NONLOCAL_TWO_PROPAGATOR_POLE_CONTACT_RENORMALIZATION_OPEN",
-    "ITER151":"CONTACT_MANIFEST_CLOSED_FULL_RENORMALIZATION_AUTHORITY_BLOCKED",
-    "ITER152":"SLOTS_1_TO_4_CLOSED_SLOTS_5_TO_10_OPEN",
-    "ITER153":"SEVEN_CONTACT_DISTRIBUTIONAL_OBJECTS_CHARACTERIZED_SLOT5_BLOCKED_ON_GRAPH_R_OPERATION"
+    "ITER153":"SEVEN_CONTACT_DISTRIBUTIONAL_OBJECTS_CHARACTERIZED_SLOT5_NUMERICALLY_OPEN",
+    "ITER154B":"SCOPED_SLOT6_PROPER_SUBDIVERGENCE_FOREST_EMPTY"
   },
-  "next_gate":"ITER154_FIXED_GEODESIC_FIRST_MG_GRAPH_SUBDIVERGENCE_R_OPERATION_AUTHORITY_ON_UNSEPARATED_AMPLITUDE;_FREEZE_GRAPH_SUBGRAPH_CENSUS_AND_COUNTERTERM_INPUTS;_KEEP_ENDPOINT_LINE_DEPENDENCIES_SYMBOLIC;_NO_CONTACT_ZERO_AND_NO_B1_TOTAL",
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","analysis/ITER153_RESULT_2026-09-17.md","validated Actions run 35153011242 artifact 10470051348","analysis/ITER152_RESULT_2026-09-16.md","validated Actions run 35150505863 artifact 10469210437","analysis/ITER151_RESULT_2026-09-16.md","validated Actions run 35146603418 artifact 10467577601","analysis/ITER150_RESULT_2026-09-16.md","validated Actions run 35140549227 artifact 10465465110","docs/CONSTITUTION.md"]
+  "next_gate":"ITER155_FIXED_GEODESIC_FIRST_MG_ENDPOINT_COUNTERTERM_COEFFICIENT_AUTHORITY;_FREEZE_ITER118_ENDPOINT_BASIS_AND_TENSOR_PROJECTION;_DERIVE_DIVERGENT_COEFFICIENTS_OR_EXACT_IDENTIFIABILITY_BLOCKER;_NO_B1_TOTAL",
+  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","analysis/ITER154B_RESULT_2026-09-17.md","validated Actions run 35153927336 artifact 10470730440","analysis/ITER153_RESULT_2026-09-17.md","validated Actions run 35153011242 artifact 10470051348","analysis/ITER152_RESULT_2026-09-16.md","analysis/ITER151_RESULT_2026-09-16.md","analysis/ITER150_RESULT_2026-09-16.md","docs/CONSTITUTION.md"]
 }
