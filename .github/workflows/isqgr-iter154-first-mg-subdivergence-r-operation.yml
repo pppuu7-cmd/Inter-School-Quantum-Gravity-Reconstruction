@@ -1,0 +1,51 @@
+name: ISQGR ITER154 first-MG graph subdivergence R-operation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prereg/ITER154_FIXED_GEODESIC_FIRST_MG_GRAPH_SUBDIVERGENCE_R_OPERATION_AUTHORITY_2026-09-17.md'
+      - 'analysis/iter154_first_mg_graph_subdivergence_r_operation.py'
+      - 'analysis/iter154_adversarial_critic.py'
+      - '.github/workflows/isqgr-iter154-first-mg-subdivergence-r-operation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  iter154:
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run ITER154 first pass
+        run: |
+          python analysis/iter154_first_mg_graph_subdivergence_r_operation.py
+          python analysis/iter154_adversarial_critic.py
+          cp iter154_first_mg_graph_subdivergence_r_operation.json /tmp/iter154-result-first.json
+          cp iter154_adversarial_critic.json /tmp/iter154-critic-first.json
+
+      - name: Run ITER154 deterministic reproduction
+        run: |
+          rm -f iter154_first_mg_graph_subdivergence_r_operation.json iter154_adversarial_critic.json
+          python analysis/iter154_first_mg_graph_subdivergence_r_operation.py
+          python analysis/iter154_adversarial_critic.py
+          cmp /tmp/iter154-result-first.json iter154_first_mg_graph_subdivergence_r_operation.json
+          cmp /tmp/iter154-critic-first.json iter154_adversarial_critic.json
+          sha256sum iter154_first_mg_graph_subdivergence_r_operation.json iter154_adversarial_critic.json | tee iter154_sha256.txt
+
+      - name: Upload ITER154 terminal payloads
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter154-first-mg-subdivergence-r-operation
+          path: |
+            iter154_first_mg_graph_subdivergence_r_operation.json
+            iter154_adversarial_critic.json
+            iter154_sha256.txt
+          if-no-files-found: error
