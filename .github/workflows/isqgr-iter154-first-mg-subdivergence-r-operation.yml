@@ -11,6 +11,10 @@ on:
       - '.github/workflows/isqgr-iter154-first-mg-subdivergence-r-operation.yml'
   workflow_dispatch:
 
+concurrency:
+  group: isqgr-iter154-first-mg-subdivergence-r-operation
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
