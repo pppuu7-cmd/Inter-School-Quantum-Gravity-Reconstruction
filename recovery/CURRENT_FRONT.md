@@ -1,23 +1,30 @@
 # Current front — ISQGR
 
-Date: 2026-09-15.
+Date: 2026-09-16.
 
-Overall scientific programme: **50% (Δ0)**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
+Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
+
+## Authoritative terminal closures
+
+### ITER140 v6 — scoped scientific PASS
+Authoritative commit `0be2f7a7e2f4e84b173dbb0a89f778b786c8cf52`, run `35040499084`, aggregate job `104671152184`, artifact `10431112965`, artifact SHA256 `f2a51f9dc30365d7c03b68d10a0920bfb90aca66f56b0daad18325a9cd6126e1`.
+
+Raw aggregate classification: `PASS_SCOPED_FIRST_MG_GENERAL_D_INVARIANT_CONTINUATION_CLOSED_POLE_INTEGRATION_OPEN`. Frozen A-I all true; max trace-polynomial degree 2 <= 4; D8/D10 coefficient and direct held-outs pass; D4 authority matches ITER138/139. This closes only the first M/G general-D invariant numerator continuation. Pole integration/noncancellation remains open. No bridge credit.
+
+### ITER148 v3 — scoped scientific PASS
+Authoritative commit `1b85eec35af8f157e2982040013a70836a49334f`, run `35044099632`, aggregate job `104677935357`, artifact `10431996892`, artifact SHA256 `5617edf6b6d30db3599e67a86f97b8f7c31308550e94a5bff3f859b395a2ab94`.
+
+Raw aggregate classification: `PASS_SCOPED_M3_FULL_D4_INVARIANT_AND_CANONICAL_BUBBLE_REDUCTION_CLOSED_GENERAL_D_POLES_OPEN`. Frozen A-L all true: basis/rank 45, repaired direct-source authority, exact training held-outs, tau degree <=8, no-refit tau=1/3 and 2/5 held-outs, routing/parity/source weight, target blindness, ITER145 identity, canonical bubble maps A/B/C and Jacobian prefactor audit. General-D/O(epsilon), master poles, renormalized endpoint subtraction and bridge remain open. No bridge credit.
 
 ## Persistent locks
-RC006 numerical retry unauthorized; RC009 scoped blocked; Lorentzian Delta4 negative results preserved; BH004/BH004B source-faithful amplitude/refinement object unresolved; genuine multi-vertex Lorentzian EPRL refinement authority unresolved. Forbidden claims remain ALL_KNOWN_SCHOOLS_FAIL, NEW_QG_THEORY_REQUIRED, NEW_PHYSICS_FOUND, BRIDGE_DERIVED and candidate-theory promotion.
+RC006 numerical retry unauthorized; RC009 scoped blocked; Lorentzian Delta4 negative results preserved; BH004/BH004B source-faithful amplitude/refinement object unresolved; genuine multi-vertex Lorentzian EPRL refinement authority unresolved. Generic projector/orientation/envelope structure is absorbed by standard amplitude-level TNR and is not novelty. Forbidden claims remain `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED`; candidate action/Hamiltonian/field equations remain unauthorized.
 
-## Active fixed-geodesic chain
-ITER132 is blocked on missing physical localization kernels. ITER133 closed first-order derivative/chi1 prerequisites. ITER134 terminally established that structural chi1×chi1 is not authority for physical chi2 and is `BLOCKED_MISSING_SECOND_ORDER_PATH_RESPONSE_AUTHORITY`.
+## Current workload / anti-idle
+At recovery check immediately before this update GitHub Actions had 0 queued and 0 in-progress workflows. The two long-running exact fronts have terminalized and been scientifically adjudicated from raw aggregate logs/artifacts. New work must therefore be a prospectively frozen, non-retuned pole/refinement continuation, not a repeat of ITER140/148 numerator calculations.
 
-ITER135 prereg commit `2d1137077c595eee272fa64fbb59e3f9db4d7026`, production head `16275060f6110c151cfbba75050c7bf28295fcb9`, run `34940389488`. Raw logs/artifacts consumed: job `104287516182`, artifact `10385046903`, sha256 `a28f9c922aee88a608791f86ab72f496a831a81712c20fddf9264160b9c11fc5`; job `104287516471`, artifact `10385460103`, sha256 `698a60b18ac0a5b609cf721535eb4781e3befd92a84c3c88fe2a3ee5151f01fb`.
+## Next admissible gates
+1. Preregistered ITER140 pole-integration/noncancellation continuation using the frozen terminal numerator; no basis/model/threshold retuning.
+2. In parallel, ITER148 general-D master-pole / endpoint-subtraction continuation only if a mathematically source-faithful dimensional object can be stated prospectively.
+3. Independently, continue the PHASE_1 amplitude/refinement bridge search: BH004/BH004B source-faithful amplitude/refinement object, genuine multi-vertex Lorentzian EPRL refinement, or RC006 q-deformed EPRL/FK amplitude/TNR reconstruction when source-faithful authority exists.
 
-ITER135 scientific classification is **PASS_DIAGNOSTIC_PARTIAL_GATE_OPEN**, not full PASS: Green CI closed the Dirichlet Green-function checks and the structural three-sector O(kappa^2) source census, but prereg tasks 1/3/6/7 were not executed: explicit S1 from Gamma1, explicit xi1 line integral, complete endpoint reversal, and >=3 held-out plane-wave/polarization direct perturbative comparisons remain open. Durable note commit `f9f1145c77d712c3f05fc13302b74f731b23c3ed`.
-
-## ITER136
-Frozen completion gate prereg `eabd349cda5a0d323b537d8e3380de9aa43051d3`; implementation `e7a09a7993c557d8c4fc9d604fe68839fc600aaf`; launch `6640caf740a0c6d5f738b161056032c811b11b96`. Two independent lanes are launched: first-order line-response/Green/reversal algebra and held-out direct O(kappa^2) perturbative-expansion bookkeeping. No target quantities are available to either lane.
-
-Important: these diagnostics can close ITER135 only if the frozen A–F predicates are genuinely met. A scalarized contraction or bookkeeping identity alone must not be promoted to a full 4D tensor/polarization scientific PASS. If full tensor held-outs remain absent after terminal ITER136, the correct result is another scoped partial diagnostic and the next gate must implement the missing tensor authority without retuning.
-
-## Next admissible gate
-Consume ITER136 raw logs and artifacts and apply frozen A–F exactly. Only a genuine full PASS can authorize physical chi2 assembly; otherwise preserve the blocker and continue only with prospectively frozen missing tensor/polarization authority. ITER132 numerator jets remain blocked until chi2 is physically authorized.
+A finite-cutoff/profile/scaling diagnostic alone cannot raise bridge status. Candidate theory remains 0/UNFORMED until a constitution gate explicitly authorizes construction.
