@@ -1,0 +1,25 @@
+{
+  "gate": "ITER148_AUX_EXTERNAL_ITER147_SOURCE_AUTHORITY_CROSSCHECK",
+  "date": "2026-09-16",
+  "status": "PASS_AUXILIARY_EXTERNAL_AUTHORITY_SPECIFIC_ITER148_B3_PANELS_OPEN",
+  "iter147_authoritative_run": 35016375562,
+  "iter147_artifact_id": 10415677784,
+  "iter147_artifact_sha256": "e5c5b016340c8bdcb7d06dd99bb6a364296fc18451760dcb38c95dbe5c251000",
+  "pinned_source_blob": "98297aac3b640a93ac80c2cc72a8275280819954",
+  "iter144_terminal_commit": "5ee9043e36af2705ddea5553c6015d4552f94a32",
+  "iter144_exact_source_over_EH_ratio": "-2",
+  "all_44_ITER147_slice_polynomial_checks": true,
+  "withheld_8_direct_source_checks": true,
+  "withheld_rows": [
+    {"panel":0,"lambda":9,"fast":"10406190160/27","direct_source":"10406190160/27","equal":true},
+    {"panel":0,"lambda":10,"fast":"432176457379/486","direct_source":"432176457379/486","equal":true},
+    {"panel":1,"lambda":9,"fast":"3400274434335/16384","direct_source":"3400274434335/16384","equal":true},
+    {"panel":1,"lambda":10,"fast":"7685821722783/16384","direct_source":"7685821722783/16384","equal":true},
+    {"panel":2,"lambda":9,"fast":"-44905400851068/390625","direct_source":"-44905400851068/390625","equal":true},
+    {"panel":2,"lambda":10,"fast":"-99297724649661/390625","direct_source":"-99297724649661/390625","equal":true},
+    {"panel":3,"lambda":9,"fast":"-10160790059/324","direct_source":"-10160790059/324","equal":true},
+    {"panel":3,"lambda":10,"fast":"-10588664099/162","direct_source":"-10588664099/162","equal":true}
+  ],
+  "interpretation": "The frozen ITER148 fast path is independently consistent with the hash-pinned repaired source authority on four full affine slice polynomials and all eight no-refit lambda=9,10 direct-source heldouts. This is strong auxiliary evidence for predicate B but does not replace the three specific direct-source panels hard-coded in the frozen ITER148 aggregator.",
+  "claim_ceiling": "auxiliary source-authority consistency only; no terminal ITER148 PASS, no general-d/O(epsilon), pole, B1, EDT, bridge, new physics or candidate theory"
+}
