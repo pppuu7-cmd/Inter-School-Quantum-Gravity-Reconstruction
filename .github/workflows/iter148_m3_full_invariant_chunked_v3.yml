@@ -1,0 +1,58 @@
+name: ITER148 M3 full invariant chunked v3
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter148_tau_chunk_v3.py'
+      - 'analysis/iter148_aggregate_v3.py'
+      - '.github/workflows/iter148_m3_full_invariant_chunked_v3.yml'
+  workflow_dispatch:
+jobs:
+  tau-design-chunks:
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix:
+        tau_index: [0,1,2,3,4,5,6,7,8]
+        chunk_index: [0,1,2]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - name: Exact frozen tau x design chunk
+        run: python analysis/iter148_tau_chunk_v3.py ${{ matrix.tau_index }} ${{ matrix.chunk_index }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter148-v3-tau-${{ matrix.tau_index }}-chunk-${{ matrix.chunk_index }}
+          path: iter148_v3_tau_${{ matrix.tau_index }}_chunk_${{ matrix.chunk_index }}.json
+          if-no-files-found: error
+  aggregate:
+    needs: tau-design-chunks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install sympy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter148-v3-tau-*
+          path: iter148_v3_parts
+          merge-multiple: true
+      - name: Frozen ITER148 v3 exact aggregate
+        shell: bash
+        run: |
+          set -o pipefail
+          cd analysis
+          python iter148_aggregate_v3.py ../iter148_v3_parts | tee ../iter148_v3.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter148-m3-full-invariant-chunked-v3
+          path: |
+            analysis/iter148_m3_full_invariant_bubble_reduced_numerator_v3.json
+            iter148_v3.log
+          if-no-files-found: error
