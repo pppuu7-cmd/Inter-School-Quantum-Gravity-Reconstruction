@@ -1,0 +1,3 @@
+ITER151 execution trigger only.
+Frozen scientific gate remains commit b674202300f3165772f32f64491526fd21ff9b08 unchanged.
+No scientific predicate, expected count, threshold, coefficient, or claim ceiling changed.
