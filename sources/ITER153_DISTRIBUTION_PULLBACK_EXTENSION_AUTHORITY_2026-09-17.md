@@ -70,38 +70,43 @@ gives along `x=L s n`
 
 Pairing with a one-dimensional test function and rescaling `s=(eta/L)u` has leading magnitude proportional to `eta^(-3)/L`; derivatives of the ambient delta raise the negative power further. Hence the naive line restriction has no regulator-independent distributional limit without subtraction/local renormalization data. The exact coefficient depends on the chosen approximate identity and derivative contraction, so this diagnostic may establish need for extra local input but may not be used as a numerical renormalization prescription.
 
-## 7. Whole-integral dimensional-regularization diagnostic
+## 7. Premature scaleless-collapse control
 
-After one factor of the frozen denominator `Q*K` is cancelled, the integration over the cancelled momentum is a polynomial momentum integral with no intrinsic mass or momentum scale. In pure dimensional regularization, such power-law scaleless integrals are assigned zero by analytic continuation. This gives a useful independent statement about the **raw factorized unrenormalized integral**.
+A tempting manipulation is to cancel `Q` or `K`, set the endpoint phase to one, and then declare the remaining polynomial momentum integral scaleless and therefore zero in dimensional regularization. ITER153 freezes this as an **invalid control**, not as an independent residue method.
 
-That raw zero is not automatically the renormalized endpoint-contact pole. A scaleless dimensional integral can conceal a separation between local UV data and other subtraction pieces, and the local counterterm extracted by an R-operation is not obtained by first deleting the entire scaleless integral. Therefore ITER153 may record `RAW_FACTOR_SCALeless_DR_ZERO`, but it may not convert that diagnostic into `one_over_epsilon = 0` for the renormalized contact unless the frozen renormalization/subtraction order licenses that operation.
+Before the endpoint pullback, the frozen ITER141 geometry retains the oscillatory factor
 
-For the seven ITER151 structures the post-cancellation polynomial degrees are finite and positive; hence the cancelled-momentum factor is a power-law scaleless integral rather than a source-qualified logarithmic contact master. No standalone curvature-contact residue follows from this observation.
+`exp[+/- i L s (n.p)]`
+
+for local endpoint coordinate `s`. For `s != 0` this is not an ordinary scaleless numerical integral: its Fourier transform is precisely the ambient derivative-of-delta distribution whose restriction to `s=0` is under investigation. Setting `s=0` before defining/pairing the distribution therefore assumes the endpoint pullback and changes the mathematical object.
+
+Consequently the standard dimensional-regularization rule for scaleless numerical integrals cannot be used to set any of the seven renormalized endpoint contacts to zero. It can become relevant only after a source-qualified subtraction/pullback/R-operation has defined which local distribution is being evaluated. `SCALeless_ZERO_BY_PREMATURE_ENDPOINT_COLLAPSE` must be rejected by the evaluator.
 
 ## 8. Frozen ITER124 renormalization order
 
 The parent authority `analysis/iter124_projected_rg_pole_manifest.json` freezes the required order of operations for the projected RG observable:
 
-1. perform ordinary bulk/local-composite subtractions;
-2. renormalize the geodesic/endpoint sector, including embedding/endpoint counterterms;
-3. renormalize the full line-defect basis and its mixing;
-4. **only after those renormalization steps**, separate contact/polynomial pieces from the remaining nonlocal form factor;
-5. then read the remaining nonlocal simple-pole coefficient.
+1. generate the unrenormalized F/M/G poles in general `d`;
+2. subtract bulk ghost and local-composite subdivergences;
+3. add endpoint and lower-order geodesic counterterms;
+4. renormalize the full line-defect mixing matrix including simple and higher poles;
+5. **only after those renormalization steps**, separate contact/polynomial structures;
+6. then project the genuine-defect poles.
 
-This ordering is scientifically material. It forbids promoting a pre-subtraction factorized scaleless zero into the renormalized contact coefficient. The seven contacts are therefore not an independent numerical subproblem upstream of all graph-specific R-operation data; their renormalized values are coupled to the subtraction/endpoint/mixing operation that precedes the contact/nonlocal split.
+This ordering is scientifically material. It independently forbids setting the endpoint phase to its contact value, deleting a supposedly scaleless integral, and only afterwards performing renormalization. The seven contacts are not an independent numerical subproblem upstream of all graph-specific R-operation data; their renormalized values are coupled to the subtraction/endpoint/mixing operation that precedes the contact/nonlocal split.
 
 ## 9. Dependency consequence
 
 The minimal missing primitive exposed by ITER153 is more specific than “some distributional prescription is missing”. The repository already supplies the raw seven-contact manifest and a general local-extension formalism. What is not supplied is a source-qualified **graph-level R-operation/renormalization map on the unseparated first-M/G amplitude** that fixes the local UV pieces before the contact split, together with the endpoint/line renormalization data required by ITER124.
 
-Thus a raw dimensional scaleless zero and a failed canonical line pullback are compatible diagnostics: both say the isolated raw contact does not by itself determine the renormalized contact pole. A successor should therefore attack the graph-specific subtraction/R-operation primitive prospectively, rather than inventing an endpoint value inside ITER153.
+The failed canonical pullback and the transverse-mollifier divergence both point to this local renormalization datum. The premature scaleless-collapse route is not an escape: it is mathematically circular because it sets the endpoint coordinate before the distributional restriction is defined. A successor should attack the graph-specific subtraction/R-operation primitive prospectively rather than inventing an endpoint value inside ITER153.
 
 ## 10. Claim discipline
 
 - The Hörmander condition is a canonical pullback authorization criterion; failure of this sufficient condition is not a universal theorem of nonexistence for every generalized prescription.
 - A smoothing or analytic regulator introduced only inside ITER153 is a diagnostic unless the frozen parent theory/source uniquely selects it.
 - Scaling-degree extension freedom is local renormalization freedom and must not be fixed by desired cancellation.
-- A raw scaleless dimensional integral may be recorded as zero only at the raw factorized level; it is not a renormalized contact-pole zero unless the frozen R-operation proves that implication.
+- A polynomial momentum integral obtained only after first setting the endpoint phase to one is not an authorized scaleless-zero argument for these contacts; that operation assumes the disputed pullback.
 - A missing source-qualified line distribution/R-operation is `BLOCKED_SCOPED`, not a derived renormalized zero.
 - No ITER126 prototype residue is transferable.
 - `B1_total` remains downstream and unauthorized.
