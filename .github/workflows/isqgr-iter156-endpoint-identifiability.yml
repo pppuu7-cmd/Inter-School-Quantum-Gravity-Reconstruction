@@ -1,0 +1,31 @@
+name: ISQGR ITER156 endpoint coefficient identifiability
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter156_endpoint_coefficient_identifiability.py'
+      - 'prereg/ITER156_FIXED_GEODESIC_FIRST_MG_ENDPOINT_COEFFICIENT_IDENTIFIABILITY_2026-09-17.md'
+      - '.github/workflows/isqgr-iter156-endpoint-identifiability.yml'
+  workflow_dispatch:
+jobs:
+  iter156:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: exact frozen identifiability audit
+        run: |
+          python analysis/iter156_endpoint_coefficient_identifiability.py
+          cp iter156_endpoint_coefficient_identifiability.json /tmp/result.json
+      - name: deterministic reproduction
+        run: |
+          rm iter156_endpoint_coefficient_identifiability.json
+          python analysis/iter156_endpoint_coefficient_identifiability.py >/tmp/repro.log
+          cmp /tmp/result.json iter156_endpoint_coefficient_identifiability.json
+          sha256sum iter156_endpoint_coefficient_identifiability.json | tee iter156_sha256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter156-endpoint-coefficient-identifiability
+          path: |
+            iter156_endpoint_coefficient_identifiability.json
+            iter156_sha256.txt
