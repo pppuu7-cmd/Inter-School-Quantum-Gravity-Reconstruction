@@ -1,0 +1,46 @@
+name: ITER152 renormalization authority completeness
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/iter152_renormalization_authority_completeness_ledger.py'
+      - 'prereg/ITER152_FIXED_GEODESIC_RENORMALIZATION_AUTHORITY_COMPLETENESS_LEDGER_2026-09-16.md'
+      - '.github/workflows/iter152-renormalization-authority-completeness.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONHASHSEED: '0'
+
+jobs:
+  iter152:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run deterministic authority ledger first pass
+        run: |
+          python analysis/iter152_renormalization_authority_completeness_ledger.py
+          cp iter152_renormalization_authority_completeness_ledger.json /tmp/iter152-first.json
+
+      - name: Run deterministic authority ledger second pass
+        run: |
+          rm -f iter152_renormalization_authority_completeness_ledger.json
+          python analysis/iter152_renormalization_authority_completeness_ledger.py
+          cmp /tmp/iter152-first.json iter152_renormalization_authority_completeness_ledger.json
+          sha256sum iter152_renormalization_authority_completeness_ledger.json | tee iter152_sha256.txt
+
+      - name: Upload ITER152 authority ledger
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter152-renormalization-authority-completeness
+          path: |
+            iter152_renormalization_authority_completeness_ledger.json
+            iter152_sha256.txt
+          if-no-files-found: error
