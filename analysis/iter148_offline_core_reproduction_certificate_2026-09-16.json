@@ -1,0 +1,86 @@
+{
+  "gate": "ITER148_OFFLINE_CORE_REPRODUCTION_CERTIFICATE",
+  "date": "2026-09-16",
+  "source_v3_head": "1b85eec35af8f157e2982040013a70836a49334f",
+  "source_v3_run": 35044099632,
+  "status": "EXACT_CORE_PASS_B_SPECIFIC_THREE_PANEL_SOURCE_AUTHORITY_OPEN",
+  "accelerator_validation": {
+    "individual_sympy_vs_fraction_controls": 4,
+    "individual_failures": 0,
+    "observed_individual_speedup_range": "21.5x-25.0x",
+    "full_tau_1over8_chunk0_design_values_equal": "15/15",
+    "full_tau_1over8_chunk0_training_heldouts_equal": "3/3",
+    "sympy_chunk_wall_seconds": 28.13,
+    "fraction_chunk_wall_seconds": 4.18
+  },
+  "production": {
+    "tau_chunk_outputs": 27,
+    "tau_chunk_failures": 0,
+    "basis_size": 45,
+    "design_rank": 45,
+    "nonzero_invariant_coefficients": 42,
+    "max_tau_polynomial_degree": 8
+  },
+  "core_checks": {
+    "A_basis_size_45_and_design_rank_45": true,
+    "C_each_training_tau_exact_invariant_heldouts": true,
+    "D_tau_polynomial_degree_le8": true,
+    "E_no_refit_tau_1over3_2over5_heldouts": true,
+    "F_routing_permutation_parity_and_source_weight": true,
+    "G_target_blind_no_denominator_integration": true,
+    "H_ITER145_triangle_identity": true,
+    "I_canonical_bubble_A_map": true,
+    "J_canonical_bubble_B_map": true,
+    "K_canonical_bubble_C_map": true
+  },
+  "no_refit_tau_heldouts": [
+    {"tau":"1/3","panel":0,"direct":"6676277/1458","invariant":"6676277/1458","equal":true},
+    {"tau":"1/3","panel":1,"direct":"10511216/2187","invariant":"10511216/2187","equal":true},
+    {"tau":"1/3","panel":2,"direct":"-1394939/243","invariant":"-1394939/243","equal":true},
+    {"tau":"2/5","panel":0,"direct":"2627217609/1562500","invariant":"2627217609/1562500","equal":true},
+    {"tau":"2/5","panel":1,"direct":"369863706/390625","invariant":"369863706/390625","equal":true},
+    {"tau":"2/5","panel":2,"direct":"-4972126131/781250","invariant":"-4972126131/781250","equal":true}
+  ],
+  "external_source_authority": {
+    "iter147_artifact_sha256": "e5c5b016340c8bdcb7d06dd99bb6a364296fc18451760dcb38c95dbe5c251000",
+    "pinned_source_blob": "98297aac3b640a93ac80c2cc72a8275280819954",
+    "all_44_slice_polynomial_checks": true,
+    "withheld_8_direct_source_checks": true,
+    "specific_frozen_ITER148_B_three_panels_executed": false
+  },
+  "predicate_L": {
+    "manual_audit_commit": "1bfea2d5f9ac8baf248a173390c7b9b656c87f21",
+    "classification": "MANUAL_PREDICATE_L_PASS_SCOPED"
+  },
+  "chunk_scientific_payload_sha256": [
+    {"tau_index":0,"chunk_index":0,"sha256":"6b7d54e54cf83e64604335297cc06b1ecf2ee1ef1e5b092c91c80d4f53a2caa0"},
+    {"tau_index":0,"chunk_index":1,"sha256":"3716d0f575f6ebd5cf5ca1bff37324f79514c6f463095eafe5f8165f69cfbad1"},
+    {"tau_index":0,"chunk_index":2,"sha256":"835f13b47700084a24f0626594e3ec7bf8d325eaae4a32684255be86bbe7b90f"},
+    {"tau_index":1,"chunk_index":0,"sha256":"62c12aa561fd33d58f15aad487c811370ba0e911bb9fa4dcf7ddec232f037ca5"},
+    {"tau_index":1,"chunk_index":1,"sha256":"0567e0071ac3ccede040e94da88a18ee5ab3151ace1ebbba46637e3acdb7b434"},
+    {"tau_index":1,"chunk_index":2,"sha256":"570df2828ec3f5f9f88c876202891f3bb00b3a7fe0c8b28f4297a8f1f330a703"},
+    {"tau_index":2,"chunk_index":0,"sha256":"553302591e6abe07c225cc2935e7bd17d6172a0d1f5d27da1bcd326ffadc00cb"},
+    {"tau_index":2,"chunk_index":1,"sha256":"0e0ec5283181a092b8fd22da0edc00ceb3cc3cb88b8dc785bfdc1457dbb3a7e0"},
+    {"tau_index":2,"chunk_index":2,"sha256":"190f2162e015f1d0614d53c6004e3593350d83d5e2ab1801859ac0faa838e0a5"},
+    {"tau_index":3,"chunk_index":0,"sha256":"93131c11af30c77081219f4800b335af204e05f28ac7745ef8bd62c58f756a1f"},
+    {"tau_index":3,"chunk_index":1,"sha256":"414264ed8d9e032dc8a4018821e47775f4ac24b8a718cb4ffbfd6a3f6d1018c2"},
+    {"tau_index":3,"chunk_index":2,"sha256":"642202542fe32af90acff60fa775913c44a8bbcd1a357090065a650f061105ed"},
+    {"tau_index":4,"chunk_index":0,"sha256":"990dd5a844a8c070bada2cc5268c6a64547bbdcf8896c208e209b2f83c29fe91"},
+    {"tau_index":4,"chunk_index":1,"sha256":"90d17b45473b27071e3262dd1ea8a3340a9897c77b9ad89510febc20d6b4c91a"},
+    {"tau_index":4,"chunk_index":2,"sha256":"78fd71a55805312c4c2d204ef9388a6f1d14c19a384c0715c9ef5096312cf43a"},
+    {"tau_index":5,"chunk_index":0,"sha256":"14f65aee298cafa58ffa951850d72bff45fc85febe8cafa4e850f3d9b7577f2b"},
+    {"tau_index":5,"chunk_index":1,"sha256":"3b4ac3547d9b357d7ac7389f9eb663b64d63ee1b293b2c505105cfdd9efde18c"},
+    {"tau_index":5,"chunk_index":2,"sha256":"15ab9c164fa3d09846dd4ec8b414adf4bd6d01b0318bf29ad4e0321d0a874330"},
+    {"tau_index":6,"chunk_index":0,"sha256":"8e23c3bbed14218cfe793a6bda358745b470542c815571e37292c2c8ec66a809"},
+    {"tau_index":6,"chunk_index":1,"sha256":"22cec225084b4fe3069dfd2f9cb667d10acd7e62ba42fc89cb28c73c2634177b"},
+    {"tau_index":6,"chunk_index":2,"sha256":"a2432ef41996c3317cdfbd077c99f6c5d7083cc185779683e07eecbab29df0fd"},
+    {"tau_index":7,"chunk_index":0,"sha256":"31548983809fbac86c51e9ec38b98bd7fc547f663ea1b720563d9d03661eca5a"},
+    {"tau_index":7,"chunk_index":1,"sha256":"4f9cf96b15eebf9fb91b152a8ccbc5cc9c3417468a58279e64176e0740047556"},
+    {"tau_index":7,"chunk_index":2,"sha256":"da0064374e39b265c3150c61977ea0eb01b275f61eef41f916146c1a6b872309"},
+    {"tau_index":8,"chunk_index":0,"sha256":"507b04c9987e51597f0fd83d5970d2728adb7e9d23813b10d893f92d540e262c"},
+    {"tau_index":8,"chunk_index":1,"sha256":"667878d37e2e92cb1ee308bbd5babce107694cf1d2ce4ad2c9a7d94d95719638"},
+    {"tau_index":8,"chunk_index":2,"sha256":"456d7ecec5efb70b81e63e6b229c1595d9b09e8e33270831c98b6e7c00b1963b"}
+  ],
+  "authority_note": "This certificate deliberately does not assign the frozen terminal ITER148 PASS because the three specific direct-source panels of predicate B were not executed in the offline environment. The official v3 run remains authoritative for that machine predicate. Predicate L may be combined with its immutable manual audit only after all other frozen predicates are supported.",
+  "claim_ceiling": "full D4 M3 invariant core + bubble maps auxiliary reproduction only; no terminal ITER148 PASS, no general-d/O(epsilon), master poles, subtraction, B1, EDT, bridge, new physics or candidate theory"
+}
