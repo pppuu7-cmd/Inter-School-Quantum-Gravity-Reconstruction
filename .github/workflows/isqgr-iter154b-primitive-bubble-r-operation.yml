@@ -1,0 +1,42 @@
+name: ISQGR ITER154B primitive bubble R-operation
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prereg/ITER154B_FIXED_GEODESIC_FIRST_MG_PRIMITIVE_BUBBLE_PROPER_SUBGRAPH_R_OPERATION_2026-09-17.md'
+      - 'analysis/iter154b_primitive_bubble_proper_subgraph_r_operation.py'
+      - 'analysis/iter154b_adversarial_critic.py'
+      - '.github/workflows/isqgr-iter154b-primitive-bubble-r-operation.yml'
+  workflow_dispatch:
+concurrency:
+  group: isqgr-iter154b-primitive-bubble-r-operation
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  iter154b:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: first pass
+        run: |
+          python analysis/iter154b_primitive_bubble_proper_subgraph_r_operation.py
+          python analysis/iter154b_adversarial_critic.py
+          cp iter154b_primitive_bubble_proper_subgraph_r_operation.json /tmp/result.json
+          cp iter154b_adversarial_critic.json /tmp/critic.json
+      - name: deterministic reproduction
+        run: |
+          rm -f iter154b_primitive_bubble_proper_subgraph_r_operation.json iter154b_adversarial_critic.json
+          python analysis/iter154b_primitive_bubble_proper_subgraph_r_operation.py
+          python analysis/iter154b_adversarial_critic.py
+          cmp /tmp/result.json iter154b_primitive_bubble_proper_subgraph_r_operation.json
+          cmp /tmp/critic.json iter154b_adversarial_critic.json
+          sha256sum iter154b_primitive_bubble_proper_subgraph_r_operation.json iter154b_adversarial_critic.json | tee iter154b_sha256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter154b-primitive-bubble-r-operation
+          path: |
+            iter154b_primitive_bubble_proper_subgraph_r_operation.json
+            iter154b_adversarial_critic.json
+            iter154b_sha256.txt
