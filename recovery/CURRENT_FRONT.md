@@ -4,25 +4,17 @@ Date: 2026-09-17.
 
 Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
+GitHub repository state, frozen preregistrations, source-faithful derivations, immutable Actions artifacts, independent Critic results and terminal result files are the authority.
+
 ## Corrected authoritative chain
 
-### ITER155 — auto-PASS superseded by independent audit
+### ITER155 — superseded auto-PASS
 
-Correct scientific status:
+Terminal scientific status:
 
 `BLOCKED_SCOPED_ITER155_TENSOR_RESOLVED_FIRST_MG_ENDPOINT_RESIDUE_TO_ITER118_BASIS_PROJECTION_NOT_OPERATIONALLY_DEFINED`.
 
-The green auto-PASS used broad lexical/projector evidence and did not operationally define the tensor-resolved first-M/G endpoint residue map to the immutable ITER118 basis
-
-`[R,S,DR,DS,BoxR,D2R,BoxS,D2S]`.
-
-No coefficient is thereby set to zero.
-
-### ITER156 — exact identifiability BLOCKED
-
-Run `35164455129`; job `105022290476`; artifact `10474390964`; ZIP SHA256 `0c71f1e6b966b3cad2769608c3888ff141aa66cf2cca15ab1a8da57b1b38ba93`.
-
-Classification:
+### ITER156 — endpoint system underdetermined
 
 `BLOCKED_SCOPED_ITER156_ENDPOINT_COEFFICIENTS_UNDERDETERMINED`.
 
@@ -30,94 +22,139 @@ Admissible endpoint equation rank `0`, nullity `8`. Missing equations are not ze
 
 ### ITER157 — pre-existing equation search exhausted
 
-Preregistration `88aabc760dc01ad73585276d3345bfdf8a90aedf`; run `35176051421`; artifact `10479215087`; ZIP SHA256 `1c5aea020ed6338309132944fd2f3030cedff33d5f6feeee42ee9cd5e19a54c5`.
-
-Seven lexical candidates were adjudicated in raw context; accepted `0/7`.
-
-Terminal:
-
 `BLOCKED_SCOPED_ITER157_NO_SOURCE_FAITHFUL_ENDPOINT_TENSOR_POLE_EQUATION_FOUND`.
 
-### ITER158 — automated scientific implementation INVALID
-
-Principal preregistration `e12634d544b345a4e309021cebbb251c9a549abd`; implementation `b93890fff1cf9e5ec03c12e479ba283c464bf9ed`; run `35183584814`; artifact `10481575859`.
-
-Independent audit commit `f00f3cdf4a298798f5082e3b7dac9191f313e3f3`.
-
-Adjudication:
+### ITER158 — automated implementation invalid
 
 `INVALID_ITER158`.
 
-The auto runner performed repository regex-presence checks plus manifest-existence checks rather than the frozen new-information derivation/acquisition chain.
+The runner checked repository/manifest presence instead of performing the frozen new-information derivation.
 
-### ITER159 — exact primary-source manifest BLOCKED
-
-Preregistration `d741d367345c5c620f8981fb8ed9fd0d87e8dc71`; source-acquisition run `35230270651`; artifact `10500703567`; ZIP SHA256 `0a6daac0e655b02c8898395ebb832e249b28938cbc863b486ab72547f6cc47dc`.
-
-Terminal:
+### ITER159 — source convention manifest incomplete
 
 `BLOCKED_SCOPED_ITER159_SOURCE_CONVENTION_MANIFEST_INCOMPLETE_METRIC_SIGNATURE`.
 
-Fröb arXiv:1706.01891v2 remains `REFERENCE_ONLY` for the curvature-composite first-M/G endpoint problem unless exact operator/topology equivalence is separately proved.
-
 ### ITER160 — raw G two-propagator endpoint support PASS
-
-Preregistration `43fb329bbc9079d0f2b9413b4644b2658da53829`.
-
-Classification:
 
 `PASS_SCOPED_ITER160_RAW_G_B2S2_ENDPOINT_SUPPORT_SPLIT_INDEPENDENTLY_CONFIRMED`.
 
-For `G_R1_chi2_Gamma2_dR1 : b^2*S^2`, the frozen total Beta residue `35` splits under the frozen local meromorphic prescription into `35/2` at each affine endpoint. With graph prefactor `-30/(pi^4 L^10)`, each raw TWO_PROPAGATOR endpoint support piece is
+For `G_R1_chi2_Gamma2_dR1 : b^2*S^2`, each raw TWO_PROPAGATOR affine endpoint support residue is
 
 `-525/(pi^4 L^10) * 1/epsilon`.
 
-GitHub Actions run `35247996587` later completed successfully. Artifact `10508931715`; ZIP SHA256 `95f99efaa328735ab1e99efebc99cf575301f074e8bba0c00dd2632e2779c2b1`. The pinned-SymPy CI outputs are byte-identical to the earlier exact local outputs:
+Actions run `35247996587`; artifact `10508931715`; ZIP SHA256 `95f99efaa328735ab1e99efebc99cf575301f074e8bba0c00dd2632e2779c2b1`.
 
-- producer JSON SHA256 `424d8cdd936de13bddf745754ed13edf5da04eeee90249a84be7c64595007535`;
-- Critic JSON SHA256 `fe6903f1d4bc2fdc5d85526fb7cb34b53ccc6b0b046e363aaa7380824cbeff2b`.
+This is raw scalar support, not an ITER118 coefficient or complete endpoint counterterm.
 
-These are raw support residues, not ITER118 coefficients or endpoint counterterms.
+### ITER161 — endpoint-selected open metric leg derived
 
-### ITER161 — endpoint-selected open tensor derived; complete pole tensor BLOCKED
-
-Preregistration `e004e8ff0d4977676b3e70c34a78c438965dc62a`.
-
-Initial structural producer `e7be19d781e1121646913264cbe7f2da007f0ae0` established a post-`g2_real` pretrace object but initially overestimated the loss of metric-leg information.
-
-The preliminary Critic `c1d5fbbfe7c2e7ea65908901bddbb1c33148d46b` was self-corrected before terminalization in commit `c19f407f48de41978c73c04df634a8deddf86785`: affine endpoint geometry fixes which graviton leg is shrinking and which must remain open.
-
-Endpoint-selected producer `3b47cbeaa5ec3ed8d3023b8774a8f8799aac02db` then derived exact source-faithful factorizations:
-
-- upper endpoint (`k` shrinking): `G1 = sum_ab A_ab V_upper_ab`, with a symmetric open q-side metric pair;
-- lower endpoint (`q` shrinking): `G1 = sum_mu,ab R_mu,ab W_lower_mu,ab`, with symmetric open k-side metric pairs and the derivative label `mu` retained.
-
-Exact `D=4,5,6` Fraction fixtures reconstruct `G1_value` identically in both factorizations. This derivation does not consume the known ITER160 `-525` pole normalization.
-
-Structural sub-result:
+Structural PASS:
 
 `PASS_STRUCTURAL_ITER161_ENDPOINT_SELECTED_OPEN_METRIC_LEG_FACTORIZATION`.
 
-Final Critic commit `168ed215e8cf9bb167d3cb6efaf633a58e1cb1c6`, verdict:
+Source-faithful exact factorizations:
 
-`PASS_CRITIC_ITER161_OPEN_LEG_DERIVED_POLE_EXTENSION_BLOCKER_SOUND`.
+- upper endpoint (`k` shrinking): `G1 = sum_ab A_ab V_upper_ab`;
+- lower endpoint (`q` shrinking): `G1 = sum_mu,ab R_mu,ab W_lower_mu,ab`.
 
-Workflow head `fc33a5b677ab608b2f46aaad019aceb5f03bf18b`; run `35250000806` **success**; artifact `10509541616`; ZIP SHA256 `7a925baee50236385ed85936d7ffa8174da67bb7bed0de7100e3a331081ab5a5`.
-
-Exact artifact payloads:
-
-- pretrace diagnostic JSON SHA256 `40e7a5ff9f04cd1f0a83dda33ce0c1a6d015497e2e688f83a43ba9ce4688d6a8`;
-- open-leg factorization JSON SHA256 `556889d417ee71b89d7478c8513afe72aae171cb02fdfe55d0edc2214e2fc101`.
-
-Terminal result commit `09e48b9dd61bdfdc6fc654c8af06eca1e9a528c7`.
+The lower object retains derivative label `mu`.
 
 Terminal classification:
 
 `BLOCKED_SCOPED_ITER161_G_ENDPOINT_TENSOR_LIFT_EXACT_MISSING_PRIMITIVE`.
 
-The blocker is now precise and narrower: the free symmetric metric leg exists, but the **complete endpoint pole tensor** does not. The missing primitive is a source-faithful distributional endpoint R-operation/extension acting on the source-derived open-leg **unseparated** G endpoint vertex before Q/K contact separation, preserving the selected free metric leg/orientation and assigning the cancelled-propagator contact contributions.
+Actions run `35250000806`; artifact `10509541616`; terminal result commit `09e48b9dd61bdfdc6fc654c8af06eca1e9a528c7`.
 
-This is required because ITER151 has three nonzero G upper-endpoint K-cancelled contacts and ITER153 leaves their line restriction/poles unauthorized; ITER124 requires endpoint/line renormalization before contact separation.
+The raw open tensor exists. ITER161 did not provide the complete distributionally renormalized pole tensor.
+
+### ITER162 — frozen 36-column covariant span SCIENTIFIC FAIL
+
+Preregistration:
+
+`ITER162_OPEN_G_ENDPOINT_DISTRIBUTIONAL_R_OPERATION_AND_POLE_TENSOR`.
+
+Initial structural enumeration run `35261892526`, artifact `10515090371`, classified only
+
+`STRUCTURAL_ENUMERATION_ONLY_NOT_SCIENTIFIC_PASS`.
+
+It prospectively froze:
+
+- upper candidate columns: `36`;
+- explicit-`K` columns: `10`.
+
+#### Scoped structural K-divisibility result
+
+Within the frozen 36-space, exact polynomial quotient algebra modulo `K=k^2` gave:
+
+`PASS_STRUCTURAL_ITER162_COMPLETE_FROZEN_SPAN_TENSOR_K_DIVISIBILITY_KERNEL`.
+
+Actions run `35266919815`, job `105356271332`, artifact `10517062876`, ZIP SHA256 `5bbd727348a117353062fb7b4d04e53277c831d96da5670b2d3f9953712af573`.
+
+Exact in both `D=4` and `D=5`:
+
+- quotient rank `26`;
+- K-divisible kernel dimension `10`;
+- kernel equals exactly the 10 explicit-`K` columns.
+
+This remains true **inside the frozen 36-space**, but that space is not source-complete.
+
+#### Source reconstruction falsifier
+
+After implementation-only repairs enforcing frozen `n^2=1` and adequate exact fixture rank, the selected coefficient system had exact rank `36` and stable `D=9,10` continuation, but every changed-`q,k` overdetermined source held-out in `D=4..10` failed.
+
+This was then reduced to a fit-free exact source counterexample.
+
+Take
+
+`n=e0`, `q0=k0=0`, hence `a=n.q=0`, `b=n.k=0`.
+
+For transverse open indices `i,j != 0`, all 36 frozen covariants vanish identically by the preregistered explicit tangent-count rule.
+
+The source-derived `V_upper_ij` is nonzero.
+
+Researcher direct witness, run `35267891590`, job `105359526262`:
+
+- `D=4`, `q=(0,1,2,0)`, `k=(0,2,-1,1)` gives exact values including `V_11=6`, `V_12=-3`, `V_13=3`, `V_22=3/2` while every frozen column is zero;
+- 18 exact nonzero witness components occur across three independent Researcher cases.
+
+Artifact `10517765160`, `iter162-fast-n2-witness`, ZIP SHA256 `ce81455b9833ac95b5c70b48b28c075611d11ca90431675cbfee7c897c789704`.
+
+Independent direct Critic, same run, job `105359526273`, uses changed `D=4,5,6` configurations and no Researcher JSON. It independently finds nonzero source transverse components in every case while all 36 frozen covariants vanish.
+
+Critic verdict:
+
+`PASS_CRITIC_ITER162_DIRECT_N2_FROZEN_SPAN_FALSIFIER_CONFIRMED`.
+
+Artifact `10517556166`, ZIP SHA256 `429a1685c5cc7235c786bf2abb70d0d0b415b1c2d39c3364b0ccf54d26692996`.
+
+Exact defect mechanism: the two microscopic tangent vectors `n_m n_n` may contract internally to `n^2=1`, leaving tangent-neutral momentum-degree-four symmetric rank-two structures. The frozen 36 generator carried tangent count only through `a=n.q`, `b=n.k`, or free `n_a`, and therefore omitted the internally saturated `n^2` sector.
+
+Terminal classification:
+
+**`SCIENTIFIC_FAIL_ITER162_FROZEN_TENSOR_COVARIANCE_OR_SUPPORT_IDENTITY_FALSE`**.
+
+Terminal result commit:
+
+`1ad62d919771e6f1984443d805c1442c2fda9563`.
+
+The failed identity is preserved. The 36-column basis is **not repaired inside ITER162**.
+
+## ITER162 downstream status
+
+Because the source tensor is outside the prospectively frozen span, ITER162 terminates before a source-complete support/Laurent calculation.
+
+Therefore:
+
+- covariant reconstruction in frozen 36-space: `SCIENTIFICALLY_FALSIFIED_AS_INCOMPLETE`;
+- held-out reconstruction: `FAIL_EXACT_SOURCE_HELDOUTS`;
+- tensor K-divisibility: `PASS_STRUCTURAL_WITHIN_FROZEN_36_ONLY_NOT_SOURCE_COMPLETE`;
+- distributional Laurent operation: `NOT_REACHED_AFTER_TERMINAL_SCIENTIFIC_FAIL`;
+- local ambiguity dimension: `UNDEFINED_NOT_COMPUTED`;
+- pole tensor dimension: `UNDEFINED_NOT_COMPUTED`;
+- quotient rank: `UNDEFINED_NOT_COMPUTED`;
+- ITER118 matching: `UNAUTHORIZED`.
+
+No missing pole/contact is interpreted as zero.
 
 ## Slot status
 
@@ -127,7 +164,7 @@ Slot 5: `CHARACTERIZED_NUMERICALLY_OPEN`.
 
 Slot 6: `CLOSED_SCOPED_FIRST_MG_CONNECTED_CROSS`.
 
-Slot 7: **OPEN / PARTIALLY ADVANCED** — raw open metric-leg tensor factorization now derived, but complete distributionally renormalized endpoint pole tensor and ITER118 coefficient equations remain blocked.
+Slot 7: **OPEN / STRUCTURALLY ADVANCED** — source-faithful endpoint-selected open tensor exists, but the first prospectively frozen covariant reconstruction basis was falsified before Laurent/quotient completion.
 
 Slot 8: `OPEN_LINE_DEFECT_MIXING`.
 
@@ -139,23 +176,32 @@ No `B1_total`.
 
 ## Current scientific frontier
 
-The useful information chain is now:
+The useful chain is now:
 
 1. ITER140: exact arbitrary-integer-D indexed first-M/G machinery.
-2. ITER150: nonzero raw G `b^2*S^2` simple pole.
-3. ITER160: exact affine endpoint support split of that TWO_PROPAGATOR pole.
-4. ITER161: exact endpoint-selected open symmetric metric-leg factorization before final scalar contraction.
-5. Remaining bottleneck: define the **distributionally renormalized pole tensor on that open leg before contact separation**.
+2. ITER160: exact raw affine TWO_PROPAGATOR endpoint support.
+3. ITER161: exact endpoint-selected source-derived open metric leg.
+4. ITER162: direct source counterexample proves the first 36-column covariant ansatz incomplete.
 
-The old statement “tensor information is simply missing” is no longer correct.
+The current earliest missing primitive is therefore **not yet the Laurent operation**. It is:
+
+> a prospectively complete degree-four symmetric covariant basis for `V_upper_ab` that allows all contractions of the two tangent vectors, including internally saturated `n^2` structures, before source coefficient reconstruction or support classification.
+
+A diagnostic-only omitted sector contains 15 `n^2`-saturated tangent-neutral candidate columns. That diagnostic is not an ITER162 repair and must be frozen prospectively in a new gate before its source coefficients are interpreted.
 
 ## Next admissible gate
 
-`ITER162_OPEN_G_ENDPOINT_DISTRIBUTIONAL_R_OPERATION_AND_POLE_TENSOR`.
+A new prospective post-ITER162 gate is now authorized.
 
-It must start from the ITER161 open-leg tensors, not from the scalar 28-invariant table. It must test whether a prospectively frozen local/covariant extension prescription determines the endpoint `1/epsilon` tensor residue uniquely or leaves explicit local ambiguity parameters. If an ambiguity remains, it must be exhibited as an exact tensor/operator span rather than hidden in a generic BLOCKED label.
+It must:
 
-No ITER118 coefficient solve or rank claim is allowed until a complete pole-tensor manifest exists.
+1. derive/enumerate the complete two-tangent covariant closure including `n^2` saturation before outcome;
+2. prove exact basis rank/dependencies under `n^2=1`;
+3. independently reconstruct `V_upper_ab` with changed fixtures and held-outs;
+4. recompute full tensor-level K-divisibility on the source-containing complete span;
+5. only after those PASS, return to the unseparated distributional Laurent/R-operation, full `A_local`, and quotient.
+
+No ITER118 coefficient/rank solve is allowed before a complete source-authoritative pole-tensor/quotient manifest exists.
 
 ## Persistent locks
 
@@ -168,5 +214,7 @@ No ITER118 coefficient solve or rank claim is allowed until a complete pole-tens
 `NEW_PHYSICS_FOUND = false`.
 
 `BRIDGE_DERIVED = false`.
+
+`ITER118_MATCHING_AUTHORIZED = false`.
 
 Candidate action/Hamiltonian/field equations remain unauthorized. Candidate theory remains **UNFORMED / 0%**.
