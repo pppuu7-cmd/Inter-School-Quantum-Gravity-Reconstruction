@@ -104,7 +104,7 @@ def critic_design(rows):
     rng=random.Random(162991731)
     fixtures=[]
     n=axis_tangent(4,1)
-    while len(fixtures)<8:
+    while len(fixtures)<12:
         q=tuple(F(rng.randint(-4,4)) for _ in range(4))
         k=tuple(F(rng.randint(-4,4)) for _ in range(4))
         if not any(q) or not any(k) or q==k or tuple(-x for x in q)==k:
