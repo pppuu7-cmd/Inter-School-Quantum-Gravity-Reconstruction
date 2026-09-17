@@ -3,10 +3,12 @@ on:
   push:
     paths:
       - 'analysis/iter162_upper_covariant_reconstruction.py'
+      - 'analysis/iter162_upper_covariant_critic.py'
+      - 'analysis/iter162_tensor_K_divisibility_span.py'
       - '.github/workflows/isqgr-iter162-upper-covariant-reconstruction.yml'
   workflow_dispatch:
 jobs:
-  exact-reconstruction:
+  exact-reconstruction-and-critic:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,8 +19,28 @@ jobs:
         run: pip install 'sympy==1.14.0'
       - name: Reconstruct source-derived upper open tensor
         run: python analysis/iter162_upper_covariant_reconstruction.py
+      - name: Independent Critic reconstruction
+        run: python analysis/iter162_upper_covariant_critic.py
       - uses: actions/upload-artifact@v4
         with:
-          name: iter162-upper-covariant-reconstruction
-          path: iter162_upper_covariant_reconstruction.json
+          name: iter162-upper-covariant-reconstruction-and-critic
+          path: |
+            iter162_upper_covariant_reconstruction.json
+            iter162_upper_covariant_critic.json
+          if-no-files-found: error
+  exact-k-divisibility-kernel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned symbolic dependency
+        run: pip install 'sympy==1.14.0'
+      - name: Compute full frozen-span K-divisibility kernel
+        run: python analysis/iter162_tensor_K_divisibility_span.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter162-tensor-k-divisibility
+          path: iter162_tensor_K_divisibility_span.json
           if-no-files-found: error
