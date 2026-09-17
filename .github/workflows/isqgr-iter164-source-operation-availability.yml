@@ -1,0 +1,44 @@
+name: ISQGR ITER164 source-operation availability
+on:
+  push:
+    paths:
+      - 'analysis/ITER164_PREREG.md'
+      - 'analysis/iter164_source_operation_audit.py'
+      - 'analysis/iter164_closure_critic.py'
+      - '.github/workflows/isqgr-iter164-source-operation-availability.yml'
+  workflow_dispatch:
+
+jobs:
+  operation-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Frozen source-operation availability audit
+        run: python analysis/iter164_source_operation_audit.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter164-source-operation-audit
+          path: iter164_source_operation_audit.json
+          if-no-files-found: error
+
+  independent-closure-critic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Independent closure critic
+        run: python analysis/iter164_closure_critic.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter164-closure-critic
+          path: iter164_closure_critic.json
+          if-no-files-found: error
