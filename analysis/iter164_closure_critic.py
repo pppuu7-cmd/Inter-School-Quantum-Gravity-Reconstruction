@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Independent ITER164 closure critic.
 
-Independent route from the operation-audit: read terminal scientific authority
-and inspect the post-ITER163 code delta.  Do not consume the producer JSON and
-do not infer an executable R-operation from lexical mentions.
+Independent route from the operation-audit: read terminal/source authority and
+inspect the post-ITER163 scientific-code delta.  Do not consume producer JSON
+and do not confuse general extension theorems with an executable source-level
+open-G endpoint R-operation.
 """
 from __future__ import annotations
 
@@ -24,6 +25,14 @@ AUTHORITY_ASSERTIONS = [
         ],
     ),
     (
+        "sources/ITER153_DISTRIBUTION_PULLBACK_EXTENSION_AUTHORITY_2026-09-17.md",
+        [
+            "repository already supplies the raw seven-contact manifest and a general local-extension formalism",
+            "What is not supplied is a source-qualified **graph-level R-operation/renormalization map",
+            "A missing source-qualified line distribution/R-operation is `BLOCKED_SCOPED`",
+        ],
+    ),
+    (
         "analysis/ITER161_RESULT_2026-09-17.md",
         [
             "BLOCKED_SCOPED_ITER161_G_ENDPOINT_TENSOR_LIFT_EXACT_MISSING_PRIMITIVE",
@@ -37,6 +46,14 @@ AUTHORITY_ASSERTIONS = [
             "PASS_SCOPED_ITER163_SOURCE_COMPLETE_COVARIANT_CLOSURE_AND_K_DIVISIBILITY",
             "not** a complete endpoint distributional R-operation",
             "ITER164_OPEN_G_ENDPOINT_LAURENT_DISTRIBUTIONAL_R_OPERATION",
+        ],
+    ),
+    (
+        "sources/ITER162_DISTRIBUTIONAL_EXTENSION_AUTHORITY_CANDIDATE_2026-09-17.md",
+        [
+            "AUTHORITY_CANDIDATE_ONLY — NOT YET APPLIED TO THE OPEN-G ENDPOINT TENSOR",
+            "does **not** by itself establish that the current source-derived unseparated open-G endpoint tensor satisfies all hypotheses",
+            "NAVIGATOR / MATHEMATICAL_EXTENSION_THEOREM_CANDIDATE",
         ],
     ),
 ]
@@ -79,11 +96,13 @@ def main() -> None:
     ]
 
     # Independent logical closure test:
-    # 1. ITER153 says the endpoint contact pole is null/unknown without extra local datum.
-    # 2. ITER161 names the missing unseparated open-leg endpoint R-operation.
-    # 3. ITER163 explicitly remains non-distributional and names ITER164 as next gate.
-    # 4. Since validated ITER163, no separate scientific Python implementation of such
-    #    an operation has been added; only this prereg/audit/critic execution machinery changed.
+    # 1. General scaling-degree extension theory exists, but ITER153 explicitly says
+    #    it does not supply the graph-level unseparated open-G map.
+    # 2. ITER161 names that map as the remaining primitive.
+    # 3. ITER163 closes source tensor structure only and names ITER164 next.
+    # 4. The stored DFKR/EG authority remains candidate-only until the open-G
+    #    hypotheses, ambient-to-affine map and ambiguity basis are constructed.
+    # 5. No separate post-ITER163 scientific Python implementation has been added.
     if not authority_ok:
         classification = "INFRASTRUCTURE_FAIL_MISSING_AUTHORITY"
     elif unexpected_post_iter163_code:
@@ -91,7 +110,6 @@ def main() -> None:
     else:
         classification = "BLOCKED_MISSING_SOURCE_OPERATION_CRITIC"
 
-    complete_pole_tensor_authorized = classification == "PASS_SOURCE_OPERATION_AVAILABLE_CRITIC"
     out = {
         "gate": "ITER164_INDEPENDENT_CLOSURE_CRITIC",
         "classification": classification,
@@ -100,12 +118,14 @@ def main() -> None:
         "iter163_recovery_parent": ITER163_RECOVERY_PARENT,
         "changed_files_since_validated_ITER163": changed,
         "unexpected_post_ITER163_python_candidates": unexpected_post_iter163_code,
+        "general_extension_theory_present": True,
+        "general_extension_theory_is_source_operation": False,
         "explicit_complete_operation_found": False,
-        "complete_pole_tensor_authorized": complete_pole_tensor_authorized,
+        "complete_pole_tensor_authorized": False,
         "critic_conclusion": (
-            "The authoritative chain still lacks the source-faithful unseparated open-G endpoint "
-            "distributional R-operation required to assign cancelled-propagator contacts. A Laurent/pole "
-            "producer would add an unstated prescription at this frontier."
+            "The repository contains general distribution-extension authority but still lacks the source-faithful "
+            "unseparated open-G endpoint R-operation required to preserve orientation/free metric leg and assign "
+            "cancelled-propagator contacts. A Laurent/pole producer would add an unstated prescription at this frontier."
             if classification == "BLOCKED_MISSING_SOURCE_OPERATION_CRITIC" else
             "No terminal scientific conclusion: authority or post-ITER163 code requires adjudication."
         ),
