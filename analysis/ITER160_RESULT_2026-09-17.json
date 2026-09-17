@@ -1,0 +1,44 @@
+{
+  "beta_total_residue": "35",
+  "checks": {
+    "A_lower_distribution_prediction": true,
+    "B_upper_distribution_prediction": true,
+    "C_endpoint_sum_matches_beta_laurent_residue": true,
+    "D_lower_remainder_regular_after_degree3_jet": true,
+    "E_upper_remainder_regular_after_degree4_jet": true,
+    "F_graph_lower_prediction": true,
+    "G_graph_upper_prediction": true,
+    "H_graph_sum_matches_frozen_ITER150_total": true,
+    "I_no_contact_or_line_projector_input": true,
+    "J_raw_support_not_counterterm_interpretation": true
+  },
+  "claim_ceiling": "confirmed raw TWO_PROPAGATOR endpoint-support split only; not ITER118 coefficients, not endpoint counterterms, not contacts, not line mixing, not B1_total",
+  "claim_locks": {
+    "B1_total": "UNAUTHORIZED",
+    "BRIDGE_DERIVED": false,
+    "NEW_PHYSICS_FOUND": false,
+    "candidate_theory": "UNFORMED / 0%"
+  },
+  "classification": "PASS_SCOPED_ITER160_RAW_G_B2S2_ENDPOINT_SUPPORT_SPLIT_INDEPENDENTLY_CONFIRMED",
+  "derived_graph_prefactor": "-30/(pi**4*L**10)",
+  "distribution_identity": "Res x^(-m-1+2epsilon) = (-1)^m/(2 m!) delta^(m)(x)",
+  "frozen_graph_total_residue_1_over_epsilon": "-1050/(pi**4*L**10)",
+  "gate": "ITER160_FIRST_MG_G_B2S2_RAW_ENDPOINT_SUPPORT_CONFIRMATION",
+  "lower": {
+    "beta_residue": "35/2",
+    "graph_residue_1_over_epsilon": "-525/(pi**4*L**10)",
+    "m": 3,
+    "smooth_factor": "(1-x)^(-5)"
+  },
+  "method": "meromorphic distribution identity acting on smooth endpoint test factors",
+  "remainder_limits_after_jet_subtraction": {
+    "lower": "70",
+    "upper": "56"
+  },
+  "upper": {
+    "beta_residue": "35/2",
+    "graph_residue_1_over_epsilon": "-525/(pi**4*L**10)",
+    "m": 4,
+    "smooth_factor": "(1-u)^(-4)"
+  }
+}
