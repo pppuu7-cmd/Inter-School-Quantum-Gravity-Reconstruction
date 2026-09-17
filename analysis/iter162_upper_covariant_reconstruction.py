@@ -147,7 +147,7 @@ def deterministic_fixtures(D, seed, count, axis=0):
 
 
 def design_4d():
-    fixtures = deterministic_fixtures(4, 16220260917, 8, axis=0)
+    fixtures = deterministic_fixtures(4, 16220260917, 12, axis=0)
     rows = []
     keys = []
     for fi, (q, k, n) in enumerate(fixtures):
@@ -217,7 +217,6 @@ def main():
     all_dims = train + validate
     byD = {D: solve_coefficients(D, fixtures, keys, sel, Ainv) for D in all_dims}
 
-    # Overdetermined exact verification outside the coefficient solve.
     over_rows = []
     over_ok = True
     for D in all_dims:
@@ -270,6 +269,7 @@ def main():
             "first_run": "FAILED_INVALID_HELDOUT_DOMAIN_NONUNIT_N",
             "repair_1": "ENFORCE_FROZEN_ITER143_N2_EQ_1",
             "repair_2": "EXECUTION_ONLY_AXIS_UNIT_TANGENT_RESEARCHER_FRAME_WITH_INDEPENDENT_ROTATED_CRITIC",
+            "repair_3": "FIXED_12_FIXTURE_POOL_AFTER_8_FIXTURE_POOL_RANK_34_IMPLEMENTATION_FAILURE",
         },
         "basis_column_count": len(COLS),
         "basis_exact_rank": int(A.rank()),
