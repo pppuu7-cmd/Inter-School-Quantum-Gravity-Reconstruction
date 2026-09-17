@@ -1,0 +1,24 @@
+name: ISQGR ITER157 endpoint tensor pole source audit
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr-iter157-endpoint-tensor-source-audit.yml'
+  workflow_dispatch:
+jobs:
+  source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen repository source audit
+        run: python code/iter157_endpoint_tensor_source_audit.py
+      - name: Show raw result
+        if: always()
+        run: cat compute_results/iter157_endpoint_tensor_source_audit.json
+      - name: Upload raw audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter157-endpoint-tensor-source-audit
+          path: compute_results/iter157_endpoint_tensor_source_audit.json
+          if-no-files-found: error
