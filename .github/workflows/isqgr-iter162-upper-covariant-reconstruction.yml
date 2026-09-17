@@ -1,0 +1,24 @@
+name: ISQGR ITER162 upper covariant reconstruction
+on:
+  push:
+    paths:
+      - 'analysis/iter162_upper_covariant_reconstruction.py'
+      - '.github/workflows/isqgr-iter162-upper-covariant-reconstruction.yml'
+  workflow_dispatch:
+jobs:
+  exact-reconstruction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned symbolic dependency
+        run: pip install 'sympy==1.14.0'
+      - name: Reconstruct source-derived upper open tensor
+        run: python analysis/iter162_upper_covariant_reconstruction.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter162-upper-covariant-reconstruction
+          path: iter162_upper_covariant_reconstruction.json
+          if-no-files-found: error
