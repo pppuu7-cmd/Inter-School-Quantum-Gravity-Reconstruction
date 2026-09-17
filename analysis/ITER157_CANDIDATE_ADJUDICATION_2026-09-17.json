@@ -1,0 +1,27 @@
+{
+  "gate": "ITER157_FIXED_GEODESIC_ENDPOINT_TENSOR_POLE_EQUATION_SOURCE_DERIVATION",
+  "frozen_prereg_commit": "88aabc760dc01ad73585276d3345bfdf8a90aedf",
+  "implementation_commit": "671a00cc374869c6cfc0bc617e48f89b4328761a",
+  "workflow_head": "92dfd116c9e7c2d735c5a3585575c87a8a861ff6",
+  "run_id": 35176051421,
+  "job_id": 105057889040,
+  "artifact_id": 10479215087,
+  "artifact_zip_sha256": "1c5aea020ed6338309132944fd2f3030cedff33d5f6feeee42ee9cd5e19a54c5",
+  "artifact_json_sha256": "4295497bff0600dd3834530459bdba3c115897b1bfc6ae4c9bf3c75bc860f92d",
+  "frozen_basis": ["R", "S", "DR", "DS", "BoxR", "D2R", "BoxS", "D2S"],
+  "producer_candidate_count": 7,
+  "accepted_count": 0,
+  "rejected_count": 7,
+  "candidates": [
+    {"id":1,"path":"analysis/ITER153_RESULT_2026-09-17.md","line_range":"117-117","lexical_basis_match":["R"],"scientific_object":"successor-gate prescription for graph-level R-operation and symbolic endpoint/line coefficients","endpoint_stratum":null,"pole_order":null,"explicit_coefficient_present":false,"tensor_resolved":false,"normalization_defined":false,"source_faithful":true,"admissible":false,"reason":"Downstream methodological prose. It explicitly says endpoint/line coefficients must remain symbolic; it supplies no divergent tensor residue or endpoint coefficient equation."},
+    {"id":2,"path":"analysis/ITER156_RESULT_2026-09-17.md","line_range":"11-11","lexical_basis_match":["R","S","DR","DS","BoxR","D2R","BoxS","D2S"],"scientific_object":"terminal negative identifiability summary","endpoint_stratum":"aggregate frozen first-M/G endpoint scope only","pole_order":null,"explicit_coefficient_present":false,"tensor_resolved":false,"normalization_defined":false,"source_faithful":true,"admissible":false,"reason":"States that no pre-existing tensor-resolved endpoint pole equations exist and reports rank 0/nullity 8. A statement of absence is not an equation."},
+    {"id":3,"path":"analysis/iter153_adversarial_critic.py","line_range":"148-148","lexical_basis_match":["R"],"scientific_object":"critic conclusion string naming the graph-level R-operation as successor primitive","endpoint_stratum":null,"pole_order":null,"explicit_coefficient_present":false,"tensor_resolved":false,"normalization_defined":false,"source_faithful":true,"admissible":false,"reason":"Critic prose about a missing renormalization primitive; no endpoint tensor pole relation or basis coefficient is derived."},
+    {"id":4,"path":"analysis/iter156_endpoint_coefficient_identifiability.py","line_range":"15-15","lexical_basis_match":["R"],"scientific_object":"regular-expression pattern used to search for hypothetical R pole/residue coefficients","endpoint_stratum":null,"pole_order":null,"explicit_coefficient_present":false,"tensor_resolved":false,"normalization_defined":false,"source_faithful":false,"admissible":false,"reason":"Parser/search syntax, not physics evidence. The numeric token in the regex is a matching rule, not a coefficient."},
+    {"id":5,"path":"analysis/iter156_endpoint_coefficient_identifiability.py","line_range":"16-16","lexical_basis_match":["S"],"scientific_object":"regular-expression pattern used to search for hypothetical S pole/residue coefficients","endpoint_stratum":null,"pole_order":null,"explicit_coefficient_present":false,"tensor_resolved":false,"normalization_defined":false,"source_faithful":false,"admissible":false,"reason":"Parser/search syntax, not physics evidence. The numeric token in the regex is a matching rule, not a coefficient."},
+    {"id":6,"path":"prereg/ITER156_FIXED_GEODESIC_FIRST_MG_ENDPOINT_COEFFICIENT_IDENTIFIABILITY_2026-09-17.md","line_range":"14-14","lexical_basis_match":["R","S","DR","DS","BoxR","D2R","BoxS","D2S"],"scientific_object":"prospective preregistration rule for how equations would enter an exact rank test","endpoint_stratum":"frozen first-M/G scope only","pole_order":null,"explicit_coefficient_present":false,"tensor_resolved":false,"normalization_defined":false,"source_faithful":true,"admissible":false,"reason":"Preregistration/basis enumeration. It defines admissibility criteria but provides no residue or coefficient equation."},
+    {"id":7,"path":"results/ITER118_ADVERSARIAL_CRITIC_2026-09-15.md","line_range":"38-38","lexical_basis_match":["R","S"],"scientific_object":"counterterm-classification identity that line integrals of D R and D S reduce to endpoint boundary differences at frozen linear order","endpoint_stratum":"generic endpoint boundary support, not one of the three first-M/G pole strata","pole_order":null,"explicit_coefficient_present":false,"tensor_resolved":false,"normalization_defined":false,"source_faithful":true,"admissible":false,"reason":"Operator/basis reduction only. It contains no divergent loop residue, no 1/epsilon order, no graph-specific first-M/G endpoint tensor, and no source-to-ITER118 coefficient normalization."}
+  ],
+  "classification": "BLOCKED_SCOPED_ITER157_NO_SOURCE_FAITHFUL_ENDPOINT_TENSOR_POLE_EQUATION_FOUND",
+  "scientific_meaning": "Within the pre-existing repository material admitted by the frozen ITER157 preregistration, no explicit source-faithful tensor-resolved first-M/G endpoint pole equation survives adjudication.",
+  "forbidden_inferences": ["coefficient=0","endpoint divergence=0","theory failure","B1_total authorization"]
+}
