@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """ITER164 frozen source-operation availability audit.
 
-This is an availability gate, not a Laurent producer.  It fails closed unless
-an executable source-faithful endpoint/open-leg renormalization operation is
-actually present.  Lexical co-occurrence near an arbitrary function is never
-sufficient evidence.
+Availability gate only.  It inventories the complete tracked repository and
+fails closed unless an executable, source-faithful, orientation-preserving
+endpoint/open-leg renormalization operation is actually present.  Lexical
+co-occurrence is evidence for inventory only, never scientific PASS evidence.
 """
 from __future__ import annotations
 
@@ -23,7 +23,6 @@ AUTHORITY = {
     "ITER161": ROOT / "analysis/ITER161_RESULT_2026-09-17.md",
     "ITER163": ROOT / "analysis/ITER163_TERMINAL_RESULT.md",
 }
-
 EXPECTED = {
     "ITER153": [
         "BLOCKED_SCOPED_SLOT5_REQUIRES_NEW_DISTRIBUTIONAL_EXTENSION_OR_RENORMALIZATION_INPUT",
@@ -51,26 +50,37 @@ EXCLUDED_IMPLEMENTATION_FILES = {
     "analysis/iter164_source_operation_audit.py",
     "analysis/iter164_closure_critic.py",
 }
+DIAGNOSTIC_NAME_RE = re.compile(r"^(main|.*(?:audit|critic|check|test|fixture|reason|control|scan|search).*)$", re.I)
+OP_NAME_RE = re.compile(r"(renormal|r_operation|roperation|laurent|extend|extension|subtract|pole)", re.I)
+SOURCE_RE = re.compile(r"(ITER163|21[-_ ]term|source[-_ ]complete|open[_ -]?leg|upper_open_vertex|lower_open_vertex|V_upper|W_lower)", re.I)
+ENDPOINT_RE = re.compile(r"endpoint", re.I)
+CONTACT_RE = re.compile(r"(contact|cancelled[_ -]?propagator|counterterm|polynomial[-_ ]support)", re.I)
+ORIENT_RE = re.compile(r"(upper|lower|orientation|tau|1\s*-\s*tau)", re.I)
+DIST_RE = re.compile(r"(DiracDelta|delta\^|delta_|Hadamard|finite part|plus[_ -]?distribution|forest|BPHZ|scaling degree|Laurent|epsilon|series\s*\()", re.I)
+OUTPUT_RE = re.compile(r"(one_over_epsilon|1/epsilon|pole[_ -]?tensor|residue|extended[_ -]?distribution|local[_ -]?distribution|delta[_ -]?derivative)", re.I)
 
-NAME_RE = re.compile(r"(renormal|r_operation|roperation|laurent|distribution.*extend|extend.*distribution|pole_tensor)", re.I)
-OPEN_RE = re.compile(r"(open[_ -]?leg|upper_open_vertex|lower_open_vertex|V_upper|W_lower|endpoint)", re.I)
-CONTACT_RE = re.compile(r"(contact|cancelled[_ -]?propagator|counterterm)", re.I)
-ORIENT_RE = re.compile(r"(upper|lower|orientation)", re.I)
-DIST_RE = re.compile(r"(DiracDelta|Hadamard|finite part|plus[_ -]?distribution|forest|BPHZ|Laurent|epsilon|series\s*\()", re.I)
+INVENTORY_PATTERNS = {
+    "distributional_extension": r"distributional.*(extension|extend)|(extension|extend).*distributional",
+    "r_operation": r"R-operation|r_operation|R_sub|forest|BPHZ",
+    "laurent_pole": r"Laurent|one_over_epsilon|1/epsilon|pole tensor|pole_tensor",
+    "contact_counterterm": r"cancelled-propagator|cancelled_propagator|contact|endpoint counterterm|counterterm",
+    "finite_part_plus_distribution": r"Hadamard|finite part|plus-distribution|plus_distribution",
+}
 
 
-def git(*args: str) -> str:
-    return subprocess.run(["git", *args], check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.strip()
+def run(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(args, cwd=ROOT, check=check, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+
+def git(*args: str, check: bool = True) -> str:
+    return run("git", *args, check=check).stdout.strip()
 
 
 def phrase_evidence(path: Path, phrases: list[str]) -> list[dict]:
     lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
     out = []
     for phrase in phrases:
-        matches = []
-        for i, line in enumerate(lines, 1):
-            if phrase in line:
-                matches.append({"line": i, "text": line.strip()})
+        matches = [{"line": i, "text": line.strip()} for i, line in enumerate(lines, 1) if phrase in line]
         out.append({"phrase": phrase, "found": bool(matches), "matches": matches[:4]})
     return out
 
@@ -79,11 +89,27 @@ def changed_since_iter163() -> list[str]:
     return [x for x in git("diff", "--name-only", f"{ITER163_RECOVERY_PARENT}..HEAD").splitlines() if x]
 
 
+def tracked_python() -> list[str]:
+    return sorted(x for x in git("ls-files", "*.py").splitlines() if x and x not in EXCLUDED_IMPLEMENTATION_FILES)
+
+
+def lexical_inventory() -> dict:
+    out = {}
+    for key, pattern in INVENTORY_PATTERNS.items():
+        cp = run("git", "grep", "-n", "-I", "-E", pattern, "--", "analysis", "sources", check=False)
+        rows = []
+        for raw in cp.stdout.splitlines()[:80]:
+            parts = raw.split(":", 2)
+            if len(parts) == 3:
+                rel, lineno, text = parts
+                rows.append({"file": rel, "line": int(lineno), "text": text.strip()})
+        out[key] = {"match_count_capped": len(rows), "matches": rows}
+    return out
+
+
 def callable_candidates(paths: list[str]) -> list[dict]:
-    candidates: list[dict] = []
+    candidates = []
     for rel in paths:
-        if rel in EXCLUDED_IMPLEMENTATION_FILES or not rel.endswith(".py"):
-            continue
         p = ROOT / rel
         if not p.exists():
             continue
@@ -95,16 +121,21 @@ def callable_candidates(paths: list[str]) -> list[dict]:
         for node in ast.walk(tree):
             if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
-            if not NAME_RE.search(node.name):
-                continue
             segment = ast.get_source_segment(text, node) or ""
             arg_names = [a.arg for a in node.args.args]
+            joined = segment + "\n" + " ".join(arg_names)
+            # Record only functions with at least some operation/distribution semantics.
+            if not (OP_NAME_RE.search(node.name) or DIST_RE.search(joined) or OUTPUT_RE.search(joined)):
+                continue
             checks = {
-                "name_has_operation_semantics": bool(NAME_RE.search(node.name)),
-                "open_or_endpoint_object_explicit": bool(OPEN_RE.search(segment) or OPEN_RE.search(" ".join(arg_names))),
-                "contact_treatment_explicit": bool(CONTACT_RE.search(segment)),
-                "orientation_explicit": bool(ORIENT_RE.search(segment)),
-                "distributional_or_laurent_algebra_explicit": bool(DIST_RE.search(segment)),
+                "not_diagnostic_named": not bool(DIAGNOSTIC_NAME_RE.search(node.name)),
+                "operation_semantics": bool(OP_NAME_RE.search(node.name) or DIST_RE.search(joined)),
+                "source_complete_open_object_explicit": bool(SOURCE_RE.search(joined)),
+                "endpoint_explicit": bool(ENDPOINT_RE.search(joined)),
+                "contact_treatment_explicit": bool(CONTACT_RE.search(joined)),
+                "orientation_explicit": bool(ORIENT_RE.search(joined)),
+                "distributional_or_laurent_algebra_explicit": bool(DIST_RE.search(joined)),
+                "pole_or_extended_output_explicit": bool(OUTPUT_RE.search(joined)),
                 "returns_value": any(isinstance(x, ast.Return) for x in ast.walk(node)),
             }
             candidates.append({
@@ -134,12 +165,10 @@ def main() -> None:
         }
 
     changed = changed_since_iter163()
-    candidates = callable_candidates(changed)
+    pyfiles = tracked_python()
+    candidates = callable_candidates(pyfiles)
     sufficient = [x for x in candidates if x["sufficient"]]
 
-    # Frozen ITER163 authority says the complete endpoint R-operation is absent.
-    # A PASS therefore requires an actual post-ITER163 executable implementation,
-    # not merely prose or a diagnostic gate mentioning the missing operation.
     if not authority_ok:
         classification = "INFRASTRUCTURE_FAIL_AUTHORITY_CHAIN_UNREADABLE"
     elif sufficient:
@@ -154,11 +183,14 @@ def main() -> None:
         "iter163_recovery_parent": ITER163_RECOVERY_PARENT,
         "authority_chain": authority_rows,
         "changed_files_since_validated_ITER163": changed,
-        "post_ITER163_callable_operation_candidates": candidates,
+        "tracked_python_file_count": len(pyfiles),
+        "repository_lexical_inventory": lexical_inventory(),
+        "executable_operation_candidates": candidates,
         "sufficient_operations": sufficient,
         "adjudication_rule": (
-            "PASS requires a post-ITER163 callable that itself implements open/endpoint, contact, orientation, "
-            "and distributional/Laurent semantics. Lexical mentions and diagnostic/evaluator functions do not qualify."
+            "Inventory is repository-wide. PASS requires a non-diagnostic callable that itself exposes the validated "
+            "source-complete open object, endpoint/contact/orientation handling, distributional/Laurent algebra, and "
+            "an explicit pole/extended-distribution output. Lexical co-occurrence is never sufficient."
         ),
         "earliest_missing_primitive": (
             None if sufficient else
@@ -175,7 +207,8 @@ def main() -> None:
         },
     }
     Path("iter164_source_operation_audit.json").write_text(json.dumps(out, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(json.dumps(out, indent=2, sort_keys=True))
+    print(json.dumps({k: v for k, v in out.items() if k not in {"repository_lexical_inventory", "executable_operation_candidates"}}, indent=2, sort_keys=True))
+    print(json.dumps({"candidate_count": len(candidates), "sufficient_count": len(sufficient)}, sort_keys=True))
     raise SystemExit(2 if classification.startswith("INFRASTRUCTURE_FAIL") else 0)
 
 
