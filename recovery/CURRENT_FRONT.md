@@ -16,20 +16,33 @@ The initial ITER156 run `35160033958` was infrastructure-only failure (`sympy` u
 
 Classification `BLOCKED_SCOPED_ITER156_ENDPOINT_COEFFICIENTS_UNDERDETERMINED`. Frozen basis is `R,S,DR,DS,BoxR,D2R,BoxS,D2S`. There are zero pre-existing explicit tensor-resolved endpoint pole equations. Exact rank `0`, nullity `8`; all eight basis directions remain null directions. Missing equations are **not** zero coefficients.
 
+### ITER157 — pre-existing source-equation audit BLOCKED
+Scientific preregistration commit `88aabc760dc01ad73585276d3345bfdf8a90aedf`; implementation `671a00cc374869c6cfc0bc617e48f89b4328761a`; workflow/execution HEAD `92dfd116c9e7c2d735c5a3585575c87a8a861ff6`; run `35176051421`; job `105057889040`; artifact `10479215087`; ZIP SHA256 `1c5aea020ed6338309132944fd2f3030cedff33d5f6feeee42ee9cd5e19a54c5`; artifact JSON SHA256 `4295497bff0600dd3834530459bdba3c115897b1bfc6ae4c9bf3c75bc860f92d`.
+
+The producer emitted seven lexical candidates and explicitly set `automatic_scientific_pass=false`. Raw-context adjudication accepted `0/7`; independent Critic verdict is `PASS_CRITIC_ITER157_BLOCKED_CLASSIFICATION_SOUND`.
+
+Terminal classification:
+
+`BLOCKED_SCOPED_ITER157_NO_SOURCE_FAITHFUL_ENDPOINT_TENSOR_POLE_EQUATION_FOUND`.
+
+This says only that the admitted pre-existing repository material contains no explicit source-faithful tensor-resolved first-M/G endpoint pole equation or complete derivation chain. It is not a physical FAIL and does not set any coefficient or endpoint divergence to zero.
+
 ## Slot status
 
-Slots 1–4 closed. Slot 5 characterized numerically/open. Slot 6 scoped closed for the current three first-M/G connected-cross bubbles. **Slot 7 is BLOCKED by missing tensor-resolved endpoint pole equations.** Slots 8–10 remain open. No `B1_total`.
+Slots 1–4 closed. Slot 5 characterized numerically/open. Slot 6 scoped closed for the current three first-M/G connected-cross bubbles. **Slot 7 remains BLOCKED by missing tensor-resolved endpoint pole equations.** Slots 8–10 remain open. No `B1_total`.
 
 ## Current frontier
 
-RC006 remains source-blocked with no numerical retry authorized. RC009 remains scoped blocked. Lorentzian Delta4 negative record remains saturated. BH004/BH004B and genuine multi-vertex Lorentzian EPRL refinement remain without a source-faithful refinement object. No bridge credit follows from the endpoint work.
+ITER155/156/157 authority/search loops are saturated. No further generic repository grep for the same equation object is authorized. The next scientific step must create a new mathematical object: a raw tensor residue, explicit endpoint pole equation, exact convention map, or exact minimal missing microscopic primitive.
 
 ## Next admissible gate
 
-`ITER157_FIXED_GEODESIC_ENDPOINT_TENSOR_POLE_EQUATION_SOURCE_DERIVATION`.
+`ITER158_ENDPOINT_TENSOR_POLE_FIRST_PRINCIPLES_AND_PRIMARY_SOURCE_DERIVATION`.
 
-Freeze the ITER118 eight-direction endpoint basis and the three first-M/G endpoint strata. Acquire or derive explicit tensor-resolved endpoint pole equations with exact source/derivation provenance. Do not infer zero from absence, do not change the basis after inspection, do not form `B1_total`, and do not promote bridge/new-physics/candidate-theory claims. If no source-faithful equation can be obtained, retain BLOCKED rather than inventing a prescription.
+Run two independent acquisition lanes prospectively: (A) primary-source acquisition with an exact convention map and (B) first-principles reconstruction from repository-frozen microscopic propagators, vertices, graph strata and geodesic data. Preserve the general-`d` pole before `d=4`, classify support before projection, and persist raw tensor residues before any ITER118 coefficient/rank solve.
+
+If source-faithful equations are obtained, freeze the complete equation/projection manifest before any rank calculation. If derivation is blocked, name the **single exact earliest missing primitive** rather than saying only that more information is required.
 
 ## Persistent locks
 
-`ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED` remain forbidden. Candidate action/Hamiltonian/field equations remain unauthorized. Candidate theory remains **UNFORMED / 0%**.
+`B1_total = UNAUTHORIZED`. `ALL_KNOWN_SCHOOLS_FAIL`, `NEW_QG_THEORY_REQUIRED`, `NEW_PHYSICS_FOUND`, `BRIDGE_DERIVED` remain false/forbidden. Candidate action/Hamiltonian/field equations remain unauthorized. Candidate theory remains **UNFORMED / 0%**.
