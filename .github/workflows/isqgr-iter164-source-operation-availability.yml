@@ -8,6 +8,10 @@ on:
       - '.github/workflows/isqgr-iter164-source-operation-availability.yml'
   workflow_dispatch:
 
+concurrency:
+  group: isqgr-iter164-source-operation-availability-main
+  cancel-in-progress: true
+
 jobs:
   operation-audit:
     runs-on: ubuntu-latest
