@@ -1,0 +1,20 @@
+name: ISQGR ITER159 primary-source conventions
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr-iter159-primary-source-conventions.yml'
+  workflow_dispatch:
+jobs:
+  source-convention-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract frozen arXiv v2 convention evidence
+        run: python scripts/iter159_extract_frob_conventions.py
+      - name: Upload raw evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter159-frob-primary-source-conventions
+          path: artifacts/iter159_frob_convention_evidence.json
+          if-no-files-found: error
