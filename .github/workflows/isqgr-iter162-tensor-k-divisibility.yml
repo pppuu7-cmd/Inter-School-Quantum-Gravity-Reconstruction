@@ -22,3 +22,4 @@ jobs:
           name: iter162-tensor-k-divisibility
           path: iter162_tensor_K_divisibility_span.json
           if-no-files-found: error
+# execution-only trigger; scientific contract unchanged
