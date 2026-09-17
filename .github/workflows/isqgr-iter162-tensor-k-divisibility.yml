@@ -1,0 +1,24 @@
+name: ISQGR ITER162 exact tensor K divisibility
+on:
+  push:
+    paths:
+      - 'analysis/iter162_tensor_K_divisibility_span.py'
+      - '.github/workflows/isqgr-iter162-tensor-k-divisibility.yml'
+  workflow_dispatch:
+jobs:
+  exact-k-kernel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned symbolic dependency
+        run: pip install 'sympy==1.14.0'
+      - name: Compute full frozen-span K-divisibility kernel
+        run: python analysis/iter162_tensor_K_divisibility_span.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter162-tensor-k-divisibility
+          path: iter162_tensor_K_divisibility_span.json
+          if-no-files-found: error
