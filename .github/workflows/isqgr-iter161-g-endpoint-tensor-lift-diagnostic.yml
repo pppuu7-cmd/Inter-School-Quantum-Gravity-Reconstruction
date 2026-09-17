@@ -4,7 +4,10 @@ on:
     paths:
       - 'prereg/ITER161_G_B2S2_ENDPOINT_RAW_TENSOR_LIFT_TO_ITER118_OPERATOR_EQUATIONS_2026-09-17.md'
       - 'analysis/iter161_g_endpoint_tensor_lift_diagnostic.py'
+      - 'analysis/iter161_endpoint_open_leg_factorization.py'
       - 'analysis/ITER161_INDEPENDENT_CRITIC_2026-09-17.md'
+      - 'analysis/ITER161_CRITIC_SELF_CORRECTION_2026-09-17.md'
+      - 'analysis/ITER161_FINAL_ADVERSARIAL_CRITIC_2026-09-17.md'
       - '.github/workflows/isqgr-iter161-g-endpoint-tensor-lift-diagnostic.yml'
   workflow_dispatch:
 jobs:
@@ -19,17 +22,22 @@ jobs:
           python-version: '3.12'
       - name: Install exact symbolic dependency used by ITER140 import chain
         run: python -m pip install 'sympy==1.13.3'
-      - name: Run frozen ITER161 structural producer
+      - name: Run frozen ITER161 pretrace structural producer
         env:
           PYTHONPATH: analysis
         run: python analysis/iter161_g_endpoint_tensor_lift_diagnostic.py
-      - name: Record exact result hash
-        run: sha256sum iter161_g_endpoint_tensor_lift_diagnostic.json | tee iter161_sha256.txt
-      - name: Persist structural result
+      - name: Run endpoint-selected open metric-leg factorization
+        env:
+          PYTHONPATH: analysis
+        run: python analysis/iter161_endpoint_open_leg_factorization.py
+      - name: Record exact result hashes
+        run: sha256sum iter161_g_endpoint_tensor_lift_diagnostic.json iter161_endpoint_open_leg_factorization.json | tee iter161_sha256.txt
+      - name: Persist structural results
         uses: actions/upload-artifact@v4
         with:
           name: iter161-g-endpoint-tensor-lift-diagnostic
           path: |
             iter161_g_endpoint_tensor_lift_diagnostic.json
+            iter161_endpoint_open_leg_factorization.json
             iter161_sha256.txt
           if-no-files-found: error
