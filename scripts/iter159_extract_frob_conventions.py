@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import hashlib, json, re, tarfile, urllib.request, pathlib, io
-URL='https://export.arxiv.org/e-print/1706.01891v2'
+URL='https://arxiv.org/e-print/1706.01891v2'
 out=pathlib.Path('artifacts'); out.mkdir(exist_ok=True)
 req=urllib.request.Request(URL,headers={'User-Agent':'Mozilla/5.0','Accept':'*/*'})
 raw=urllib.request.urlopen(req,timeout=60).read()
