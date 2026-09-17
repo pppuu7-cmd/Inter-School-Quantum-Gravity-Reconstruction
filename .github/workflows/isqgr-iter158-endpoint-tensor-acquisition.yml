@@ -1,0 +1,21 @@
+name: ISQGR ITER158 endpoint tensor acquisition
+on:
+  push:
+    paths:
+      - 'scripts/iter158_endpoint_tensor_acquisition.py'
+      - 'analysis/ITER158_PREREGISTRATION_2026-09-17.md'
+      - '.github/workflows/isqgr-iter158-endpoint-tensor-acquisition.yml'
+  workflow_dispatch:
+jobs:
+  frozen-acquisition-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run frozen ITER158 acquisition audit
+        run: python scripts/iter158_endpoint_tensor_acquisition.py
+      - name: Persist raw result
+        uses: actions/upload-artifact@v4
+        with:
+          name: iter158-endpoint-tensor-acquisition
+          path: artifacts/iter158_endpoint_tensor_acquisition.json
+          if-no-files-found: error
