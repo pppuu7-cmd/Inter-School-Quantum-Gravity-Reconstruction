@@ -1,0 +1,29 @@
+{
+  "checks": {
+    "A_lower_incomplete_beta_residue_35_over_2": true,
+    "B_upper_incomplete_beta_residue_35_over_2": true,
+    "C_split_sum_matches_full_beta_residue": true,
+    "D_lower_shifted_residual_integral_finite": true,
+    "E_upper_shifted_residual_integral_finite": true,
+    "F_lower_shift_reaches_a_equal_1_at_epsilon0": true,
+    "G_upper_shift_reaches_a_equal_1_at_epsilon0": true,
+    "H_lower_graph_residue": true,
+    "I_upper_graph_residue": true,
+    "J_graph_sum_matches_ITER150_total": true,
+    "K_no_distribution_identity_reused": true,
+    "L_no_contact_or_ITER123_projector_input": true
+  },
+  "claim_ceiling": "Critic validates raw two-propagator endpoint support only; no counterterm/B1 inference",
+  "full_beta_residue": "35",
+  "gate": "ITER160_CRITIC",
+  "lower_beta_residue": "35/2",
+  "lower_final_recurrence_coefficient": "2*(16*epsilon**2 - 48*epsilon + 35)/(epsilon*(2*epsilon - 1))",
+  "lower_graph_residue_1_over_epsilon": "-525/(pi**4*L**10)",
+  "lower_shifted_residual_at_epsilon0": "15/4",
+  "method": "split at z=1/2 plus exact incomplete-Beta integration-by-parts recurrence",
+  "upper_beta_residue": "35/2",
+  "upper_final_recurrence_coefficient": "(4*epsilon - 7)*(4*epsilon - 5)*(4*epsilon - 3)/(epsilon*(epsilon - 2)*(2*epsilon - 1))",
+  "upper_graph_residue_1_over_epsilon": "-525/(pi**4*L**10)",
+  "upper_shifted_residual_at_epsilon0": "7/3",
+  "verdict": "PASS_CRITIC_ITER160_RAW_ENDPOINT_SUPPORT_SPLIT_SOUND"
+}
