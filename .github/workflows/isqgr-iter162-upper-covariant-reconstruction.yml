@@ -5,6 +5,7 @@ on:
       - 'analysis/iter162_upper_covariant_reconstruction.py'
       - 'analysis/iter162_upper_covariant_critic.py'
       - 'analysis/iter162_tensor_K_divisibility_span.py'
+      - 'analysis/iter162_upper_source_support_aggregate.py'
       - '.github/workflows/isqgr-iter162-upper-covariant-reconstruction.yml'
   workflow_dispatch:
 jobs:
@@ -43,4 +44,29 @@ jobs:
         with:
           name: iter162-tensor-k-divisibility
           path: iter162_tensor_K_divisibility_span.json
+          if-no-files-found: error
+  aggregate-source-support:
+    needs: [exact-reconstruction-and-critic, exact-k-divisibility-kernel]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned symbolic dependency
+        run: pip install 'sympy==1.14.0'
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter162-upper-covariant-reconstruction-and-critic
+          path: .
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter162-tensor-k-divisibility
+          path: .
+      - name: Aggregate complete source tensor support split
+        run: python analysis/iter162_upper_source_support_aggregate.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter162-upper-source-support-aggregate
+          path: iter162_upper_source_support_aggregate.json
           if-no-files-found: error
