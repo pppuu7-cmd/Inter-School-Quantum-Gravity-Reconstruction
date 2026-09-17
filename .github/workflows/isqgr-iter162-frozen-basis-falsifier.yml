@@ -1,0 +1,39 @@
+name: ISQGR ITER162 frozen 36-span falsifier
+on:
+  push:
+    paths:
+      - 'analysis/iter162_frozen_basis_counterexample.py'
+      - 'analysis/iter162_frozen_basis_counterexample_critic.py'
+      - '.github/workflows/isqgr-iter162-frozen-basis-falsifier.yml'
+  workflow_dispatch:
+jobs:
+  researcher-falsifier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'sympy==1.14.0'
+      - name: Exact frozen-span membership falsifier
+        run: python analysis/iter162_frozen_basis_counterexample.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter162-frozen-basis-counterexample
+          path: iter162_frozen_basis_counterexample.json
+          if-no-files-found: error
+  independent-critic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'sympy==1.14.0'
+      - name: Independent exact frozen-span Critic
+        run: python analysis/iter162_frozen_basis_counterexample_critic.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter162-frozen-basis-counterexample-critic
+          path: iter162_frozen_basis_counterexample_critic.json
+          if-no-files-found: error
