@@ -2,7 +2,8 @@
 import hashlib, json, re, tarfile, urllib.request, pathlib, io
 URL='https://export.arxiv.org/e-print/1706.01891v2'
 out=pathlib.Path('artifacts'); out.mkdir(exist_ok=True)
-raw=urllib.request.urlopen(URL,timeout=60).read()
+req=urllib.request.Request(URL,headers={'User-Agent':'Mozilla/5.0','Accept':'*/*'})
+raw=urllib.request.urlopen(req,timeout=60).read()
 sha=hashlib.sha256(raw).hexdigest()
 patterns={
 'metric_signature':r'signature|mostly plus|mostly minus|Minkowski metric',
