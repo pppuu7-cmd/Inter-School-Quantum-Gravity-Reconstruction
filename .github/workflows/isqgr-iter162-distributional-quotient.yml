@@ -1,0 +1,22 @@
+name: ISQGR ITER162 distributional quotient structural diagnostic
+on:
+  push:
+    paths:
+      - 'analysis/iter162_distributional_quotient_gate.py'
+      - '.github/workflows/isqgr-iter162-distributional-quotient.yml'
+  workflow_dispatch:
+jobs:
+  frozen-span:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enumerate frozen upper tensor span
+        run: python analysis/iter162_distributional_quotient_gate.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter162-structural-span
+          path: iter162_structural_span.json
+          if-no-files-found: error
