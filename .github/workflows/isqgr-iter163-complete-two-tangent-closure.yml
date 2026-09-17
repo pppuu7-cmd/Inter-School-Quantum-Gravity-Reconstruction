@@ -1,0 +1,60 @@
+name: ISQGR ITER163 complete two-tangent closure
+on:
+  push:
+    paths:
+      - 'analysis/iter163_complete_covariant_reconstruction.py'
+      - 'analysis/iter163_complete_covariant_critic.py'
+      - 'analysis/iter163_complete_tensor_K_divisibility.py'
+      - '.github/workflows/isqgr-iter163-complete-two-tangent-closure.yml'
+  workflow_dispatch:
+jobs:
+  researcher-reconstruction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'sympy==1.14.0'
+      - name: Exact 51-column source reconstruction
+        run: python analysis/iter163_complete_covariant_reconstruction.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter163-complete-covariant-reconstruction
+          path: iter163_complete_covariant_reconstruction.json
+          if-no-files-found: error
+  critic-reconstruction:
+    needs: researcher-reconstruction
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'sympy==1.14.0'
+      - uses: actions/download-artifact@v4
+        with:
+          name: iter163-complete-covariant-reconstruction
+          path: .
+      - name: Independent 51-column reconstruction Critic
+        run: python analysis/iter163_complete_covariant_critic.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter163-complete-covariant-critic
+          path: iter163_complete_covariant_critic.json
+          if-no-files-found: error
+  complete-k-divisibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'sympy==1.14.0'
+      - name: Exact K-divisibility on complete 51-span
+        run: python analysis/iter163_complete_tensor_K_divisibility.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter163-complete-k-divisibility
+          path: iter163_complete_tensor_K_divisibility.json
+          if-no-files-found: error
