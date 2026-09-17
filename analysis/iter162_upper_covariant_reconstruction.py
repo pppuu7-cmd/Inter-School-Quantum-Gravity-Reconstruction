@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """ITER162 source-derived upper open-tensor covariant reconstruction.
 
-Prospectively consumes only the frozen ITER161 source-faithful upper_open_vertex
-and the ITER162 36-column covariant span.  It does not use the ITER160 -525
-residue, does not invert the scalar 28-invariant map, and does not solve ITER118.
+Consumes only the frozen ITER161 source-faithful upper_open_vertex and the
+ITER162 36-column covariant span. It does not use the ITER160 -525 residue,
+does not invert the scalar 28-invariant map, and does not solve ITER118.
+
+ITER143 freezes n^2=1. All solve/held-out fixtures therefore use exact rational
+unit tangents. The first CI attempt used arbitrary-length n and is preserved as
+an implementation-domain failure; this repair changes only fixtures, not the
+frozen basis, coefficients target, pass criteria, or downstream locks.
 
 The exact D dependence is reconstructed from D=4..8 after multiplying by the
-single (D-2) denominator that is structurally present in upper_open_vertex
-through exactly one pmap on the k-side R source.  D=9,10 and independent full-D
-fixtures are held out.
+single (D-2) denominator structurally present through one pmap on the k-side R
+source. D=9,10 and changed full-D unit-tangent fixtures are held out.
 """
 from __future__ import annotations
 
@@ -36,6 +40,7 @@ SEEDS = [
     ("n_an_b", 0, 2),
 ]
 VARS = [("Q", 2, 0), ("K", 2, 0), ("S", 2, 0), ("a", 1, 1), ("b", 1, 1)]
+PYTHAGOREAN = [(3, 4, 5), (5, 12, 13), (8, 15, 17), (7, 24, 25)]
 
 
 def exponent_solutions(target_deg, target_tan):
@@ -74,6 +79,7 @@ def columns():
     assert len(out) == 36
     return out
 
+
 COLS = columns()
 
 
@@ -81,7 +87,25 @@ def dot(x, y):
     return sum((F(a) * F(b) for a, b in zip(x, y)), F(0))
 
 
+def unit_tangent(D, idx):
+    """Exact rational unit vector with changing orientation; D>=4 here."""
+    n = [F(0) for _ in range(D)]
+    if idx % 5 == 0:
+        n[idx % D] = F(1)
+    else:
+        aa, bb, cc = PYTHAGOREAN[idx % len(PYTHAGOREAN)]
+        p = idx % D
+        q = (p + 1 + (idx // D)) % D
+        if q == p:
+            q = (p + 1) % D
+        n[p] = F(aa, cc)
+        n[q] = F(bb, cc)
+    assert dot(n, n) == 1
+    return tuple(n)
+
+
 def scalar_value(es, q, k, n):
+    assert dot(n, n) == 1
     vals = (dot(q, q), dot(k, k), dot(q, k), dot(n, q), dot(n, k))
     z = F(1)
     for e, v in zip(es, vals):
@@ -119,11 +143,13 @@ def to_s(x):
 def deterministic_fixtures(D, seed, count):
     rng = random.Random(seed)
     out = []
+    attempts = 0
     while len(out) < count:
-        q = tuple(rng.randint(-3, 3) for _ in range(D))
-        k = tuple(rng.randint(-3, 3) for _ in range(D))
-        n = tuple(rng.randint(-2, 2) for _ in range(D))
-        if not any(q) or not any(k) or not any(n):
+        q = tuple(F(rng.randint(-3, 3)) for _ in range(D))
+        k = tuple(F(rng.randint(-3, 3)) for _ in range(D))
+        n = unit_tangent(D, seed + attempts + len(out))
+        attempts += 1
+        if not any(q) or not any(k):
             continue
         if q == k or tuple(-x for x in q) == k:
             continue
@@ -132,7 +158,7 @@ def deterministic_fixtures(D, seed, count):
 
 
 def design_4d():
-    fixtures = deterministic_fixtures(4, 16220260917, 14)
+    fixtures = deterministic_fixtures(4, 16220260917, 18)
     rows = []
     keys = []
     for fi, (q, k, n) in enumerate(fixtures):
@@ -143,7 +169,7 @@ def design_4d():
     M = s.Matrix(rows)
     piv = M.T.rref()[1]
     if len(piv) != 36:
-        raise RuntimeError(f"frozen 36-column span design rank {len(piv)} != 36")
+        raise RuntimeError(f"frozen 36-column span design rank {len(piv)} != 36 on n^2=1 domain")
     sel = list(piv[:36])
     A = s.Matrix([rows[i] for i in sel])
     if A.rank() != 36:
@@ -152,7 +178,7 @@ def design_4d():
 
 
 def pad4(v, D):
-    return tuple(v) + (0,) * (D - 4)
+    return tuple(v) + (F(0),) * (D - 4)
 
 
 def solve_coefficients(D, fixtures, keys, sel, Ainv):
@@ -160,6 +186,7 @@ def solve_coefficients(D, fixtures, keys, sel, Ainv):
     V = {}
     for fi in needed:
         q4, k4, n4 = fixtures[fi]
+        assert dot(n4, n4) == 1
         V[fi] = i161.upper_open_vertex(pad4(q4, D), pad4(k4, D), pad4(n4, D), D)
     y = []
     for i in sel:
@@ -206,7 +233,8 @@ def main():
     held_rows = []
     heldout_ok = True
     for D in all_dims:
-        q, k, n = deterministic_fixtures(D, 16290000000 + D, 1)[0]
+        q, k, n = deterministic_fixtures(D, 16290000000 + D, 2)[1]
+        assert dot(n, n) == 1
         direct = i161.upper_open_vertex(q, k, n, D)
         coeffD = [s.factor(s.sympify(x["coefficient_d"]).subs(d, D)) for x in formulas]
         dim_ok = True
@@ -219,27 +247,36 @@ def main():
             if not dim_ok:
                 break
         heldout_ok &= dim_ok
-        held_rows.append({"D": D, "all_symmetric_components_exact": bool(dim_ok)})
+        held_rows.append({
+            "D": D,
+            "n_squared": str(dot(n, n)),
+            "all_symmetric_components_exact": bool(dim_ok),
+        })
 
     nonzero = [x for x in formulas if s.sympify(x["coefficient_d"]) != 0]
-    local = [x for x in nonzero if x["explicit_K_factor"]]
-    nonlocal_cols = [x for x in nonzero if not x["explicit_K_factor"]]
+    explicit_k = [x for x in nonzero if x["explicit_K_factor"]]
+    no_explicit_k = [x for x in nonzero if not x["explicit_K_factor"]]
 
     checks = {
         "A_frozen_basis_column_count_36": len(COLS) == 36,
-        "B_exact_design_rank_36": A.rank() == 36,
+        "B_exact_design_rank_36_on_n2_eq_1_domain": A.rank() == 36,
         "C_single_pmap_denominator_interpolation_degree_le_4": interpolation_ok and max_scaled_degree <= 4,
         "D_heldout_D9_D10_coefficients_exact": interpolation_ok,
-        "E_independent_fullD_tensor_fixtures_exact": heldout_ok,
-        "F_ITER160_minus525_not_consumed": True,
-        "G_no_inverse_28_scalar_map": True,
-        "H_no_ITER118_solve": True,
-        "I_no_contacts_set_zero": True,
+        "E_changed_unit_tangent_fullD_tensor_fixtures_exact": heldout_ok,
+        "F_all_fixtures_obey_ITER143_n2_eq_1": all(dot(n, n) == 1 for _, _, n in fixtures),
+        "G_ITER160_minus525_not_consumed": True,
+        "H_no_inverse_28_scalar_map": True,
+        "I_no_ITER118_solve": True,
+        "J_no_contacts_set_zero": True,
     }
 
     out = {
         "gate": "ITER162_OPEN_G_ENDPOINT_DISTRIBUTIONAL_R_OPERATION_AND_POLE_TENSOR",
-        "classification": "PARTIAL_ITER162_SOURCE_DERIVED_UPPER_COVARIANT_TENSOR_RECONSTRUCTION_AND_K_SUPPORT_SPLIT",
+        "classification": "PARTIAL_ITER162_SOURCE_DERIVED_UPPER_COVARIANT_TENSOR_RECONSTRUCTION",
+        "implementation_history": {
+            "first_run": "FAILED_INVALID_HELDOUT_DOMAIN_NONUNIT_N",
+            "repair": "FIXTURES_ONLY_ENFORCE_FROZEN_ITER143_N2_EQ_1",
+        },
         "basis_column_count": len(COLS),
         "basis_exact_rank": int(A.rank()),
         "design_selected_row_count": len(sel),
@@ -248,20 +285,20 @@ def main():
         "single_structural_denominator": "d-2",
         "max_scaled_coefficient_polynomial_degree": max_scaled_degree,
         "nonzero_source_coefficients": len(nonzero),
-        "nonzero_explicit_K_divisible_coefficients": len(local),
-        "nonzero_genuine_kernel_coefficients": len(nonlocal_cols),
+        "nonzero_explicit_K_factor_coefficients": len(explicit_k),
+        "nonzero_without_explicit_K_factor": len(no_explicit_k),
         "support_statement": (
-            "Because the prospectively frozen 36 covariants have exact full rank, the representation is unique. "
-            "The explicit-K subspace therefore gives an exact source-derived contact-candidate split; the remaining "
-            "non-K columns are genuine V_upper/K kernel information before external-source contraction."
+            "Explicit-K columns are certified K-divisible contact candidates under the frozen representation. "
+            "Columns without an explicit K factor are not yet promoted to a complete genuine-kernel split: the "
+            "preregistered full tensor-numerator divisibility/source-support operation remains required."
         ),
         "coefficients": formulas,
         "heldout": held_rows,
         "checks": {k: bool(v) for k, v in checks.items()},
         "terminal_science": False,
         "remaining_blocker": (
-            "construct the complete distributional Laurent extension of the unseparated open tensor and the full "
-            "allowed local pole-ambiguity span, then compute the exact quotient P_open/A_local"
+            "perform exact full tensor-numerator K-divisibility/support decomposition, then construct the complete "
+            "distributional Laurent extension and full allowed local pole-ambiguity span and compute P_open/A_local"
         ),
         "locks": {
             "ITER160_minus525_consumed": False,
