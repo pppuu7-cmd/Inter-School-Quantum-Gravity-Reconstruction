@@ -1,0 +1,82 @@
+{
+  "checks": {
+    "A_upper_endpoint_geometry_selects_k_shrinking_q_leg_open": true,
+    "B_lower_endpoint_geometry_selects_q_shrinking_k_leg_open": true,
+    "C_upper_open_symmetric_metric_vertex_reconstructs_G1_exactly": true,
+    "D_lower_open_symmetric_metric_vertices_reconstruct_G1_exactly": true,
+    "E_all_open_metric_matrices_are_symmetric": true,
+    "F_factorization_does_not_use_ITER160_minus525_normalization": true,
+    "G_no_28_scalar_inverse_used": true,
+    "H_no_contact_pole_value_assumed": true
+  },
+  "claim_ceiling": "source-faithful raw open metric-leg factorization only; no complete endpoint pole tensor, no ITER118 coefficient equation, no rank solve, no B1_total",
+  "claim_locks": {
+    "B1_total": "UNAUTHORIZED",
+    "BRIDGE_DERIVED": false,
+    "NEW_PHYSICS_FOUND": false,
+    "candidate_theory": "UNFORMED / 0%"
+  },
+  "exact_missing_pole_primitive": "source-faithful distributional endpoint R-operation/extension acting on the source-derived open-leg unseparated G endpoint vertex before Q/K contact separation, preserving the free symmetric metric leg and endpoint orientation while assigning the complete local pole tensor including cancelled-propagator contacts",
+  "gate": "ITER161_G_B2S2_ENDPOINT_RAW_TENSOR_LIFT_TO_ITER118_OPERATOR_EQUATIONS",
+  "lower_endpoint": {
+    "complete_pole_tensor_exists": false,
+    "factorization": "G1 = sum_mu,ab R_mu,ab W_lower_mu,ab",
+    "open_nonshrinking_leg": "k-side symmetric metric pair R_mu,ab",
+    "raw_tensor_lift_exists": true,
+    "remaining_derivative_label_mu": true,
+    "shrinking_edge": "q"
+  },
+  "partial_classification": "PASS_STRUCTURAL_ITER161_ENDPOINT_SELECTED_OPEN_METRIC_LEG_FACTORIZATION",
+  "tests": [
+    {
+      "D": 4,
+      "G1_value": "165/2",
+      "all_open_leg_matrices_symmetric": true,
+      "k": [2, -1, 1, 0],
+      "lower_exact": true,
+      "lower_nonzero_components_total": 16,
+      "lower_sum_Rmu_colon_Wmu": "165/2",
+      "n": [1, 0, 0, 0],
+      "q": [1, 2, 0, 0],
+      "upper_A_colon_V": "165/2",
+      "upper_exact": true,
+      "upper_nonzero_components": 9
+    },
+    {
+      "D": 5,
+      "G1_value": "60",
+      "all_open_leg_matrices_symmetric": true,
+      "k": [2, 0, -1, 1, 0],
+      "lower_exact": true,
+      "lower_nonzero_components_total": 34,
+      "lower_sum_Rmu_colon_Wmu": "60",
+      "n": [1, 0, 0, 0, 0],
+      "q": [1, 1, 2, 0, 0],
+      "upper_A_colon_V": "60",
+      "upper_exact": true,
+      "upper_nonzero_components": 9
+    },
+    {
+      "D": 6,
+      "G1_value": "665/16",
+      "all_open_leg_matrices_symmetric": true,
+      "k": [1, 2, 0, -1, 0, 1],
+      "lower_exact": true,
+      "lower_nonzero_components_total": 61,
+      "lower_sum_Rmu_colon_Wmu": "665/16",
+      "n": [1, 0, 0, 0, 0, 0],
+      "q": [2, -1, 1, 0, 2, 0],
+      "upper_A_colon_V": "665/16",
+      "upper_exact": true,
+      "upper_nonzero_components": 16
+    }
+  ],
+  "upper_endpoint": {
+    "complete_pole_tensor_exists": false,
+    "factorization": "G1 = sum_ab A_ab V_upper_ab",
+    "open_nonshrinking_leg": "q-side symmetric metric pair A_ab",
+    "raw_tensor_lift_exists": true,
+    "shrinking_edge": "k"
+  },
+  "why_no_ITER118_equation_yet": "the unseparated open vertex still contains cancelled-propagator contact distributions; ITER153 leaves their endpoint extension/pole null and ITER124 requires endpoint/line renormalization before contact separation"
+}
