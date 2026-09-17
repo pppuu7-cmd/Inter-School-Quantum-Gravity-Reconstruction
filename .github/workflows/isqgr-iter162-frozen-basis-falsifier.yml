@@ -4,10 +4,42 @@ on:
     paths:
       - 'analysis/iter162_frozen_basis_counterexample.py'
       - 'analysis/iter162_frozen_basis_counterexample_critic.py'
+      - 'analysis/iter162_fast_n2_witness.py'
+      - 'analysis/iter162_fast_n2_witness_critic.py'
       - '.github/workflows/isqgr-iter162-frozen-basis-falsifier.yml'
   workflow_dispatch:
 jobs:
-  researcher-falsifier:
+  direct-witness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'sympy==1.14.0'
+      - name: Direct exact n2 witness
+        run: python analysis/iter162_fast_n2_witness.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter162-fast-n2-witness
+          path: iter162_fast_n2_witness.json
+          if-no-files-found: error
+  direct-witness-critic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'sympy==1.14.0'
+      - name: Independent direct n2 witness Critic
+        run: python analysis/iter162_fast_n2_witness_critic.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter162-fast-n2-witness-critic
+          path: iter162_fast_n2_witness_critic.json
+          if-no-files-found: error
+  researcher-rank-falsifier:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +54,7 @@ jobs:
           name: iter162-frozen-basis-counterexample
           path: iter162_frozen_basis_counterexample.json
           if-no-files-found: error
-  independent-critic:
+  independent-rank-critic:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
