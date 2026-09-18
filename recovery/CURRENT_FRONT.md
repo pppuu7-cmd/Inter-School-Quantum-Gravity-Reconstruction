@@ -4,25 +4,23 @@ Date: 2026-09-18.
 
 Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
-## ITER165 — terminal scoped BLOCKED
-Authoritative execution: commit `402caff346ac87540867b458f14c05bc264753b6`, run `35292960281`.
+## ITER166 — terminal scoped BLOCKED
+Authoritative execution: commit `d7e4d57117440f6fcb7dd27a3ed88a1771dfc54b`, run `35301366965`.
 
-- constructive job `105439556945` -> artifact `10527017897`, ZIP SHA256 `9b8462dcf2b5b80144969a653e63cc84c51e9fc49a48f953d1e31a241d415f25`
-- completeness falsifier `105439557144` -> artifact `10527257302`, ZIP SHA256 `e3ef4144ab2a39ce7b508a5f1c34ca2db3257150c43d214b9146bcd55b82f075`
-- contact/orientation critic `105439557151` -> artifact `10526798292`, ZIP SHA256 `e18fbf01e96bf8fec771545f6745bdc1922dc0f5a94c7f30283b5887aba5e472`
+- domain/scaling/pullback job `105464509277` -> artifact `10529253635`, ZIP SHA256 `7623482ae0a5a7755b30349fc96586401625ef9dd02a45557e5e0e12f4bacde9`
+- local-ambiguity job `105464509336` -> artifact `10530231762`, ZIP SHA256 `1e5e94239235ec5a9e9a65eb64ecf728fea92b456f19355bf49a36ce6d3a33c8`
+- completeness-falsifier job `105464509172` -> artifact `10530221818`, ZIP SHA256 `9fbac06d18d3e59da7591f8898c840d1f9bfe8615c35a0f440b9406df6892fb2`
 
-Classification: **`BLOCKED_SCOPED_ITER165_NONUNIQUE_OR_INCOMPLETE_HYPOTHESES`**. Green CI is not scientific PASS.
+Classification: **`BLOCKED_SCOPED_ITER166_DOMAIN_OR_PULLBACK_INCOMPLETE`**. Green CI is not scientific PASS.
 
-Five of ten frozen prerequisites are established: ambient/affine variables, `d=4-2epsilon`, free symmetric metric leg, separate endpoint orientations, retained K-divisible contacts. Missing and independently blocking: explicit test-function/domain space, transverse scaling degree per singular sector, justified ambient-to-affine pullback conditions, and complete local delta/normal-derivative ambiguity span. Laurent coefficient manifest therefore remains unavailable.
+Repository authority material exists for test-function/domain, scaling degree, pullback conditions and local ambiguity, but no single explicit source-qualified ITER163 sector manifest ties these objects to the actual singular sectors. Therefore singular orders/derivative ceilings are not established and local ambiguity enumeration is unauthorized. No Laurent pole tensor follows.
 
-No Laurent pole tensor, ITER118 solve, B1_total or bridge credit follows.
+## ITER167 — exact next admissible gate
+Derive a source-qualified singular-sector manifest directly from the frozen ITER163 source expression/denominator geometry. Every sector must carry source provenance, defining denominator/phase object, singular locus, transverse variables/codimension, upper/lower orientation, contact/cancelled-propagator status, and source singular-order data or exact inputs sufficient to derive it mechanically.
 
-## ITER166 — exact next admissible gate
-Preregistration: `analysis/ITER166_PREREGISTRATION_2026-09-18.md` (frozen before ITER166 results).
+An independent completeness critic must search the same source material for omitted denominator zeros, endpoint/intersection sectors or contact loci. No post-result sector deletion/merging is allowed. A missing source expression or unresolved singular locus is BLOCKED, not PASS.
 
-Three independent lanes are required: (A) explicit domain/test-function + sector scaling-degree/singular-order + ambient-to-affine construction; (B) complete endpoint-local tensor delta/normal-derivative ambiguity enumeration through the derivative ceiling; (C) independent completeness falsifier attempting an omitted tensor or uncovered singular sector. Free metric leg, orientations and contacts remain explicit. No coefficient fitting or post-result basis changes.
-
-Only `PASS_SCOPED_ITER166_DOMAIN_SCALING_PULLBACK_AND_AMBIGUITY_COMPLETE` authorizes a later explicit Laurent/R-operation gate. BLOCKED and exact scientific-fail outcomes remain admissible.
+Only a complete prospectively frozen ITER167 manifest may authorize renewed domain/scaling/pullback and local-ambiguity work. It does not itself authorize Laurent/R-operation, ITER118 matching, `B1_total`, bridge credit or candidate theory.
 
 ## Persistent locks
 `B1_total = UNAUTHORIZED`; `ALL_KNOWN_SCHOOLS_FAIL=false`; `NEW_QG_THEORY_REQUIRED=false`; `NEW_PHYSICS_FOUND=false`; `BRIDGE_DERIVED=false`; `ITER118_MATCHING_AUTHORIZED=false`. Candidate theory remains **UNFORMED / 0%**.
