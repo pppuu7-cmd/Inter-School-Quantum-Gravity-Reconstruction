@@ -1,0 +1,33 @@
+name: ITER173 upstream distributional source recovery
+on:
+  push:
+    paths:
+      - '.github/workflows/iter173-upstream-distributional-source-recovery.yml'
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [powers, measure, pullback]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen source recovery audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          lane='${{ matrix.lane }}'
+          echo "ITER173 lane=$lane"
+          case "$lane" in
+            powers) pat='denominator|power|order|transverse|normal coordinate|scaling degree' ;;
+            measure) pat='measure|jacobian|codimension|volume form|integration measure' ;;
+            pullback) pat='wavefront|pullback|product of distributions|delta derivative|normal derivative|local ambiguity' ;;
+          esac
+          grep -RniE "$pat" analysis src scripts 2>/dev/null \
+            | grep -vE 'ITER17[0-3]_|iter17[0-3]_|recovery|PREREGISTRATION|TERMINAL_RESULT' \
+            | tee "iter173-${lane}.log" || true
+          echo "SCIENTIFIC_CLASSIFICATION_REQUIRES_POSTRUN_SEMANTIC_ADJUDICATION"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter173-${{ matrix.lane }}
+          path: iter173-${{ matrix.lane }}.log
