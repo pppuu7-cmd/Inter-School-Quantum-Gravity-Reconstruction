@@ -1,0 +1,28 @@
+name: ITER168 semantic provenance audit
+on:
+  push:
+    paths:
+      - 'analysis/ITER168_PREREGISTRATION_2026-09-18.md'
+      - 'analysis/iter168_semantic_provenance_gate.py'
+      - '.github/workflows/iter168-semantic-provenance.yml'
+  workflow_dispatch:
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [extractor, leakage_critic, completeness_critic]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen ITER168 lane
+        run: python analysis/iter168_semantic_provenance_gate.py '${{ matrix.lane }}' | tee iter168-${{ matrix.lane }}.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter168-${{ matrix.lane }}-${{ github.run_number }}
+          path: |
+            iter168-${{ matrix.lane }}.log
+            iter168_${{ matrix.lane }}.json
