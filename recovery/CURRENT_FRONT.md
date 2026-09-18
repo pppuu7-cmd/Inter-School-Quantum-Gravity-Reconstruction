@@ -4,19 +4,19 @@ Date: 2026-09-18.
 
 Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
-## ITER167 — terminal SCIENTIFIC FAIL
-Authoritative execution: commit `89f6ba97c6bce85f177c0eee7eb29f3bec3cbeef`, run `35308751357`.
+## ITER168 — terminal BLOCKED
+Authoritative execution: commit `b68870800d5750f3fcf880e830a454fa0cea52fc`, run `35322037024`.
 
-Source-geometry job `105486204097` -> artifact `10532766913`, ZIP SHA256 `9d6293500ba0314d0c02518f31f34012a73d5fe1bb32dd3a9db2a4197a4c2185`; transverse-order job `105486204161`; completeness-falsifier `105486203994`.
+Jobs: extractor `105526478677`; leakage critic `105526478813`; completeness critic `105526478904`. Extractor artifact `10537741739`, ZIP SHA256 `b77e63d80721d22b0f22fd2dc94337451f548763bbdf9c05aed1894195b779c3`.
 
-Classification: **`SCIENTIFIC_FAIL_ITER167_PROVENANCE_LEAKAGE_FALSE_POSITIVE`**. All jobs were technically green, but the frozen gate required derivation directly from ITER163 source expression/denominator geometry. Raw logs show the producer admitted preregistration/result/navigator prose as source candidates and labeled `analysis/ITER164_TERMINAL_RESULT.md` a structured source-qualified manifest, although that note explicitly records zero sufficient executable source operations. The emitted scoped PASS is therefore rejected.
+Classification: **`BLOCKED_SCOPED_ITER168_MISSING_EXECUTABLE_SOURCE_GEOMETRY`**. CI was technically green, but the only ITER163 `geometry_hits` were rational-number `.denominator` conversions. These are not physical propagator/phase denominators, so the frozen scientific PASS condition was not met.
 
-ITER163 source-complete 21-term tensor bookkeeping and K-divisibility remain intact. ITER164-166 blockers remain intact. No Laurent pole tensor, ITER118 matching, `B1_total`, bridge credit or candidate theory follows.
+ITER168 did eliminate the ITER167 prose-leakage failure mode. ITER163 source-complete tensor bookkeeping/K-divisibility remains intact; ITER164-166 blockers remain intact. No Laurent pole tensor, ITER118 matching, `B1_total`, bridge credit or candidate theory follows.
 
-## ITER168 — exact next admissible gate
-Prospectively freeze an adversarial semantic-provenance manifest audit. Source whitelist: executable/source-expression objects that actually encode the ITER163 denominator or phase geometry. Explicitly exclude preregistration, terminal-result, recovery and navigator prose from positive evidence. Every claimed singular sector must cite exact file + symbol/line and a mechanically extracted denominator/phase expression, with transverse variables, codimension, orientation and contact status. An independent lane must search the same whitelist for omitted denominator zeros, intersections and contact loci. If the source expression is absent, classify `BLOCKED_MISSING_SOURCE_EXPRESSION`, not PASS.
+## ITER169 — exact next admissible gate
+Prospectively freeze an upstream-source trace gate. Trace `iter163_complete_covariant_reconstruction.py -> iter161_endpoint_open_leg_factorization.py -> iter140_first_mg_general_d_invariant_continuation.py` and then the source-derived affine Wick geometry / denominator-contact support chain. Positive evidence must mechanically connect the G-family open endpoint vertex to occurrence coordinates, Wick edges, affine separations, endpoint zeros, phase routing and Q/K denominator/contact status. Mere matching labels or prose are insufficient.
 
-Only a scoped PASS of this semantic provenance gate may re-authorize sector-by-sector domain/scaling/pullback and local-ambiguity construction. It still does not authorize Laurent/R-operation, ITER118 matching, `B1_total`, bridge credit or candidate theory.
+Run independent lanes for (A) import/call-chain provenance, (B) affine Wick/endpoint geometry reconstruction, and (C) adversarial consistency/completeness. A scoped PASS only authorizes rebuilding the source-qualified singular-sector manifest. It does not authorize Laurent/R-operation, ITER118 matching, `B1_total`, bridge credit or candidate theory.
 
 ## Persistent locks
 `B1_total = UNAUTHORIZED`; `ALL_KNOWN_SCHOOLS_FAIL=false`; `NEW_QG_THEORY_REQUIRED=false`; `NEW_PHYSICS_FOUND=false`; `BRIDGE_DERIVED=false`; `ITER118_MATCHING_AUTHORIZED=false`. Candidate theory remains **UNFORMED / 0%**.
