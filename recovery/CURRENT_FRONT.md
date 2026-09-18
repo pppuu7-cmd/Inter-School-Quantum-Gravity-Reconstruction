@@ -4,19 +4,19 @@ Date: 2026-09-18.
 
 Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
-## ITER169 — terminal SCIENTIFIC FAIL
-Authoritative execution: commit `b6cf6e9e1c81ce1d36bdc4adfae1dbbf4b2e3ab7`, run `35332355807`.
+## ITER170 — terminal scoped SCIENTIFIC PASS
+Authoritative execution: commit `670909926098b0c2954b9a543c13c9b25cd7223c`, run `35341999003`.
 
-Trace job `105559335881`, artifact `10541257141`, ZIP SHA256 `795e62df3dce808833b3a5f46d1490dbc8c99d95359115642fb1f0c01dab96c1`; geometry job `105559335718`, artifact `10541761549`, SHA256 `1908f85cf62c5c8c39cb06984dd15586487253514243298b610cf78ac459b4c4`; critic job `105559335960`, artifact `10541641399`, SHA256 `9d97c4b2c83ca9f68b5766b1d36b3de94038b53ea5f0b89944898e0ae6bfbe95`.
+Producer job `105589775982`, artifact `10544789062`, ZIP SHA256 `f3358fd402ea37d712826fe9379183eea48a2cadec35f1a511a5e7af91f5202a`; geometry job `105589776208`, artifact `10544854538`, SHA256 `6bd2627cb696b6d427b0f587ecd1c0574f7b2f4c172c64e70fe6b239f6740951`; critic job `105589776261`, artifact `10545193455`, SHA256 `98c458c94a6119ad960d1c1c85a29ab8bb6b44279266c5d953bcbae359f6fd35`.
 
-Classification: **`SCIENTIFIC_FAIL_ITER169_SOURCE_CHAIN_CONTRADICTED`**. CI was technically green. The frozen trace hypothesis failed because `upper_open_vertex` does not itself call `r1_tensor`. The executable code instead has asymmetric endpoint primitive placement: upper directly uses `dr1_real + g2_real` and receives the q-side `r1_tensor` in reconstruction; lower directly uses `r1_tensor + g2_real` and receives k-side `dr1_real` in reconstruction. Geometry and orientation/contact lanes passed only as scoped subchecks.
+Classification: **`PASS_SCOPED_ITER170_CORRECTED_CALL_GRAPH_AND_GEOMETRY_PROVENANCE`**. All prospectively frozen lanes passed. The executable source chain is asymmetric: upper directly uses `dr1_real + g2_real` and receives q-side `r1_tensor` in reconstruction; lower directly uses `r1_tensor + g2_real` and receives k-side `dr1_real` in reconstruction. Independent geometry establishes G occurrences, two Wick edges, affine phase, endpoint zeros, denominator `Q*K`, edge geometry and singular labels. Critic preserves distinct orientations and explicit contacts and confirms no ITER118/contact-zero shortcut.
 
-ITER163 21-term source-complete tensor bookkeeping/K-divisibility remains intact; ITER164-168 negative/blocking results remain intact. No singular-sector manifest, Laurent/R-operation, ITER118 matching, `B1_total`, bridge credit or candidate theory follows.
+ITER169 remains a genuine scientific failure of its frozen false source-chain hypothesis. ITER163 structural closure and ITER164-168 negative/blocking results remain intact.
 
-## ITER170 — exact next admissible gate
-Prospectively freeze a corrected-call-graph / term-to-geometry provenance gate. Mechanically recover the actual AST/call path for each frozen ITER163 term/class into ITER161/ITER140 primitives, and independently attach executable ITER141/ITER143 affine Wick denominator/contact geometry. Do not require a false symmetric primitive placement between upper and lower endpoints.
+## ITER171 — exact next admissible gate
+Prospectively freeze a source-qualified singular-sector-manifest reconstruction. Map frozen ITER163 term/classes through the corrected ITER170 primitive provenance onto executable ITER141/ITER143 denominator/endpoint geometry. Each credited sector must retain exact term/class identity, endpoint orientation, denominator/zero locus, contact/cancelled-propagator status and executable provenance. Independently search for omitted endpoint zeros, intersections and contact sectors; prose-only labels are not evidence.
 
-Run independent lanes for (A) term-to-primitive producer, (B) endpoint-asymmetry/orientation/contact critic, and (C) completeness/null critic. Every credited mapping must have executable file/function provenance and preserve exact term identity; prose labels are not evidence. A scoped PASS only authorizes rebuilding the source-qualified singular-sector manifest. It does not authorize scaling-degree/R-operation, Laurent extraction, ITER118 matching, `B1_total`, bridge credit or candidate theory.
+A scoped PASS may authorize a subsequent sector-by-sector domain/scaling-degree/pullback/local-ambiguity gate. It does not itself authorize R-operation, Laurent extraction, ITER118 matching, `B1_total`, bridge credit or candidate theory.
 
 ## Persistent locks
 `B1_total = UNAUTHORIZED`; `ALL_KNOWN_SCHOOLS_FAIL=false`; `NEW_QG_THEORY_REQUIRED=false`; `NEW_PHYSICS_FOUND=false`; `BRIDGE_DERIVED=false`; `ITER118_MATCHING_AUTHORIZED=false`. Candidate theory remains **UNFORMED / 0%**.
