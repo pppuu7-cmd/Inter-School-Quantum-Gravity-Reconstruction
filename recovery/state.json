@@ -3,8 +3,8 @@
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-19",
   "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE",
-  "active_iteration": "POST_ITER177_RECONCILED_TO_ITER065_RC008_GLOBAL_MEASURE_BLOCKER_BROADER_DAG_RECOVERY",
-  "iteration_completion_percent": 100,
+  "active_iteration": "ITER178_RC007_MASS_DEFORMATION_SPECTRAL_STABILITY_SELECTOR",
+  "iteration_completion_percent": 0,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
     "amplitude_refinement_cross_realization_validation": 50,
@@ -73,7 +73,7 @@
     "rc008_reconciled_terminal": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY"
   },
   "scientific_interpretation": "ITER177 is retained as INVALID because its frozen P1/P2 prerequisite failed. Pre-result repository authority already contains ITER064, which shows the permutation discrepancy is seed/QMC sensitive but does not establish a converged crossing, and ITER065, which blocks the RC008 numerical route because the global glued-complex reduced measure/Jacobian is not source-authorized. Do not duplicate ITER064 or rerun RC008 crossings with the old local-product measure.",
-  "next_gate": "RECALCULATE_BROADER_PHASE1_DAG_OUTSIDE_RC008;_SELECT_ONLY_A_GENUINELY_EXECUTABLE_UNSATURATED_FRONT;_RC008_REOPENS_ONLY_WITH_NEW_SAME_REALIZATION_GLOBAL_MEASURE_AUTHORITY_OR_A_SEPARATELY_PREREGISTERED_MATHEMATICAL_DERIVATION",
+  "next_gate": "ADJUDICATE_ITER178_FROM_FROZEN_RESEARCHER_AND_CRITIC_ARTIFACTS;_DO_NOT_OPEN_SUCCESSOR_BEFORE_TERMINAL",
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
@@ -83,5 +83,15 @@
     "results/ITER064_RC008_CROSSING_CONVERGENCE_AND_GLOBAL_MEASURE_MANUAL_AUDIT_2026-09-14.md",
     "analysis/ITER176_TERMINAL_RESULT.md",
     "docs/CONSTITUTION.md"
-  ]
+  ],
+  "active_gate": {
+    "iteration": "ITER178",
+    "prereg_commit": "15fcbb8f2b484c840e4d4f1687144637a276f2b0",
+    "execution_head": "9069bfe88b36248f320ac71f5b7699376071bd2f",
+    "run_id": 35404339951,
+    "latest_state": "queued_nonterminal",
+    "purpose": "entropy-blind same-realization mass-deformation spectral-break selector",
+    "source_cutoff_used_for_selection": false,
+    "bridge_credit": false
+  }
 }
