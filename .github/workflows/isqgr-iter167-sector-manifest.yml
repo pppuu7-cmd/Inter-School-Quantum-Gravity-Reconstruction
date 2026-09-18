@@ -1,0 +1,29 @@
+name: ISQGR ITER167 source-qualified sector manifest gate
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr-iter167-sector-manifest.yml'
+  workflow_dispatch:
+jobs:
+  gate:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [source-geometry, transverse-order, completeness-falsifier]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen ITER167 gate
+        run: python analysis/iter167_sector_manifest_gate.py | tee iter167-${{ matrix.lane }}.log
+      - name: Preserve lane artifact
+        run: |
+          mkdir -p out
+          cp artifacts/iter167_sector_manifest_gate.json out/iter167-${{ matrix.lane }}.json
+          cp iter167-${{ matrix.lane }}.log out/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter167-${{ matrix.lane }}
+          path: out/
