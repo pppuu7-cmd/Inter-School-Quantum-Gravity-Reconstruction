@@ -60,8 +60,9 @@ def select_break(instabilities: list[float]) -> dict:
     positive.sort(reverse=True)
     peak, idx = positive[0]
     second = positive[1][0] if len(positive) > 1 else 0.0
-    ratio = float("inf") if second <= 0 else peak / second
-    resolved = bool(idx not in (0, len(slopes) - 1) and peak > 0 and ratio >= 1.25)
+    ratio = None if second <= 0 else peak / second
+    dominance = True if second <= 0 else ratio >= 1.25
+    resolved = bool(idx not in (0, len(slopes) - 1) and peak > 0 and dominance)
     return {
         "resolved": resolved,
         "break_interval_index": idx,
