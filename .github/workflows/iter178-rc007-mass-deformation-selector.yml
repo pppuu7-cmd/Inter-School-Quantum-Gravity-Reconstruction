@@ -1,0 +1,99 @@
+name: ITER178 RC007 mass-deformation spectral selector
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/iter178-rc007-mass-deformation-selector.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  researcher:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        n: [384, 512, 768, 1024]
+        seed: [211, 223, 227, 229]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check numpy scipy
+      - name: Frozen researcher selector
+        run: |
+          python analysis/iter178_mass_deformation_selector.py \
+            --n ${{ matrix.n }} --seed ${{ matrix.seed }} \
+            --out out/researcher_N${{ matrix.n }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter178-researcher-N${{ matrix.n }}-s${{ matrix.seed }}
+          path: out/*.json
+          if-no-files-found: error
+
+  critic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        n: [384, 512, 768, 1024]
+        seed: [211, 223, 227, 229]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check numpy scipy
+      - name: Independent projector-distance critic
+        run: |
+          python analysis/iter178_mass_deformation_critic.py \
+            --n ${{ matrix.n }} --seed ${{ matrix.seed }} \
+            --out out/critic_N${{ matrix.n }}_s${{ matrix.seed }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter178-critic-N${{ matrix.n }}-s${{ matrix.seed }}
+          path: out/*.json
+          if-no-files-found: error
+
+  aggregate:
+    if: always()
+    needs: [researcher, critic]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check numpy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter178-researcher-*
+          path: collected/researcher
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: iter178-critic-*
+          path: collected/critic
+          merge-multiple: true
+      - name: Frozen terminal classifier
+        run: |
+          python analysis/iter178_mass_deformation_aggregate.py \
+            --researcher-dir collected/researcher \
+            --critic-dir collected/critic \
+            --out aggregate/summary.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter178-aggregate
+          path: aggregate/summary.json
+          if-no-files-found: error
