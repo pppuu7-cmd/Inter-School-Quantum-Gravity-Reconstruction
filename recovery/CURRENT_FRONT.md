@@ -4,50 +4,72 @@ Date: 2026-09-19.
 
 Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
-## ITER177 — terminal INVALID, preserved
+## ITER177 / RC008 — reconciled terminal blocker
 
-Authoritative execution: commit `57a62ecb0e029ed72a2dc162cb4888fd3cd04a49`, run `35399067738`.
+ITER177 remains **`INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL`** under authoritative run `35399067738`, head `57a62ecb0e029ed72a2dc162cb4888fd3cd04a49`.
 
-Aggregate job/artifact: `105774674791 / 10568907833`, SHA256 `9e341c6d6ada06a2505244a35456022b82a73834f3e7d5809a6e0ac4036e44ce`.
+The pre-ITER177 tree already contained ITER064, which showed the permutation discrepancy was seed/QMC sensitive but did not establish a converged crossing, and ITER065, which is the deeper RC008 authority:
 
-Classification: **`INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL`**. Calibration passed; all six boundary computations converged; no artifact was missing. Frozen permutation controls P1 and P2 both lacked a robust crossing, so H1-H4 cannot be promoted to a scientific held-out transport verdict. For record only, H1, H2 and H4 crossed on `[0.50,0.55]`; H3 did not.
-
-## RC008 reconciliation against pre-existing authority
-
-The pre-ITER177 tree already contained the prospectively frozen ITER064 permutation/seed diagnostic and the later ITER065 global-measure authority gate.
-
-ITER064 authoritative run `34874915843` showed that the earlier P1/P2 discrepancy is seed/QMC sensitive, but its positive `alpha=0.50` crossing endpoint remained non-converged under its own ESS/CV diagnostics. Durable interpretation: **`INVALID_DIAGNOSTIC_INFERENCE_CROSSING_ENDPOINT_NONCONVERGED`**. This does not rescue ITER177 or establish a physical crossing.
-
-ITER065 is the deeper terminal RC008 authority:
 **`SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY`**
-(descriptive equivalent: `SCOPED_BLOCKED_RC008_GLOBAL_MEASURE_FACTORISATION_UNDERIVED`).
+(descriptive equivalent `SCOPED_BLOCKED_RC008_GLOBAL_MEASURE_FACTORISATION_UNDERIVED`).
 
-ITER065 prereg commit: `e1f97fa2ac91a48e9bb479c81074ea091c0d6d21`.
-Initial run: `34877639682`; source-transport repair run: `34877767148`.
+Do not rerun RC008 crossings with the old local-product `Delta_FP` measure. RC008 reopens only with genuinely new same-realization global-measure authority or a separately preregistered mathematical derivation.
 
-Its geometric sentinel found that the old product of local one-hypercuboid `Delta_FP` factors is not normalization-equivalent to the frozen global pullback sentinel (ratio CV `0.01783571272665122` for coarse2 and `0.9369701593382911` for fine32, both above the frozen `1e-2` threshold). Manual same-realization source audit found no explicit global glued-complex reduced measure/Jacobian equation.
+Durable reconciliation:
+`analysis/ITER177_RC008_DURABLE_RECONCILIATION.md`.
 
-Therefore:
-- `restricted_coarse_fine_amplitude_reproduced=false`;
-- corrected RC008 crossing is unauthorized;
-- do not rerun ITER177;
-- do not duplicate ITER064;
-- do not run another RC008 crossing with the old local-product measure.
+## Broader PHASE_1 DAG recovery
 
-RC008 can reopen only with genuinely new same-realization authority for the global measure or a separately preregistered mathematical derivation of the global measure / constraint-overlap / gluing object with independent completeness checks.
+The broad audit excludes already-saturated/blocked routes:
 
-## Exact next admissible front
+- Lorentzian genuine coarse/fine refinement: missing model-matched map/object;
+- RC006 q-deformed EPRL/FK amplitude/TNR: missing source-faithful executable amplitude object;
+- BH004B structural selector: saturated;
+- RC008: blocked at ITER065 global measure;
+- RC009: scoped blocked;
+- causal-set quantum amplitude/refinement: ITER066 source-blocked;
+- CDT/HaPPY and FRG/CDT typed-composition equivalence: already scoped FAIL;
+- CDT/FRG same-observable chain: deeply explored through the later fixed-geodesic branch and currently terminates at ITER175 distributional/R-operation prerequisites.
 
-Recalculate the broader PHASE_1 DAG outside the saturated RC008 numerical route and select only a genuinely executable unsaturated front.
+The remaining executable unsaturated front is RC007/BH003 same-realization spectral-regulator selection.
 
-Known exclusions remain:
-- Lorentzian genuine coarse/fine refinement: blocked until a real model-matched map/object exists;
-- RC-006 q-deformed EPRL/FK amplitude/TNR: blocked until a source-faithful executable amplitude object exists;
-- BH-004B structural selector lane: saturated;
-- RC-009: scoped blocked;
-- distributional/R-operation branch: blocked at ITER175 prerequisites.
+## ITER178 — ACTIVE
 
-No new iteration should be opened merely to repeat a lexical/source search already terminalized.
+Gate:
+**`ITER178_RC007_MASS_DEFORMATION_SPECTRAL_STABILITY_SELECTOR`**.
+
+Preregistration:
+`prereg/ITER178_RC007_MASS_DEFORMATION_SPECTRAL_STABILITY_SELECTOR_2026-09-19.md`.
+
+Frozen prereg commit:
+`15fcbb8f2b484c840e4d4f1687144637a276f2b0`.
+
+Execution head:
+`9069bfe88b36248f320ac71f5b7699376071bd2f`.
+
+GitHub Actions run:
+`35404339951`.
+
+Latest checked state:
+**queued / nonterminal**.
+
+Scientific question: can controlled massive deformation of the same causal-set free-field Pauli-Jordan object identify, without entropy and without source-cutoff input, a stable spectral break that is post-selection compatible with the independently known SSEE `sqrt(N)/(4*pi)` scale?
+
+Frozen holdout:
+- `N=[384,512,768,1024]`;
+- seeds `[211,223,227,229]`;
+- masses `[0,2,5]`;
+- retained-fraction grid `[.04,.06,.09,.13,.18,.25,.35,.48,.65,.82]`.
+
+Researcher and independent Critic must agree within `1e-9` on the entire instability curve and on break classification.
+
+Terminal taxonomy is frozen to:
+- `PASS_SCOPED_ITER178_MASS_DEFORMATION_DYNAMIC_BREAK_SOURCE_COMPATIBLE`;
+- `SCIENTIFIC_FAIL_SCOPED_ITER178_MASS_DEFORMATION_DYNAMIC_BREAK_SOURCE_INCOMPATIBLE`;
+- `BLOCKED_SCOPED_ITER178_DYNAMIC_BREAK_NOT_STABLY_IDENTIFIED`;
+- `INVALID_IMPLEMENTATION_ITER178`.
+
+Queued Actions is infrastructure state only and is not scientific BLOCKED.
 
 ## Persistent locks
 
