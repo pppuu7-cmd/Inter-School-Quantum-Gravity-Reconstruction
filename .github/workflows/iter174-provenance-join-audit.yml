@@ -1,0 +1,33 @@
+name: ITER174 provenance join audit
+on:
+  push:
+    paths:
+      - '.github/workflows/iter174-provenance-join-audit.yml'
+  workflow_dispatch:
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [producer, completeness, critic]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen provenance join audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          lane='${{ matrix.lane }}'
+          out="iter174-${lane}.log"
+          echo "ITER174 lane=$lane" | tee "$out"
+          for sector in LOWER_Q_ZERO UPPER_K_ZERO Q_CANCELLED_CONTACT K_CANCELLED_CONTACT QK_INTERSECTION; do
+            echo "=== $sector ===" | tee -a "$out"
+            grep -RniE "$sector|Q\*K|Q_power|K_power|codimension|transverse|canonical_hormander_pullback_authorized|ambient_scaling_degree|local.*ambiguity|delta.*derivative|subtraction_order" analysis src scripts 2>/dev/null \
+              | grep -vE 'ITER17[0-4]_|iter17[0-4]_|recovery|PREREGISTRATION|TERMINAL_RESULT' \
+              | head -n 160 | tee -a "$out" || true
+          done
+          echo SCIENTIFIC_CLASSIFICATION_REQUIRES_POSTRUN_SEMANTIC_ADJUDICATION | tee -a "$out"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter174-${{ matrix.lane }}
+          path: iter174-${{ matrix.lane }}.log
