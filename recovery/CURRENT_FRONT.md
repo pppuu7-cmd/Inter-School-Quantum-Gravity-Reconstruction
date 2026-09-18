@@ -1,22 +1,20 @@
 # Current front — ISQGR
 
-Date: 2026-09-18.
+Date: 2026-09-19.
 
 Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
-## ITER175 — terminal scoped BLOCKED
-Authoritative execution: commit `dcf21155cc60bb7906a279915d5f2599b4ddd296`, run `35382865859`.
+## ITER176 — terminal scoped BLOCKED
+Authoritative execution: commit `de89c423129a655198e52fb3c131e15bb6e229ef`, run `35394127209`.
 
-Jobs: graph `105722902096`; measure_embedding `105722902236`; forest_prescription `105722902573`.
+Jobs/artifacts: Lorentzian `105758945696 / 10566527887`; BH-004B `105758945962 / 10567186445`; RC-006 `105758945985 / 10567476167`.
 
-Classification: **`BLOCKED_SCOPED_ITER175_GRAPH_R_OPERATION_PREREQUISITES_INCOMPLETE`**. All three jobs were technically green, but the frozen six-field scientific PASS condition was not met. Existing pre-ITER170 sources contain real graph/denominator/contact/affine/scaling/subtraction ingredients, but they do not form a complete source-faithful graph-level extension/R-operation object for the disputed unseparated first-M/G endpoint/contact amplitude. The mathematically explicit applicable extension prescription remains missing; canonical Hoermander pullback for the cancelled-contact object remains unauthorized.
-
-Do not spend further compute on lexical searches, denser quadrature, Laurent extraction, ITER118 matching or `B1_total` on this blocked branch unless a new prospectively justified regularization/measure/contour/extension object is introduced before seeing its result.
+Classification: **`BLOCKED_SCOPED_ITER176_NO_EXECUTABLE_UNSATURATED_FRONT`**. The Lorentzian lane recovered shell-flow and source-authority records but no new executable genuine coarse/fine refinement map; BH-004B is saturated for the frozen held-out structural-selector question; RC-006 has validated q-recoupling ingredients but still lacks the fully source-faithful executable q-deformed EPRL/FK amplitude/TNR object required by the frozen gate. Green CI did not earn scientific PASS.
 
 ## Exact next admissible front
-Return to independent PHASE_1 amplitude/refinement work. Before launching anything, deduplicate against queued/in-progress/recent terminal Actions and recover the existing open gates/results for: (a) genuine multi-vertex Lorentzian EPRL/spinfoam refinement, (b) RC-006 q-deformed EPRL/FK amplitude/TNR reconstruction, (c) BH-004/BH-004B amplitude/refinement, and (d) held-out non-retuned transport/selector tests. Select the highest-information independent unsaturated gate already authorized by its own preregistration/recovery chain; do not invent a new bridge claim from structural evidence.
+Use the separately preregistered ITER063 RC-008 held-out non-retuned transport/selector gate, whose parent ITER062B is a scoped scientific PASS, after deduplicating Actions for any already-terminal ITER063 execution. Reuse the parent scientific kernel exactly; only the prospectively frozen ITER063 boundary tuples and independent seeds may be substituted. No amplitude term, alpha grid, convergence threshold, integration domain, observable, crossing predicate or source model may change.
+
+Lorentzian genuine refinement remains blocked until a real coarse/fine map exists. RC-006 remains blocked until a source-faithful amplitude object exists. BH-004B structural evidence remains saturated. RC-009 remains scoped blocked.
 
 ## Persistent locks
 `B1_total = UNAUTHORIZED`; `ALL_KNOWN_SCHOOLS_FAIL=false`; `NEW_QG_THEORY_REQUIRED=false`; `NEW_PHYSICS_FOUND=false`; `BRIDGE_DERIVED=false`; `ITER118_MATCHING_AUTHORIZED=false`. Candidate theory remains **UNFORMED / 0%**.
-
-RC-009 remains scoped blocked. Lorentzian Delta4 negative results remain preserved and finite-cutoff/profile/scaling diagnostics do not earn bridge credit without a genuine refinement map.
