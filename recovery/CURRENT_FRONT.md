@@ -4,15 +4,17 @@ Date: 2026-09-19.
 
 Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
-## ITER176 — terminal scoped BLOCKED
-Authoritative execution: commit `de89c423129a655198e52fb3c131e15bb6e229ef`, run `35394127209`.
+## ITER177 — terminal invalid before scientific transport verdict
+Authoritative execution: commit `57a62ecb0e029ed72a2dc162cb4888fd3cd04a49`, run `35399067738`.
 
-Jobs/artifacts: Lorentzian `105758945696 / 10566527887`; BH-004B `105758945962 / 10567186445`; RC-006 `105758945985 / 10567476167`.
+Aggregate job/artifact: `105774674791 / 10568907833`, SHA256 `9e341c6d6ada06a2505244a35456022b82a73834f3e7d5809a6e0ac4036e44ce`.
 
-Classification: **`BLOCKED_SCOPED_ITER176_NO_EXECUTABLE_UNSATURATED_FRONT`**. The Lorentzian lane recovered shell-flow and source-authority records but no new executable genuine coarse/fine refinement map; BH-004B is saturated for the frozen held-out structural-selector question; RC-006 has validated q-recoupling ingredients but still lacks the fully source-faithful executable q-deformed EPRL/FK amplitude/TNR object required by the frozen gate. Green CI did not earn scientific PASS.
+Classification: **`INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL`**. Calibration passed; all six boundary computations converged; no artifact was missing. Frozen permutation controls P1 and P2 both lacked the required robust crossing, so selector-symmetry validation failed before H1-H4 can be interpreted as a scientific held-out transport result. Green CI is not scientific PASS.
+
+For durable negative-result preservation only: H1, H2 and H4 had robust crossings on `[0.50,0.55]`; H3 had none. These observations earn no bridge credit because the prerequisite control failed.
 
 ## Exact next admissible front
-Use the separately preregistered ITER063 RC-008 held-out non-retuned transport/selector gate, whose parent ITER062B is a scoped scientific PASS, after deduplicating Actions for any already-terminal ITER063 execution. Reuse the parent scientific kernel exactly; only the prospectively frozen ITER063 boundary tuples and independent seeds may be substituted. No amplitude term, alpha grid, convergence threshold, integration domain, observable, crossing predicate or source model may change.
+Do **not** rerun ITER177 and do not retune thresholds, boundary tuples, seeds, alpha grid, model, observable or crossing predicate. First search existing pre-result repository state for an independently preregistered diagnostic or a source-faithful implementation correction that can distinguish an implementation mismatch from genuine selector-symmetry failure. If none exists, RC008 held-out transport is scoped BLOCKED. Return to another PHASE_1 amplitude/refinement front only if a genuinely new executable source object/refinement map becomes available; ITER176 already established that the then-existing Lorentzian, BH004B and RC006 fronts were saturated/blocked.
 
 Lorentzian genuine refinement remains blocked until a real coarse/fine map exists. RC-006 remains blocked until a source-faithful amplitude object exists. BH-004B structural evidence remains saturated. RC-009 remains scoped blocked.
 
