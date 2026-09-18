@@ -1,16 +1,87 @@
 {
-  "project":"Inter-School Quantum Gravity Reconstruction",
-  "repository":"pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
-  "date":"2026-09-19",
-  "phase":"PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE",
-  "active_iteration":"POST_ITER177_SELECTOR_SYMMETRY_CONTROL_FAIL",
-  "iteration_completion_percent":100,
-  "candidate_theory_status":"UNFORMED",
-  "readiness_percent":{"amplitude_refinement_cross_realization_validation":50,"candidate_theory_construction":0,"overall_scientific_programme":50},
-  "claim_locks":{"known_schools_fail":false,"new_theory_required":false,"new_physics_found":false,"bridge_derived":false,"candidate_theory_authorized":false,"B1_total":"UNAUTHORIZED","ITER118_MATCHING_AUTHORIZED":false},
-  "latest_authoritative_terminal":{"iteration":"ITER177","status":"TERMINAL_INVALID_PRE_SCIENCE","classification":"INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL","workflow_head":"57a62ecb0e029ed72a2dc162cb4888fd3cd04a49","run_id":35399067738,"jobs":{"calibration":105774550517,"P1":105774550909,"P2":105774550865,"H1":105774550835,"H2":105774550795,"H3":105774550768,"H4":105774550763,"aggregate":105774674791},"artifacts":{"P1":10570042417,"P2":10570082378,"H1":10569027815,"H2":10570282114,"H3":10570172307,"H4":10569697565,"aggregate":10568907833},"bridge_credit":false},
-  "recent_terminal_chain":{"iter173":"BLOCKED_SCOPED_NO_COMPLETE_UPSTREAM_DISTRIBUTIONAL_OBJECT","iter174":"BLOCKED_SCOPED_PROVENANCE_JOIN_INCOMPLETE","iter175":"BLOCKED_SCOPED_GRAPH_R_OPERATION_PREREQUISITES_INCOMPLETE","iter176":"BLOCKED_SCOPED_NO_EXECUTABLE_UNSATURATED_FRONT","iter177":"INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL"},
-  "scientific_interpretation":"ITER177 calibration passed and all six held-out boundaries converged, but preregistered permutation controls P1 and P2 had no robust crossing. Therefore the frozen selector-symmetry prerequisite failed before H1-H4 can support a scientific transport verdict. H1/H2/H4 crossings are retained only as non-promotable diagnostics; H3 had no robust crossing. No retuning or repeat of the same panel is allowed.",
-  "next_gate":"DO_NOT_RERUN_ITER177;_FIRST_LOCATE_A_PROSPECTIVELY_FROZEN_INDEPENDENT_DIAGNOSTIC_OR_SOURCE-FAITHFUL_IMPLEMENTATION_CORRECTION_THAT_DISTINGUISHES_IMPLEMENTATION_MISMATCH_FROM_GENUINE_SELECTOR_SYMMETRY_FAILURE;_OTHERWISE_RC008_HELDOUT_FRONT_IS_BLOCKED;_RETURN_TO_INDEPENDENT_PHASE1_FRONTS_ONLY_IF_NEW_EXECUTABLE_OBJECT_EXISTS",
-  "authoritative_recovery_order":["recovery/state.json","recovery/CURRENT_FRONT.md","analysis/ITER177_TERMINAL_RESULT.md","analysis/ITER176_TERMINAL_RESULT.md","docs/CONSTITUTION.md"]
+  "project": "Inter-School Quantum Gravity Reconstruction",
+  "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
+  "date": "2026-09-19",
+  "phase": "PHASE_1_AMPLITUDE_REFINEMENT_BRIDGE",
+  "active_iteration": "POST_ITER177_RECONCILED_TO_ITER065_RC008_GLOBAL_MEASURE_BLOCKER_BROADER_DAG_RECOVERY",
+  "iteration_completion_percent": 100,
+  "candidate_theory_status": "UNFORMED",
+  "readiness_percent": {
+    "amplitude_refinement_cross_realization_validation": 50,
+    "candidate_theory_construction": 0,
+    "overall_scientific_programme": 50
+  },
+  "claim_locks": {
+    "known_schools_fail": false,
+    "new_theory_required": false,
+    "new_physics_found": false,
+    "bridge_derived": false,
+    "candidate_theory_authorized": false,
+    "B1_total": "UNAUTHORIZED",
+    "ITER118_MATCHING_AUTHORIZED": false
+  },
+  "latest_authoritative_terminal": {
+    "iteration": "ITER177",
+    "status": "TERMINAL_INVALID_PRE_SCIENCE",
+    "classification": "INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL",
+    "workflow_head": "57a62ecb0e029ed72a2dc162cb4888fd3cd04a49",
+    "run_id": 35399067738,
+    "jobs": {
+      "calibration": 105774550517,
+      "P1": 105774550909,
+      "P2": 105774550865,
+      "H1": 105774550835,
+      "H2": 105774550795,
+      "H3": 105774550768,
+      "H4": 105774550763,
+      "aggregate": 105774674791
+    },
+    "artifacts": {
+      "P1": 10570042417,
+      "P2": 10570082378,
+      "H1": 10569027815,
+      "H2": 10570282114,
+      "H3": 10570172307,
+      "H4": 10569697565,
+      "aggregate": 10568907833
+    },
+    "bridge_credit": false
+  },
+  "reconciled_rc008_terminal_authority": {
+    "iteration": "ITER065",
+    "classification": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY",
+    "descriptive_equivalent": "SCOPED_BLOCKED_RC008_GLOBAL_MEASURE_FACTORISATION_UNDERIVED",
+    "prereg_commit": "e1f97fa2ac91a48e9bb479c81074ea091c0d6d21",
+    "initial_run": 34877639682,
+    "source_transport_repair_run": 34877767148,
+    "restricted_coarse_fine_amplitude_reproduced": false,
+    "bridge_credit": false
+  },
+  "prior_rc008_diagnostic": {
+    "iteration": "ITER064",
+    "prereg_commit": "aa2179c06bbbc3d54fbd917e1809e335839d30ed",
+    "run_id": 34874915843,
+    "terminal_interpretation": "INVALID_DIAGNOSTIC_INFERENCE_CROSSING_ENDPOINT_NONCONVERGED",
+    "narrow_conclusion": "ITER063/ITER177 permutation discrepancy is seed/QMC sensitive; no converged crossing established"
+  },
+  "recent_terminal_chain": {
+    "iter173": "BLOCKED_SCOPED_NO_COMPLETE_UPSTREAM_DISTRIBUTIONAL_OBJECT",
+    "iter174": "BLOCKED_SCOPED_PROVENANCE_JOIN_INCOMPLETE",
+    "iter175": "BLOCKED_SCOPED_GRAPH_R_OPERATION_PREREQUISITES_INCOMPLETE",
+    "iter176": "BLOCKED_SCOPED_NO_EXECUTABLE_UNSATURATED_FRONT",
+    "iter177": "INVALID_IMPLEMENTATION_OR_SELECTOR_SYMMETRY_FAIL",
+    "rc008_reconciled_terminal": "SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY"
+  },
+  "scientific_interpretation": "ITER177 is retained as INVALID because its frozen P1/P2 prerequisite failed. Pre-result repository authority already contains ITER064, which shows the permutation discrepancy is seed/QMC sensitive but does not establish a converged crossing, and ITER065, which blocks the RC008 numerical route because the global glued-complex reduced measure/Jacobian is not source-authorized. Do not duplicate ITER064 or rerun RC008 crossings with the old local-product measure.",
+  "next_gate": "RECALCULATE_BROADER_PHASE1_DAG_OUTSIDE_RC008;_SELECT_ONLY_A_GENUINELY_EXECUTABLE_UNSATURATED_FRONT;_RC008_REOPENS_ONLY_WITH_NEW_SAME_REALIZATION_GLOBAL_MEASURE_AUTHORITY_OR_A_SEPARATELY_PREREGISTERED_MATHEMATICAL_DERIVATION",
+  "authoritative_recovery_order": [
+    "recovery/state.json",
+    "recovery/CURRENT_FRONT.md",
+    "analysis/ITER177_RC008_DURABLE_RECONCILIATION.md",
+    "analysis/ITER177_TERMINAL_RESULT.md",
+    "results/ITER065_RC008_GLOBAL_GEOMETRIC_MEASURE_TOPOLOGY_AUTHORITY_2026-09-14.md",
+    "results/ITER064_RC008_CROSSING_CONVERGENCE_AND_GLOBAL_MEASURE_MANUAL_AUDIT_2026-09-14.md",
+    "analysis/ITER176_TERMINAL_RESULT.md",
+    "docs/CONSTITUTION.md"
+  ]
 }
