@@ -1,0 +1,27 @@
+name: ITER169 upstream source trace
+on:
+  push:
+    paths:
+      - '.github/workflows/iter169-upstream-source-trace.yml'
+  workflow_dispatch:
+jobs:
+  trace:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [trace, geometry, critic]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen ITER169 lane
+        run: python analysis/iter169_upstream_source_trace_gate.py '${{ matrix.lane }}' | tee iter169-${{ matrix.lane }}.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter169-${{ matrix.lane }}-${{ strategy.job-index }}
+          path: |
+            iter169-${{ matrix.lane }}.log
+            iter169_${{ matrix.lane }}.json
