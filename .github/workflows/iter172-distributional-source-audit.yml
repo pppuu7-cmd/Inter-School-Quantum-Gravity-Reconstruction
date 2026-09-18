@@ -1,0 +1,27 @@
+name: ITER172 distributional source audit
+on:
+  push:
+    paths:
+      - '.github/workflows/iter172-distributional-source-audit.yml'
+  workflow_dispatch:
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [domain, scaling, critic]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen ITER172 lane
+        run: python analysis/iter172_distributional_source_audit.py '${{ matrix.lane }}' | tee iter172-${{ matrix.lane }}.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter172-${{ matrix.lane }}-${{ strategy.job-index }}
+          path: |
+            iter172-${{ matrix.lane }}.log
+            iter172_${{ matrix.lane }}.json
