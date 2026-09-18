@@ -4,12 +4,13 @@ Date: 2026-09-19.
 
 Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
-## ITER178 — terminal scoped BLOCKED
+## Latest terminal gate — ITER178
 
-Preregistration:
-`prereg/ITER178_RC007_MASS_DEFORMATION_SPECTRAL_STABILITY_SELECTOR_2026-09-19.md`
+Terminal classification:
 
-Frozen prereg commit:
+**`BLOCKED_SCOPED_ITER178_DYNAMIC_BREAK_NOT_STABLY_IDENTIFIED`**
+
+Prereg commit:
 `15fcbb8f2b484c840e4d4f1687144637a276f2b0`
 
 Execution head:
@@ -21,69 +22,76 @@ Authoritative run:
 Aggregate job/artifact:
 `105791050343 / 10571429101`
 
-Aggregate digest:
+Artifact digest:
 `sha256:69bd30eb7d27e2508f6e5f3f86fcf7342dff3e70ff6f2d792cb23a98d07207ce`
 
-Terminal classification:
+Researcher and independent Critic both completed 16/16 frozen cases. Their maximum recorded instability-curve disagreement was approximately `2.31e-15` against the frozen `1e-9` tolerance.
 
-**`BLOCKED_SCOPED_ITER178_DYNAMIC_BREAK_NOT_STABLY_IDENTIFIED`**
-
-Researcher and independent Critic both completed 16/16 frozen cases. `IMPLEMENTATION_VALID=true`; maximum curve disagreement was approximately `2.31e-15`, far inside the frozen `1e-9` tolerance.
-
-No job produced a frozen resolved positive-slope dynamic break:
+No frozen positive-slope mass-deformation spectral break was resolved:
 
 - `RESOLVED_BREAK_COUNT=0/16`;
 - `BREAK_INTERVAL_COUNTS={}`;
 - `BEST_ADJACENT_CLUSTER_COUNT=0`;
 - `SELECTOR_STABLE=false`.
 
-The mass-deformation instability curves decrease with increasing retained spectral fraction rather than showing the prospectively preregistered positive-slope onset. The source-compatibility stage was therefore not reached:
+The source-compatibility gate was not reached. No post-selection power fit or source-cutoff ratio exists.
 
-- `SOURCE_COMPATIBILITY_GATE=NOT_REACHED`;
-- `POST_SELECTION_POWER_FIT=null`;
-- `POST_SELECTION_MEDIAN_SELECTED_TO_SOURCE_RATIO=null`.
-
-Do not reverse the sign or redefine the break after seeing the output. Any different dynamical selector requires a new prospective scientific rationale and preregistration.
-
-Durable terminal authority:
+Durable authority:
 `analysis/ITER178_TERMINAL_RESULT.md`.
 
-## RC007/BH003 status after ITER178
+## Broader PHASE_1 DAG recalculation
 
-The main endogenous-regulator mechanisms already tested in this same-realization free-field laboratory are now:
+Durable audit:
+`analysis/PHASE1_FRONTIER_AUDIT_AFTER_ITER178_2026-09-19.md`
 
-- visible entropy-blind spectral knee: negative;
-- compression/closure L-curve selector: negative;
-- Bernoulli-thinning eigenvalue-flow derivation of source exponent: negative;
-- transfer-optimal retained-rank derivation of square-root flow: negative;
-- mass-deformation positive-onset spectral-break selector: no stable break.
+Current decision:
 
-Valid earlier positives remain scoped:
-- source-defined spectral sector transfers across geometry;
-- source sector is substantially more closed under native retarded propagation than rank-matched random subspaces;
-- source-defined subspace direction transfers strongly under thinning.
+**`CURRENT_REPOSITORY_PHASE1_EXECUTABLE_UNSATURATED_FRONT_COUNT = 0`**
 
-These positives do not endogenously determine the source spectral cutoff.
+No new iteration number is assigned.
 
-## Other durable PHASE_1 blockers / saturated fronts
+This is a repository/source-authority frontier block, not a scientific failure of quantum gravity and not an `ALL_KNOWN_SCHOOLS_FAIL` claim.
 
-- Lorentzian genuine coarse/fine refinement: missing model-matched executable map/object after ITER056-058 and ITER176.
-- RC006 q-deformed EPRL/FK amplitude/TNR: missing source-faithful executable amplitude object.
-- BH004B structural selector evidence: saturated.
-- RC008 numerical crossing route: deeper blocker is ITER065 `SCOPED_BLOCKED_NO_EXPLICIT_GLOBAL_MEASURE_AUTHORITY`; do not use old local-product `Delta_FP`.
-- RC009 reduced isotemporal route: endpoint-power divergence and source-phase audit exclude ordinary positive-measure refinement and its frozen oscillatory rescue; a genuinely different source-defined measure/contour/full object is required.
-- causal-set quantum amplitude/refinement: ITER066 source-blocked.
-- CDT/HaPPY and FRG/CDT typed-composition equivalence: scoped FAIL.
-- CDT/FRG same-observable/fixed-geodesic chain: current distributional branch blocked at ITER175 graph/R-operation prerequisites.
+The current instantiated routes are terminally constrained as follows:
 
-## Exact next action
+- Lorentzian EPRL: missing exact model-matched coarse/fine executable map/object;
+- RC006 q-deformed EPRL/FK: missing source-faithful full amplitude/TNR object;
+- RC007/BH003: currently instantiated endogenous regulator selectors are saturated after ITER178;
+- RC008: blocked at ITER065 by missing global glued-complex reduced measure/Jacobian;
+- RC009: reduced isotemporal positive-measure route blocked by endpoint divergence; frozen source oscillation does not rescue it;
+- causal-set quantum amplitude/refinement: source-object blocked at ITER066;
+- CDT/HaPPY and FRG/CDT typed-composition routes: already scoped FAIL;
+- fixed-geodesic distributional branch: blocked at ITER175 graph/R-operation prerequisites;
+- CEMR/BH002: synthetic/domain-scoped tests exist, but no source-faithful overlap-domain physical object with independent calibration is present in the repository.
 
-**Recalculate the broader PHASE_1 DAG before assigning a new iteration number.**
+## Highest-information reopening authorities
 
-Do not create a successor merely by changing a failed selector definition or rerunning a saturated numerical lane.
+Do not launch denser numerics or another lexical audit.
 
-The next gate must come from a genuinely executable unsaturated source object that is not already terminally tested. If no such object exists in the current repository authority, record a programme-level frontier block and identify the exact new source/mathematical authority required to reopen a branch.
+A new scientific gate becomes admissible only when at least one of these becomes explicit and inspectable:
+
+1. Lorentzian EPRL model-matched coarse/fine amplitude/complex map.
+2. RC006 source-faithful q-deformed EPRL/FK full amplitude/TNR object.
+3. RC008 global glued-complex reduced measure/Jacobian.
+4. RC009 source-defined non-divergent measure/contour/full-amplitude prescription.
+5. Fixed-geodesic graph-level R-operation/measure/distributional-extension object.
+6. CEMR overlap-domain causal+entanglement physical reconstruction object with independent calibration.
+7. A genuinely new RC007 entropy-blind regulator principle motivated independently of the failed ITER178 output.
+
+Until such an authority appears, assigning ITER179 would only rename an existing blocker or repeat terminal work.
 
 ## Persistent locks
 
-`B1_total = UNAUTHORIZED`; `ALL_KNOWN_SCHOOLS_FAIL=false`; `NEW_QG_THEORY_REQUIRED=false`; `NEW_PHYSICS_FOUND=false`; `BRIDGE_DERIVED=false`; `ITER118_MATCHING_AUTHORIZED=false`. Candidate theory remains **UNFORMED / 0%**.
+`B1_total = UNAUTHORIZED`
+
+`ITER118_MATCHING_AUTHORIZED=false`
+
+`BRIDGE_DERIVED=false`
+
+`NEW_PHYSICS_FOUND=false`
+
+`NEW_QG_THEORY_REQUIRED=false`
+
+`ALL_KNOWN_SCHOOLS_FAIL=false`
+
+Candidate theory remains **UNFORMED / 0%**.
