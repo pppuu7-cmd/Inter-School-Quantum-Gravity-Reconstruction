@@ -2,9 +2,9 @@
   "project": "Inter-School Quantum Gravity Reconstruction",
   "repository": "pppuu7-cmd/Inter-School-Quantum-Gravity-Reconstruction",
   "date": "2026-09-19",
-  "phase": "PHASE_1_AUTHORITY_FRONTIER",
-  "active_iteration": "NO_ASSIGNED_SUCCESSOR_AFTER_ITER178",
-  "iteration_completion_percent": 100,
+  "phase": "PHASE_1_RC007_SOURCE_QUALIFIED_REOPENED",
+  "active_iteration": "ITER179_RC007_EIGENVECTOR_FLUCTUATION_PERSISTENCE_SELECTOR",
+  "iteration_completion_percent": 0,
   "candidate_theory_status": "UNFORMED",
   "readiness_percent": {
     "amplitude_refinement_cross_realization_validation": 50,
@@ -63,7 +63,7 @@
     "iter178": "BLOCKED_SCOPED_ITER178_DYNAMIC_BREAK_NOT_STABLY_IDENTIFIED"
   },
   "scientific_interpretation": "Terminal ITER178 found no prospectively defined mass-deformation spectral break in 0/16 cases despite independent implementation agreement. A repository-wide PHASE_1 audit then found no currently instantiated prospectively admissible executable unsaturated gate. This is an authority/frontier block, not a no-go theorem and not evidence that all known quantum-gravity schools fail.",
-  "next_gate": "NO_ITER179_ASSIGNED;_REOPEN_ONLY_WHEN_A_NEW_INSPECTABLE_SOURCE_OR_MATHEMATICAL_AUTHORITY_MAKES_ONE_LISTED_BRANCH_EXECUTABLE",
+  "next_gate": "ADJUDICATE_ITER179_FROM_FROZEN_RESEARCHER_AND_CRITIC_ARTIFACTS;_DO_NOT_OPEN_SUCCESSOR_BEFORE_TERMINAL",
   "authoritative_recovery_order": [
     "recovery/state.json",
     "recovery/CURRENT_FRONT.md",
@@ -75,8 +75,8 @@
     "analysis/ITER176_TERMINAL_RESULT.md",
     "docs/CONSTITUTION.md"
   ],
-  "current_repository_phase1_executable_unsaturated_front_count": 0,
-  "frontier_status": "PROGRAMME_FRONTIER_BLOCKED_ON_NEW_SOURCE_OR_MATHEMATICAL_AUTHORITY",
+  "current_repository_phase1_executable_unsaturated_front_count": 1,
+  "frontier_status": "ITER179_ACTIVE_NONTERMINAL",
   "frontier_audit": "analysis/PHASE1_FRONTIER_AUDIT_AFTER_ITER178_2026-09-19.md",
   "reopening_authorities": [
     "Lorentzian EPRL exact model-matched coarse/fine amplitude/complex map",
@@ -86,5 +86,16 @@
     "fixed-geodesic graph-level R-operation/measure/distributional extension object",
     "CEMR overlap-domain causal+entanglement physical reconstruction object with independent calibration",
     "independently motivated RC007 entropy-blind regulator principle not constructed from failed ITER178 output"
-  ]
+  ],
+  "active_gate": {
+    "iteration": "ITER179",
+    "authority_note": "sources/RC007_EIGENVECTOR_FLUCTUATION_TRUNCATION_AUTHORITY_2026-09-19.md",
+    "prereg_commit": "e4707029b280167df01f669497cb3206356835a7",
+    "execution_head": "9e08f8f18f7cd20f2167ac292ad7dbda3e5ab3ea",
+    "run_id": 35407412179,
+    "latest_state": "queued_nonterminal",
+    "entropy_used_for_selection": false,
+    "source_cutoff_used_for_selection": false,
+    "bridge_credit": false
+  }
 }
