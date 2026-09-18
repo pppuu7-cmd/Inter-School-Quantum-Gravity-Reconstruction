@@ -38,7 +38,7 @@ def fit_power(rows: list[dict]) -> dict | None:
     alpha, log_a = np.polyfit(x, y, 1)
     pred = alpha * x + log_a
     den = float(np.sum((y - y.mean()) ** 2))
-    r2 = 1.0 - float(np.sum((y - pred) ** 2)) / den if den > 0 else float("nan")
+    r2 = 1.0 - float(np.sum((y - pred) ** 2)) / den if den > 0 else 0.0
     return {
         "median_selected_cutoff_by_n": {str(n): by_n[n] for n in EXPECTED_N},
         "alpha": float(alpha),
