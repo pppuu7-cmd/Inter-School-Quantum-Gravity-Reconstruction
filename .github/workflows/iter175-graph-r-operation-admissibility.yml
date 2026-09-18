@@ -1,0 +1,41 @@
+name: ITER175 graph R-operation admissibility audit
+on:
+  push:
+    paths:
+      - '.github/workflows/iter175-graph-r-operation-admissibility.yml'
+  workflow_dispatch:
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [graph, measure_embedding, forest_prescription]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen source prerequisite audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          lane='${{ matrix.lane }}'
+          out="iter175-${lane}.log"
+          echo "ITER175 lane=$lane" | tee "$out"
+          case "$lane" in
+            graph)
+              pat='first.M.G|subgraph|overlap|nested|graph.level|Q\*K|Q_power|K_power|denominator|numerator'
+              ;;
+            measure_embedding)
+              pat='loop|measure|jacobian|tau|affine|phase|endpoint|embedding|d\^d|integrat'
+              ;;
+            forest_prescription)
+              pat='subtraction_order|forest|R.operation|renormaliz|extension|pullback|H[oö]rmander|counterterm|local_ambiguity'
+              ;;
+          esac
+          grep -RniE "$pat" analysis src scripts 2>/dev/null \
+            | grep -vE 'ITER17[0-5]_|iter17[0-5]_|recovery|PREREGISTRATION|TERMINAL_RESULT' \
+            | head -n 500 | tee -a "$out" || true
+          echo SCIENTIFIC_CLASSIFICATION_REQUIRES_POSTRUN_SEMANTIC_ADJUDICATION | tee -a "$out"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter175-${{ matrix.lane }}
+          path: iter175-${{ matrix.lane }}.log
