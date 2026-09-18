@@ -4,47 +4,27 @@ Date: 2026-09-18.
 
 Overall scientific programme: **50%**. Candidate theory: **0% / UNFORMED**. Bridge credit: **0**.
 
-Repository state, frozen preregistrations, source-faithful derivations, validated Actions artifacts and independent Critic results are authoritative.
+## ITER165 — terminal scoped BLOCKED
+Authoritative execution: commit `402caff346ac87540867b458f14c05bc264753b6`, run `35292960281`.
 
-## Corrected chain retained
-ITER159 remains source-reference-only where appropriate; ITER160 raw endpoint support is scoped PASS; ITER161 derives the endpoint-selected open symmetric metric leg but is blocked on the distributional primitive. ITER162 remains a preserved **SCIENTIFIC FAIL** of its prospectively frozen 36-column covariant ansatz because the direct `n^2` witness proved source incompleteness. ITER163 is a new scoped PASS for the source-complete 21-term ledger and exact K-divisibility; it does not retroactively repair ITER162.
+- constructive job `105439556945` -> artifact `10527017897`, ZIP SHA256 `9b8462dcf2b5b80144969a653e63cc84c51e9fc49a48f953d1e31a241d415f25`
+- completeness falsifier `105439557144` -> artifact `10527257302`, ZIP SHA256 `e3ef4144ab2a39ce7b508a5f1c34ca2db3257150c43d214b9146bcd55b82f075`
+- contact/orientation critic `105439557151` -> artifact `10526798292`, ZIP SHA256 `e18fbf01e96bf8fec771545f6745bdc1922dc0f5a94c7f30283b5887aba5e472`
 
-## ITER164 — terminal scoped BLOCKED
-Authoritative execution: commit `2a268fdde476a8dd614ec7fb6100139eef1b8136`, run `35281667916`.
+Classification: **`BLOCKED_SCOPED_ITER165_NONUNIQUE_OR_INCOMPLETE_HYPOTHESES`**. Green CI is not scientific PASS.
 
-- operation-audit job `105404781620` → artifact `10522950477` (`iter164-source-operation-audit`), ZIP SHA256 `6bb2f609bf4daee05b456ca01c066d24210971787bd31af059a355eadb7418a1`
-- independent closure critic job `105404781828` → artifact `10522049956` (`iter164-closure-critic`), ZIP SHA256 `81cb77d507d8bacb5a63001a9bd4905b3740527e652da5e052fc3015dd843220`
+Five of ten frozen prerequisites are established: ambient/affine variables, `d=4-2epsilon`, free symmetric metric leg, separate endpoint orientations, retained K-divisible contacts. Missing and independently blocking: explicit test-function/domain space, transverse scaling degree per singular sector, justified ambient-to-affine pullback conditions, and complete local delta/normal-derivative ambiguity span. Laurent coefficient manifest therefore remains unavailable.
 
-Classification: **`BLOCKED_SCOPED_ITER164_MISSING_SOURCE_QUALIFIED_OPEN_G_ENDPOINT_R_OPERATION`**.
+No Laurent pole tensor, ITER118 solve, B1_total or bridge credit follows.
 
-The frozen repository-wide audit inspected **252 tracked Python files**, identified **77 candidate locations**, and found **0 sufficient executable source operations** satisfying the preregistered conjunction. The independent critic verified the authority chain and independently agreed that general distribution-extension theory exists but the required source-faithful graph-level operation on the unseparated open-G tensor is absent.
+## ITER166 — exact next admissible gate
+Preregistration: `analysis/ITER166_PREREGISTRATION_2026-09-18.md` (frozen before ITER166 results).
 
-Green CI is not scientific PASS. This terminal result is a scoped blocker: no Laurent coefficient, complete `1/epsilon` endpoint pole tensor, contact zero, ITER118 coefficient/rank solution, or `B1_total` is inferred.
+Three independent lanes are required: (A) explicit domain/test-function + sector scaling-degree/singular-order + ambient-to-affine construction; (B) complete endpoint-local tensor delta/normal-derivative ambiguity enumeration through the derivative ceiling; (C) independent completeness falsifier attempting an omitted tensor or uncovered singular sector. Free metric leg, orientations and contacts remain explicit. No coefficient fitting or post-result basis changes.
 
-The navigator `sources/ITER164_SUBMANIFOLD_EXTENSION_NAVIGATOR_2026-09-18.md` remains **NAVIGATOR_ONLY**. It records mathematical authority candidates for scaling-degree/submanifold extension and position-space dimensional regularization, but explicitly distinguishes an extension theorem, a scheme representative, and the still-missing source-qualified graph-level operation.
-
-## Slot 7
-`OPEN_PARTIAL_PASS_COMPLETE_COVARIANT_LEDGER_DERIVED_SOURCE_QUALIFIED_DISTRIBUTIONAL_ENDPOINT_OPERATION_MISSING`.
-
-## Exact next admissible gate
-**ITER165 — `OPEN_G_ENDPOINT_MEROMORPHIC_DISTRIBUTION_FAMILY_HYPOTHESIS_GATE`**.
-
-Start from the frozen ITER163 21-term **unseparated** source tensor plus affine phases and the source dimensional regulator. Before any pole extraction, prospectively freeze and verify:
-1. distribution domain/test-function space for upper and lower endpoint objects;
-2. regulator convention `d = 4 - 2 epsilon`;
-3. transverse singular/scaling degree for every source support sector;
-4. ambient-to-affine construction replacing forbidden naive pullback;
-5. preservation of the free symmetric metric leg and endpoint orientation;
-6. cancelled-propagator/contact structures inside the same operation;
-7. full local delta/normal-derivative tensor ambiguity allowed by scaling degree, covariance, endpoint locality and derivative ceiling;
-8. independent completeness falsifier attempting to exhibit an omitted allowed local tensor.
-
-If these hypotheses cannot be established source-faithfully, terminalize BLOCKED. Do not choose a convenient extension representative and promote it to source physics. No ITER118 rank/coefficient solve before a complete pole-tensor manifest exists.
-
-## Other scoped fronts
-RC-009 reduced isotemporal positive branch remains **SCOPED BLOCKED**; no denser quadrature without a mathematically justified new regularization/measure/contour object. Lorentzian Delta4 negative finite-cutoff/profile/scaling results remain preserved and confer no bridge status without a genuine refinement map.
+Only `PASS_SCOPED_ITER166_DOMAIN_SCALING_PULLBACK_AND_AMBIGUITY_COMPLETE` authorizes a later explicit Laurent/R-operation gate. BLOCKED and exact scientific-fail outcomes remain admissible.
 
 ## Persistent locks
-`B1_total = UNAUTHORIZED`; `ALL_KNOWN_SCHOOLS_FAIL=false`; `NEW_QG_THEORY_REQUIRED=false`; `NEW_PHYSICS_FOUND=false`; `BRIDGE_DERIVED=false`; `ITER118_MATCHING_AUTHORIZED=false`. Candidate action/Hamiltonian/field equations remain unauthorized. Candidate theory remains **UNFORMED / 0%**.
+`B1_total = UNAUTHORIZED`; `ALL_KNOWN_SCHOOLS_FAIL=false`; `NEW_QG_THEORY_REQUIRED=false`; `NEW_PHYSICS_FOUND=false`; `BRIDGE_DERIVED=false`; `ITER118_MATCHING_AUTHORIZED=false`. Candidate theory remains **UNFORMED / 0%**.
 
-Durable ITER164 note: `analysis/ITER164_TERMINAL_RESULT.md`.
+RC-009 remains scoped blocked; Lorentzian Delta4 negative results remain preserved without bridge credit absent genuine refinement.
