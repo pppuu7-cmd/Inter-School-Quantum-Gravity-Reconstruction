@@ -1,0 +1,27 @@
+name: ITER170 corrected call graph provenance
+on:
+  push:
+    paths:
+      - '.github/workflows/iter170-corrected-call-graph.yml'
+  workflow_dispatch:
+jobs:
+  provenance:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [producer, geometry, critic]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen ITER170 lane
+        run: python analysis/iter170_corrected_call_graph_gate.py '${{ matrix.lane }}' | tee iter170-${{ matrix.lane }}.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter170-${{ matrix.lane }}-${{ strategy.job-index }}
+          path: |
+            iter170-${{ matrix.lane }}.log
+            iter170_${{ matrix.lane }}.json
