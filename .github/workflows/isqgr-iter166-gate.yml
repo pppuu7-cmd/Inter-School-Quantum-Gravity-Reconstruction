@@ -1,0 +1,29 @@
+name: ISQGR ITER166 domain-scaling-pullback ambiguity gate
+on:
+  push:
+    paths:
+      - '.github/workflows/isqgr-iter166-gate.yml'
+  workflow_dispatch:
+jobs:
+  gate:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [domain-scaling-pullback, local-ambiguity, completeness-falsifier]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen ITER166 gate
+        run: python analysis/iter166_gate.py | tee iter166-${{ matrix.lane }}.log
+      - name: Preserve lane artifact
+        run: |
+          mkdir -p out
+          cp artifacts/iter166_gate.json out/iter166-${{ matrix.lane }}.json
+          cp iter166-${{ matrix.lane }}.log out/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter166-${{ matrix.lane }}
+          path: out/
