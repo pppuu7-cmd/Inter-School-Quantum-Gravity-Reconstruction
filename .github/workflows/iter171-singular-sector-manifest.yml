@@ -1,0 +1,27 @@
+name: ITER171 source-qualified singular-sector manifest
+on:
+  push:
+    paths:
+      - '.github/workflows/iter171-singular-sector-manifest.yml'
+  workflow_dispatch:
+jobs:
+  manifest:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [producer, completeness, critic]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run frozen ITER171 lane
+        run: python analysis/iter171_singular_sector_manifest_gate.py '${{ matrix.lane }}' | tee iter171-${{ matrix.lane }}.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iter171-${{ matrix.lane }}-${{ strategy.job-index }}
+          path: |
+            iter171-${{ matrix.lane }}.log
+            iter171_${{ matrix.lane }}.json
