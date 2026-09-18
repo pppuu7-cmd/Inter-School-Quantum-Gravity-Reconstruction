@@ -27,3 +27,4 @@ jobs:
         with:
           name: iter167-${{ matrix.lane }}
           path: out/
+# prospective frozen trigger: 2026-09-18
