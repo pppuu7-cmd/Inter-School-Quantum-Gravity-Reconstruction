@@ -1,0 +1,57 @@
+name: ITER176 Phase1 frontier recovery audit
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/iter176-phase1-frontier-recovery.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [lorentzian, bh004b, rc006]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frozen source/provenance audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - "${{ matrix.lane }}" <<'PY'
+          import json, pathlib, re, sys
+          lane=sys.argv[1]
+          root=pathlib.Path('.')
+          files=[p for p in root.rglob('*') if p.is_file() and '.git' not in p.parts and p.stat().st_size < 2_000_000]
+          def hits(patterns):
+              out=[]
+              for p in files:
+                  try: t=p.read_text(errors='ignore')
+                  except Exception: continue
+                  low=t.lower()
+                  if all(re.search(x,low) for x in patterns): out.append(str(p))
+              return sorted(out)[:100]
+          if lane=='lorentzian':
+              shell=hits([r'delta4',r'shellflow|shell-flow'])
+              refinement=hits([r'delta4|eprl',r'coarse',r'fine',r'refinement'])
+              d={'lane':lane,'shellflow_sources':shell,'explicit_coarse_fine_candidates':refinement,
+                 'frozen_requirement':'explicit coarse/fine amplitude-or-complex refinement map; shell/profile/cutoff flow alone insufficient'}
+          elif lane=='bh004b':
+              longjump=hits([r'bh004b|bh-004b',r'long.?jump|heldout'])
+              d={'lane':lane,'heldout_sources':longjump,
+                 'frozen_requirement':'terminal held-out structural selector evidence only; no QG bridge credit'}
+          else:
+              q=hits([r'q.?deform',r'eprl|fk'])
+              tnr=hits([r'q.?deform',r'tnr|tensor.network|amplitude'])
+              d={'lane':lane,'qdeformed_eprl_fk_candidates':q,'amplitude_tnr_candidates':tnr,
+                 'frozen_requirement':'executable source-faithful q-deformed EPRL/FK amplitude/TNR object'}
+          pathlib.Path(f'out/iter176_{lane}.json').write_text(json.dumps(d,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(d,indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iter176-${{ matrix.lane }}
+          path: out/*.json
+          if-no-files-found: error
