@@ -15,6 +15,7 @@
 
 using JLD2
 using Printf
+using Statistics
 
 length(ARGS) == 2 || error("usage: script <vertex_j=X.jld2> <j>")
 path = ARGS[1]
