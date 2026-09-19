@@ -136,3 +136,51 @@ Persistent locks remain:
 `ALL_KNOWN_SCHOOLS_FAIL=false`
 
 candidate theory `UNFORMED / 0%`.
+
+
+## Follow-up source-code provenance narrowing
+
+A direct inspection of the public repository's `vertex_ampls/EPRL` tree at
+`8a722eb81b7e4c6f4eba75fe76ec7c89d334b53b` found precomputed EPRL vertex tensors for every half-integer spin
+
+`j = 0.5, 1.0, ..., 6.0`.
+
+These are five-index vertex tensors. The star implementation loads one such tensor and uses it both for the central vertex and for the five surrounding vertex factors in the explicit `star_amplitude` contraction.
+
+The public cluster-generation script additionally fixes the numerical EPRL provenance:
+
+- `IMMIRZI=1.2`;
+- `SHELLS=20`;
+- `vertex-fulltensor` from the authors' sl2cfoam-next installation.
+
+This matches the paper's discussion of an EPRL shell truncation and removes two previously unresolved convention variables from the prospective execution binding.
+
+### Exact coarse observable binding now available in principle
+
+The same repository publishes the diagonal dihedral-angle eigenvalue rule:
+
+`cos(theta_i) = [i(i+1)-2j(j+1)]/[2j(j+1)]`,
+for intertwiner `i=0,...,2j`.
+
+Therefore for the stored five-index vertex tensor
+`A[i1,i2,i3,i4,i5]`, the exact coarse single-4-simplex expectation at node 1 is source-defined by
+
+`Z = sum_{i1...i5} A^2`
+
+and
+
+`<cos(theta_1)> = (1/Z) sum_{i1...i5} A^2 cos(theta_{i1})`.
+
+The corresponding second moment and quantum spread follow analogously.
+
+No Monte-Carlo fit is needed on the five-node side. The other four nodes provide immediate permutation/symmetry controls.
+
+Thus the remaining acquisition task is now very narrow:
+
+1. load the immutable published JLD2 tensor at an exact external repository SHA;
+2. verify its dimensions and real-valued convention;
+3. reproduce the paper's coarse regular-tetrahedron angle behavior and node symmetry;
+4. bind the same exact tensor to the public star contraction;
+5. freeze one or more coarse/refined observable comparisons with uncertainty treatment.
+
+The absence of a dedicated coarse driver in the public repository is therefore no longer evidence that the coarse amplitude object itself is missing.
